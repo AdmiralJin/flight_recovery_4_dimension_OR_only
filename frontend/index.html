@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>AIR Recovery · Phase 0</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">PETERSEN AIR REPRODUCTION · PHASE 0</p>
+      <h1>Recovery data workbench</h1>
+      <p class="subtitle">先校验数据，再进入模型。当前版本不会运行任何优化。</p>
+    </div>
+    <div class="status-card">
+      <span class="status-dot" aria-hidden="true"></span>
+      <div><strong>Data layer</strong><span id="record-summary">Loading example…</span></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="command-bar" aria-label="Scenario actions">
+      <button id="load-example" class="button primary">Load Example</button>
+      <button id="import-json" class="button">Import JSON</button>
+      <button id="export-json" class="button">Export JSON</button>
+      <button id="reset-all" class="button">Reset All</button>
+      <div class="command-spacer"></div>
+      <button id="validate" class="button accent">Validate</button>
+      <input id="file-input" type="file" accept="application/json,.json" hidden>
+    </section>
+
+    <nav id="tabs" class="tabs" aria-label="Scenario data sections"></nav>
+
+    <section class="workspace">
+      <div class="workspace-head">
+        <div>
+          <p class="section-kicker" id="section-kicker">SCENARIO</p>
+          <h2 id="section-title">Recovery window</h2>
+        </div>
+        <div id="table-actions" class="table-actions">
+          <button id="add-row" class="button small">Add Row</button>
+          <button id="duplicate-row" class="button small">Duplicate Row</button>
+          <button id="delete-row" class="button small danger">Delete Row</button>
+          <button id="reset-section" class="button small">Reset</button>
+        </div>
+      </div>
+      <div id="editor" class="editor"></div>
+    </section>
+
+    <section id="validation-panel" class="validation-panel" aria-live="polite">
+      <div class="validation-heading">
+        <div>
+          <p class="section-kicker">VALIDATION</p>
+          <h2 id="validation-title">Not checked</h2>
+        </div>
+        <span id="validation-badge" class="badge neutral">Idle</span>
+      </div>
+      <p id="validation-message" class="muted">Edit the scenario, then run Validate.</p>
+      <ol id="validation-errors" class="error-list"></ol>
+    </section>
+  </main>
+
+  <footer>Phase 0 · schema, cross-reference validation and deterministic JSON exchange</footer>
+  <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>
