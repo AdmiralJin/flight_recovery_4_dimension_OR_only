@@ -1,63 +1,63 @@
-# Implementation Assumptions
+# 实现假设登记表
 
-This register separates implementation choices from statements made by Petersen et al. (2010).
+本文件用于严格区分“Petersen 等人（2010）论文中明确给出的内容”和“为完成工程实现而补充的约定”。
 
-## A-001 Time representation
+## A-001 时间表示
 
-Source status: The paper defines one exogenous recovery window `T = [t, T_end]` but does not prescribe a JSON timestamp format.
+来源状态：论文定义了统一的外生恢复窗口 `T = [t, T_end]`，但没有规定 JSON 时间戳格式。
 
-Implementation: Phase 0 accepts timezone-aware ISO 8601 datetimes; `Z` or an explicit UTC offset is mandatory. The bundled example uses UTC (`Z`). Each scheduled flight and each capacity/disruption interval must be fully inside the recovery window.
+实现方式：Phase 0 只接受带时区信息的 ISO 8601 时间；必须包含 `Z` 或明确的 UTC 偏移量。项目示例统一使用 UTC（`Z`）。每个计划航班、机场容量区间和扰动区间都必须完整位于恢复窗口内。
 
-Reason: An absolute timestamp avoids day-boundary ambiguity and makes JSON round trips deterministic.
+原因：绝对时间可以避免跨日期和时区歧义，并保证 JSON 往返结果稳定。
 
-Impact: Real airline ingestion will need an explicit airport-local-time and timezone conversion policy.
+影响：接入真实航空公司数据时，需要额外制定机场当地时间与时区转换规则。
 
-## A-002 Duration
+## A-002 航班时长
 
-Source status: The paper uses timed flight strings but does not define a standalone `duration` input field.
+来源状态：论文中的 Flight String 包含航班时刻，但没有定义独立的 `duration` 输入字段。
 
-Implementation: `Flight.duration` is an integer number of minutes and must exactly equal `sched_arr - sched_dep`.
+实现方式：`Flight.duration` 使用整数分钟表示，并且必须严格等于 `sched_arr - sched_dep`。
 
-Reason: This detects inconsistent source data before network generation.
+原因：可以在生成网络之前发现航班时刻与时长不一致的源数据。
 
-Impact: Block-time adjustments and time-zone changes must be normalized before validation.
+影响：航段飞行时间调整以及跨时区航班必须先转换为统一时间，再进行校验。
 
-## A-003 Crew rating
+## A-003 机组资质
 
-Source status: The paper solves crew recovery by equipment type corresponding to crew rating, while full legality is airline-specific.
+来源状态：论文按照与机组资质对应的机型执行机组恢复，但完整合法性规则取决于具体航空公司。
 
-Implementation: Phase 0 models one `rating` string per crew and requires an exact match with `Flight.original_equipment`.
+实现方式：Phase 0 为每个机组设置一个 `rating` 字符串，并要求它与 `Flight.original_equipment` 完全一致。
 
-Reason: This is the smallest auditable compatibility rule.
+原因：这是当前阶段最小且可以人工审计的机组—机型兼容规则。
 
-Impact: Multiple ratings, seat positions, qualifications, reserve crew and full duty legality are deferred.
+影响：多机型资质、机组座位、其他资格限制、备份机组和完整值勤合法性将在后续阶段处理。
 
-## A-004 Original duties and pairing
+## A-004 原始值勤与 Pairing
 
-Source status: The paper distinguishes duties and multi-duty pairings but does not prescribe an interchange schema.
+来源状态：论文区分 Duty 和由多个 Duty 组成的 Pairing，但没有规定数据交换结构。
 
-Implementation: `original_duties` is a list of ordered flight-id lists; `original_pairing` must be the exact ordered flattening of those duties.
+实现方式：`original_duties` 是由多个有序航班 ID 列表组成的列表；`original_pairing` 必须严格等于按顺序展开后的全部 `original_duties`。
 
-Reason: Keeping both fields makes the source structure explicit and catches inconsistent imports.
+原因：同时保留这两个字段可以明确记录原始结构，并发现导入数据中的不一致。
 
-Impact: Duty boundaries are preserved but rest and maximum-duty rules are not yet evaluated in Phase 0.
+影响：Phase 0 会保留 Duty 边界，但暂不校验最小休息时间和最大值勤时间等规则。
 
-## A-005 Airport capacity change
+## A-005 机场容量变化
 
-Source status: The paper models absolute arrival/departure capacities over station-time intervals.
+来源状态：论文使用机场—时间区间上的绝对进港容量和离港容量建模。
 
-Implementation: `AirportInterval` stores the post-scenario capacities; `Disruption.capacity_change` is a signed non-zero integer metadata value. Negative values are reductions.
+实现方式：`AirportInterval` 存储场景下实际使用的容量；`Disruption.capacity_change` 是一个非零的有符号整数元数据，负数表示容量下降。
 
-Reason: This keeps baseline/realized capacity data distinct from the causal disruption record.
+原因：这样可以将实际容量数据与导致容量改变的扰动事件分开记录。
 
-Impact: Phase 0 checks references and time ranges but does not derive one record from the other.
+影响：Phase 0 只校验引用关系和时间范围，不会根据 `Disruption` 自动推导 `AirportInterval`。
 
-## A-006 Passenger commodities
+## A-006 旅客商品组
 
-Source status: The PRM describes homogeneous O-D passenger commodities with origin, departure time, destination and scheduled arrival.
+来源状态：PRM 将具有始发地、始发时间、目的地和计划到达时间的同质 O-D 旅客作为商品组处理。
 
-Implementation: A passenger commodity has a positive `count` and an ordered original itinerary. Its endpoint airports and endpoint timestamps must agree with that itinerary.
+实现方式：每个旅客商品组包含正整数 `count` 和一个有序的原始行程；商品组的起终点机场及起终点时间必须与原始行程一致。
 
-Reason: Grouped demand is sufficient for the paper's aggregate passenger-flow model.
+原因：按组聚合的旅客需求足以支持论文中的旅客网络流模型。
 
-Impact: Fare class, loyalty status and individual reaccommodation priority are outside the reproduction core.
+影响：票价等级、常旅客级别和个体旅客改签优先级不属于论文复现核心，当前阶段不处理。

@@ -1,19 +1,61 @@
-# AIR Recovery Reproduction
+# AIR 航空公司综合恢复复现项目
 
-Phase 0 of a staged reproduction of Petersen et al. (2010), *An Optimization Approach to Airline Integrated Recovery*.
+本项目分阶段复现 Petersen 等人（2010）的论文《An Optimization Approach to Airline Integrated Recovery》。当前已完成 Phase 0。
 
-This version provides a strict scenario schema, cross-entity validation, a stable toy case and a browser-based JSON editor. It intentionally contains no optimization model.
+Phase 0 提供严格的场景数据 Schema、跨实体一致性校验、稳定的 toy case，以及基于浏览器的 JSON 数据编辑器。本阶段不包含任何优化模型。
 
-## Run
+## 数据编辑入口
+
+显式的 HTML 页面位于：
+
+```text
+frontend/index.html
+```
+
+请不要直接双击该文件打开，因为加载示例、数据校验等功能依赖 FastAPI 后端。应按下面的方式启动项目，然后在浏览器中编辑数据。
+
+## 安装与启动
+
+在项目根目录运行：
 
 ```powershell
 python -m pip install -r requirements.txt
 python -m uvicorn backend.main:app --reload
 ```
 
-Open `http://127.0.0.1:8000`.
+启动成功后访问：
 
-## Verify
+```text
+http://127.0.0.1:8000
+```
+
+页面提供以下数据页签：
+
+- Scenario
+- Airports
+- Flights
+- Aircraft
+- Crew
+- Passengers
+- Airport Capacity
+- Disruptions
+
+可以直接在表格单元格中编辑数据，并使用 Add Row、Duplicate Row、Delete Row 和 Reset 管理记录。页面顶部提供：
+
+- `Load Example`：载入 `toy_case_001`；
+- `Import JSON`：导入本地场景 JSON；
+- `Export JSON`：导出当前编辑结果；
+- `Validate`：调用后端检查数据并显示准确的错误位置。
+
+原始示例数据也可以直接编辑：
+
+```text
+data/examples/toy_case_001.json
+```
+
+但日常录入和调试建议使用浏览器页面。
+
+## 运行测试
 
 ```powershell
 python -m pytest
@@ -21,12 +63,12 @@ python -m pytest
 
 ## API
 
-- `GET /api/health` - service and phase status
-- `GET /api/examples/toy_case_001` - stable example payload
-- `POST /api/validate` - structural and cross-entity validation
-- `POST /api/solve` - Phase 0 safety gate; rejects invalid input and returns 501 for valid input
+- `GET /api/health`：查询服务状态和当前阶段；
+- `GET /api/examples/toy_case_001`：读取稳定的示例场景；
+- `POST /api/validate`：执行结构与跨实体一致性校验；
+- `POST /api/solve`：Phase 0 安全闸门；拒绝错误数据，合法数据暂时返回 HTTP 501。
 
-Validation failures use machine-readable locations such as `flights[0].origin`, together with a code and message. A successful response includes normalized JSON suitable for a deterministic export/import round trip.
+校验失败时会返回类似 `flights[0].origin` 的机器可读错误位置，以及错误代码和说明。校验成功时会返回标准化后的 JSON，用于稳定的导入、导出和前后端往返。
 
-Implementation choices not specified by the paper are tracked in [assumptions.md](assumptions.md). Paper-to-code scope notes are in [reproduction_notes.md](reproduction_notes.md).
+论文未明确规定的实现选择记录在 [assumptions.md](assumptions.md)，论文内容与当前代码范围的对应关系记录在 [reproduction_notes.md](reproduction_notes.md)。
 
