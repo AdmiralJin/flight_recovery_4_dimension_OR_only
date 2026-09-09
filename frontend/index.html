@@ -4,13 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:,">
-  <title>AIR Recovery · Phase 0</title>
+  <title>AIR Recovery · Phase 0.5</title>
   <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="/static/css/visualization.css">
 </head>
 <body>
   <header class="hero">
     <div>
-      <p class="eyebrow">PETERSEN AIR REPRODUCTION · PHASE 0</p>
+      <p class="eyebrow">PETERSEN AIR REPRODUCTION · PHASE 0.5</p>
       <h1>Recovery data workbench</h1>
       <p class="subtitle">先校验数据，再进入模型。当前版本不会运行任何优化。</p>
     </div>
@@ -31,38 +32,74 @@
       <input id="file-input" type="file" accept="application/json,.json" hidden>
     </section>
 
-    <nav id="tabs" class="tabs" aria-label="Scenario data sections"></nav>
+    <nav class="view-switcher" aria-label="Workbench view">
+      <button id="show-data-view" class="view-switch" aria-pressed="true">Data Editor</button>
+      <button id="show-visualization-view" class="view-switch" aria-pressed="false">Visualization</button>
+    </nav>
 
-    <section class="workspace">
-      <div class="workspace-head">
-        <div>
-          <p class="section-kicker" id="section-kicker">SCENARIO</p>
-          <h2 id="section-title">Recovery window</h2>
-        </div>
-        <div id="table-actions" class="table-actions">
-          <button id="add-row" class="button small">Add Row</button>
-          <button id="duplicate-row" class="button small">Duplicate Row</button>
-          <button id="delete-row" class="button small danger">Delete Row</button>
-          <button id="reset-section" class="button small">Reset</button>
-        </div>
-      </div>
-      <div id="editor" class="editor"></div>
-    </section>
+    <div id="data-view">
+      <nav id="tabs" class="tabs" aria-label="Scenario data sections"></nav>
 
-    <section id="validation-panel" class="validation-panel" aria-live="polite">
-      <div class="validation-heading">
-        <div>
-          <p class="section-kicker">VALIDATION</p>
-          <h2 id="validation-title">Not checked</h2>
+      <section class="workspace">
+        <div class="workspace-head">
+          <div>
+            <p class="section-kicker" id="section-kicker">SCENARIO</p>
+            <h2 id="section-title">Recovery window</h2>
+          </div>
+          <div id="table-actions" class="table-actions">
+            <button id="add-row" class="button small">Add Row</button>
+            <button id="duplicate-row" class="button small">Duplicate Row</button>
+            <button id="delete-row" class="button small danger">Delete Row</button>
+            <button id="reset-section" class="button small">Reset</button>
+          </div>
         </div>
-        <span id="validation-badge" class="badge neutral">Idle</span>
+        <div id="editor" class="editor"></div>
+      </section>
+
+      <section id="validation-panel" class="validation-panel" aria-live="polite">
+        <div class="validation-heading">
+          <div>
+            <p class="section-kicker">VALIDATION</p>
+            <h2 id="validation-title">Not checked</h2>
+          </div>
+          <span id="validation-badge" class="badge neutral">Idle</span>
+        </div>
+        <p id="validation-message" class="muted">Edit the scenario, then run Validate.</p>
+        <ol id="validation-errors" class="error-list"></ol>
+      </section>
+    </div>
+
+    <div id="visualization-view" hidden>
+      <section id="viz-toolbar" class="viz-toolbar" aria-label="Visualization controls"></section>
+
+      <div class="viz-main-grid">
+        <section class="viz-card viz-network-card" aria-labelledby="network-title">
+          <div class="viz-card-head">
+            <div>
+              <p class="section-kicker">TIME-SPACE NETWORK</p>
+              <h2 id="network-title">Original schedule and exposure</h2>
+            </div>
+            <span class="viz-time-label">Time axis: UTC</span>
+          </div>
+          <div id="time-space-network" class="viz-scroll-region"></div>
+        </section>
+
+        <aside id="flight-detail" class="viz-card viz-detail" aria-live="polite"></aside>
       </div>
-      <p id="validation-message" class="muted">Edit the scenario, then run Validate.</p>
-      <ol id="validation-errors" class="error-list"></ol>
-    </section>
+
+      <section class="viz-card viz-capacity-card" aria-labelledby="capacity-title">
+        <div class="viz-card-head">
+          <div>
+            <p class="section-kicker">AIRPORT CAPACITY</p>
+            <h2 id="capacity-title">Scheduled load by input time bucket</h2>
+          </div>
+        </div>
+        <div id="capacity-heatmap" class="viz-scroll-region"></div>
+      </section>
+    </div>
   </main>
 
-  <footer>Phase 0 · schema, cross-reference validation and deterministic JSON exchange</footer>
+  <footer>Phase 0.5 · validated scenario visualization without optimization results</footer>
   <script type="module" src="/static/js/app.js"></script>
 </body>
 </html>
