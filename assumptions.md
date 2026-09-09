@@ -46,11 +46,17 @@
 
 来源状态：论文使用机场—时间区间上的绝对进港容量和离港容量建模。
 
-实现方式：`AirportInterval` 存储场景下实际使用的容量；`Disruption.capacity_change` 是一个非零的有符号整数元数据，负数表示容量下降。
+实现方式：每条 `AirportInterval` 都表示一个固定容量时间桶，边界统一采用左闭右开区间 `[start_time, end_time)`。同一机场的容量时间桶不允许重叠，但允许前一桶的 `end_time` 等于后一桶的 `start_time`。
+
+`arr_capacity` 和 `dep_capacity` 的单位均为“架次/该时间桶”，而不是“架次/小时”：到达或离港时刻落在该时间桶内的航班总数不得超过对应容量。恰好发生在 `end_time` 的事件不计入当前桶，而计入从该时刻开始的下一时间桶。
+
+`gate_capacity` 表示该时间桶内允许的最大同时在地航空器数量，后续模型应在桶内相关到达/离港事件时点检查在地库存。
+
+`AirportInterval` 存储场景下实际使用的容量；`Disruption.capacity_change` 是一个非零的有符号整数元数据，负数表示容量下降。
 
 原因：这样可以将实际容量数据与导致容量改变的扰动事件分开记录。
 
-影响：Phase 0 只校验引用关系和时间范围，不会根据 `Disruption` 自动推导 `AirportInterval`。
+影响：Phase 0 会校验容量时间桶的引用、时间范围及同机场区间不重叠，但不会根据 `Disruption` 自动推导 `AirportInterval`。
 
 ## A-006 旅客商品组
 

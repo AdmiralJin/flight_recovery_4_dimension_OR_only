@@ -37,3 +37,10 @@ def test_schema_forbids_undeclared_fields(toy_case):
     toy_case["flights"][0]["mystery"] = "not in contract"
     with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
         Scenario.model_validate(toy_case)
+
+
+def test_duration_rejects_fractional_minutes_instead_of_rounding(toy_case):
+    toy_case["flights"][0]["sched_arr"] = "2026-01-15T09:00:30Z"
+
+    with pytest.raises(ValidationError, match="exact whole number of minutes"):
+        Scenario.model_validate(toy_case)

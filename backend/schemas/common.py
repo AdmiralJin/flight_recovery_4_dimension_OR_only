@@ -22,5 +22,12 @@ class IdentifiedModel(SchemaModel):
 
 
 def minutes_between(start: datetime, end: datetime) -> int:
-    return round((end - start).total_seconds() / 60)
-
+    delta = end - start
+    total_microseconds = (
+        (delta.days * 86_400 + delta.seconds) * 1_000_000
+        + delta.microseconds
+    )
+    whole_minutes, remainder = divmod(total_microseconds, 60_000_000)
+    if remainder:
+        raise ValueError("time difference must be an exact whole number of minutes")
+    return whole_minutes

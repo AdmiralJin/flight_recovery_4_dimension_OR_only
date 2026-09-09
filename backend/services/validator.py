@@ -198,6 +198,21 @@ def validate_scenario(data: Any) -> tuple[Scenario | None, list[ValidationIssue]
             if interval.start_time < start or interval.end_time > end:
                 issues.append(_issue(prefix, "outside_recovery_window", "interval must be fully inside the recovery window"))
 
+    intervals_by_airport: dict[str, list[tuple[int, Any]]] = {}
+    for index, interval in enumerate(scenario.airport_intervals):
+        intervals_by_airport.setdefault(interval.airport, []).append((index, interval))
+    for indexed_intervals in intervals_by_airport.values():
+        ordered = sorted(indexed_intervals, key=lambda item: item[1].start_time)
+        for (previous_index, previous), (index, interval) in zip(ordered, ordered[1:]):
+            if interval.start_time < previous.end_time:
+                issues.append(
+                    _issue(
+                        f"airport_intervals[{index}].start_time",
+                        "overlapping_interval",
+                        f"capacity interval overlaps airport_intervals[{previous_index}]",
+                    )
+                )
+
     return scenario, issues
 
 

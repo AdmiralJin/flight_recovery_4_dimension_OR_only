@@ -58,3 +58,39 @@ def test_flight_outside_recovery_window_is_rejected(toy_case):
     toy_case["recovery_window"]["end_time"] = "2026-01-15T12:00:00Z"
     _, issues = validate_scenario(toy_case)
     assert ("flights[2]", "outside_recovery_window") in locations_and_codes(issues)
+
+
+def test_overlapping_airport_capacity_intervals_are_rejected(toy_case):
+    toy_case["airport_intervals"].append(
+        {
+            "airport": "B",
+            "start_time": "2026-01-15T10:30:00Z",
+            "end_time": "2026-01-15T12:00:00Z",
+            "arr_capacity": 2,
+            "dep_capacity": 2,
+            "gate_capacity": 3,
+            "curfew_flag": False,
+            "weather_restrictions": [],
+        }
+    )
+
+    _, issues = validate_scenario(toy_case)
+    assert ("airport_intervals[1].start_time", "overlapping_interval") in locations_and_codes(issues)
+
+
+def test_adjacent_half_open_capacity_intervals_are_allowed(toy_case):
+    toy_case["airport_intervals"].append(
+        {
+            "airport": "B",
+            "start_time": "2026-01-15T11:00:00Z",
+            "end_time": "2026-01-15T12:00:00Z",
+            "arr_capacity": 2,
+            "dep_capacity": 2,
+            "gate_capacity": 3,
+            "curfew_flag": False,
+            "weather_restrictions": [],
+        }
+    )
+
+    _, issues = validate_scenario(toy_case)
+    assert not any(issue.code == "overlapping_interval" for issue in issues)
