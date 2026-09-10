@@ -1,104 +1,114 @@
 # AIR 论文复现与业务迁移开发计划
 ## HTML 前端数据编辑 + Python 后端优化计算
 
-> 目标：以 Petersen et al. (2010) AIR（Airline Integrated Recovery）模型为基础，搭建一个可持续扩展的复现与业务迁移工程。  
-> 前端使用 HTML/JavaScript 负责数据编辑、场景配置与结果展示；后端使用 Python 负责数据校验、网络构造、优化建模、求解与结果分析。  
-> 核心原则：**任何复杂算法都必须先有一个简单、可人工核验或可整体求解的基准版本（oracle）作为正确性参照。**
->
-> 本计划的第一目标不是性能，而是避免复杂 OR 项目中最常见的问题：
->
-> **“代码能跑、求解器显示 OPTIMAL，但不知道模型、数据、分解或列生成到底有没有写错。”**
+> 目标：以 Petersen et al. (2010) AIR（Airline Integrated Recovery）模型为基础，建立一个可持续扩展、可人工核验、可与真实航空公司业务逐步对接的复现工程。  
+> 前端使用 HTML/JavaScript 负责数据编辑、场景配置和结果展示；后端 Python 负责校验、候选网络/列构造、数学建模、求解与诊断。  
+> 核心原则：**任何复杂算法都必须先有一个更简单、可人工核验或可整体求解的 Oracle。**
 
 ---
 
-# 1. 总体目标
+# 0. 当前项目状态（2026-09）
 
-最终形成如下系统：
+| Phase | 状态 | 当前事实 |
+|---|---|---|
+| Phase 0 | ✅ 完成 | Scenario 数据层、Pydantic Schema、跨实体 Validator、HTML Data Editor、toy case |
+| Phase 0.5 | ✅ 完成 | 原计划、扰动、风险传播、容量热力图等确定性可视化 |
+| Phase 1A：人工数据资产 | ✅ 已建立 | `phase1_benchmark_001`、Manual Columns、Columns/Expected JSON Schema v1.0.0、Manual Reference |
+| Phase 1B：工程验收 | 🚧 未完成 | Python Columns/Expected Schema、Semantic Validator、Regression/Negative Tests |
+| Phase 2+ | ⏳ 未开始 | Fixed-column 四模型、Integrated Oracle、Benders、CG 等 |
+
+因此当前准确表述是：
+
+> **Phase 1 的人工 benchmark / columns / expected 数据资产已经建立，但 Phase 1 整体工程验收仍未完成。**
+
+本轮先完成文档统一，不实现新的 Python 模型或测试代码。
+
+---
+
+# 1. 总体系统目标
+
+最终形成：
 
 ```text
-HTML / JavaScript 前端
+HTML / Vanilla JavaScript
 │
-├── Airports 编辑
-├── Flights 编辑
-├── Aircraft 编辑
-├── Crew 编辑
-├── Passenger / Demand 编辑
-├── Airport Capacity 编辑
-├── Disruption Scenario 编辑
-├── Recovery Horizon 编辑
+├── Scenario / Airport / Flight 编辑
+├── Aircraft / Crew 编辑
+├── Passenger 编辑
+├── Airport Capacity / Disruption 编辑
+├── Original / Disruption / Recovery Visualization
 │
-├── 点击 Validate
-├── 点击 Solve
+├── Validate
+└── Solve
+        ↓ HTTP / JSON
+FastAPI / Python
 │
-└── 查看优化结果
-      ↓ HTTP / JSON
-FastAPI 后端
+├── Scenario Schema & Validation
+├── Recovery Columns / Expected Validation
+├── Scope Limiting
 │
-├── schema / 数据校验
-├── preprocessing / scope limiting
-├── network generators
-├── flight string generator
-├── crew pairing generator
-├── passenger itinerary generator
+├── Flight Option / String Generator
+├── Crew Pairing Generator
+├── Passenger Itinerary Generator
 │
 ├── SRM
 ├── ARM
 ├── CRM
 ├── PRM
 │
-├── full integrated oracle
+├── Full Integrated Oracle
 ├── Benders
-├── column generation
-└── result diagnostics
-      ↓
-Gurobi / CPLEX / Pyomo / NetworkX / Pandas
+├── Column Generation
+└── Diagnostics
+        ↓
+Gurobi / CPLEX / Pyomo 等
 ```
 
 ---
 
 # 2. 总体开发原则
 
-## 2.1 论文复现层与业务扩展层必须分离
+## 2.1 论文复现、实现假设与业务扩展必须分离
 
-项目必须明确区分：
-
-```text
-论文明确给出的内容
-vs
-论文未完全给出、代码必须补全的假设
-vs
-南航/实际业务新增规则
-```
-
-禁止直接把业务扩展规则写进论文模型核心代码而不做区分。
-
-推荐：
+始终区分：
 
 ```text
-core/
-    尽可能忠实于 Petersen 2010
-
-application/
-    实际航空公司业务规则
-
-assumptions/
-    论文缺口与实现者补全
+Paper-defined
+vs
+Implementation assumption
+vs
+Airline-specific extension
 ```
+
+推荐边界：
+
+```text
+backend/core/
+    论文复现核心
+
+backend/application/
+    真实航空公司扩展规则
+
+assumptions.md
+    论文缺口与本项目实现选择
+```
+
+禁止把真实业务规则静默写入论文模型核心。
 
 ---
 
-## 2.2 每增加一层复杂度，都必须有上一级作为 oracle
-
-例如：
+## 2.2 每增加一层复杂度，都保留上一级 Oracle
 
 ```text
-人工答案
+人工 Reference
     ↓
-Fixed-column 四模型
+Fixed-column SRM / ARM / CRM / PRM
     ↓
-Full Integrated MIP
+Full Integrated Fixed-column Oracle
     ↓
-Benders
+Fixed-column Benders
+    ↓
+Full-column / Brute-force Enumeration
     ↓
 Column Generation
     ↓
@@ -109,49 +119,81 @@ Benders + Column Generation
 
 ---
 
-## 2.3 所有算法先在 toy case 上验证
+## 2.3 测试案例分层
 
-第一版禁止直接接真实大规模航空数据。
+不再要求一个 toy case 承担所有职责。
 
-建议第一标准实例：
+### `toy_case_001`
 
-```yaml
-airports: 3
-flights: 6
-aircraft: 2
-equipment_types: 1
-crew: 2-3
-passenger_groups: 3-5
-recovery_horizon: 8h
-disruption:
-  type: airport_capacity_reduction
-max_delay: 60min
+定位：
+
+```text
+Phase 0 / Phase 0.5 smoke fixture
 ```
 
-必须保证：
+用于：
 
-- 可以人工理解；
-- 可以人工列举 flight strings；
-- 可以人工列举 crew pairings；
-- 可以人工判断主要恢复选择；
-- 可以使用整体 MIP 得到 ground truth。
+- Schema；
+- Validator；
+- Frontend round-trip；
+- Visualization；
+- 简单风险传播。
+
+### `phase1_benchmark_001`
+
+定位：
+
+```text
+Phase 1 main integration benchmark
+```
+
+用于：
+
+- Manual Flight Options；
+- Manual Aircraft Strings；
+- Manual Crew Pairings；
+- Manual Passenger Itineraries；
+- Manual Reference Recovery；
+- Fixed-column model oracle input。
+
+规模：
+
+```text
+4 airports
+12 flights
+4 aircraft
+5 crew
+8 passenger groups
+8h recovery horizon
+1 departure-capacity disruption
+```
+
+后续还应继续维护：
+
+```text
+toy_case_002
+    必须取消案例
+
+toy_case_003
+    Passenger capacity / reaccommodation 冲突案例
+```
 
 ---
 
-## 2.4 每一步必须有明确验收门槛
+## 2.4 每个 Phase 必须有验收门槛
 
-每一个 Phase 必须包含：
+每个 Phase 必须明确：
 
 ```text
-输入
-输出
-单元测试
-反例测试
-基准测试
-验收标准
+Input
+Output
+Unit Tests
+Negative Tests
+Benchmark
+Acceptance Criteria
 ```
 
-禁止仅用：
+禁止只用：
 
 ```text
 程序运行成功
@@ -166,39 +208,32 @@ solver status = OPTIMAL
 
 ## 前端
 
-第一版：
+当前：
 
-- HTML
-- CSS
-- Vanilla JavaScript
+- HTML；
+- CSS；
+- Vanilla JavaScript；
+- 原生 SVG / DOM Visualization。
 
-暂时不要引入 React / Vue。
+当前不引入 React / Vue。
 
 原因：
 
-- 第一阶段重点是 OR 模型；
-- 原生 HTML table 足够进行 toy case 编辑；
-- 减少额外工程复杂度。
-
-后续数据量和交互复杂后，再考虑 Vue / React。
+- 核心难点仍是 OR 正确性；
+- 当前规模足够；
+- 减少构建链和状态同步复杂度。
 
 ---
 
 ## 后端
 
-推荐：
+- Python 3.11+；
+- FastAPI；
+- Pydantic；
+- 后续 Pandas / NetworkX；
+- Gurobi 优先。
 
-- Python 3.11+
-- FastAPI
-- Pydantic
-- Pandas
-- NetworkX
-- Gurobi (`gurobipy`) 优先
-
-如无 Gurobi，可使用：
-
-- CPLEX / docplex
-- Pyomo + 商业求解器
+没有 Gurobi 时可替换为其他可审计 MIP/LP Solver。
 
 ---
 
@@ -210,45 +245,45 @@ solver status = OPTIMAL
 JSON
 ```
 
-前端编辑后发送：
+数据分为三层：
 
-```http
-POST /api/validate
-POST /api/solve
+```text
+Scenario Input
+Recovery Columns
+Expected / Solver Result
 ```
 
-后端返回 JSON。
+三者必须明确分离。
 
 ---
 
-# 4. 推荐项目目录
+# 4. 推荐目录
 
 ```text
-air_recovery/
+flight_recovery_4_dimension_OR_only/
 │
 ├── README.md
-├── requirements.txt
 ├── assumptions.md
 ├── reproduction_notes.md
 │
 ├── frontend/
 │   ├── index.html
 │   ├── css/
-│   │   └── styles.css
+│   │   ├── styles.css
+│   │   └── visualization.css
 │   └── js/
 │       ├── app.js
-│       ├── tables.js
 │       ├── api.js
-│       └── results.js
+│       ├── tables.js
+│       ├── results.js
+│       └── visualization.js
 │
 ├── backend/
 │   ├── main.py
-│   │
 │   ├── api/
 │   │   ├── validate.py
 │   │   ├── solve.py
 │   │   └── examples.py
-│   │
 │   ├── schemas/
 │   │   ├── airport.py
 │   │   ├── flight.py
@@ -257,89 +292,78 @@ air_recovery/
 │   │   ├── passenger.py
 │   │   ├── capacity.py
 │   │   ├── disruption.py
-│   │   └── scenario.py
-│   │
+│   │   ├── scenario.py
+│   │   ├── columns.py          # Phase 1B
+│   │   └── expected.py         # Phase 1B
+│   ├── services/
+│   │   ├── validator.py
+│   │   ├── column_validator.py # Phase 1B
+│   │   ├── oracle_validator.py # Phase 1B
+│   │   ├── solver_service.py
+│   │   └── result_formatter.py
 │   ├── core/
+│   │   ├── incidence.py
 │   │   ├── scope.py
 │   │   ├── flight_network.py
 │   │   ├── string_generator.py
 │   │   ├── crew_network.py
 │   │   ├── pairing_generator.py
 │   │   ├── itinerary_generator.py
-│   │   │
 │   │   ├── srm.py
 │   │   ├── arm.py
 │   │   ├── crm.py
 │   │   ├── prm.py
-│   │   │
 │   │   ├── integrated_oracle.py
 │   │   ├── benders.py
 │   │   ├── pricing.py
 │   │   └── integrality.py
-│   │
-│   ├── application/
-│   │   └── airline_rules/
-│   │
-│   ├── services/
-│   │   ├── validator.py
-│   │   ├── solver_service.py
-│   │   └── result_formatter.py
-│   │
-│   └── utils/
-│       ├── time.py
-│       ├── logging.py
-│       └── incidence.py
+│   └── application/
+│       └── airline_rules/
 │
 ├── data/
 │   ├── examples/
 │   │   ├── toy_case_001.json
-│   │   ├── toy_case_002.json
-│   │   └── toy_case_003.json
-│   │
+│   │   └── phase1_benchmark_001.json
+│   ├── columns/
+│   │   └── phase1_benchmark_001_columns.json
 │   └── expected/
-│       ├── toy_case_001_expected.json
-│       ├── toy_case_002_expected.json
-│       └── toy_case_003_expected.json
+│       └── phase1_benchmark_001_expected.json
 │
-├── tests/
-│   ├── unit/
-│   │   ├── test_schema.py
-│   │   ├── test_scope.py
-│   │   ├── test_strings.py
-│   │   ├── test_pairings.py
-│   │   ├── test_srm.py
-│   │   ├── test_arm.py
-│   │   ├── test_crm.py
-│   │   └── test_prm.py
-│   │
-│   ├── oracle/
-│   │   ├── test_integrated_oracle.py
-│   │   ├── test_benders_vs_oracle.py
-│   │   └── test_cg_vs_full_columns.py
-│   │
-│   └── regression/
-│       └── test_toy_cases.py
+├── schemas/
+│   └── recovery/
+│       ├── recovery_columns_v1.schema.json
+│       └── recovery_expected_v1.schema.json
 │
-└── logs/
+├── docs/
+│   ├── AIR_HTML_Python_Reproduction_Plan.md
+│   ├── RECOVERY_COLUMNS_EXPECTED_SCHEMA_V1.md
+│   └── benchmarks/
+│       └── PHASE1_BENCHMARK_001_DESIGN.md
+│
+└── tests/
+    ├── unit/
+    ├── regression/
+    ├── oracle/
+    └── manual/
 ```
+
+> 标准目录是 `data/columns/`。若当前仓库仍为 `data/colums/`，应重命名，后续禁止继续沿用误拼写。
 
 ---
 
-# 5. Phase 0：先建立可验证的数据层
+# 5. Phase 0：可验证 Scenario 数据层
 
 ## 目标
 
-先解决：
+回答：
 
-> “系统到底在优化什么数据？”
+> 系统到底在优化什么原始数据？
 
-暂时不写任何优化模型。
+Phase 0 不实现优化。
 
 ---
 
-## 5.1 定义统一数据 Schema
-
-至少定义以下实体。
+## 5.1 Scenario 实体
 
 ### Airport
 
@@ -426,215 +450,449 @@ restriction_type
 
 ---
 
-## 5.2 建立 Scenario 顶层 Schema
+## 5.2 Data Editor
 
-例如：
+当前 HTML Data Editor 已支持：
 
-```json
-{
-  "recovery_window": {},
-  "airports": [],
-  "flights": [],
-  "aircraft": [],
-  "crew": [],
-  "passengers": [],
-  "airport_intervals": [],
-  "disruptions": []
-}
-```
+- Load Example；
+- Add / Edit / Duplicate / Delete；
+- Import JSON；
+- Export JSON；
+- Reset；
+- Validate。
+
+人工修改保留在同页面内存 State。
 
 ---
 
-## 5.3 第一版 HTML 数据编辑器
+## 5.3 `/api/validate`
 
-页面至少包含以下 Tab：
+Scenario Validator 至少检查：
 
-```text
-Scenario
-Airports
-Flights
-Aircraft
-Crew
-Passengers
-Airport Capacity
-Disruptions
-```
-
-每个表格支持：
-
-- Add Row
-- Delete Row
-- Edit Cell
-- Duplicate Row
-- Reset
-- Load Example
-- Export JSON
-- Import JSON
-
----
-
-## 5.4 后端 `/api/validate`
-
-只做数据校验，不做优化。
-
-校验至少包括：
-
-### Flight
-
-- origin 存在；
-- destination 存在；
+- ID 唯一性；
+- 外键引用；
 - dep < arr；
-- aircraft 存在；
-- crew 存在；
-- max_delay >= 0。
-
-### Aircraft rotation
-
-- 航班机场连续；
-- 时间顺序正确；
-- aircraft equipment 一致。
-
-### Crew
-
-- duty 中航班存在；
-- rating 与 fleet 兼容；
-- duty 时间顺序正确。
-
-### Passenger
-
-- itinerary 航班存在；
-- O-D 连续；
-- connecting flights 顺序正确。
-
-### Recovery horizon
-
-- 所有参与恢复的数据在合理时间范围内；
-- `t < T_end`。
+- duration；
+- Recovery Window；
+- Aircraft Rotation 连续；
+- Crew Pairing 连续；
+- Passenger Itinerary 连续；
+- Capacity Interval 不重叠；
+- Disruption 引用合法。
 
 ---
 
 ## Phase 0 验收
 
-必须满足：
+- [x] HTML 可编辑 Scenario；
+- [x] JSON Import / Export；
+- [x] `/api/validate` 返回机器可读错误；
+- [x] 错误数据不进入 Solver；
+- [x] `toy_case_001` 稳定存在；
+- [x] Frontend / Backend 数据往返。
 
-- [ ] HTML 可以完整编辑 toy case
-- [ ] 前端能导出 JSON
-- [ ] JSON 能重新导入
-- [ ] `/api/validate` 能返回错误位置
-- [ ] 错误数据不能进入优化
-- [ ] toy_case_001.json 可以稳定复现
-
-完成 Phase 0 后才开始写数学模型。
+**Phase 0：Completed。**
 
 ---
 
-# 6. Phase 1：人工建立标准 Toy Case + Expected Solution
+# 6. Phase 0.5：确定性场景可视化
 
 ## 目标
 
-建立整个项目最重要的测试基准。
+在尚无 Solver 时，让人直观看到：
+
+```text
+原计划
++
+扰动
++
+资源传播风险
++
+机场容量压力
+```
 
 ---
 
-## 6.1 toy_case_001
+## 核心组件
 
-建议：
+1. Time-Space Network；
+2. Disruption Overlay；
+3. Resource Detail；
+4. Airport Capacity Heatmap。
+
+Visualization 与 Data Editor 共享 Scenario State。
+
+---
+
+## 语义边界
+
+当前：
 
 ```text
-Airport: A, B, C
-Flight: F1-F6
-Aircraft: AC1, AC2
-Crew: C1-C3
-Passenger groups: P1-P4
+Direct Exposure
+Downstream Risk
 ```
 
-人为设计一个简单扰动：
+不是：
+
+```text
+Actual Delay
+Cancellation
+Recovered Solution
+```
+
+禁止在没有优化结果时伪造恢复计划。
+
+---
+
+## Phase 0.5 验收
+
+- [x] Data / Visualization 同页切换；
+- [x] Scenario State 不丢；
+- [x] Visualization 前先 Validate；
+- [x] Time-Space Network；
+- [x] Disruption / Risk；
+- [x] Capacity View；
+- [x] Resource Detail。
+
+**Phase 0.5：Completed。**
+
+---
+
+# 7. Phase 1：人工建立 Recovery Columns + Manual Reference
+
+## 目标
+
+建立后续数学模型最重要的第一套人工 Oracle 数据资产。
+
+Phase 1 分为：
+
+```text
+Phase 1A
+人工数据与 Reference
+
+Phase 1B
+程序化语义验证与回归
+```
+
+---
+
+## 7.1 主 Benchmark
+
+使用：
+
+```text
+phase1_benchmark_001
+```
+
+而不是继续把全部集成任务压在 `toy_case_001` 上。
+
+规模：
+
+```text
+4 Airports
+12 Flights
+4 Aircraft
+5 Crew
+8 Passenger Groups
+```
+
+核心扰动：
 
 ```text
 B airport
-09:00-11:00
-departure capacity reduction
+[09:30,10:30)
+departure capacity = 2
 ```
 
-使得至少出现：
-
-- 一个航班延误；
-- 一个 aircraft propagation；
-- 一个 crew connection 受到影响；
-- 一个 passenger connection 受到影响。
-
----
-
-## 6.2 人工建立列
-
-第一阶段禁止自动生成。
-
-人工建立：
+原计划出港：
 
 ```text
-5-20 Flight Strings
-5-20 Crew Pairings
-若干 Passenger Itineraries
+F2
+F5
+F8
+
+3 / 2
 ```
 
-保存为：
+---
+
+## 7.2 Recovery Columns Schema v1.0.0
+
+Columns 顶层：
 
 ```text
-toy_case_001_columns.json
+flight_options
+aircraft_strings
+crew_pairings
+passenger_itineraries
+```
+
+标准文件：
+
+```text
+data/columns/phase1_benchmark_001_columns.json
+schemas/recovery/recovery_columns_v1.schema.json
+```
+
+详细设计：
+
+```text
+docs/RECOVERY_COLUMNS_EXPECTED_SCHEMA_V1.md
 ```
 
 ---
 
-## 6.3 人工记录 Expected Solution
+## 7.3 Flight Option Identity
 
-至少记录：
+原 Flight ID 不随恢复动作变化。
 
-```json
-{
-  "expected_cancelled_flights": [],
-  "expected_selected_strings": [],
-  "expected_aircraft_assignment": {},
-  "expected_crew_assignment": {},
-  "expected_passenger_assignment": {},
-  "expected_objective": 0
-}
+例如：
+
+```text
+F2
+    ├── FO_F2_ORIG
+    ├── FO_F2_D50
+    └── FO_F2_CANCEL
 ```
 
-如果存在多个等价最优解：
+而不是：
 
-不要强制比较完整 solution vector。
-
-改为比较：
-
-- objective；
-- feasibility；
-- cancellation count；
-- delay；
-- assignment invariants。
+```text
+F2_DELAY50
+```
 
 ---
 
-## Phase 1 验收
+## 7.4 Phase 1 人工列
 
-必须做到：
+当前人工候选包括约：
 
-- [ ] 每条 Flight String 人工确认合法
-- [ ] 每条 Crew Pairing 人工确认合法
-- [ ] 每条 Passenger Itinerary 人工确认合法
-- [ ] 能人工解释最优方案为什么优于主要替代方案
-- [ ] Expected Solution 被写入版本库
+```text
+22 Flight Options
+11 Aircraft Strings
+10 Crew Pairings
+17 Passenger Itineraries
+```
+
+列集合需要覆盖：
+
+- 原计划；
+- Reference Recovery；
+- 主要替代方案；
+- Schema 能力验证所需 Cancellation；
+- Destination Change；
+- Ferry；
+- Reassignment；
+- Passenger Reaccommodation；
+- Unserved。
+
+Phase 1 不要求穷举全部合法列。
 
 ---
 
-# 7. Phase 2：固定列实现 SRM / ARM / CRM / PRM
+## 7.5 Expected Schema v1.0.0
 
-## 目标
+Expected 不再使用旧的简单结构：
 
-先验证四个数学模型，不做 Benders，不做 Column Generation。
+```text
+expected_selected_strings
+expected_objective
+...
+```
+
+而统一为：
+
+```text
+reference_solution
+oracle_invariants
+comparison_policy
+objective
+```
+
+标准文件：
+
+```text
+data/expected/phase1_benchmark_001_expected.json
+schemas/recovery/recovery_expected_v1.schema.json
+```
 
 ---
 
-## 7.1 SRM
+## 7.6 当前人工 Reference
+
+核心恢复：
+
+```text
+F2 +50
+F10 +20
+F11 +10
+```
+
+Aircraft：
+
+```text
+AC1:
+F1 → F2 → F10
+
+AC4:
+F3 → F11 → F12
+```
+
+P4：
+
+```text
+F2→F3
+→
+F8
+```
+
+核心指标：
+
+```text
+total flight delay = 80 min
+aircraft reassignments = 2
+crew reassignments = 0
+passenger reaccommodated = 15 pax
+weighted passenger delay = 1800 passenger-min
+cancellations = 0
+unserved = 0
+```
+
+---
+
+## 7.7 Reference 不等于 Optimal
+
+当前：
+
+```text
+reference_type = manual_reference
+solution_status = feasible
+```
+
+因为 SRM/ARM/CRM/PRM 的正式 Cost Coefficients 尚未全部定义。
+
+不能声称：
+
+```text
+80 min reference
+=
+global optimum
+```
+
+例如 Aircraft Swap Cost 足够高时，旧的 110 min 纯延误方案可能在完整成本目标下更优。
+
+---
+
+## 7.8 Phase 1A 验收
+
+- [x] 主 Benchmark 已建立；
+- [x] Flight Options 人工建立；
+- [x] Aircraft Strings 人工建立；
+- [x] Crew Pairings 人工建立；
+- [x] Passenger Itineraries 人工建立；
+- [x] Columns JSON Schema v1.0.0；
+- [x] Expected JSON Schema v1.0.0；
+- [x] Manual Reference；
+- [x] Oracle Invariants；
+- [x] Comparison Policy；
+- [x] 主要恢复逻辑可人工解释。
+
+**Phase 1A：Completed。**
+
+---
+
+## 7.9 Phase 1B：尚需完成
+
+下一工程工作：
+
+```text
+backend/schemas/columns.py
+backend/schemas/expected.py
+
+backend/services/column_validator.py
+backend/services/oracle_validator.py
+```
+
+Semantic Validator 至少检查：
+
+1. 所有 ID 唯一；
+2. `base_flight_id` 合法；
+3. Cancel Option 字段规则；
+4. Aircraft String Station/Time 连续；
+5. Crew Pairing Station/Time 连续；
+6. Passenger Itinerary OD/Time 连续；
+7. Expected 引用 Columns 中存在的 ID；
+8. 每个原航班选择一个 Flight Option；
+9. 每个执行 Flight Option 被 Aircraft 覆盖一次；
+10. 每个执行 Flight Option 被 Crew 覆盖一次；
+11. Passenger 不使用 Cancelled Flight；
+12. Aircraft Terminal / Maintenance；
+13. Airport Capacity；
+14. Expected Metrics 可重新计算一致。
+
+---
+
+## 7.10 Phase 1B 测试
+
+需要：
+
+```text
+tests/regression/test_phase1_benchmark_001.py
+tests/unit/test_column_validator.py
+tests/unit/test_oracle_validator.py
+```
+
+必须包含正常和故意破坏案例。
+
+---
+
+## Phase 1 总验收
+
+只有以下全部满足后，才将 README 改为：
+
+```text
+Phase 1 Completed
+```
+
+- [x] 人工数据与 Reference；
+- [ ] Python Columns / Expected Schema；
+- [ ] Semantic Validation；
+- [ ] Regression Test；
+- [ ] Negative Tests；
+- [ ] Reference Metrics 程序化复算；
+- [ ] 所有 Phase 0/0.5 Tests 无回归。
+
+---
+
+# 8. Phase 2：Fixed-Column SRM / ARM / CRM / PRM
+
+Phase 1 工程验收完成后再进入。
+
+目标：
+
+> 先验证四个数学模型，不做 Benders，不做动态 Column Generation。
+
+---
+
+## 8.1 先做 Incidence Matrix Builder
+
+这是 Phase 2 的第一开发任务，不应直接跳到 Solver。
+
+必须构建并独立测试：
+
+```text
+A_FS : Flight / Flight Option - Aircraft String
+A_MS : Maintenance - Aircraft String
+A_FP : Flight / Flight Option - Crew Pairing
+A_FI : Flight / Flight Option - Passenger Itinerary
+```
+
+建议使用可审计的稀疏结构，并保留 ID mapping。
+
+---
+
+## 8.2 SRM
 
 实现论文：
 
@@ -648,19 +906,29 @@ toy_case_001_columns.json
 (3.7) market seat
 ```
 
+Phase 1 `flight_options` / `aircraft_strings` 是第一套 fixed columns。
+
 ---
 
-## 7.2 ARM
+## 8.3 ARM
 
-实现：
+实现论文：
 
 ```text
 (3.8)-(3.12)
 ```
 
+必须检查：
+
+- Tail assignment；
+- String feasibility；
+- Terminal；
+- Maintenance；
+- Reassignment。
+
 ---
 
-## 7.3 CRM
+## 8.4 CRM
 
 实现：
 
@@ -668,9 +936,11 @@ toy_case_001_columns.json
 (3.13)-(3.15)
 ```
 
+第一版只使用已经人工定义的 Pairings。
+
 ---
 
-## 7.4 PRM
+## 8.5 PRM
 
 实现：
 
@@ -678,229 +948,145 @@ toy_case_001_columns.json
 (3.16)-(3.18)
 ```
 
----
+必须正式解决 Phase 1 暂未程序化证明的：
 
-## 7.5 构造四个 Incidence Matrices
-
-必须独立实现和测试：
-
-```text
-A_FS : Flight - String
-A_MS : Maintenance - String
-A_FP : Flight - Pairing
-A_FI : Flight - Itinerary
-```
-
-建议做成通用稀疏结构。
+- Seat Capacity；
+- Passenger Reaccommodation；
+- Unserved；
+- Arrival Delay Cost。
 
 ---
 
-# 8. Phase 2 的关键验证方法
+## 8.6 Phase 2 测试
 
-每个模型都必须做：
+每个模型：
 
 ```text
-正常案例
+Normal Case
 +
-故意破坏案例
+Broken / Infeasible Case
 ```
 
----
+### SRM
 
-## SRM 测试
+- 每个 Flight 执行或取消；
+- Strategic Flight 无合法执行选项时应 Infeasible；
+- 改 Airport Capacity 时 Selection 应响应。
 
-### Case S1
+### ARM
 
-正常 flight：
+- 可执行 String → Feasible；
+- 资源冲突 → Infeasible；
+- Maintenance 无 compatible string → Infeasible。
 
-```text
-必须恰好：
-执行
-or
-取消
-```
+### CRM
 
-### Case S2
+- 正常 Pairing → Feasible；
+- 删除全部 Coverage → Infeasible。
 
-Strategic flight：
+### PRM
 
-删除所有可执行 string。
-
-期望：
-
-```text
-INFEASIBLE
-```
-
-### Case S3
-
-人为降低 airport capacity。
-
-检查 selected strings 是否变化。
-
----
-
-## ARM 测试
-
-### Case A1
-
-一条 selected string 存在可执行 tail。
-
-期望 feasible。
-
-### Case A2
-
-两条 selected string 只能由同一架 tail 执行。
-
-期望 infeasible。
-
-### Case A3
-
-Maintenance aircraft 无 maintenance-compatible string。
-
-期望 infeasible。
-
----
-
-## CRM 测试
-
-### Case C1
-
-每个 flight 有合法 crew。
-
-期望 feasible。
-
-### Case C2
-
-删除某个 flight 的全部合法 pairings。
-
-期望：
-
-```text
-INFEASIBLE
-```
-
----
-
-## PRM 测试
-
-### Case P1
-
-10 seats，8 passengers。
-
-全部可分配。
-
-### Case P2
-
-10 seats，20 passengers。
-
-检查：
-
-```text
-reaccommodated <= 10
-```
-
-其余进入 unassigned。
+- Capacity 足够；
+- Capacity 不足；
+- Alternative Itinerary；
+- Unserved。
 
 ---
 
 ## Phase 2 验收
 
-- [ ] 四模型分别能独立运行
-- [ ] 正常案例结果符合人工预期
-- [ ] 故意破坏案例得到预期 infeasible / assignment change
-- [ ] 所有 incidence matrices 有独立 unit tests
-- [ ] solver = OPTIMAL 不是唯一验收标准
+- [ ] 四模型分别可运行；
+- [ ] Incidence Matrices 独立测试；
+- [ ] 正常结果符合人工预期；
+- [ ] 破坏案例得到预期变化；
+- [ ] Solver OPTIMAL 不是唯一判断。
 
 ---
 
-# 9. Phase 3：建立 Full Integrated Fixed-Column Oracle
+# 9. Phase 3：Full Integrated Fixed-Column Oracle
 
-## 这是后续所有高级算法最重要的 Ground Truth
+这是后续所有高级算法的 Ground Truth。
 
-暂时不要使用 Benders。
+暂时不做 Benders。
 
 直接将：
 
 ```text
 SRM
++
 ARM
++
 CRM
++
 PRM
 ```
 
-全部放入一个整体 MIP。
+放入一个整体 MIP。
 
-统一目标：
+统一 Objective：
 
 ```text
-SRM cost
+SRM Cost
 +
-ARM cost
+ARM Cost
 +
-CRM cost
+CRM Cost
 +
-PRM cost
+PRM Cost
 ```
+
+此阶段必须正式冻结：
+
+- 各成本项；
+- 单位；
+- 权重；
+- Tie-breaking Policy。
 
 ---
 
-## Oracle 用途
+## 9.1 与 Manual Reference 比较
 
-未来验证：
+对 `phase1_benchmark_001`：
 
-```text
-Benders
-Column Generation
-Benders + CG
-```
-
----
-
-## 核心比较指标
-
-必须保存：
+不要求：
 
 ```text
-objective
-selected strings
-cancelled flights
-aircraft assignments
-crew assignments
-passenger assignments
+Integrated Oracle
+==
+完整人工 Assignment Vector
 ```
+
+而要求首先比较：
+
+```text
+Feasibility
+Objective
+Flight recovery decisions
+Cancellation
+Capacity
+Terminal / Maintenance
+Passenger service
+```
+
+如果 Integrated Oracle 找到比 Manual Reference 更低目标的方案：
+
+> 不应认为 Solver 错，而应检查人工 Reference 是否本来就不是 Optimal。
 
 ---
 
 ## Phase 3 验收
 
-toy_case_001：
-
-```text
-Integrated Oracle
-=
-人工 Expected Solution
-```
-
-如果有多个等价解：
-
-至少：
-
-```text
-objective 相同
-所有约束可行
-关键业务指标相同
-```
+- [ ] Integrated MIP 可运行；
+- [ ] Objective 各成本来源可解释；
+- [ ] 所有约束通过独立检查；
+- [ ] Benchmark 与 Manual Oracle Invariants 对齐；
+- [ ] 若结果优于 Manual Reference，有可人工解释原因。
 
 ---
 
 # 10. Phase 4：Scope Limiting
 
-实现论文 Appendix Algorithms 3-6。
-
----
-
-## 目标
+实现论文 Appendix Algorithms 3–6。
 
 输入：
 
@@ -908,7 +1094,7 @@ objective 相同
 direct disruption
 ```
 
-自动得到：
+自动获得：
 
 ```text
 disruptable flights
@@ -917,63 +1103,25 @@ disrupted crew
 disrupted passengers
 ```
 
----
-
-## 必须验证传播链
+传播链：
 
 ```text
 airport disruption
-    ↓
-flight
-    ↓
-aircraft rotation
-    ↓
-crew duty
-    ↓
-additional flights
-    ↓
-passenger connection
-    ↓
-additional candidate flights
+→ flight
+→ aircraft
+→ crew
+→ additional flights
+→ passenger connection
+→ additional candidates
 ```
 
----
-
-## Oracle 验证
-
-同一个 toy case：
-
-### Full Scope
-
-所有资源进入优化：
-
-```text
-OBJ_full
-```
-
-### Reduced Scope
-
-使用 Algorithms 3-6：
-
-```text
-OBJ_scope
-```
-
-应满足：
+Oracle：
 
 ```text
 OBJ_scope == OBJ_full
 ```
 
-同时：
-
-```text
-|F_scope| < |F_full|
-```
-
-如果 objective 变差：
-
-说明 Scope Limiting 很可能漏掉了必要资源。
+同时期望 Scope 明显减小。
 
 ---
 
@@ -981,185 +1129,81 @@ OBJ_scope == OBJ_full
 
 第一版：
 
-**只做合法枚举，不做 pricing。**
+> 只生成合法列，不做 Pricing。
 
----
+至少处理：
 
-## Generator 必须处理
+- Station continuity；
+- Flight timing；
+- Turn Time；
+- Max Delay；
+- Airport restrictions；
+- Recovery Horizon；
+- Maintenance；
+- Terminal Station。
 
-- flight sequence continuity
-- arrival + turn time
-- departure feasibility
-- max delay
-- event-driven timing interval
-- airport restrictions
-- valid connection
-- recovery horizon
-
----
-
-## 第一层验证：人工案例
-
-构造：
+验证：
 
 ```text
-F1 arrival = 09:00
-min_turn = 40
-```
-
-必须拒绝：
-
-```text
-F2 dep = 09:30
-```
-
-必须允许：
-
-```text
-F2 dep >= 09:40
-```
-
----
-
-## 第二层验证：Brute Force Oracle
-
-为 toy case 单独实现：
-
-```text
-brute_force_string_generator.py
-```
-
-允许非常慢。
-
-例如：
-
-```text
-每10分钟枚举一次 timing
-```
-
-比较：
-
-```text
-smart_generator
+smart generator
 vs
-brute_force_generator
+brute-force / full-enumeration oracle
 ```
 
-重点不是两者集合必须机械完全相等，而是：
+要求：
 
-- smart generator 不生成非法方案；
-- 关键合法方案不能遗漏；
-- smart generator 能覆盖 oracle 最优解所需列。
-
----
-
-## Phase 5 验收
-
-- [ ] 所有生成 strings 合法
-- [ ] 无违反 turn time
-- [ ] 无违反 max delay
-- [ ] time-dependent boundaries 正确
-- [ ] oracle 最优方案所需 string 不被遗漏
+- 不生成非法列；
+- 不遗漏 Oracle Optimal 所需关键列。
 
 ---
 
 # 12. Phase 6：Crew Pairing Generator
 
-第一版不做 pricing。
-
-建立：
-
-```text
-crew duty network
-G=(D,A)
-```
-
-对每个 crew：
+建立 Crew Duty Network：
 
 ```text
 G_k
 ```
 
-source-to-sink path：
+Source-to-Sink Path：
 
 ```text
 =
-repaired pairing
+candidate repaired pairing
 ```
 
----
+最小 Crew Legality 以后必须明确：
 
-## 最小 Crew Legality
+- Airport continuity；
+- Timing；
+- Maximum Duty；
+- Minimum Rest；
+- Fleet Qualification；
+- Start / End Station。
 
-如果真实 crew rule 数据暂时没有：
-
-只定义一个明确的最小规则集，例如：
-
-- airport continuity；
-- 时间连续；
-- maximum duty；
-- minimum rest；
-- fleet qualification；
-- start station；
-- required end station。
-
-必须写入：
-
-```text
-assumptions.md
-```
-
-明确：
-
-```text
-这些是复现实现假设，不代表论文完整 crew legality，也不代表南航真实规则。
-```
-
----
-
-## 验收
-
-- [ ] pairing 起点正确
-- [ ] pairing 终点正确
-- [ ] duty legality 正确
-- [ ] flight coverage incidence 正确
-- [ ] 人工 pairing 与 generator 结果一致
+所有规则先写入 `assumptions.md`。
 
 ---
 
 # 13. Phase 7：Passenger Itinerary Generator
 
-因为原论文没有完整给出 itinerary generation algorithm，所以必须单独标记为：
+论文没有完整给出 Itinerary Generation Algorithm，因此明确标记：
 
 ```text
 Implementation Assumption / Extension
 ```
 
----
+第一版考虑：
 
-## 第一版只考虑
-
-- O-D continuity
-- minimum connection time
-- recovery horizon
-- available flights
-- seat capacity 在 PRM 中处理
-
----
-
-## 验收
-
-- [ ] 所有 itinerary 路径合法
-- [ ] 时间顺序合法
-- [ ] connection time 合法
-- [ ] delay_minutes 计算正确
-- [ ] flight-itinerary incidence 正确
+- O-D continuity；
+- MCT；
+- Recovery Horizon；
+- Available flights；
+- Seat Capacity 在 PRM 内处理。
 
 ---
 
 # 14. Phase 8：Fixed-Column Benders
-
-这一步才开始实现 Benders。
 
 固定：
 
@@ -1169,29 +1213,21 @@ P
 Gamma
 ```
 
-不允许动态新增列。
+不动态加列。
 
----
-
-## 流程
+流程：
 
 ```text
 SRM Master
     ↓
-ARM
-CRM
-PRM
+ARM / CRM / PRM
     ↓
-feasibility / optimality cuts
+Feasibility / Optimality Cuts
     ↓
-SRM
+Master
 ```
 
----
-
-## 第一验收标准
-
-对于相同 fixed columns：
+第一验收：
 
 ```text
 OBJ_Benders
@@ -1199,64 +1235,20 @@ OBJ_Benders
 OBJ_Integrated_Oracle
 ```
 
----
-
-## 第二验收标准
-
-主动构造：
-
-### ARM infeasible
-
-必须产生 ARM feasibility cut。
-
-### CRM infeasible
-
-必须产生 CRM feasibility cut。
-
-### CRM feasible but costly
-
-optimality cut 必须影响 Master bound。
-
-### PRM 同理。
-
----
-
-## 必须记录每轮
-
-```text
-iteration
-master_LP_obj
-master_MIP_obj
-
-num_ARM_cuts
-num_CRM_feas_cuts
-num_CRM_opt_cuts
-num_PRM_feas_cuts
-num_PRM_opt_cuts
-
-ARM_status
-CRM_status
-PRM_status
-```
+同一 Fixed Columns、同一 Objective 下必须成立。
 
 ---
 
 # 15. Phase 9：Flight String Column Generation
 
-这一步只解决：
+目标：
+
+> 不再预枚举全部 Flight Strings。
+
+Pricing 输入：
 
 ```text
-如何避免预先枚举全部 Flight Strings
-```
-
-先不要和全部复杂 Benders 逻辑同时开发。
-
----
-
-## Pricing 输入
-
-```text
-master LP duals
+LP duals
 flight network
 current columns
 ```
@@ -1264,87 +1256,39 @@ current columns
 输出：
 
 ```text
-negative reduced cost strings
+negative reduced-cost strings
 ```
 
----
-
-## 最关键验证方式：Full-column LP Oracle
-
-toy case 上可以预先枚举：
+Toy/Benchmark 上必须存在：
 
 ```text
-S_all
+Full-column LP Oracle
 ```
 
-直接求：
-
-```text
-LP_full_columns
-```
-
-然后从：
-
-```text
-S0 ⊂ S_all
-```
-
-开始 column generation。
-
-最终必须：
+最终：
 
 ```text
 OBJ_CG == OBJ_full_columns
 ```
 
----
-
-## Pricing 终止验证
-
-CG 声称结束时：
-
-对所有：
-
-```text
-s ∈ S_all \ S_current
-```
-
-暴力重新计算 reduced cost。
-
-必须满足：
+终止时暴力检查未加入列：
 
 ```text
 reduced_cost >= -epsilon
 ```
 
-否则 pricing 漏列。
-
 ---
 
 # 16. Phase 10：Crew Pairing Column Generation
 
-实现论文 Eq. (5.6)：
+实现 Crew Pairing Reduced Cost。
+
+Toy/Benchmark：
 
 ```text
-pairing reduced cost
-```
-
-动态生成：
-
-```text
-P_k
-```
-
----
-
-## Oracle 验证
-
-toy case：
-
-```text
-全部 pairings 预枚举 LP
+all-pairings LP
 vs
-column generation LP
+crew column-generation LP
 ```
 
 必须一致。
@@ -1353,54 +1297,19 @@ column generation LP
 
 # 17. Phase 11：Benders + Column Generation
 
-只有前面全部通过后才实现。
+只有：
 
-包括：
+- Fixed-column Benders；
+- Flight CG；
+- Crew CG；
 
-- dynamic flight strings
-- dynamic crew pairings
-- Benders cuts
-- cut invalidation
-- Algorithm 2
-- Farkas validity certificate
+都独立通过后才组合。
 
----
+特别注意：
 
-## 特别注意
+> 新列加入后旧 Benders Cut 的有效性不能想当然。
 
-新增 Flight String 后：
-
-旧 Benders cut 可能失效。
-
-必须严格按照当前复现约定处理。
-
-不能：
-
-```text
-继续保留所有旧 cut
-```
-
-然后仅因为 solver 收敛就认为算法正确。
-
----
-
-## 验收
-
-toy case：
-
-```text
-Full Integrated Oracle
-≈
-Benders + CG
-```
-
-如果模型理论上对应同一固定问题：
-
-objective 必须一致。
-
-如果某些实现假设导致模型空间不同：
-
-必须在日志中解释差异来源。
+必须严格实现 Cut Invalidation / Validity Policy。
 
 ---
 
@@ -1408,121 +1317,88 @@ objective 必须一致。
 
 最后再实现：
 
-```text
-ARM integrality
-CRM follow-on branching
-PRM branching
-```
+- ARM Integrality；
+- CRM Follow-on Branching；
+- PRM Branching。
 
-此前所有 LP / decomposition 逻辑必须已经验证。
+此前 LP / Decomposition 必须完成 Oracle 验证。
 
 ---
 
-# 19. Phase 13：HTML 结果可视化
+# 19. Phase 13：Recovered Result Visualization
 
-前端不只显示：
+Phase 0.5 已经有 Original/Disruption Visualization。
+
+Solver 接入后扩展为：
 
 ```text
-Objective = xxx
+Original
+Disrupted
+Recovered
+Difference
 ```
 
-至少展示：
-
----
+至少显示：
 
 ## Summary
 
 ```text
 Total Cost
 Cancelled Flights
-Mean Flight Delay
-Max Flight Delay
+Mean / Max Flight Delay
 Passenger Delay
-Unassigned Passengers
-Crew Deadheads
+Unserved Passengers
+Aircraft Reassignments
+Crew Reassignments
 Runtime
 ```
 
----
-
-## Flight Recovery Table
+## Flight Recovery
 
 ```text
 Flight
-Original Dep
-Recovered Dep
+Original OD / Times
+Recovered OD / Times
 Delay
-Cancelled?
+Cancelled
 Aircraft
 Crew
 ```
 
----
+## Aircraft
 
-## Aircraft Recovery
+Original vs Recovered Rotation。
 
-按 aircraft 展示：
+## Crew
 
-```text
-AC1:
-F1 -> F4 -> F6
-```
+Original vs Recovered Pairing / Deadhead。
 
----
+## Passenger
 
-## Crew Recovery
+Original vs Recovered Itinerary / Delay / Unserved。
 
-展示：
-
-```text
-Crew C1
-Original Pairing
-Recovered Pairing
-Deadhead
-```
-
----
-
-## Passenger Recovery
-
-展示：
-
-```text
-Group
-Original Itinerary
-Recovered Itinerary
-Delay
-Unassigned
-```
-
----
-
-## Solver Diagnostics
-
-必须提供开发模式：
+## Diagnostics
 
 ```text
 iterations
-columns generated
-cuts generated
-master bound
+columns
+cuts
+bounds
 subproblem status
 runtime
 ```
 
-这样前端不仅是业务界面，也是模型调试工具。
-
 ---
 
-# 20. Phase 14：接真实航空公司数据前的验收门槛
+# 20. 接真实航空公司数据前的门槛
 
-必须至少满足：
+至少满足：
 
 ```text
-人工 Toy Solution
-      =
-Full Integrated Oracle
-      =
+Manual Benchmark
+    ↕
+Integrated Oracle
+    ↕
 Fixed-column Benders
 ```
 
@@ -1530,79 +1406,55 @@ Fixed-column Benders
 
 ```text
 Full-column LP
-      =
+=
 Column Generation LP
 ```
 
-最后：
+最终：
 
 ```text
 Integrated Oracle
-      =
+=
 Benders + Column Generation
 ```
 
-在多个 toy cases 上均稳定成立。
+在多个标准案例中稳定成立。
 
 ---
 
 # 21. Regression Test 体系
 
-至少维护三个标准案例。
+长期至少维护：
 
----
+## `toy_case_001`
 
-## toy_case_001：正常扰动
+基础 Schema / Visualization / simple propagation。
 
-验证：
+## `phase1_benchmark_001`
 
-- delay propagation
-- aircraft
-- crew
-- passenger
+综合 Flight / Aircraft / Crew / Passenger / Capacity 人工 Reference。
 
----
+## `toy_case_002`
 
-## toy_case_002：必须取消
+必须 Cancellation。
 
-人为制造：
+## `toy_case_003`
 
-```text
-capacity + aircraft + crew
-```
+Passenger Seat Capacity / Multiple Reaccommodation。
 
-使一个 flight 必须取消。
-
-验证 cancellation logic。
-
----
-
-## toy_case_003：旅客容量冲突
-
-制造：
-
-```text
-limited seats
-multiple reaccommodation choices
-```
-
-验证 PRM。
-
----
-
-每次修改代码：
+每次修改：
 
 ```bash
-pytest
+python -m pytest
 ```
 
-必须全部通过。
+全部通过。
 
 ---
 
-# 22. Solver 日志规范
+# 22. Solver 日志
 
-每次求解生成：
+每次正式求解至少记录：
 
 ```text
 run_id
@@ -1613,37 +1465,31 @@ solver_version
 parameters
 ```
 
-记录：
+算法日志：
 
 ```text
-master objective
-master bound
+objective
+bound
 MIP gap
 iterations
-
 number of strings
 number of pairings
 number of itineraries
-
-cuts by type
+cuts
 pricing iterations
-
-ARM status
-CRM status
-PRM status
-
-runtime by module
+subproblem status
+runtime
 ```
 
-最终业务结果：
+业务结果：
 
 ```text
-mean flight delay
-max flight delay
+flight delays
 cancellations
-deadheads
-mean passenger delay
-unassigned passengers
+aircraft reassignments
+crew reassignments
+passenger delay
+unserved passengers
 total cost
 ```
 
@@ -1651,147 +1497,121 @@ total cost
 
 # 23. Assumptions 管理
 
-项目根目录必须长期维护：
+根目录长期维护：
 
 ```text
 assumptions.md
 ```
 
-每条假设格式：
+任何影响：
 
-```markdown
-## A-001 Integrated Master Objective
+- 可行域；
+- Objective；
+- Candidate Generation；
+- Recovery Semantics；
+- Business Rules；
 
-Source status:
-论文没有完整重新打印 integrated objective。
+的实现决定都必须先登记。
 
-Implementation:
-SRM objective + eta_CRM + eta_PRM
+当前已经登记 Phase 0/1 的关键数据与 Recovery Column 假设。
 
-Reason:
-标准 Benders 结构。
+Phase 2+ 还需持续加入：
 
-Impact:
-可能影响与论文数值结果的严格一致性。
-```
-
-至少记录：
-
-- integrated master objective
-- passenger itinerary generation
-- PRM `s_i` domain
-- flight-string reduced cost mapping
-- crew legality
-- reserve crew
-- diversion
-- gate inventory interpretation
-- Algorithm 1 中潜在符号歧义
+- Cost Model；
+- MCT；
+- Turn Time；
+- Crew Legality；
+- Seat Capacity；
+- Gate Inventory；
+- Diversion；
+- Reduced Cost；
+- Benders Cut Validity 等。
 
 ---
 
 # 24. 业务迁移原则
 
-完整论文复现基本通过后，再建立：
+论文复现基本通过后再建立：
 
 ```text
 backend/application/airline_rules/
 ```
 
-不要修改 core 模型来偷偷适配业务。
+逐步加入：
+
+- 南航 Crew Rules；
+- Reserve Crew；
+- Tail Swap；
+- Fleet Substitution；
+- Flow Control；
+- Weather；
+- Curfew；
+- Maintenance；
+- Important Flight；
+- Transfer Passenger Priority；
+- International/Domestic Restrictions；
+- Ferry；
+- Diversion；
+- Cancellation Hierarchy；
+- Business Cost Model。
+
+禁止静默修改 Core AIR Model。
 
 ---
 
-## 后续可以逐步加入
+# 25. 推荐 Codex 执行顺序（更新版）
 
-- 南航机组值勤规则
-- reserve crew
-- tail swap
-- fleet substitution
-- airport flow control
-- weather restriction
-- curfew
-- maintenance rules
-- important flights
-- VIP / transfer passenger priority
-- international/domestic restrictions
-- ferry flights
-- diversion
-- cancellation hierarchy
-- business-specific cost model
-
----
-
-# 25. 推荐 Codex 执行方式
-
-不要一次让 Codex：
+## 已完成 Task 1
 
 ```text
-“把整个 Petersen AIR 模型实现出来”
+Scenario Schema
+FastAPI
+HTML Data Editor
+Validator
+toy_case_001
 ```
 
-而应该按 Phase 分任务。
-
----
-
-## Task 1
+## 已完成 Task 2
 
 ```text
-只搭建项目目录、FastAPI、HTML 数据编辑器和 Pydantic Schema。
-不要实现任何优化模型。
-完成后运行数据验证测试。
+Phase 0.5 Visualization
 ```
 
-验收后 commit。
-
----
-
-## Task 2
+## 已完成 Task 3A
 
 ```text
-建立 toy_case_001。
-实现 JSON import/export 与 expected solution。
-不要实现 Benders 或 column generation。
+phase1_benchmark_001
+Manual Columns
+Columns/Expected JSON Schema
+Manual Reference
+Documentation
 ```
 
-验收后 commit。
-
----
-
-## Task 3
+## 下一 Task：Phase 1B
 
 ```text
-实现 fixed-column SRM。
-完成 SRM unit tests 和反例测试。
+实现 Recovery Columns / Expected 的 Python Schema 和 Semantic Validation；
+增加 benchmark001 Regression / Negative Tests；
+不要实现 Solver。
 ```
 
-验收后 commit。
+验收后 Commit。
 
----
-
-## Task 4
+## 然后 Task：Phase 2.0
 
 ```text
-实现 fixed-column ARM。
+Incidence Matrix Builder
 ```
 
-依次完成 CRM、PRM。
-
----
-
-## Task 5
+## 再依次：
 
 ```text
-实现 Full Integrated Fixed-Column Oracle。
-```
-
-必须与 Expected Solution 比较。
-
----
-
-之后：
-
-```text
-Scope
+Fixed SRM
+→ Fixed ARM
+→ Fixed CRM
+→ Fixed PRM
+→ Integrated Oracle
+→ Scope
 → String Generator
 → Pairing Generator
 → Itinerary Generator
@@ -1802,13 +1622,13 @@ Scope
 → Integrality
 ```
 
-每步一个独立任务和 commit。
+每步独立任务和 Commit。
 
 ---
 
-# 26. 每个 Codex Task 的统一验收模板
+# 26. 每个 Codex Task 的统一输出
 
-Codex 每完成一个任务，必须输出：
+Codex 每个任务必须报告：
 
 ```text
 1. Modified Files
@@ -1821,27 +1641,28 @@ Codex 每完成一个任务，必须输出：
 8. Next Recommended Step
 ```
 
-禁止只回答：
+禁止只回复：
 
 ```text
-Done.
+Done
 ```
 
 ---
 
 # 27. 禁止事项
 
-在完整复现阶段，Codex 不应：
+不得：
 
-- 未经说明修改论文数学模型；
-- 将业务规则混入 core；
-- 跳过 toy case；
-- 直接拿大规模数据验证；
-- 只依赖 solver OPTIMAL 判断正确；
-- 在 pricing 未通过 full enumeration 验证前进入大规模 CG；
-- 在 Benders 未与 integrated oracle 对齐前加入 CG；
-- 将论文未给出的内容描述为“原论文算法”；
-- 为追求性能提前优化代码结构。
+- 未说明修改论文数学模型；
+- 把业务规则混进 Core；
+- 跳过小规模 Oracle；
+- 用真实大规模数据替代正确性测试；
+- 只依赖 OPTIMAL；
+- 在 Fixed-column Benders 未对齐 Integrated Oracle 前加入 CG；
+- 在 Pricing 未经 Full Enumeration 验证前扩大规模；
+- 将实现假设称作论文原算法；
+- 在 Objective 未定义时把 Manual Reference 称为 Optimal；
+- 为性能提前牺牲可审计性。
 
 ---
 
@@ -1849,37 +1670,33 @@ Done.
 
 ## Level 1：数据正确
 
-HTML 编辑的数据经过 Python 校验完全一致。
+Frontend / Backend / Scenario 一致。
 
----
+## Level 2：候选列正确
 
-## Level 2：模型正确
+Manual / Generated Columns 均经过 Semantic Validation。
 
-SRM / ARM / CRM / PRM 每条关键约束均有测试。
+## Level 3：单模型正确
 
----
+SRM / ARM / CRM / PRM 每个关键约束有测试。
 
-## Level 3：整体数学模型正确
+## Level 4：整体模型正确
 
 ```text
-Full Integrated Oracle
-=
-人工 Expected Solution
+Integrated Oracle
 ```
 
----
+在小实例上可人工解释，并与 Benchmark Invariants 对齐。
 
-## Level 4：分解算法正确
+## Level 5：分解正确
 
 ```text
 Fixed-column Benders
 =
-Full Integrated Oracle
+Integrated Oracle
 ```
 
----
-
-## Level 5：列生成正确
+## Level 6：列生成正确
 
 ```text
 Column Generation
@@ -1887,75 +1704,79 @@ Column Generation
 Full-column LP
 ```
 
----
-
-## Level 6：完整算法正确
+## Level 7：完整算法正确
 
 ```text
-Benders + Column Generation
+Benders + CG
 =
-小规模 Oracle
+Small-scale Oracle
 ```
 
----
-
-## Level 7：应用迁移成功
+## Level 8：业务迁移成功
 
 真实航空公司数据下：
 
 - 方案业务可行；
 - 结果可解释；
-- 运行时间可接受；
-- 恢复质量优于基线；
-- 所有业务扩展均有独立规则和测试。
+- Runtime 可接受；
+- Recovery Quality 优于基线；
+- 所有业务扩展都有独立规则和测试。
 
 ---
 
-# 29. 推荐当前立即执行的第一任务
+# 29. 当前立即执行的下一任务
 
-当前不要实现 Benders、Column Generation 或 Crew Duty Network。
+当前不要直接开始 SRM Solver。
 
-先让 Codex 完成：
+先完成：
 
 ```text
-Phase 0 + Phase 1
+Phase 1B
 ```
 
 即：
 
-1. 创建项目骨架；
-2. 创建 FastAPI；
-3. 创建 HTML 数据编辑器；
-4. 建 Pydantic schemas；
-5. 实现 JSON import/export；
-6. 实现 `/api/validate`；
-7. 创建 `toy_case_001.json`；
-8. 创建 `toy_case_001_expected.json`；
-9. 创建基础数据一致性测试；
-10. 确保前后端数据往返完全一致。
+1. Recovery Columns Python/Pydantic Schema；
+2. Expected Python/Pydantic Schema；
+3. Column Semantic Validator；
+4. Oracle Semantic Validator；
+5. Benchmark001 Regression；
+6. Negative Tests；
+7. Expected Metrics 程序化复算；
+8. 保证 Phase 0/0.5 无回归。
 
-完成并验收后，再开始 SRM。
+这些完成后：
+
+```text
+Phase 1 = Completed
+```
+
+然后开始：
+
+```text
+Phase 2.0 Incidence Matrix Builder
+```
+
+再进入四个 Fixed-Column Models。
 
 ---
 
 # 30. 核心原则总结
 
-整个项目始终遵循：
-
 ```text
 先数据
 → 后模型
 
-先固定
-→ 后动态
+先人工列
+→ 后自动列
 
-先整体
-→ 后分解
-
-先枚举
+先固定列
 → 后列生成
 
-先小规模真值
+先整体 Oracle
+→ 后分解
+
+先小规模 Reference
 → 后真实规模
 
 先证明正确
@@ -1964,6 +1785,6 @@ Phase 0 + Phase 1
 
 最终每增加一种高级算法，都必须回答：
 
-> **“它是否在已知正确的小实例上，得到与简单 oracle 相同的答案？”**
+> **它是否在已知、可审计的小规模实例上，与更简单的 Oracle 得到一致的数学结论？**
 
 如果不能回答，就不得进入下一阶段。
