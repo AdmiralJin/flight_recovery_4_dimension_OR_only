@@ -55,6 +55,14 @@ data/examples/toy_case_001.json
 
 但日常录入和调试建议使用浏览器页面。
 
+另提供一份不替换基础 toy case 的中等规模验证数据：
+
+```text
+data/examples/phase1_validation_001.json
+```
+
+它包含 5 个机场、12 个航班、6 架飞机（含 2 架备用机）、6 个机组（含 2 个备用机组）和 8 个旅客组。可通过页面的 `Import JSON` 导入；对应的确定性预期事实位于 `data/expected/phase1_validation_001_expected.json`。该文件用于 Phase 1 建模前后的回归验证，目前不宣称存在已审计的优化最优解。
+
 ## Visualization 可视化
 
 同一页面提供 `Data Editor` 与 `Visualization` 两种一级视图。进入 Visualization 时，系统会先校验当前内存中的场景数据；校验失败则拒绝绘图并显示错误位置。

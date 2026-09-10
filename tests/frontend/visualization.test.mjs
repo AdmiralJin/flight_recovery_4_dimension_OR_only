@@ -12,6 +12,10 @@ const toyCase = JSON.parse(readFileSync(
   resolve(projectRoot, "data/examples/toy_case_001.json"),
   "utf8",
 ));
+const phase1ValidationCase = JSON.parse(readFileSync(
+  resolve(projectRoot, "data/examples/phase1_validation_001.json"),
+  "utf8",
+));
 
 test("classifies supported and unknown disruption types", () => {
   assert.equal(visualization.classifyDisruptionType("departure_capacity_reduction"), "departure");
@@ -117,4 +121,28 @@ test("capacity counting uses half-open interval boundaries", () => {
 
   const departure = visualization.deriveCapacityCells(scenario, "departures")[0];
   assert.equal(departure.load, 2);
+});
+
+test("phase1 validation case has the intended deterministic impacts", () => {
+  const impacts = visualization.deriveFlightImpacts(phase1ValidationCase);
+  const byStatus = (status) => [...impacts]
+    .filter(([, impact]) => impact.status === status)
+    .map(([flightId]) => flightId);
+
+  assert.deepEqual(byStatus("direct"), ["F05", "F06"]);
+  assert.deepEqual(byStatus("downstream"), ["F09", "F10"]);
+  assert.deepEqual(byStatus("normal"), ["F01", "F02", "F03", "F04", "F07", "F08", "F11", "F12"]);
+
+  const risks = visualization.derivePassengerRisk(phase1ValidationCase, impacts);
+  assert.deepEqual(
+    [...risks].filter(([, risk]) => risk.atRisk).map(([passengerId]) => passengerId),
+    ["P01", "P02", "P05", "P06"],
+  );
+
+  const constrainedBucket = visualization.deriveCapacityCells(phase1ValidationCase, "departures")
+    .find((cell) => cell.airport === "B" && cell.startTime === "2026-01-15T08:00:00Z");
+  assert.deepEqual(
+    { load: constrainedBucket.load, capacity: constrainedBucket.capacity, status: constrainedBucket.status },
+    { load: 2, capacity: 1, status: "over" },
+  );
 });

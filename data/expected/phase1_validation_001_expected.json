@@ -1,0 +1,37 @@
+{
+  "phase": 1,
+  "scenario_id": "phase1_validation_001",
+  "purpose": "Medium-sized deterministic verification fixture before fixed-column optimization is implemented.",
+  "validation": {
+    "valid": true,
+    "error_count": 0,
+    "airport_count": 5,
+    "flight_count": 12,
+    "aircraft_count": 6,
+    "operating_aircraft_count": 4,
+    "reserve_aircraft_count": 2,
+    "crew_count": 6,
+    "operating_crew_count": 4,
+    "reserve_crew_count": 2,
+    "passenger_group_count": 8,
+    "airport_interval_count": 8,
+    "disruption_count": 1
+  },
+  "deterministic_checks": {
+    "constrained_bucket": {
+      "airport": "B",
+      "start_time": "2026-01-15T08:00:00Z",
+      "end_time": "2026-01-15T09:00:00Z",
+      "scheduled_departures": ["F05", "F06"],
+      "departure_capacity": 1,
+      "minimum_departure_relief": 1
+    },
+    "direct_exposure": ["F05", "F06"],
+    "aircraft_and_crew_downstream_risk": ["F09", "F10"],
+    "unaffected_flights": ["F01", "F02", "F03", "F04", "F07", "F08", "F11", "F12"],
+    "passenger_groups_at_risk": ["P01", "P02", "P05", "P06"],
+    "passenger_groups_not_flagged": ["P03", "P04", "P07", "P08"]
+  },
+  "optimization_solution": null,
+  "note": "This file is a pre-solver verification oracle. Phase 1 must add audited fixed columns, costs and an expected optimal solution before this case is used as an optimization oracle."
+}
