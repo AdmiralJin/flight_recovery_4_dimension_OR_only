@@ -13,15 +13,12 @@
 |---|---|---|
 | Phase 0 | ✅ 完成 | Scenario 数据层、Pydantic Schema、跨实体 Validator、HTML Data Editor、toy case |
 | Phase 0.5 | ✅ 完成 | 原计划、扰动、风险传播、容量热力图等确定性可视化 |
-| Phase 1A：人工数据资产 | ✅ 已建立 | `phase1_benchmark_001`、Manual Columns、Columns/Expected JSON Schema v1.0.0、Manual Reference |
-| Phase 1B：工程验收 | 🚧 未完成 | Python Columns/Expected Schema、Semantic Validator、Regression/Negative Tests |
+| Phase 1 | ✅ 完成 | 人工数据资产、Python/JSON Schema、Semantic Validator、指标复算、Regression/Negative Tests |
 | Phase 2+ | ⏳ 未开始 | Fixed-column 四模型、Integrated Oracle、Benders、CG 等 |
 
 因此当前准确表述是：
 
-> **Phase 1 的人工 benchmark / columns / expected 数据资产已经建立，但 Phase 1 整体工程验收仍未完成。**
-
-本轮先完成文档统一，不实现新的 Python 模型或测试代码。
+> **Phase 1 已完成数据、候选列和人工 Oracle 的程序化语义闭环；这不等于已证明 AIR 恢复目标的数学全局最优性。**
 
 ---
 
@@ -299,6 +296,8 @@ flight_recovery_4_dimension_OR_only/
 │   │   ├── validator.py
 │   │   ├── column_validator.py # Phase 1B
 │   │   ├── oracle_validator.py # Phase 1B
+│   │   ├── recovery_metrics.py # Phase 1B
+│   │   ├── validation_common.py
 │   │   ├── solver_service.py
 │   │   └── result_formatter.py
 │   ├── core/
@@ -330,9 +329,8 @@ flight_recovery_4_dimension_OR_only/
 │       └── phase1_benchmark_001_expected.json
 │
 ├── schemas/
-│   └── recovery/
-│       ├── recovery_columns_v1.schema.json
-│       └── recovery_expected_v1.schema.json
+│   ├── recovery_columns_v1.schema.json
+│   └── recovery_expected_v1.schema.json
 │
 ├── docs/
 │   ├── AIR_HTML_Python_Reproduction_Plan.md
@@ -632,7 +630,7 @@ passenger_itineraries
 
 ```text
 data/columns/phase1_benchmark_001_columns.json
-schemas/recovery/recovery_columns_v1.schema.json
+schemas/recovery_columns_v1.schema.json
 ```
 
 详细设计：
@@ -714,7 +712,7 @@ objective
 
 ```text
 data/expected/phase1_benchmark_001_expected.json
-schemas/recovery/recovery_expected_v1.schema.json
+schemas/recovery_expected_v1.schema.json
 ```
 
 ---
@@ -802,9 +800,9 @@ global optimum
 
 ---
 
-## 7.9 Phase 1B：尚需完成
+## 7.9 Phase 1B：Completed
 
-下一工程工作：
+已实现：
 
 ```text
 backend/schemas/columns.py
@@ -812,6 +810,7 @@ backend/schemas/expected.py
 
 backend/services/column_validator.py
 backend/services/oracle_validator.py
+backend/services/recovery_metrics.py
 ```
 
 Semantic Validator 至少检查：
@@ -835,7 +834,7 @@ Semantic Validator 至少检查：
 
 ## 7.10 Phase 1B 测试
 
-需要：
+已建立：
 
 ```text
 tests/regression/test_phase1_benchmark_001.py
@@ -856,12 +855,12 @@ Phase 1 Completed
 ```
 
 - [x] 人工数据与 Reference；
-- [ ] Python Columns / Expected Schema；
-- [ ] Semantic Validation；
-- [ ] Regression Test；
-- [ ] Negative Tests；
-- [ ] Reference Metrics 程序化复算；
-- [ ] 所有 Phase 0/0.5 Tests 无回归。
+- [x] Python Columns / Expected Schema；
+- [x] Semantic Validation；
+- [x] Regression Test；
+- [x] Negative Tests；
+- [x] Reference Metrics 程序化复算；
+- [x] 所有 Phase 0/0.5 Tests 无回归。
 
 ---
 
@@ -1587,7 +1586,7 @@ Manual Reference
 Documentation
 ```
 
-## 下一 Task：Phase 1B
+## 已完成 Task：Phase 1B
 
 ```text
 实现 Recovery Columns / Expected 的 Python Schema 和 Semantic Validation；
@@ -1595,7 +1594,7 @@ Documentation
 不要实现 Solver。
 ```
 
-验收后 Commit。
+Phase 1B 工程验收已通过。
 
 ## 然后 Task：Phase 2.0
 
@@ -1726,32 +1725,7 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-当前不要直接开始 SRM Solver。
-
-先完成：
-
-```text
-Phase 1B
-```
-
-即：
-
-1. Recovery Columns Python/Pydantic Schema；
-2. Expected Python/Pydantic Schema；
-3. Column Semantic Validator；
-4. Oracle Semantic Validator；
-5. Benchmark001 Regression；
-6. Negative Tests；
-7. Expected Metrics 程序化复算；
-8. 保证 Phase 0/0.5 无回归。
-
-这些完成后：
-
-```text
-Phase 1 = Completed
-```
-
-然后开始：
+Phase 1 已完成。当前不要直接开始 SRM Solver，而应先开始：
 
 ```text
 Phase 2.0 Incidence Matrix Builder

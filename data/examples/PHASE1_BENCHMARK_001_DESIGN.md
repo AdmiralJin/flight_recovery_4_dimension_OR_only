@@ -1,5 +1,7 @@
 # Phase 1 中等规模验证数据设计：`phase1_benchmark_001`
 
+> **历史设计说明：** 本文件记录最初的 110 分钟纯传播方案。当前正式的 80 分钟人工 Reference 已改用 AC1/AC4 任务交换与 P4→F8 改签；请以 `docs/benchmarks/PHASE1_BENCHMARK_001_DESIGN.md`、Columns 和 Expected JSON 为准。
+
 ## 1. 定位
 
 本案例用于 `docs/AIR_HTML_Python_Reproduction_Plan.md` 的 **Phase 1：人工建立标准 Toy Case + Expected Solution**。

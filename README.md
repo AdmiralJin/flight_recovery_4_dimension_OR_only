@@ -24,15 +24,10 @@ FastAPI + Pydantic
 |---|---|---|
 | Phase 0 | ✅ 完成 | Scenario Schema、Validator、HTML 数据编辑器、toy case |
 | Phase 0.5 | ✅ 完成 | 原计划 / 扰动 / 风险传播 / 容量可视化 |
-| Phase 1 数据与 Reference | ✅ 已建立 | `phase1_benchmark_001`、人工候选列、Schema v1.0.0、Manual Reference |
-| Phase 1 工程验收 | 🚧 待完成 | Columns/Expected Python Schema、Semantic Validator、Regression/Negative Tests |
+| Phase 1 | ✅ 完成 | Benchmark、人工候选列、运行时 Schema、语义校验、指标复算与回归/负例测试 |
 | Phase 2+ | ⏳ 未开始 | Fixed-column SRM / ARM / CRM / PRM 等 |
 
-因此当前不应简单写成“Phase 1 已完成”。
-
-更准确的状态是：
-
-> **Phase 1 的人工 benchmark、columns 与 expected/oracle 数据资产已经建立；程序化语义校验和模型验证尚未完成。**
+Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
 ---
 
@@ -253,8 +248,8 @@ docs/RECOVERY_COLUMNS_EXPECTED_SCHEMA_V1.md
 JSON Schema：
 
 ```text
-schemas/recovery/recovery_columns_v1.schema.json
-schemas/recovery/recovery_expected_v1.schema.json
+schemas/recovery_columns_v1.schema.json
+schemas/recovery_expected_v1.schema.json
 ```
 
 ---
@@ -391,9 +386,8 @@ data/
     └── phase1_benchmark_001_expected.json
 
 schemas/
-└── recovery/
-    ├── recovery_columns_v1.schema.json
-    └── recovery_expected_v1.schema.json
+├── recovery_columns_v1.schema.json
+└── recovery_expected_v1.schema.json
 
 docs/
 ├── AIR_HTML_Python_Reproduction_Plan.md
@@ -432,16 +426,13 @@ python -m pytest
 
 Phase 0/0.5 的既有测试应长期保持通过。
 
-Phase 1 下一步需要补充：
+Phase 1 已包含：
 
-- Recovery Columns Python/Pydantic Schema；
-- Expected Python/Pydantic Schema；
-- Column Semantic Validator；
-- Oracle Semantic Validator；
+- Recovery Columns / Expected Python/Pydantic Schema；
+- Column / Oracle Semantic Validator；
+- Reference Metrics 程序化复算；
 - `phase1_benchmark_001` Regression；
-- Negative Tests。
-
-本轮文档更新不实现这些代码。
+- 按具体错误码断言的 Negative Tests。
 
 ---
 
@@ -450,8 +441,6 @@ Phase 1 下一步需要补充：
 文档和 Phase 1 人工资产统一后，下一工程任务是：
 
 ```text
-Columns / Expected Loader & Semantic Validation
-        ↓
 Incidence Matrix Builder
         ↓
 Fixed-column SRM

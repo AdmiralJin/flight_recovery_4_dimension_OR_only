@@ -1,33 +1,17 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
-from dataclasses import asdict, dataclass
+from dataclasses import asdict
 from typing import Any
 
 from pydantic import ValidationError
 
 from backend.schemas import Scenario
 
-
-@dataclass(frozen=True)
-class ValidationIssue:
-    location: str
-    code: str
-    message: str
-
-
-def _format_location(parts: Iterable[Any]) -> str:
-    result = ""
-    for part in parts:
-        if isinstance(part, int):
-            result += f"[{part}]"
-        else:
-            result += ("." if result else "") + str(part)
-    return result or "$"
-
-
-def _issue(location: str, code: str, message: str) -> ValidationIssue:
-    return ValidationIssue(location=location, code=code, message=message)
+from .validation_common import (
+    ValidationIssue,
+    format_location as _format_location,
+    issue as _issue,
+)
 
 
 def _duplicates(items: list[Any], attr: str, collection: str) -> list[ValidationIssue]:

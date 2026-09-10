@@ -517,6 +517,28 @@ Recovered Plan 视图应在 Solver/Expected Result 接口正式接入后再启�
 
 ---
 
+## A-020 Passenger Arrival Delay 下限
+
+**来源状态：**
+Phase 1B 要求 `arrival_delay_minutes` 非负；`phase1_benchmark_001` 中 P4 改签 F8 后比原计划更早到达，正式 Columns / Expected 均将其记为 `0`。
+
+**实现方式：**
+旅客到达延误按以下方式计算：
+
+```text
+max(0, recovered_arrival - scheduled_arrival)
+```
+
+提前到达不产生负延误，也不抵扣其他旅客的正延误。
+
+**原因：**
+保持非负指标语义，并与当前正式人工 Reference 一致。
+
+**影响：**
+后续 PRM 成本若需要奖励提前到达，应使用独立成本项，不改变本指标定义。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：

@@ -50,9 +50,8 @@ data/
     └── phase1_benchmark_001_expected.json
 
 schemas/
-└── recovery/
-    ├── recovery_columns_v1.schema.json
-    └── recovery_expected_v1.schema.json
+├── recovery_columns_v1.schema.json
+└── recovery_expected_v1.schema.json
 
 docs/
 ├── RECOVERY_COLUMNS_EXPECTED_SCHEMA_V1.md
@@ -803,23 +802,22 @@ manual reference aircraft assignment
 - [x] 人工建立 Passenger Itineraries；
 - [x] 建立人工 Reference Solution；
 - [x] 建立 Oracle Invariants / Comparison Policy；
-- [x] 人工解释主要恢复链和主要替代方案。
+- [x] 人工解释主要恢复链和主要替代方案；
+- [x] Python/Pydantic Columns / Expected Schema；
+- [x] Column / Oracle Semantic Validator；
+- [x] benchmark001 自动 regression test；
+- [x] 按具体错误码断言的 negative tests；
+- [x] Reference Metrics 程序化复算。
 
-## 尚未完成
+## 后续 Phase 尚未完成
 
-- [ ] Python/Pydantic Columns Schema；
-- [ ] Python/Pydantic Expected Schema；
-- [ ] Column Semantic Validator；
-- [ ] Oracle Semantic Validator；
-- [ ] benchmark001 自动 regression test；
-- [ ] negative tests；
 - [ ] 由 Fixed-Column SRM/ARM/CRM/PRM 对人工 Reference 做程序化核验；
 - [ ] 完整目标函数与成本系数；
 - [ ] 由 Integrated Fixed-Column Oracle 证明真正 Optimality。
 
 因此：
 
-> **Phase 1 的“人工数据资产与设计工作”已经完成；Phase 1 整体工程验收仍未完成。**
+> **Phase 1 工程验收已完成；它证明当前数据/候选列/人工 Oracle 的语义一致性，不证明 AIR 恢复目标的数学全局最优性。**
 
 ---
 

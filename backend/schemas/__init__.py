@@ -1,4 +1,5 @@
 from .scenario import Scenario
+from .columns import RecoveryColumns
+from .expected import RecoveryExpected, RecoveryMetrics
 
-__all__ = ["Scenario"]
-
+__all__ = ["RecoveryColumns", "RecoveryExpected", "RecoveryMetrics", "Scenario"]
