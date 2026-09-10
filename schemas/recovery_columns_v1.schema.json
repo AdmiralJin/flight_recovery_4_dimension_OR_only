@@ -1,0 +1,430 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Recovery Candidate Columns v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "scenario_id",
+    "time_unit",
+    "flight_options",
+    "aircraft_strings",
+    "crew_pairings",
+    "passenger_itineraries"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "scenario_id": {
+      "type": "string"
+    },
+    "time_unit": {
+      "const": "minute"
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "flight_options": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/flight_option"
+      }
+    },
+    "aircraft_strings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/aircraft_string"
+      }
+    },
+    "crew_pairings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/crew_pairing"
+      }
+    },
+    "passenger_itineraries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/passenger_itinerary"
+      }
+    }
+  },
+  "$defs": {
+    "flight_option": {
+      "type": "object",
+      "required": [
+        "option_id",
+        "base_flight_id",
+        "operation_type",
+        "change_types",
+        "origin",
+        "destination",
+        "dep_time",
+        "arr_time",
+        "block_minutes",
+        "departure_delay_minutes",
+        "arrival_delay_minutes"
+      ],
+      "properties": {
+        "option_id": {
+          "type": "string"
+        },
+        "base_flight_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "operation_type": {
+          "enum": [
+            "operate",
+            "cancel",
+            "ferry"
+          ]
+        },
+        "change_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "unchanged",
+              "delay",
+              "cancel",
+              "origin_change",
+              "destination_change",
+              "block_time_change",
+              "positioning"
+            ]
+          }
+        },
+        "origin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "destination": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dep_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "arr_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "block_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "departure_delay_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "arrival_delay_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "aircraft_string": {
+      "type": "object",
+      "required": [
+        "string_id",
+        "aircraft_id",
+        "leg_option_ids",
+        "start_station",
+        "end_station",
+        "maintenance_satisfied"
+      ],
+      "properties": {
+        "string_id": {
+          "type": "string"
+        },
+        "aircraft_id": {
+          "type": "string"
+        },
+        "leg_option_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "start_station": {
+          "type": "string"
+        },
+        "end_station": {
+          "type": "string"
+        },
+        "maintenance_satisfied": {
+          "type": "boolean"
+        },
+        "cost_components": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "crew_segment": {
+      "type": "object",
+      "required": [
+        "segment_type",
+        "flight_option_id",
+        "origin",
+        "destination",
+        "start_time",
+        "end_time"
+      ],
+      "properties": {
+        "segment_type": {
+          "enum": [
+            "operate",
+            "deadhead",
+            "ground_transfer",
+            "rest"
+          ]
+        },
+        "flight_option_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "origin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "destination": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "start_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "end_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "crew_pairing": {
+      "type": "object",
+      "required": [
+        "pairing_id",
+        "crew_id",
+        "duties",
+        "start_station",
+        "end_station"
+      ],
+      "properties": {
+        "pairing_id": {
+          "type": "string"
+        },
+        "crew_id": {
+          "type": "string"
+        },
+        "duties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "duty_id",
+              "segments"
+            ],
+            "properties": {
+              "duty_id": {
+                "type": "string"
+              },
+              "segments": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/crew_segment"
+                }
+              }
+            }
+          }
+        },
+        "start_station": {
+          "type": "string"
+        },
+        "end_station": {
+          "type": "string"
+        },
+        "cost_components": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "passenger_segment": {
+      "type": "object",
+      "required": [
+        "segment_type",
+        "flight_option_id",
+        "origin",
+        "destination",
+        "dep_time",
+        "arr_time"
+      ],
+      "properties": {
+        "segment_type": {
+          "enum": [
+            "flight",
+            "surface"
+          ]
+        },
+        "flight_option_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "origin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "destination": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dep_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "arr_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "passenger_itinerary": {
+      "type": "object",
+      "required": [
+        "itinerary_id",
+        "pax_group_id",
+        "status",
+        "segments",
+        "final_destination",
+        "arrival_time",
+        "arrival_delay_minutes"
+      ],
+      "properties": {
+        "itinerary_id": {
+          "type": "string"
+        },
+        "pax_group_id": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "transported",
+            "unserved"
+          ]
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/passenger_segment"
+          }
+        },
+        "final_destination": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "arrival_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "arrival_delay_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "cost_components": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

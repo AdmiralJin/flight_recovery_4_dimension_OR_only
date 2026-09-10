@@ -1,0 +1,533 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Recovery Expected Result v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "scenario_id",
+    "reference_type",
+    "solution_status",
+    "assumptions",
+    "reference_solution",
+    "oracle_invariants",
+    "comparison_policy",
+    "objective",
+    "known_equivalent_patterns",
+    "notes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "scenario_id": {
+      "type": "string"
+    },
+    "reference_type": {
+      "enum": [
+        "manual_reference",
+        "solver_feasible",
+        "solver_optimal"
+      ]
+    },
+    "solution_status": {
+      "enum": [
+        "feasible",
+        "optimal",
+        "infeasible"
+      ]
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reference_solution": {
+      "type": "object",
+      "required": [
+        "selected_flight_option_by_flight",
+        "selected_aircraft_string_by_aircraft",
+        "selected_crew_pairing_by_crew",
+        "selected_passenger_itinerary_by_group",
+        "resolved_flights",
+        "recovery_actions",
+        "passenger_outcomes",
+        "metrics"
+      ],
+      "properties": {
+        "selected_flight_option_by_flight": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "selected_aircraft_string_by_aircraft": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "selected_crew_pairing_by_crew": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "selected_passenger_itinerary_by_group": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "resolved_flights": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "flight_id",
+              "selected_option_id",
+              "status",
+              "change_types",
+              "recovered_origin",
+              "recovered_destination",
+              "recovered_dep",
+              "recovered_arr",
+              "departure_delay_minutes",
+              "arrival_delay_minutes",
+              "aircraft_id",
+              "crew_id"
+            ],
+            "properties": {
+              "flight_id": {
+                "type": "string"
+              },
+              "selected_option_id": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "operated",
+                  "cancelled"
+                ]
+              },
+              "change_types": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "recovered_origin": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "recovered_destination": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "recovered_dep": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "recovered_arr": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "departure_delay_minutes": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "arrival_delay_minutes": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "aircraft_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "crew_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "recovery_actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action_type",
+              "entity_type",
+              "entity_id",
+              "from",
+              "to",
+              "reason"
+            ],
+            "properties": {
+              "action_type": {
+                "enum": [
+                  "delay",
+                  "cancel",
+                  "origin_change",
+                  "destination_change",
+                  "aircraft_reassignment",
+                  "crew_reassignment",
+                  "passenger_reaccommodation",
+                  "passenger_unserved",
+                  "ferry",
+                  "ground_transfer"
+                ]
+              },
+              "entity_type": {
+                "enum": [
+                  "flight",
+                  "aircraft",
+                  "crew",
+                  "passenger_group"
+                ]
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "from": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "to": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "passenger_outcomes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "pax_group_id",
+              "selected_itinerary_id",
+              "status",
+              "arrival_time",
+              "arrival_delay_minutes",
+              "unserved_count"
+            ],
+            "properties": {
+              "pax_group_id": {
+                "type": "string"
+              },
+              "selected_itinerary_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "transported",
+                  "unserved"
+                ]
+              },
+              "arrival_time": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "arrival_delay_minutes": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "unserved_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "required": [
+            "operated_flights",
+            "cancelled_flights",
+            "delayed_flights",
+            "origin_changed_flights",
+            "destination_changed_flights",
+            "aircraft_reassignments",
+            "crew_reassignments",
+            "passenger_reaccommodated_groups",
+            "passenger_reaccommodated_count",
+            "total_flight_departure_delay_minutes",
+            "passenger_delay_minutes_weighted",
+            "unserved_passengers"
+          ],
+          "properties": {
+            "operated_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cancelled_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "delayed_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "origin_changed_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "destination_changed_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "aircraft_reassignments": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "crew_reassignments": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passenger_reaccommodated_groups": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passenger_reaccommodated_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total_flight_departure_delay_minutes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passenger_delay_minutes_weighted": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unserved_passengers": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "oracle_invariants": {
+      "type": "object",
+      "required": [
+        "required_flight_option_by_flight",
+        "expected_cancelled_flights",
+        "required_metrics",
+        "resource_assignment_invariants",
+        "passenger_invariants"
+      ],
+      "properties": {
+        "required_flight_option_by_flight": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "expected_cancelled_flights": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_metrics": {
+          "type": "object",
+          "required": [
+            "operated_flights",
+            "cancelled_flights",
+            "delayed_flights",
+            "origin_changed_flights",
+            "destination_changed_flights",
+            "aircraft_reassignments",
+            "crew_reassignments",
+            "passenger_reaccommodated_groups",
+            "passenger_reaccommodated_count",
+            "total_flight_departure_delay_minutes",
+            "passenger_delay_minutes_weighted",
+            "unserved_passengers"
+          ],
+          "properties": {
+            "operated_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cancelled_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "delayed_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "origin_changed_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "destination_changed_flights": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "aircraft_reassignments": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "crew_reassignments": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passenger_reaccommodated_groups": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passenger_reaccommodated_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total_flight_departure_delay_minutes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passenger_delay_minutes_weighted": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unserved_passengers": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "resource_assignment_invariants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "passenger_invariants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "comparison_policy": {
+      "type": "object",
+      "required": [
+        "require_exact_selected_columns",
+        "require_exact_aircraft_assignment",
+        "require_exact_crew_assignment",
+        "require_exact_passenger_itinerary",
+        "compare_objective_when_defined",
+        "notes"
+      ],
+      "properties": {
+        "require_exact_selected_columns": {
+          "type": "boolean"
+        },
+        "require_exact_aircraft_assignment": {
+          "type": "boolean"
+        },
+        "require_exact_crew_assignment": {
+          "type": "boolean"
+        },
+        "require_exact_passenger_itinerary": {
+          "type": "boolean"
+        },
+        "compare_objective_when_defined": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "objective": {
+      "type": "object",
+      "required": [
+        "status",
+        "value",
+        "components",
+        "notes"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_defined",
+            "defined"
+          ]
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "components": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "known_equivalent_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
