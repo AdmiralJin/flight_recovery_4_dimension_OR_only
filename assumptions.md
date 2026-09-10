@@ -539,12 +539,130 @@ max(0, recovered_arrival - scheduled_arrival)
 
 ---
 
+## A-021 Phase 2 Primary Solver 与抽象边界
+
+**来源状态：**
+论文实现使用 CPLEX 12.1，但本项目后续明确需要稳定访问 MIP status、objective bound、gap、LP dual 和 reduced cost。具体 Python Solver 及工程抽象不属于论文算法定义。
+
+**实现方式：**
+Phase 2 Primary Solver 选为 Gurobi 13.0.3，依赖固定为 `gurobipy==13.0.3`。SRM/ARM/CRM/PRM 只能依赖 `SolverAdapter`，不得散落 `gurobipy` 调用。Adapter 显式声明 MIP、LP dual、reduced cost、MIP gap 和 objective bound 能力。
+
+当前 pip 包附带的 restricted license 仅用于研究、开发、验证和小规模 smoke tests，不代表生产授权，也不保证能够求解未来大规模实例。
+
+**原因：**
+隔离求解器 API，同时在进入 Column Generation 前验证 dual/reduced-cost 可读性。
+
+**影响：**
+更换 Solver 时必须实现同一 Contract 和解析 smoke tests。商业部署前必须单独解决正式 License 与规模限制。
+
+---
+
+## A-022 Solver Status Mapping
+
+**来源状态：**
+Gurobi 原始整数状态属于求解器 API，不属于 AIR 业务模型语义。
+
+**实现方式：**
+业务层只使用：
+
+```text
+OPTIMAL
+FEASIBLE
+INFEASIBLE
+UNBOUNDED
+INFEASIBLE_OR_UNBOUNDED
+NO_SOLUTION
+ERROR
+```
+
+只有 Gurobi `OPTIMAL` 映射为 `OPTIMAL`。Time/Node/Work/Iteration/Solution/Memory Limit 或 Interrupted 等终止若已有 incumbent，则映射为 `FEASIBLE`；没有 incumbent 则为 `NO_SOLUTION`。数值错误、未知状态和 Adapter 调用错误映射为 `ERROR`。原始状态只保留在 `raw_status` 诊断字段。
+
+**影响：**
+`FEASIBLE` 不得冒充已证明最优；import/license/parameter error 不得冒充 `INFEASIBLE`。
+
+---
+
+## A-023 RecoveryExpected 与 ModelSolveResult 分离
+
+**来源状态：**
+这是工程结果合同，不是论文数据格式。
+
+**实现方式：**
+`RecoveryExpected` 继续只表示 Manual Reference / Oracle Fixture。实际模型输出使用独立、模型中立的 `ModelSolveResult`，记录 status、objective、bound、gap、runtime、变量值、solver metadata 和 diagnostics。
+
+`INFEASIBLE`、`UNBOUNDED`、`INFEASIBLE_OR_UNBOUNDED`、`NO_SOLUTION`、`ERROR` 不允许包含伪造的 objective 或 variable solution。
+
+**影响：**
+Phase 2.2-2.5 的单模型结果不代表完整 Integrated Recovery；完整恢复结果留到 Phase 3。
+
+---
+
+## A-024 Phase 2 Test Cost Units 与来源
+
+**来源状态：**
+Petersen et al. (2010) Table 2 给出计算实验参数：flight cancellation 25,000、tail assignment 0、crew pairing assignment 0、deadhead flight 1,000、deadhead-to-base 2,000、passenger delay 10/minute、unassigned passenger 2,500。论文没有给出本项目统一字段所需的 flight-delay/minute、origin/destination change、ferry/minute 或 deadhead/minute 系数。
+
+**实现方式：**
+`phase2_test_costs_v1` 统一使用 `abstract_cost_units`。直接对应 Table 2 的数值保留论文实验量级，但不声明为当前 USD/CNY 或真实航空公司成本；论文缺失或维度不一致的项标为 `implementation_assumption`，并在每个 coefficient 上记录来源、单位和说明。
+
+**原因：**
+形成可执行、可审计的测试 Objective，同时避免把 2010 年论文实验值伪装为当前业务成本。
+
+**影响：**
+该 profile 只用于 Phase 2 确定性测试，禁止用于业务报价、经营决策或真实收益评估。
+
+---
+
+## A-025 Cost Canonical Ownership
+
+**来源状态：**
+论文分别给出 SRM、ARM、CRM、PRM 目标；本项目需要为 Phase 3 合并明确防重复计费规则。
+
+**实现方式：**
+
+```text
+flight delay / cancellation / origin change / destination change -> SRM
+aircraft reassignment / ferry                              -> ARM
+crew reassignment / deadhead                              -> CRM
+passenger delay / unserved                                -> PRM
+```
+
+每个 `CostCoefficient` 必须包含且通过校验的唯一 `owner`。Columns 中的 `cost_components` 不作为全局参数真源；全局真源是版本化 `FixedColumnCostConfig`，具体列成本由 Scenario/Column 动态计算。
+
+**影响：**
+Phase 3 Integrated Objective 合并时，一个成本项只能由其 canonical owner 收取一次。
+
+---
+
+## A-026 Canonical Phase 2 Test Coefficients
+
+**来源状态：**
+以下是论文 Table 2 与明确 Implementation Assumption 的混合测试 profile；数值在建模前冻结，没有为匹配 Phase 1 的 80-minute Manual Reference 反向调参。
+
+| coefficient | value | owner | source |
+|---|---:|---|---|
+| flight_delay_per_minute | 1 | SRM | Implementation Assumption；应用于 `departure_delay_minutes`；论文把 retiming 包含于 string，但 Table 2 的 equipment-string assignment cost 为 0 |
+| flight_cancellation | 25,000 | SRM | Petersen et al. (2010), Table 2 |
+| aircraft_reassignment | 0 | ARM | Table 2 individual-tail assignment cost = 0 的 fixed-column 映射 |
+| crew_reassignment | 0 | CRM | Table 2 crew-pairing assignment cost = 0 的 fixed-column 映射 |
+| passenger_delay_per_pax_minute | 10 | PRM | Petersen et al. (2010), Table 2 |
+| unserved_passenger | 2,500 | PRM | Petersen et al. (2010), Table 2 |
+| origin_change | 5,000 | SRM | Implementation Assumption |
+| destination_change | 5,000 | SRM | Implementation Assumption |
+| ferry_per_minute | 5 | ARM | Implementation Assumption |
+| deadhead_per_minute | 5 | CRM | Implementation Assumption；论文是 1,000/deadhead flight 与 2,000/return-to-base，不是每分钟 |
+
+**影响：**
+SRM 已具备实际测试用 delay/cancellation/route-change 值。进入 ARM/CRM/PRM 时若发现当前字段无法忠实表达相应模型成本，应先版本化升级 profile，而不是在模型代码中加入 Magic Number。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：
 
-- Integrated Master Objective；
-- 各成本系数及单位；
+- Integrated Master Objective 与 tie-breaking；
+- 真实航空公司成本标定与正式货币单位；
 - Aircraft Turn Time；
 - Crew maximum duty / minimum rest；
 - Passenger MCT；

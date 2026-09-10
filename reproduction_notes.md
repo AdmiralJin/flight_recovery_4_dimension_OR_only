@@ -367,13 +367,45 @@ assumptions.md
 
 ---
 
-# 12. 当前仍未实现
+# 12. Phase 2.0：Indices / Incidence
+
+Phase 2.0 已完成：
+
+- deterministic ordered indices；
+- base flight / aircraft / crew / passenger candidate-choice incidence；
+- aircraft / operating crew / deadhead / passenger operational incidence；
+- maintenance incidence；
+- arrival / departure capacity incidence；
+- Ferry / Cancel / Deadhead 分离；
+- `[start,end)` 容量边界；
+- benchmark001 regression。
+
+Gate incidence 仍明确暂缓，等待 Gate Occupancy 语义冻结。
+
+---
+
+# 13. Phase 2.1：Solver / Cost / Result Contract
+
+Phase 2.1 已建立：
+
+- Gurobi 13.0.3 Primary Adapter；
+- solver-independent variable/constraint/objective/solve/read contract；
+- normalized solver status 与 capability declaration；
+- LP dual / reduced-cost 访问；
+- MIP objective / bound / gap / runtime 访问；
+- 独立 `ModelSolveResult`；
+- 版本化 `FixedColumnCostConfig` 与 `phase2_test_costs_v1`；
+- 每项成本的单位、来源和 canonical model owner。
+
+论文 Table 2 中可直接映射的测试值与工程假设严格分开。该成本 profile 是 abstract test units，不是当前航空公司业务成本，也没有为匹配 Phase 1 Manual Reference 调参。
+
+---
+
+# 14. 当前仍未实现
 
 截至当前阶段，以下仍未完成：
 
 ```text
-Incidence Matrix Builder
-
 Fixed-column SRM
 Fixed-column ARM
 Fixed-column CRM
@@ -394,9 +426,9 @@ Integrality / Branching
 
 ---
 
-# 13. Phase 1 当前状态
+# 15. 当前工程状态
 
-Phase 1 已完成：
+Phase 1、Phase 2.0 与 Phase 2.1 已完成：
 
 ```text
 Benchmark design
@@ -409,27 +441,28 @@ Python/Pydantic Columns / Expected Schema
 Column / Oracle Semantic Validation
 Reference Metrics recomputation
 Benchmark regression and negative tests
+Deterministic indices and incidence builder
+Solver / Cost / ModelSolveResult contracts
+Analytical LP/MIP solver smoke tests
 ```
 
-Phase 1 已程序化证明当前数据、候选列和人工 Oracle 的语义一致性，但尚未由 Fixed-Column 数学模型证明完整 AIR 目标的最优性；该数学验证属于 Phase 2+。
+当前仍未建立任何 AIR 业务优化模型；Phase 1 Manual Reference 尚未由 Fixed-Column 数学模型证明为最优。
 
 ---
 
-# 14. 下一工程步骤
+# 16. 下一工程步骤
 
 下一步进入：
 
 ```text
-Incidence Matrix Builder
-→
-Fixed-column SRM / ARM / CRM / PRM
+Phase 2.2 Fixed-column SRM
 ```
 
-Phase 2.0 将先独立构建并测试 Incidence Matrix，再进入 Fixed-Column 模型。
+Phase 2.2 将首次使用 validated Scenario/Columns、RecoveryIndices、RecoveryIncidence、FixedColumnCostConfig 和 SolverAdapter 建立真正的业务优化模型。
 
 ---
 
-# 15. Reproduction Integrity Rule
+# 17. Reproduction Integrity Rule
 
 任何阶段都不允许用：
 

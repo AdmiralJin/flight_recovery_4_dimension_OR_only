@@ -14,7 +14,9 @@
 | Phase 0 | ✅ 完成 | Scenario 数据层、Pydantic Schema、跨实体 Validator、HTML Data Editor、toy case |
 | Phase 0.5 | ✅ 完成 | 原计划、扰动、风险传播、容量热力图等确定性可视化 |
 | Phase 1 | ✅ 完成 | 人工数据资产、Python/JSON Schema、Semantic Validator、指标复算、Regression/Negative Tests |
-| Phase 2+ | ⏳ 未开始 | Fixed-column 四模型、Integrated Oracle、Benders、CG 等 |
+| Phase 2.0 | ✅ 完成 | 确定性 Index、Incidence Builder、容量边界与 benchmark 回归 |
+| Phase 2.1 | ✅ 完成 | Solver / Cost / ModelSolveResult contracts 与解析 LP/MIP smoke tests |
+| Phase 2.2+ | ⏳ 未开始 | Fixed-column 四模型、Integrated Oracle、Benders、CG 等 |
 
 因此当前准确表述是：
 
@@ -1594,10 +1596,16 @@ Documentation
 
 Phase 1B 工程验收已通过。
 
-## 然后 Task：Phase 2.0
+## 已完成 Task：Phase 2.0
 
 ```text
 Incidence Matrix Builder
+```
+
+## 已完成 Task：Phase 2.1
+
+```text
+Solver / Cost / ModelSolveResult Contract
 ```
 
 ## 再依次：
@@ -1723,13 +1731,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 1 已完成。当前不要直接开始 SRM Solver，而应先开始：
+Phase 2.0 和 Phase 2.1 已完成。当前应开始：
 
 ```text
-Phase 2.0 Incidence Matrix Builder
+Phase 2.2 Fixed-Column SRM
 ```
 
-再进入四个 Fixed-Column Models。
+这是第一个真正建立 AIR 业务优化模型的阶段。
 
 ---
 

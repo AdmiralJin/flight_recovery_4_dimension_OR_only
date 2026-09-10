@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "cost_profile_id": "phase2_test_v1",
+  "source": "Petersen et al. (2010) Table 2 plus explicit implementation assumptions",
+  "units": "abstract_cost_units",
+  "coefficients": {
+    "flight_delay_per_minute": {
+      "value": 1.0,
+      "unit": "cost_unit_per_flight_minute",
+      "owner": "SRM",
+      "source": "implementation_assumption",
+      "source_reference": "assumptions.md A-024/A-026",
+      "notes": "Executable SRM test weight applied to departure_delay_minutes; the paper embeds retiming in strings but Table 2 sets equipment-string assignment cost to zero."
+    },
+    "flight_cancellation": {
+      "value": 25000.0,
+      "unit": "cost_unit_per_cancelled_flight",
+      "owner": "SRM",
+      "source": "petersen_2010_table_2",
+      "source_reference": "Petersen et al. (2010), Table 2, c_f^cancel = 25,000",
+      "notes": "Paper magnitude retained as an abstract test-cost value, not asserted as current airline currency."
+    },
+    "aircraft_reassignment": {
+      "value": 0.0,
+      "unit": "cost_unit_per_aircraft_reassignment",
+      "owner": "ARM",
+      "source": "petersen_2010_table_2",
+      "source_reference": "Petersen et al. (2010), Table 2, c_(e,s)^n = 0",
+      "notes": "Maps the paper benchmark's zero individual-tail assignment cost into the fixed-column test contract."
+    },
+    "crew_reassignment": {
+      "value": 0.0,
+      "unit": "cost_unit_per_crew_reassignment",
+      "owner": "CRM",
+      "source": "petersen_2010_table_2",
+      "source_reference": "Petersen et al. (2010), Table 2, c_(k,p)^assign = 0",
+      "notes": "Maps the paper benchmark's zero crew-pairing assignment cost into the fixed-column test contract."
+    },
+    "passenger_delay_per_pax_minute": {
+      "value": 10.0,
+      "unit": "cost_unit_per_passenger_minute",
+      "owner": "PRM",
+      "source": "petersen_2010_table_2",
+      "source_reference": "Petersen et al. (2010), Table 2, c^delay = 10",
+      "notes": "Applied per passenger-minute in the project contract."
+    },
+    "unserved_passenger": {
+      "value": 2500.0,
+      "unit": "cost_unit_per_unserved_passenger",
+      "owner": "PRM",
+      "source": "petersen_2010_table_2",
+      "source_reference": "Petersen et al. (2010), Table 2, c_i^unassign = 2,500",
+      "notes": "Paper magnitude retained as an abstract test-cost value."
+    },
+    "origin_change": {
+      "value": 5000.0,
+      "unit": "cost_unit_per_origin_change",
+      "owner": "SRM",
+      "source": "implementation_assumption",
+      "source_reference": "assumptions.md A-024/A-026",
+      "notes": "Transparent test-only fixed penalty; no matching coefficient is supplied by the paper."
+    },
+    "destination_change": {
+      "value": 5000.0,
+      "unit": "cost_unit_per_destination_change",
+      "owner": "SRM",
+      "source": "implementation_assumption",
+      "source_reference": "assumptions.md A-024/A-026",
+      "notes": "Transparent test-only fixed penalty; no matching coefficient is supplied by the paper."
+    },
+    "ferry_per_minute": {
+      "value": 5.0,
+      "unit": "cost_unit_per_ferry_minute",
+      "owner": "ARM",
+      "source": "implementation_assumption",
+      "source_reference": "assumptions.md A-024/A-026",
+      "notes": "Transparent test-only rate; the paper benchmark does not publish a ferry-minute coefficient."
+    },
+    "deadhead_per_minute": {
+      "value": 5.0,
+      "unit": "cost_unit_per_deadhead_minute",
+      "owner": "CRM",
+      "source": "implementation_assumption",
+      "source_reference": "assumptions.md A-024/A-026",
+      "notes": "The paper publishes 1,000 per deadhead flight and 2,000 for return-to-base, not a per-minute rate; this value is test-only and must not be attributed to Table 2."
+    }
+  },
+  "notes": [
+    "This profile is for deterministic Phase 2 tests and is not a calibrated airline business-cost profile.",
+    "Coefficients are frozen before solving; they were not tuned to reproduce the Phase 1 manual reference.",
+    "Each term has exactly one canonical model owner to prevent double charging in later integration."
+  ]
+}
