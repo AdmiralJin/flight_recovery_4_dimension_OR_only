@@ -59,8 +59,6 @@ docs/
     └── PHASE1_BENCHMARK_001_DESIGN.md
 ```
 
-> 如果仓库中仍存在误拼写目录 `data/colums/`，标准目录应统一改为 `data/columns/`。文档、代码和测试以后只引用 `data/columns/`。
-
 ---
 
 # 3. 数据规模

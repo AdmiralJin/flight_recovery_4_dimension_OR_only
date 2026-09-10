@@ -345,8 +345,6 @@ flight_recovery_4_dimension_OR_only/
     └── manual/
 ```
 
-> 标准目录是 `data/columns/`。若当前仓库仍为 `data/colums/`，应重命名，后续禁止继续沿用误拼写。
-
 ---
 
 # 5. Phase 0：可验证 Scenario 数据层

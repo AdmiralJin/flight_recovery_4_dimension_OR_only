@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Recovery Expected Result v1",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "schema_version",
     "scenario_id",
@@ -44,6 +45,7 @@
     },
     "reference_solution": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "selected_flight_option_by_flight",
         "selected_aircraft_string_by_aircraft",
@@ -83,6 +85,7 @@
           "type": "array",
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "required": [
               "flight_id",
               "selected_option_id",
@@ -175,6 +178,7 @@
           "type": "array",
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "required": [
               "action_type",
               "entity_type",
@@ -231,6 +235,7 @@
           "type": "array",
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "required": [
               "pax_group_id",
               "selected_itinerary_id",
@@ -278,6 +283,7 @@
         },
         "metrics": {
           "type": "object",
+          "additionalProperties": false,
           "required": [
             "operated_flights",
             "cancelled_flights",
@@ -347,6 +353,7 @@
     },
     "oracle_invariants": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "required_flight_option_by_flight",
         "expected_cancelled_flights",
@@ -369,6 +376,7 @@
         },
         "required_metrics": {
           "type": "object",
+          "additionalProperties": false,
           "required": [
             "operated_flights",
             "cancelled_flights",
@@ -450,6 +458,7 @@
     },
     "comparison_policy": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "require_exact_selected_columns",
         "require_exact_aircraft_assignment",
@@ -484,6 +493,7 @@
     },
     "objective": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "status",
         "value",
@@ -520,7 +530,20 @@
     "known_equivalent_patterns": {
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
       }
     },
     "notes": {

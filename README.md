@@ -185,8 +185,6 @@ docs/benchmarks/PHASE1_BENCHMARK_001_DESIGN.md
 data/columns/phase1_benchmark_001_columns.json
 ```
 
-> 如果当前仓库仍存在误拼写 `data/colums/`，应统一重命名为 `data/columns/`。
-
 Columns v1.0.0 包含：
 
 ```text
