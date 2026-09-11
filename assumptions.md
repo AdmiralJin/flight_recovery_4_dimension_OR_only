@@ -709,13 +709,15 @@ ground(a,t)
 
 在 recovery start、全部 revenue candidate movement times 和 AirportInterval 边界建立确定性 checkpoint，并约束 `0 <= ground(a,t) <= gate_capacity`。Cancel 和 Ferry 不产生 Gate proxy movement。
 
-当前正式 Scenario 的 AirportInterval 没有覆盖每个机场的完整 recovery window。为不虚构缺失时间桶，capacity resolver 优先使用覆盖 checkpoint 的 `[start,end)` interval；若 checkpoint 未被覆盖，仅当该机场所有已声明 intervals 的 `gate_capacity` 完全一致时，允许把该一致值作为 provisional airport-wide gate capacity，并记录首个 interval 为 `capacity_source_key`。机场没有 interval，或未覆盖时存在互相冲突的 gate capacities，builder 必须 fail fast。初始库存高于 recovery-start resolved capacity 也必须 fail fast。
+当前正式 Scenario 的 AirportInterval 没有覆盖每个机场的完整 recovery window。为不虚构缺失时间桶，capacity resolver 优先使用覆盖 checkpoint 的 `[start,end)` interval；内部边界 `interval_i.end_time == interval_j.start_time` 严格归属右侧 `interval_j`。
+
+`recovery_window.end_time` 是显式 terminal gate checkpoint，不按普通半开区间 lookup：若唯一 interval 以 recovery end 为 `end_time`，终点库存审计使用该 interval 的 gate capacity；这不表示 interval 在 recovery end 之后仍有效。若没有这样的 terminal interval，仅当该机场所有已声明 intervals 的 `gate_capacity` 完全一致时，才沿用 provisional airport-wide capacity，并记录首个 interval 为 `capacity_source_key`。其他未覆盖 checkpoint 同样只允许这一一致值 fallback。机场没有 interval、terminal source 不唯一，或未覆盖时存在互相冲突的 gate capacities，builder 必须 fail fast。初始库存高于 recovery-start resolved capacity 也必须 fail fast。
 
 **原因：**
-现有数据可支持机场级总量 proxy，但不支持 tail-to-gate occupancy。显式、一致值 extrapolation 比静默跳过未覆盖 checkpoint 更可审计。
+现有数据可支持机场级总量 proxy，但不支持 tail-to-gate occupancy。右侧内部边界与显式 terminal convention 消除了半开区间终点歧义；一致值 extrapolation 则保留现有 benchmark 在不完整时间桶下的可审计兼容性。
 
 **影响：**
-该约束不是 gate-number assignment、terminal compatibility、机型兼容、remote stand、towing 或 tail-level continuity。`capacity_source_key` 是容量来源，不声明未覆盖时刻实际属于该 interval。
+该约束不是 gate-number assignment、terminal compatibility、机型兼容、remote stand、towing 或 tail-level continuity。`capacity_source_key` 是容量来源；对 terminal checkpoint 或一致值 fallback，它不声明该时刻在半开区间内部，也不把 interval 的有效性外推到 recovery end 之后。
 
 **未来替换条件：**
 Scenario 提供覆盖 recovery window 的完整 Gate Capacity intervals，并冻结 tail-level occupancy / boundary semantics 后，删除一致值 extrapolation，升级为正式 Gate incidence 或 Integrated gate model。
@@ -784,6 +786,132 @@ SRM 未求解具体 Aircraft、Maintenance、Crew 或 Passenger 决策，不能�
 
 **未来替换条件：**
 Phase 3 Integrated Oracle 完成并通过全资源可行性与统一目标验证后，另行设计完整恢复结果层。
+
+---
+
+## A-033 Phase 2.3 ARM External Schedule Input Boundary
+
+**来源状态：** `implementation_interface`
+
+**实现方式：**
+ARM 接收独立、不可变的 `AircraftRecoveryRequest(scenario_id, required_operated_option_ids)`。这些 IDs 必须是当前 Columns 中唯一、合法的 revenue `operate` options，且同一 base flight 最多出现一次。ARM 不读取 SRM 全局状态，也不重新选择 cancel、delay 或 route change。
+
+**原因：**
+Phase 2.3 是独立 aircraft recovery 子模型；显式输入边界使 unit test、SRM→ARM benchmark 流程和未来 Integrated coupling 都可审计。
+
+**影响：**
+Schedule 不可由 ARM 为获得可行性而静默改变。若现有 Aircraft Strings 无法覆盖外生 schedule，ARM 必须返回 infeasible。
+
+**未来替换条件：**
+进入 Integrated Oracle/Benders 后，用显式 master/subproblem coupling 替换测试流程中的顺序调用，但保留 schedule ownership。
+
+---
+
+## A-034 One Explicit Tail-Specific String per Aircraft
+
+**来源状态：** `paper_defined:(3.10) + implementation_mapping_assumption`
+
+**实现方式：**
+每架 Scenario aircraft 必须从已绑定该 `aircraft_id` 的 fixed Aircraft Strings 中恰选一条。没有候选 String 时建模前 fail fast；需要原地等待时必须显式提供空 legs 的合法 idle/null String，不允许用“选择零条”隐式表达。
+
+**原因：**
+论文公式 (3.10) 写作等式 1，并在正文用 null string 处理原地等待；当前 Schema 的 String 已预先绑定具体 tail，因此变量为 `y[string_id]`。
+
+**影响：**
+这比论文正文中的“no more than one”表述采用更明确的公式/任务合同语义。候选列集合必须包含每架飞机的完整恢复选择。
+
+**未来替换条件：**
+若后续允许 aircraft 不参与 recovery，必须通过显式 idle/unavailable column 或新状态合同建模，不得静默把等式改为不等式。
+
+---
+
+## A-035 ARM Fixed-Option Mapping of Paper String Coupling
+
+**来源状态：** `paper_defined:(3.9) + implementation_mapping_assumption`
+
+**实现方式：**
+论文 (3.9) 将 SRM 已选 schedule string 分配给 tail；当前 SRM 输出 Flight Options 而非 schedule-string variables。因此 ARM 使用 Phase 2.0 `option_to_aircraft_strings` incidence：每个 required revenue option 恰好由一条 selected Aircraft String 覆盖，所有 non-required revenue operate options 的 selected-string coverage 必须为零。Ferry 可随 selected String 执行，但不进入 revenue coverage。
+
+**原因：**
+required coverage 单独使用不足以阻止 String 携带与外生 schedule 冲突的额外 revenue option；零泄漏约束共同形成当前 fixed-option 版本的 (3.9) 映射。
+
+**影响：**
+该映射不声称与论文“SRM 直接选择完整 string”的变量结构相同，但保证 ARM 不重新决定 schedule。
+
+**未来替换条件：**
+Integrated Oracle 使用统一 schedule-string 变量或正式 linking constraints 后，以直接的 master-string coupling 替换此 fixed-option 映射。
+
+---
+
+## A-036 ARM Terminal and Fixed-String Eligibility
+
+**来源状态：** `paper_prose + implementation_mapping_assumption`
+
+**实现方式：**
+Phase 2.3 继续信任现有 Column semantic validation 对 start station、station/time continuity、equipment compatibility、known legs 和 terminal fields 的检查，并在 ARM 中额外显式约束 selected String 的 `end_station == required_station_at_T_end`。不加入未冻结的 aircraft minimum turn time。
+
+**原因：**
+论文把 terminal/null-string 与其他 tail eligibility 规则写在 ARM 正文而非独立编号公式中；当前人工 fixed columns 已携带可审计路径字段。
+
+**影响：**
+ARM-C03/C05 是对已验证候选列的模型防线，不代表完整航司 tail restriction、机场适航或 turnaround 规则。
+
+**未来替换条件：**
+新增正式 turn-time、tail restriction 或 station compatibility inputs 后，先登记并扩展 validator/column generator，再升级 ARM eligibility。
+
+---
+
+## A-037 Fixed-Column Maintenance Flag Trust
+
+**来源状态：** `paper_defined:(3.11) + implementation_mapping_assumption`
+
+**实现方式：**
+若 aircraft `maintenance_required == true`，被选 String 必须 `maintenance_satisfied == true`。该 flag 与 maintenance station/end-station 一致性由现有 semantic validator 校验；ARM 不重新构造维修事件或时刻表。
+
+**原因：**
+论文 (3.11) 确保 String 包含合格维修机会，并说明具体维修计划可后处理；当前 Schema 只有已验证布尔属性，缺少细粒度 maintenance visit/timing 数据。
+
+**影响：**
+可证明 fixed-column maintenance flag 被执行，不能证明真实完整维修排程可执行。
+
+**未来替换条件：**
+引入 maintenance task、station capability、duration 与 due-time contract 后，用正式 visit/time incidence 替换布尔 flag。
+
+---
+
+## A-038 ARM Reassignment and Ferry Cost Mapping
+
+**来源状态：** `implementation_assumption`
+
+**实现方式：**
+Aircraft String 中每个 revenue operate leg 的 `base_flight.original_aircraft != string.aircraft_id` 计一次 reassignment；每个 Ferry leg 按 `block_minutes * ferry_per_minute` 计费。系数只来自 `FixedColumnCostConfig`，Columns `cost_components` 不是真源。
+
+**原因：**
+论文 (3.8) 使用 tail-string assignment cost，但没有给出当前 per-ferry-minute 字段维度；该项目需要可执行且 canonical-owner 唯一的 ARM test objective。
+
+**影响：**
+ARM 只收取 aircraft reassignment 与 Ferry；不重复收取 SRM/CRM/PRM 成本。当前 test profile 的 reassignment 为 0，但计算逻辑仍保留并用非零临时系数测试。
+
+**未来替换条件：**
+真实航司提供校准的 tail disruption/ferry 成本合同后版本化升级 profile，不在模型中加入 Magic Number。
+
+---
+
+## A-039 Phase 2.3 ARM Single-Model Result Boundary
+
+**来源状态：** `implementation_interface`
+
+**实现方式：**
+ARM 返回通用 `ModelSolveResult`，diagnostics 固定标识 `model = ARM`、`single_model_only = true`，并独立复算 String selection、required/unexpected coverage、terminal、maintenance、Ferry、reassignment 和 objective breakdown。
+
+**原因：**
+ARM 只验证外生 schedule 在现有 fixed Aircraft Strings 下的 aircraft recovery 子问题。
+
+**影响：**
+ARM feasible/optimal 不代表 Crew、Passenger 或 Integrated Recovery 可行；ARM infeasible 也不得触发对 SRM schedule 的静默修改。
+
+**未来替换条件：**
+Phase 3 Integrated Oracle 完成统一耦合与全资源审计后，另行形成完整恢复结果层。
 
 ---
 

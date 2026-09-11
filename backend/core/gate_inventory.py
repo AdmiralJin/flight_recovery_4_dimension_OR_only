@@ -53,7 +53,35 @@ def _checkpoint_id(airport: str, timestamp: datetime) -> str:
     return f"{airport}@{timestamp.isoformat()}"
 
 
-def _resolve_gate_capacity(airport: str, timestamp: datetime, intervals):
+def _resolve_gate_capacity(
+    airport: str,
+    timestamp: datetime,
+    intervals,
+    recovery_end: datetime,
+):
+    if timestamp == recovery_end:
+        terminal_sources = [
+            interval for interval in intervals if interval.end_time == recovery_end
+        ]
+        if len(terminal_sources) > 1:
+            raise GateInventoryBuildError(
+                f"ambiguous terminal gate capacity for {airport!r} at "
+                f"{timestamp.isoformat()}: multiple intervals end at recovery end"
+            )
+        if terminal_sources:
+            interval = terminal_sources[0]
+            return _capacity_key(interval), interval.gate_capacity
+
+        capacities = {interval.gate_capacity for interval in intervals}
+        if len(capacities) != 1:
+            raise GateInventoryBuildError(
+                f"ambiguous terminal gate capacity for {airport!r} at "
+                f"{timestamp.isoformat()}: no terminal interval and declared "
+                "gate capacities vary"
+            )
+        interval = intervals[0]
+        return _capacity_key(interval), interval.gate_capacity
+
     covering = [
         interval
         for interval in intervals
@@ -141,7 +169,10 @@ def build_gate_inventory_data(
         intervals = intervals_by_airport[airport_id]
         if not intervals:
             continue
-        checkpoint_times = {scenario.recovery_window.start_time}
+        checkpoint_times = {
+            scenario.recovery_window.start_time,
+            scenario.recovery_window.end_time,
+        }
         for interval in intervals:
             checkpoint_times.add(interval.start_time)
             checkpoint_times.add(interval.end_time)
@@ -152,7 +183,10 @@ def build_gate_inventory_data(
                 checkpoint_times.add(option.arr_time)
 
         start_key, start_capacity = _resolve_gate_capacity(
-            airport_id, scenario.recovery_window.start_time, intervals
+            airport_id,
+            scenario.recovery_window.start_time,
+            intervals,
+            scenario.recovery_window.end_time,
         )
         if initial_ground[airport_id] > start_capacity:
             raise GateInventoryBuildError(
@@ -160,10 +194,23 @@ def build_gate_inventory_data(
                 f"exceeds provisional gate capacity {start_capacity} from {start_key!r}"
             )
 
+        terminal_key, terminal_capacity = _resolve_gate_capacity(
+            airport_id,
+            scenario.recovery_window.end_time,
+            intervals,
+            scenario.recovery_window.end_time,
+        )
+
         for timestamp in sorted(checkpoint_times):
-            capacity_key, gate_capacity = _resolve_gate_capacity(
-                airport_id, timestamp, intervals
-            )
+            if timestamp == scenario.recovery_window.end_time:
+                capacity_key, gate_capacity = terminal_key, terminal_capacity
+            else:
+                capacity_key, gate_capacity = _resolve_gate_capacity(
+                    airport_id,
+                    timestamp,
+                    intervals,
+                    scenario.recovery_window.end_time,
+                )
             arrivals = tuple(
                 option.option_id
                 for option in operated_options

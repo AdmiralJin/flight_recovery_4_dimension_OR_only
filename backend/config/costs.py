@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import ClassVar
@@ -7,6 +9,7 @@ from typing import ClassVar
 from pydantic import Field, FiniteFloat, model_validator
 
 from backend.schemas.columns import (
+    AircraftString,
     FlightChangeType,
     FlightOperationType,
     FlightOption,
@@ -82,16 +85,15 @@ class CostCoefficients(SchemaModel):
 
     @model_validator(mode="after")
     def validate_metadata(self):
-        for field_name, (expected_unit, expected_owner) in self._EXPECTED_METADATA.items():
+        for field_name, (
+            expected_unit,
+            expected_owner,
+        ) in self._EXPECTED_METADATA.items():
             coefficient = getattr(self, field_name)
             if coefficient.unit is not expected_unit:
-                raise ValueError(
-                    f"{field_name} unit must be {expected_unit.value!r}"
-                )
+                raise ValueError(f"{field_name} unit must be {expected_unit.value!r}")
             if coefficient.owner is not expected_owner:
-                raise ValueError(
-                    f"{field_name} owner must be {expected_owner.value!r}"
-                )
+                raise ValueError(f"{field_name} owner must be {expected_owner.value!r}")
         return self
 
 
@@ -102,6 +104,15 @@ class FixedColumnCostConfig(SchemaModel):
     units: str = Field(pattern=r"^abstract_cost_units$")
     coefficients: CostCoefficients
     notes: list[str] = Field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class AircraftStringCostBreakdown:
+    total: float
+    reassignment_count: int
+    reassignment_cost: float
+    ferry_minutes: int
+    ferry_cost: float
 
 
 def load_cost_config(path: str | Path) -> FixedColumnCostConfig:
@@ -119,7 +130,9 @@ def schedule_flight_option_cost(
 
     coefficients = costs.coefficients
     if option.operation_type is FlightOperationType.CANCEL:
-        if option.base_flight_id not in {flight.flight_id for flight in scenario.flights}:
+        if option.base_flight_id not in {
+            flight.flight_id for flight in scenario.flights
+        }:
             raise ValueError(f"unknown base flight: {option.base_flight_id!r}")
         return float(coefficients.flight_cancellation.value)
     if option.operation_type is FlightOperationType.FERRY:
@@ -127,12 +140,70 @@ def schedule_flight_option_cost(
     if option.base_flight_id not in {flight.flight_id for flight in scenario.flights}:
         raise ValueError(f"unknown base flight: {option.base_flight_id!r}")
 
-    total = (
-        float(option.departure_delay_minutes or 0)
-        * float(coefficients.flight_delay_per_minute.value)
+    total = float(option.departure_delay_minutes or 0) * float(
+        coefficients.flight_delay_per_minute.value
     )
     if FlightChangeType.ORIGIN_CHANGE in option.change_types:
         total += float(coefficients.origin_change.value)
     if FlightChangeType.DESTINATION_CHANGE in option.change_types:
         total += float(coefficients.destination_change.value)
     return total
+
+
+def aircraft_string_cost(
+    scenario: Scenario,
+    flight_options: Mapping[str, FlightOption],
+    aircraft_string: AircraftString,
+    costs: FixedColumnCostConfig,
+) -> AircraftStringCostBreakdown:
+    """Evaluate only the ARM-owned cost of one validated Aircraft String."""
+
+    aircraft = {item.tail_id: item for item in scenario.aircraft}
+    flights = {flight.flight_id: flight for flight in scenario.flights}
+    if aircraft_string.aircraft_id not in aircraft:
+        raise ValueError(
+            f"unknown aircraft for string {aircraft_string.string_id!r}: "
+            f"{aircraft_string.aircraft_id!r}"
+        )
+
+    reassignment_count = 0
+    ferry_minutes = 0
+    for option_id in aircraft_string.leg_option_ids:
+        option = flight_options.get(option_id)
+        if option is None:
+            raise ValueError(
+                f"aircraft string {aircraft_string.string_id!r} references "
+                f"unknown option {option_id!r}"
+            )
+        if option.operation_type is FlightOperationType.CANCEL:
+            raise ValueError(
+                f"aircraft string {aircraft_string.string_id!r} cannot contain "
+                f"cancel option {option_id!r}"
+            )
+        if option.operation_type is FlightOperationType.FERRY:
+            if option.block_minutes is None:
+                raise ValueError(f"ferry option {option_id!r} has no block_minutes")
+            ferry_minutes += option.block_minutes
+            continue
+
+        base_flight = flights.get(option.base_flight_id or "")
+        if base_flight is None:
+            raise ValueError(
+                f"operate option {option_id!r} references unknown base flight "
+                f"{option.base_flight_id!r}"
+            )
+        if base_flight.original_aircraft != aircraft_string.aircraft_id:
+            reassignment_count += 1
+
+    coefficients = costs.coefficients
+    reassignment_cost = reassignment_count * float(
+        coefficients.aircraft_reassignment.value
+    )
+    ferry_cost = ferry_minutes * float(coefficients.ferry_per_minute.value)
+    return AircraftStringCostBreakdown(
+        total=reassignment_cost + ferry_cost,
+        reassignment_count=reassignment_count,
+        reassignment_cost=reassignment_cost,
+        ferry_minutes=ferry_minutes,
+        ferry_cost=ferry_cost,
+    )

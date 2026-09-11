@@ -17,7 +17,8 @@
 | Phase 2.0 | ✅ 完成 | 确定性 Index、Incidence Builder、容量边界与 benchmark 回归 |
 | Phase 2.1 | ✅ 完成 | Solver / Cost / ModelSolveResult contracts 与解析 LP/MIP smoke tests |
 | Phase 2.2 | ✅ 完成 | Fixed-column SRM、六类约束、Gate/Market provisional proxy 与独立求解审计 |
-| Phase 2.3+ | ⏳ 未开始 | Fixed-column ARM / CRM / PRM、Integrated Oracle、Benders、CG 等 |
+| Phase 2.3 | ✅ 完成 | Fixed-column ARM、Aircraft String selection、schedule coupling、Ferry/Maintenance 与独立审计 |
+| Phase 2.4+ | ⏳ 未开始 | Fixed-column CRM / PRM、Integrated Oracle、Benders、CG 等 |
 
 因此当前准确表述是：
 
@@ -1619,6 +1620,17 @@ Market Service Preservation Proxy
 Independent Constraint / Objective Diagnostics
 ```
 
+## 已完成 Task：Phase 2.3
+
+```text
+Fixed-Column Aircraft Recovery Model
+External required-operated-option input contract
+Aircraft String selection and schedule no-leakage coupling
+Terminal / Maintenance constraints
+Aircraft reassignment / Ferry canonical objective
+Independent ARM diagnostics
+```
+
 ## 再依次：
 
 ```text
@@ -1742,13 +1754,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0、Phase 2.1 和 Phase 2.2 已完成。当前应开始：
+Phase 2.0、Phase 2.1、Phase 2.2 和 Phase 2.3 已完成。当前应开始：
 
 ```text
-Phase 2.3 Fixed-Column ARM
+Phase 2.4 Fixed-Column CRM
 ```
 
-Phase 2.2 已建立第一个 AIR 业务优化子模型；下一阶段应补充 Aircraft String、Ferry 与 Maintenance 约束，并保持与 SRM 的 canonical ownership 边界。
+Phase 2.3 已验证外生 schedule 与人工 Aircraft Strings 的 aircraft recovery 子问题；下一阶段应建立 Crew Pairing selection、operating/deadhead coverage、terminal/pairing feasibility 与 CRM canonical objective。
 
 ---
 

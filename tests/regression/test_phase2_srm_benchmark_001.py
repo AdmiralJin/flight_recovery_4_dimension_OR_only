@@ -51,6 +51,7 @@ def test_phase2_srm_benchmark_001_is_independently_audited(
     assert result.objective_value == pytest.approx(
         diagnostics["objective_breakdown"]["total"]
     )
+    assert result.objective_value == pytest.approx(70.0)
     assert result.objective_value == pytest.approx(
         sum(
             value

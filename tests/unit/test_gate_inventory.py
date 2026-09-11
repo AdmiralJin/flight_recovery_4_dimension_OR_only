@@ -7,6 +7,7 @@ from backend.core.gate_inventory import (
     build_gate_inventory_data,
 )
 from backend.schemas.columns import RecoveryColumns
+from backend.schemas.scenario import Scenario
 from backend.services.validator import validate_scenario
 
 
@@ -24,6 +25,94 @@ def _checkpoint(gate_data, airport, timestamp):
         for item in gate_data.checkpoints_for_airport(airport)
         if item.timestamp.isoformat().replace("+00:00", "Z") == timestamp
     )
+
+
+def _varying_gate_inputs(*, terminal_end="2026-01-15T16:00:00Z"):
+    scenario = Scenario.model_validate(
+        {
+            "scenario_id": "gate_boundary_case",
+            "recovery_window": {
+                "start_time": "2026-01-15T08:00:00Z",
+                "end_time": "2026-01-15T16:00:00Z",
+            },
+            "airports": [{"airport_id": "A", "name": "Alpha"}],
+            "flights": [],
+            "aircraft": [],
+            "crew": [],
+            "passengers": [],
+            "airport_intervals": [
+                {
+                    "airport": "A",
+                    "start_time": "2026-01-15T08:00:00Z",
+                    "end_time": "2026-01-15T12:00:00Z",
+                    "arr_capacity": 10,
+                    "dep_capacity": 10,
+                    "gate_capacity": 4,
+                    "curfew_flag": False,
+                    "weather_restrictions": [],
+                },
+                {
+                    "airport": "A",
+                    "start_time": "2026-01-15T12:00:00Z",
+                    "end_time": terminal_end,
+                    "arr_capacity": 10,
+                    "dep_capacity": 10,
+                    "gate_capacity": 3,
+                    "curfew_flag": False,
+                    "weather_restrictions": [],
+                },
+            ],
+            "disruptions": [],
+        }
+    )
+    columns = RecoveryColumns.model_validate(
+        {
+            "schema_version": "1.0.0",
+            "scenario_id": scenario.scenario_id,
+            "time_unit": "minute",
+            "notes": [],
+            "flight_options": [],
+            "aircraft_strings": [],
+            "crew_pairings": [],
+            "passenger_itineraries": [],
+        }
+    )
+    return scenario, columns
+
+
+def test_gate_internal_boundary_uses_next_interval():
+    scenario, columns = _varying_gate_inputs()
+
+    checkpoint = _checkpoint(
+        build_gate_inventory_data(scenario, columns),
+        "A",
+        "2026-01-15T12:00:00Z",
+    )
+
+    assert checkpoint.gate_capacity == 3
+    assert checkpoint.capacity_source_key.start_time.isoformat() == (
+        "2026-01-15T12:00:00+00:00"
+    )
+
+
+def test_gate_terminal_boundary_accepts_varying_capacities():
+    scenario, columns = _varying_gate_inputs()
+
+    checkpoint = _checkpoint(
+        build_gate_inventory_data(scenario, columns),
+        "A",
+        "2026-01-15T16:00:00Z",
+    )
+
+    assert checkpoint.gate_capacity == 3
+    assert checkpoint.capacity_source_key.end_time == scenario.recovery_window.end_time
+
+
+def test_gate_terminal_boundary_rejects_ambiguous_capacity():
+    scenario, columns = _varying_gate_inputs(terminal_end="2026-01-15T15:00:00Z")
+
+    with pytest.raises(GateInventoryBuildError, match="ambiguous terminal"):
+        build_gate_inventory_data(scenario, columns)
 
 
 def test_gate_builder_tracks_departure_and_arrival_inventory(

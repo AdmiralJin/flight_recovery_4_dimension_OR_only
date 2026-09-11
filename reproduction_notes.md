@@ -415,14 +415,32 @@ Phase 2.2 已建立固定候选列的 Schedule Recovery Model：
 
 在 `phase1_benchmark_001` 上，Phase 2 test cost profile 的 SRM optimum 为 70：`F2_D50` 消除 B 机场 departure-capacity 冲突，`F10_D20` 保持 aggregate ground inventory 非负。该结果不包含 Aircraft/Crew/Passenger 联动，因此不能替代 80 分钟的完整恢复 Manual Reference。
 
+Review fix 已冻结 Gate boundary：internal boundary 使用右侧 `[start,end)` interval；recovery-end terminal checkpoint 使用唯一以 recovery end 结尾的 interval。现有不完整 benchmark 只有在同一机场 gate capacities 全部一致时才允许 provisional fallback。
+
 ---
 
-# 15. 当前仍未实现
+# 15. Phase 2.3：Fixed-Column ARM
+
+Phase 2.3 接收外生 `AircraftRecoveryRequest.required_operated_option_ids`，不重新决定 SRM schedule，并使用现有人工 `aircraft_strings` 建立：
+
+- `ARM-C01-AIRCRAFT-STRING-SELECTION`：每架 aircraft 恰选一条显式 String，对应论文 (3.10)；
+- `ARM-C02-FLIGHT-OPTION-COVERAGE`：required revenue option 恰覆盖一次，non-required revenue option 覆盖为零，是论文 (3.9) 的 fixed-option 映射；
+- `ARM-C03-TERMINAL-STATION`：selected String 满足 required terminal；
+- `ARM-C04-MAINTENANCE`：maintenance-required aircraft 选择 validated satisfied String，对应论文 (3.11)；
+- `ARM-C05-STRING-FEASIBILITY`：复用 pre-model semantic validation；
+- 二元 String variables 对应论文 (3.12)，ARM-owned assignment objective 对应 (3.8)。
+
+ARM Objective 只收取 aircraft reassignment 与 Ferry。Ferry 可作为 String leg，但不进入 revenue coverage；所有结果在求解后独立复算 coverage、schedule leakage、terminal、maintenance、reassignment、Ferry 和 Objective。
+
+Benchmark 顺序测试得到：SRM optimum 70 的 schedule 在现有 fixed Aircraft Strings 下 `ARM = INFEASIBLE`。结构分析定位 AC4 没有不泄漏 schedule 的候选 String，`F3_ORIG`、`F11_ORIG`、`F12_ORIG` 没有 eligible exact cover。这是 fixed-column coverage 不足，未通过修改 SRM 或 Columns 掩盖。Phase 1 Manual schedule 则得到 ARM `OPTIMAL`、objective 0（当前 reassignment coefficient 为 0）、两次 reassignment、无 Ferry，全部独立审计通过。
+
+---
+
+# 16. 当前仍未实现
 
 截至当前阶段，以下仍未完成：
 
 ```text
-Fixed-column ARM
 Fixed-column CRM
 Fixed-column PRM
 
@@ -441,9 +459,9 @@ Integrality / Branching
 
 ---
 
-# 16. 当前工程状态
+# 17. 当前工程状态
 
-Phase 1、Phase 2.0、Phase 2.1 与 Phase 2.2 已完成：
+Phase 1、Phase 2.0、Phase 2.1、Phase 2.2 与 Phase 2.3 已完成：
 
 ```text
 Benchmark design
@@ -464,25 +482,30 @@ SRM-C01 至 SRM-C06 constraints
 Provisional Aggregate Gate Inventory
 Market Service Preservation Proxy
 Independent SRM constraint/objective diagnostics
+Fixed-column Aircraft Recovery Model
+External required-operated-option contract
+Aircraft String / schedule no-leakage constraints
+Terminal / fixed-column Maintenance audit
+Aircraft reassignment / Ferry objective audit
 ```
 
-当前已建立第一个 AIR 业务优化子模型 SRM。`phase1_benchmark_001` 在 Phase 2 test cost profile 下的 SRM optimum 为 70，选择 `F2_D50` 与 `F10_D20`；Phase 1 的 80 分钟 Manual Reference 仍是完整恢复人工参考，不是 SRM optimum，也没有被改写。
+当前已建立 SRM 与 ARM 两个独立业务优化子模型。SRM→ARM benchmark 如实暴露现有 fixed Aircraft Strings 对 70-cost schedule 的 coverage 缺口；Phase 1 的 80 分钟 Manual Reference 仍是完整恢复人工参考，没有被改写。
 
 ---
 
-# 17. 下一工程步骤
+# 18. 下一工程步骤
 
 下一步进入：
 
 ```text
-Phase 2.3 Fixed-column ARM
+Phase 2.4 Fixed-column CRM
 ```
 
-Phase 2.3 应使用现有 Aircraft Strings 建立 tail assignment、Ferry 和 Maintenance 可行性，同时复用 Solver/Cost/Result contracts，禁止把 ARM-owned 成本或决策回填到 SRM。
+Phase 2.4 应使用现有 Crew Pairings 建立 crew assignment、required flight-option coverage、deadhead、terminal/pairing feasibility 与 CRM canonical objective，并继续保持单模型结果边界。
 
 ---
 
-# 18. Reproduction Integrity Rule
+# 19. Reproduction Integrity Rule
 
 任何阶段都不允许用：
 
