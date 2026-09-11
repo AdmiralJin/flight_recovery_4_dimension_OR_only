@@ -2,6 +2,7 @@
 
 from .costs import (
     AircraftStringCostBreakdown,
+    CrewPairingCostBreakdown,
     CostCoefficient,
     CostCoefficients,
     CostOwner,
@@ -9,12 +10,14 @@ from .costs import (
     CostUnit,
     FixedColumnCostConfig,
     aircraft_string_cost,
+    crew_pairing_cost,
     load_cost_config,
     schedule_flight_option_cost,
 )
 
 __all__ = [
     "AircraftStringCostBreakdown",
+    "CrewPairingCostBreakdown",
     "CostCoefficient",
     "CostCoefficients",
     "CostOwner",
@@ -22,6 +25,7 @@ __all__ = [
     "CostUnit",
     "FixedColumnCostConfig",
     "aircraft_string_cost",
+    "crew_pairing_cost",
     "load_cost_config",
     "schedule_flight_option_cost",
 ]

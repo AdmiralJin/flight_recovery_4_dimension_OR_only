@@ -5,9 +5,11 @@ import pytest
 from backend.config import load_cost_config
 from backend.core import (
     AircraftRecoveryRequest,
+    extract_required_operated_option_ids,
     solve_fixed_column_arm,
     solve_fixed_column_srm,
 )
+from backend.schemas.columns import RecoveryColumns
 from backend.solver import GurobiAdapter, SolverStatus
 
 
@@ -35,7 +37,10 @@ def test_phase2_srm_to_arm_benchmark_exposes_fixed_column_shortage(
             costs,
             solver,
         )
-    required = tuple(srm_result.diagnostics["selected_option_by_flight"].values())
+    required = extract_required_operated_option_ids(
+        srm_result,
+        RecoveryColumns.model_validate(phase1_columns_001_data),
+    )
     request = AircraftRecoveryRequest(
         phase1_benchmark_001_data["scenario_id"], required
     )

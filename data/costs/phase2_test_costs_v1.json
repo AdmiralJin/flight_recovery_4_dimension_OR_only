@@ -33,7 +33,7 @@
       "unit": "cost_unit_per_crew_reassignment",
       "owner": "CRM",
       "source": "petersen_2010_table_2",
-      "source_reference": "Petersen et al. (2010), Table 2, c_(k,p)^assign = 0",
+      "source_reference": "Petersen et al. (2010), Table 2, c_(k,p)^assign = 0; implementation mapping: assumptions.md A-045",
       "notes": "Maps the paper benchmark's zero crew-pairing assignment cost into the fixed-column test contract."
     },
     "passenger_delay_per_pax_minute": {
@@ -81,7 +81,7 @@
       "unit": "cost_unit_per_deadhead_minute",
       "owner": "CRM",
       "source": "implementation_assumption",
-      "source_reference": "assumptions.md A-024/A-026",
+      "source_reference": "assumptions.md A-024/A-026/A-045",
       "notes": "The paper publishes 1,000 per deadhead flight and 2,000 for return-to-base, not a per-minute rate; this value is test-only and must not be attributed to Table 2."
     }
   },

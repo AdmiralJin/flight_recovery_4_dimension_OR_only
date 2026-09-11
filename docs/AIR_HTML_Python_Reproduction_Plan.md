@@ -18,7 +18,8 @@
 | Phase 2.1 | ✅ 完成 | Solver / Cost / ModelSolveResult contracts 与解析 LP/MIP smoke tests |
 | Phase 2.2 | ✅ 完成 | Fixed-column SRM、六类约束、Gate/Market provisional proxy 与独立求解审计 |
 | Phase 2.3 | ✅ 完成 | Fixed-column ARM、Aircraft String selection、schedule coupling、Ferry/Maintenance 与独立审计 |
-| Phase 2.4+ | ⏳ 未开始 | Fixed-column CRM / PRM、Integrated Oracle、Benders、CG 等 |
+| Phase 2.4 | ✅ 完成 | Fixed-column CRM、Crew Pairing selection、Operating/Deadhead coupling、CRM cost 与独立审计 |
+| Phase 2.5+ | ⏳ 未开始 | Fixed-column PRM、Integrated Oracle、Benders、CG 等 |
 
 因此当前准确表述是：
 
@@ -770,7 +771,11 @@ reference_type = manual_reference
 solution_status = feasible
 ```
 
-因为 SRM/ARM/CRM/PRM 的正式 Cost Coefficients 尚未全部定义。
+Phase 2 fixed-column test cost contract 已定义并实现 SRM-owned 的 delay、
+cancellation、route-change 成本和 ARM-owned 的 aircraft reassignment、ferry
+成本。这些系数采用 `abstract_cost_units`，用于模型与审计测试，不等于真实航空公司
+生产成本。Phase 2.4 已进一步实现 CRM-owned 的 crew reassignment、deadhead
+成本；PRM owned costs 与完整联合目标仍未进入正式模型。
 
 不能声称：
 
@@ -938,6 +943,18 @@ Phase 1 `flight_options` / `aircraft_strings` 是第一套 fixed columns。
 ```
 
 第一版只使用已经人工定义的 Pairings。
+
+当前 Fixed-Column CRM 的论文映射为：
+
+- `(3.13)`：只累计 CRM-owned 的 crew reassignment 与 deadhead 成本；
+- `(3.14)`：每个外生 required revenue option 恰有一个 OPERATE crew-unit 覆盖；
+- `(3.15)`：每个 crew 恰选一条显式 fixed pairing，当前不另建 `nu_k`；
+- non-required OPERATE/DEADHEAD schedule leakage 是工程 guard；
+- pairing ownership、rating、时空连续、起终点与 CANCEL prohibition 由 fixed-column validator 保证，并由 CRM 独立审计。
+
+SRM 到 CRM 的 schedule 输入统一经过 `extract_required_operated_option_ids`；合法
+CANCEL 会被过滤，CRM 不重新选择航班方案。OPERATE 与 DEADHEAD 使用 schema 中明确
+的 `segment_type`，deadhead 不得贡献 operating coverage。
 
 ---
 
@@ -1631,6 +1648,18 @@ Aircraft reassignment / Ferry canonical objective
 Independent ARM diagnostics
 ```
 
+## 已完成 Task：Phase 2.4
+
+```text
+Fixed-Column Crew Recovery Model
+Canonical SRM schedule-to-resource handoff
+Fixed Crew Pairing selection and exact operating coverage
+Operating / Deadhead separation and schedule no-leakage coupling
+Terminal / ownership and validated fixed-column feasibility
+Crew reassignment / Deadhead canonical objective
+Independent CRM diagnostics
+```
+
 ## 再依次：
 
 ```text
@@ -1754,13 +1783,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0、Phase 2.1、Phase 2.2 和 Phase 2.3 已完成。当前应开始：
+Phase 2.0、Phase 2.1、Phase 2.2、Phase 2.3 和 Phase 2.4 已完成。当前应开始：
 
 ```text
-Phase 2.4 Fixed-Column CRM
+Phase 2.5 Fixed-Column PRM
 ```
 
-Phase 2.3 已验证外生 schedule 与人工 Aircraft Strings 的 aircraft recovery 子问题；下一阶段应建立 Crew Pairing selection、operating/deadhead coverage、terminal/pairing feasibility 与 CRM canonical objective。
+Phase 2.4 已验证外生 schedule 与人工 Crew Pairings 的 crew recovery 子问题，并明确区分 operating/deadhead。下一阶段应建立 Passenger itinerary selection、seat capacity、passenger delay 与 unserved passenger objective。
 
 ---
 

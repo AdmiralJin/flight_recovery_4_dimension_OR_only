@@ -10,6 +10,8 @@ from pydantic import Field, FiniteFloat, model_validator
 
 from backend.schemas.columns import (
     AircraftString,
+    CrewPairing,
+    CrewSegmentType,
     FlightChangeType,
     FlightOperationType,
     FlightOption,
@@ -115,6 +117,15 @@ class AircraftStringCostBreakdown:
     ferry_cost: float
 
 
+@dataclass(frozen=True)
+class CrewPairingCostBreakdown:
+    total: float
+    crew_reassignment_count: int
+    crew_reassignment_cost: float
+    deadhead_minutes: int
+    deadhead_cost: float
+
+
 def load_cost_config(path: str | Path) -> FixedColumnCostConfig:
     return FixedColumnCostConfig.model_validate_json(
         Path(path).read_text(encoding="utf-8")
@@ -206,4 +217,70 @@ def aircraft_string_cost(
         reassignment_cost=reassignment_cost,
         ferry_minutes=ferry_minutes,
         ferry_cost=ferry_cost,
+    )
+
+
+def crew_pairing_cost(
+    scenario: Scenario,
+    flight_options: Mapping[str, FlightOption],
+    crew_pairing: CrewPairing,
+    costs: FixedColumnCostConfig,
+) -> CrewPairingCostBreakdown:
+    """Evaluate only the CRM-owned cost of one validated Crew Pairing."""
+
+    crew = {item.crew_id: item for item in scenario.crew}
+    flights = {flight.flight_id: flight for flight in scenario.flights}
+    if crew_pairing.crew_id not in crew:
+        raise ValueError(
+            f"unknown crew for pairing {crew_pairing.pairing_id!r}: "
+            f"{crew_pairing.crew_id!r}"
+        )
+
+    reassignment_count = 0
+    deadhead_minutes = 0
+    for duty in crew_pairing.duties:
+        for segment in duty.segments:
+            if segment.segment_type not in {
+                CrewSegmentType.OPERATE,
+                CrewSegmentType.DEADHEAD,
+            }:
+                continue
+            option_id = segment.flight_option_id or ""
+            option = flight_options.get(option_id)
+            if option is None:
+                raise ValueError(
+                    f"crew pairing {crew_pairing.pairing_id!r} references "
+                    f"unknown option {option_id!r}"
+                )
+            if option.operation_type is not FlightOperationType.OPERATE:
+                raise ValueError(
+                    f"crew pairing {crew_pairing.pairing_id!r} flight segment "
+                    f"must reference a revenue operate option, got {option_id!r}"
+                )
+            if segment.segment_type is CrewSegmentType.DEADHEAD:
+                if option.block_minutes is None:
+                    raise ValueError(
+                        f"deadhead option {option_id!r} has no block_minutes"
+                    )
+                deadhead_minutes += option.block_minutes
+                continue
+
+            base_flight = flights.get(option.base_flight_id or "")
+            if base_flight is None:
+                raise ValueError(
+                    f"operate option {option_id!r} references unknown base flight "
+                    f"{option.base_flight_id!r}"
+                )
+            if base_flight.original_crew != crew_pairing.crew_id:
+                reassignment_count += 1
+
+    coefficients = costs.coefficients
+    reassignment_cost = reassignment_count * float(coefficients.crew_reassignment.value)
+    deadhead_cost = deadhead_minutes * float(coefficients.deadhead_per_minute.value)
+    return CrewPairingCostBreakdown(
+        total=reassignment_cost + deadhead_cost,
+        crew_reassignment_count=reassignment_count,
+        crew_reassignment_cost=reassignment_cost,
+        deadhead_minutes=deadhead_minutes,
+        deadhead_cost=deadhead_cost,
     )

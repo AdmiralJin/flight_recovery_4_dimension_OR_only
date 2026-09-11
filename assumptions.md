@@ -794,10 +794,10 @@ Phase 3 Integrated Oracle 完成并通过全资源可行性与统一目标验证
 **来源状态：** `implementation_interface`
 
 **实现方式：**
-ARM 接收独立、不可变的 `AircraftRecoveryRequest(scenario_id, required_operated_option_ids)`。这些 IDs 必须是当前 Columns 中唯一、合法的 revenue `operate` options，且同一 base flight 最多出现一次。ARM 不读取 SRM 全局状态，也不重新选择 cancel、delay 或 route change。
+ARM 接收独立、不可变的 `AircraftRecoveryRequest(scenario_id, required_operated_option_ids)`。SRM 到下游资源模型的转换统一由 pure `extract_required_operated_option_ids` 完成：它要求 SRM 对 Columns 中每个 base flight 恰有一个可核对的 selection，合法 cancel 被正常过滤，revenue operate 被保留；unknown ID、ferry、base-flight mapping 不一致、重复或缺失 selection 必须 fail fast。这些输出 IDs 必须是当前 Columns 中唯一、合法的 revenue `operate` options，且同一 base flight 最多出现一次。ARM/CRM 不自行解析 SRM diagnostics，也不重新选择 cancel、delay 或 route change。
 
 **原因：**
-Phase 2.3 是独立 aircraft recovery 子模型；显式输入边界使 unit test、SRM→ARM benchmark 流程和未来 Integrated coupling 都可审计。
+Phase 2.3 是独立 aircraft recovery 子模型；canonical schedule-to-resource handoff 使 ARM 与 CRM 对 cancellation 的解释一致，也使 unit test、SRM→resource benchmark 流程和未来 Integrated coupling 都可审计。
 
 **影响：**
 Schedule 不可由 ARM 为获得可行性而静默改变。若现有 Aircraft Strings 无法覆盖外生 schedule，ARM 必须返回 infeasible。
@@ -909,6 +909,132 @@ ARM 只验证外生 schedule 在现有 fixed Aircraft Strings 下的 aircraft re
 
 **影响：**
 ARM feasible/optimal 不代表 Crew、Passenger 或 Integrated Recovery 可行；ARM infeasible 也不得触发对 SRM schedule 的静默修改。
+
+**未来替换条件：**
+Phase 3 Integrated Oracle 完成统一耦合与全资源审计后，另行形成完整恢复结果层。
+
+---
+
+## A-040 Phase 2.4 CRM External Schedule Input Boundary
+
+**来源状态：** `implementation_interface`
+
+**实现方式：**
+CRM 接收独立、不可变的 `CrewRecoveryRequest(scenario_id, required_operated_option_ids)`；测试与顺序模型流程只能通过 A-033 的 canonical `extract_required_operated_option_ids` 从 SRM 结果构造该集合。CRM 不读取 SRM diagnostics，也不重新决定 schedule。
+
+**原因：**
+Crew recovery 必须消费已经确定的 revenue-operate schedule，取消航班不需要 operating crew。
+
+**影响：**
+若 fixed Crew Pairings 无法覆盖外生 schedule，CRM 返回 infeasible；不得静默修改或放松 schedule。
+
+**未来替换条件：**
+Integrated Oracle/Benders 建立显式 schedule-to-crew coupling 后替换顺序调用，但保留 schedule ownership。
+
+---
+
+## A-041 One Explicit Pairing per Crew and Paper (3.15) Mapping
+
+**来源状态：** `paper_defined:(3.15) + implementation_mapping_assumption`
+
+**实现方式：**
+每个 Scenario crew 从绑定该 `crew_id` 的 fixed Crew Pairings 中恰选一条。论文 (3.15) 的 `nu_k` deadhead-to-base alternative 在当前 Schema 中没有独立变量；idle、reserve 或纯回基地行为必须由显式 pairing 表达，不能用“零条 pairing”暗示。
+
+**原因：**
+当前数据合同只有完整、crew-owned pairing，且包含 start/end station；不存在可可靠计算的独立 return-to-base option。
+
+**影响：**
+无显式候选 pairing 的 crew 在建模前 fail fast。该固定列映射不声称变量结构与论文完全相同。
+
+**未来替换条件：**
+引入正式 deadhead-to-base decision/cost contract 后，可按论文恢复 `nu_k` 或等价显式列。
+
+---
+
+## A-042 Single Crew-Unit Operating Coverage and Paper (3.14) Mapping
+
+**来源状态：** `paper_defined:(3.14) + implementation_mapping_assumption`
+
+**实现方式：**
+每个 required revenue Flight Option 要求恰好一个 selected pairing 以 `CrewSegmentType.OPERATE` 覆盖；non-required revenue option 的 operating coverage 为零。论文 (3.14) 中允许 surplus/deadhead operating resources 的 `s_f` 在当前模型中不单独建变量，固定列版本采用严格的单 crew-unit exact coverage。
+
+**原因：**
+当前 Scenario 不含 Captain/FO/Cabin 等岗位和人数需求；不能自行虚构多岗位 crew complement。
+
+**影响：**
+模型验证 aggregate single crew-unit coverage，不证明真实航班机组编制满足。
+
+**未来替换条件：**
+增加岗位、资格与每航班人数需求后，将 incidence 扩展为 role-specific coverage，并重新核对 (3.14) 的 surplus 语义。
+
+---
+
+## A-043 Operating / Deadhead Separation and Schedule Consistency
+
+**来源状态：** `implementation_guard`
+
+**实现方式：**
+仅 `CrewSegmentType.OPERATE` 可满足 A-042 coverage；`DEADHEAD` 独立记录且不能贡献 operating coverage。所有 fixed pairing 的 OPERATE/DEADHEAD flight segment 必须引用 revenue OPERATE option，CANCEL 或 FERRY reference 在建模前 fail fast；selected pairing 的 deadhead leg 还只能引用 required operated revenue option，non-selected alternate 通过模型约束禁止。
+
+**原因：**
+同一航班上的 operating crew 与 positioning crew 业务含义不同，且 deadhead 只能搭乘实际执行的 schedule leg。
+
+**影响：**
+CRM 同时约束 operating leakage 与 deadhead schedule leakage，并分别审计两种 incidence。
+
+**未来替换条件：**
+若引入独立 ground/ferry crew transportation contract，再以明确 transport type 扩展，不通过命名猜测。
+
+---
+
+## A-044 Fixed Crew Pairing Legality and Terminal Trust
+
+**来源状态：** `fixed-column validation assumption`
+
+**实现方式：**
+Phase 2.4 信任现有 semantic validator 对 crew ownership、known options、OPERATE rating、start/end station、station continuity、time order与 CANCEL prohibition 的校验；CRM 另以显式 eligibility/terminal 约束形成模型防线。当前 Schema 没有 duty-time/rest-limit legality flag，CRM 不推断真实航司规则。
+
+**原因：**
+本阶段使用人工 fixed pairings，不是在 MIP 内生成 pairing 或实现完整 Crew Scheduling engine。
+
+**影响：**
+CRM feasible 只证明当前已验证固定列下的 crew recovery 可行，不证明真实航空公司 duty/rest/base 规则完整满足。
+
+**未来替换条件：**
+冻结 duty/rest/qualification/base 业务合同并由 pairing generator/validator 实现后，再升级 eligibility。
+
+---
+
+## A-045 CRM Reassignment and Deadhead Cost Mapping
+
+**来源状态：** `paper_defined:(3.13) + implementation_assumption`
+
+**实现方式：**
+Pairing 中每个 OPERATE revenue leg 若 `base_flight.original_crew != pairing.crew_id`，计一次 crew reassignment；每个 DEADHEAD revenue leg按 `block_minutes * deadhead_per_minute` 计费。系数唯一来自 `FixedColumnCostConfig`，Columns `cost_components` 不是真源。
+
+**原因：**
+Scenario 已提供原始 crew ownership，Columns 已明确 segment type 与 block time；论文 (3.13) 给出 pairing/deadhead 成本结构，但没有直接给出当前 per-minute 数据映射。
+
+**影响：**
+CRM 只收取 crew reassignment 与 deadhead，不重复计入 SRM、ARM 或 PRM-owned costs。
+
+**未来替换条件：**
+真实航司提供校准成本及独立 deadhead-to-base 合同后版本化更新，不在模型中加入 Magic Number。
+
+---
+
+## A-046 Phase 2.4 CRM Single-Model Result Boundary
+
+**来源状态：** `implementation_interface`
+
+**实现方式：**
+CRM 返回通用 `ModelSolveResult`，diagnostics 固定标识 `model = CRM`、`single_model_only = true`，并独立复算 pairing selection、operating/deadhead coverage、legality、terminal、reassignment、deadhead minutes 与 objective breakdown。
+
+**原因：**
+CRM 只求解外生 schedule 在现有 fixed Crew Pairings 下的 crew recovery 子问题。
+
+**影响：**
+CRM optimal 不代表 Aircraft、Passenger 或 Integrated Recovery 可行；CRM infeasible 不授权修改 schedule。
 
 **未来替换条件：**
 Phase 3 Integrated Oracle 完成统一耦合与全资源审计后，另行形成完整恢复结果层。
