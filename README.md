@@ -27,7 +27,8 @@ FastAPI + Pydantic
 | Phase 1 | ✅ 完成 | Benchmark、人工候选列、运行时 Schema、语义校验、指标复算与回归/负例测试 |
 | Phase 2.0 | ✅ 完成 | 确定性 Index、Incidence Builder、容量边界与 benchmark 回归 |
 | Phase 2.1 | ✅ 完成 | Solver Adapter、Gurobi、Cost Config、ModelSolveResult contracts |
-| Phase 2.2+ | ⏳ 未开始 | Fixed-column SRM / ARM / CRM / PRM 等 |
+| Phase 2.2 | ✅ 完成 | Fixed-column SRM、C01–C06、Gate Inventory proxy、Market-seat proxy、独立诊断 |
+| Phase 2.3+ | ⏳ 未开始 | Fixed-column ARM / CRM / PRM、Integrated Oracle 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
@@ -441,9 +442,7 @@ Phase 1 已包含：
 当前下一工程任务是：
 
 ```text
-Phase 2.2 Fixed-column SRM
-        ↓
-Fixed-column ARM
+Phase 2.3 Fixed-column ARM
         ↓
 Fixed-column CRM
         ↓

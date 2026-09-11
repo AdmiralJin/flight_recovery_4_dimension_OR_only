@@ -401,12 +401,27 @@ Phase 2.1 已建立：
 
 ---
 
-# 14. 当前仍未实现
+# 14. Phase 2.2：Fixed-Column SRM
+
+Phase 2.2 已建立固定候选列的 Schedule Recovery Model：
+
+- `SRM-C01-FLIGHT-COVERAGE`：每个 revenue flight 恰选一个 operate/cancel option；
+- `SRM-C02-STRATEGIC-FLIGHT`：strategic flight 禁止取消；
+- `SRM-C03-ARRIVAL-CAPACITY` / `SRM-C04-DEPARTURE-CAPACITY`：复用 Phase 2.0 的 `[start,end)` incidence；
+- `SRM-C05-GATE-INVENTORY`：明确标记为 `PROVISIONAL_AGGREGATE_GATE_INVENTORY`；
+- `SRM-C06-MARKET-SEAT`：明确标记为 `MARKET_SEAT_PROXY`，只保存市场服务，不证明真实座位容量。
+
+模型只为 revenue `operate` / `cancel` options 建变量，Ferry 留给 ARM。求解后不依赖 Gurobi status 直接宣称正确，而是独立复算每个约束实例、capacity/gate slack 与 SRM-owned objective breakdown。
+
+在 `phase1_benchmark_001` 上，Phase 2 test cost profile 的 SRM optimum 为 70：`F2_D50` 消除 B 机场 departure-capacity 冲突，`F10_D20` 保持 aggregate ground inventory 非负。该结果不包含 Aircraft/Crew/Passenger 联动，因此不能替代 80 分钟的完整恢复 Manual Reference。
+
+---
+
+# 15. 当前仍未实现
 
 截至当前阶段，以下仍未完成：
 
 ```text
-Fixed-column SRM
 Fixed-column ARM
 Fixed-column CRM
 Fixed-column PRM
@@ -426,9 +441,9 @@ Integrality / Branching
 
 ---
 
-# 15. 当前工程状态
+# 16. 当前工程状态
 
-Phase 1、Phase 2.0 与 Phase 2.1 已完成：
+Phase 1、Phase 2.0、Phase 2.1 与 Phase 2.2 已完成：
 
 ```text
 Benchmark design
@@ -444,25 +459,30 @@ Benchmark regression and negative tests
 Deterministic indices and incidence builder
 Solver / Cost / ModelSolveResult contracts
 Analytical LP/MIP solver smoke tests
+Fixed-column Schedule Recovery Model
+SRM-C01 至 SRM-C06 constraints
+Provisional Aggregate Gate Inventory
+Market Service Preservation Proxy
+Independent SRM constraint/objective diagnostics
 ```
 
-当前仍未建立任何 AIR 业务优化模型；Phase 1 Manual Reference 尚未由 Fixed-Column 数学模型证明为最优。
+当前已建立第一个 AIR 业务优化子模型 SRM。`phase1_benchmark_001` 在 Phase 2 test cost profile 下的 SRM optimum 为 70，选择 `F2_D50` 与 `F10_D20`；Phase 1 的 80 分钟 Manual Reference 仍是完整恢复人工参考，不是 SRM optimum，也没有被改写。
 
 ---
 
-# 16. 下一工程步骤
+# 17. 下一工程步骤
 
 下一步进入：
 
 ```text
-Phase 2.2 Fixed-column SRM
+Phase 2.3 Fixed-column ARM
 ```
 
-Phase 2.2 将首次使用 validated Scenario/Columns、RecoveryIndices、RecoveryIncidence、FixedColumnCostConfig 和 SolverAdapter 建立真正的业务优化模型。
+Phase 2.3 应使用现有 Aircraft Strings 建立 tail assignment、Ferry 和 Maintenance 可行性，同时复用 Solver/Cost/Result contracts，禁止把 ARM-owned 成本或决策回填到 SRM。
 
 ---
 
-# 17. Reproduction Integrity Rule
+# 18. Reproduction Integrity Rule
 
 任何阶段都不允许用：
 

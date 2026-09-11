@@ -657,6 +657,136 @@ SRM 已具备实际测试用 delay/cancellation/route-change 值。进入 ARM/CR
 
 ---
 
+## A-027 Phase 2.2 SRM Decision Domain 与 Ferry Exclusion
+
+**来源状态：** `paper_defined + implementation_mapping_assumption`
+
+**实现方式：**
+Phase 2.2 为每个具有 `base_flight_id` 的 revenue-flight `operate` / `cancel` option 建立二元变量 `x[option_id]`。`ferry` 没有 base flight，明确排除在 SRM 决策、目标、机场容量和 Gate proxy 之外；它继续由 ARM canonical owner 处理。
+
+**原因：**
+论文 SRM 决策是 revenue schedule string/cancellation；当前项目以 fixed Flight Options 表达该选择，而 Ferry 是 Aircraft Recovery Movement。
+
+**影响：**
+Phase 2.2 结果只说明 schedule choice，不说明 Ferry、具体 Aircraft、Crew 或 Passenger 可行性。
+
+**未来替换条件：**
+进入 ARM / Integrated Model 后，通过独立 aircraft movement 决策和耦合约束处理 Ferry，不修改本 SRM ownership。
+
+---
+
+## A-028 `strategic_flag` 到 No-Cancel 的映射
+
+**来源状态：** `paper_defined + implementation_mapping_assumption`
+
+**实现方式：**
+对 `Flight.strategic_flag == true` 的航班，要求其所有 `operation_type == operate` options 的选择和等于 1；cancel option 因而不能被选择。Delayed operate option 仍合法。
+
+**原因：**
+论文公式 (3.3) 禁止 strategic flight 被取消；`strategic_flag` 是本项目承载该集合成员关系的字段。
+
+**影响：**
+Strategic 不代表 VIP、国际航班、额外成本或任何航空公司特定等级。
+
+**未来替换条件：**
+真实航空公司重要航班规则必须作为 `airline_specific_extension` 使用独立字段和测试接入。
+
+---
+
+## A-029 Provisional Aggregate Gate Inventory
+
+**来源状态：** `implementation_assumption + generated_provisional`
+
+**实现方式：**
+Phase 2.2 使用机场聚合库存：
+
+```text
+ground(a,t)
+= initial aircraft at a
++ cumulative selected revenue-option arrivals through t
+- cumulative selected revenue-option departures through t
+```
+
+在 recovery start、全部 revenue candidate movement times 和 AirportInterval 边界建立确定性 checkpoint，并约束 `0 <= ground(a,t) <= gate_capacity`。Cancel 和 Ferry 不产生 Gate proxy movement。
+
+当前正式 Scenario 的 AirportInterval 没有覆盖每个机场的完整 recovery window。为不虚构缺失时间桶，capacity resolver 优先使用覆盖 checkpoint 的 `[start,end)` interval；若 checkpoint 未被覆盖，仅当该机场所有已声明 intervals 的 `gate_capacity` 完全一致时，允许把该一致值作为 provisional airport-wide gate capacity，并记录首个 interval 为 `capacity_source_key`。机场没有 interval，或未覆盖时存在互相冲突的 gate capacities，builder 必须 fail fast。初始库存高于 recovery-start resolved capacity 也必须 fail fast。
+
+**原因：**
+现有数据可支持机场级总量 proxy，但不支持 tail-to-gate occupancy。显式、一致值 extrapolation 比静默跳过未覆盖 checkpoint 更可审计。
+
+**影响：**
+该约束不是 gate-number assignment、terminal compatibility、机型兼容、remote stand、towing 或 tail-level continuity。`capacity_source_key` 是容量来源，不声明未覆盖时刻实际属于该 interval。
+
+**未来替换条件：**
+Scenario 提供覆盖 recovery window 的完整 Gate Capacity intervals，并冻结 tail-level occupancy / boundary semantics 后，删除一致值 extrapolation，升级为正式 Gate incidence 或 Integrated gate model。
+
+---
+
+## A-030 Same-Timestamp Gate Event Netting
+
+**来源状态：** `implementation_assumption + generated_provisional`
+
+**实现方式：**
+同一机场同一 timestamp 的所有 selected arrivals 和 departures 先做净变化，再检查 Gate Inventory：
+
+```text
+ground_after(t) = ground_before(t) + arrivals_at_t - departures_at_t
+```
+
+Checkpoint 的累计 arrival/departure coefficients 同时包含该 timestamp 的两类事件，不人为指定先后顺序。
+
+**原因：**
+允许同刻离港释放的聚合位置供同刻到港使用，避免由遍历顺序造成虚假瞬时超限。
+
+**影响：**
+该规则只适用于 aggregate Gate proxy，不证明真实 turnaround、pushback 或 gate occupancy 的事件顺序可行。
+
+**未来替换条件：**
+引入可操作的事件时序、buffer 或 tail-level gate assignment 后，用正式规则替换净额 proxy。
+
+---
+
+## A-031 Provisional Market Service Preservation Proxy
+
+**来源状态：** `implementation_assumption + generated_provisional`
+
+**实现方式：**
+当 `market_flag == true and min_seats > 0` 时，要求航班选择一个 `operate` option。结合 C01 exactly-one 后等价于禁止 cancel。Diagnostics 固定标识 `MARKET_SEAT_PROXY`，不得标识为完整 seat-capacity proof。
+
+**原因：**
+论文公式 (3.7) 需要 equipment seat capacity；当前 Scenario 没有 equipment/tail capacity 或 sellable inventory，`min_seats` 不能独自证明 `available_seats >= required_seats`。
+
+**影响：**
+该 proxy 只保存 market flight service，不检查座位阈值，也不计算 Passenger seat consumption。
+
+**未来替换条件：**
+增加正式 equipment/aircraft seat-capacity contract 后，升级为 `sum(seat_contribution * x) >= min_seats` 并增加 threshold tests；不得静默改变旧 benchmark。
+
+---
+
+## A-032 Phase 2.2 Single-Model Result Boundary
+
+**来源状态：** `implementation_interface`
+
+**实现方式：**
+SRM 继续返回通用 `ModelSolveResult`，并在其 diagnostics 中增加独立复算的 schedule choice、capacity、Gate proxy、strategic、Market proxy 和 objective breakdown。固定标识：
+
+```text
+model = SRM
+single_model_only = true
+```
+
+**原因：**
+SRM 未求解具体 Aircraft、Maintenance、Crew 或 Passenger 决策，不能输出完整 Recovery。
+
+**影响：**
+即使 SRM 为 OPTIMAL，也只能声称 schedule submodel 在当前 fixed-column/proxy 合同下最优；不能声称综合恢复可执行或 Phase 1 Manual Reference 被整体改进。
+
+**未来替换条件：**
+Phase 3 Integrated Oracle 完成并通过全资源可行性与统一目标验证后，另行设计完整恢复结果层。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：
@@ -671,7 +801,7 @@ SRM 已具备实际测试用 delay/cancellation/route-change 值。进入 ARM/CR
 - Reserve Crew；
 - Flight String Reduced Cost Mapping；
 - Crew Pairing Reduced Cost；
-- Gate Inventory；
+- 正式/tail-level Gate Inventory；
 - Diversion / Destination Change 的业务语义；
 - Algorithm 1 / Algorithm 2 中的符号或实现歧义；
 - Benders Cut 与动态列之间的有效性规则。

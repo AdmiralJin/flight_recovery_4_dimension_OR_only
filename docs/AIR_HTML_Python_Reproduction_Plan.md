@@ -16,7 +16,8 @@
 | Phase 1 | ✅ 完成 | 人工数据资产、Python/JSON Schema、Semantic Validator、指标复算、Regression/Negative Tests |
 | Phase 2.0 | ✅ 完成 | 确定性 Index、Incidence Builder、容量边界与 benchmark 回归 |
 | Phase 2.1 | ✅ 完成 | Solver / Cost / ModelSolveResult contracts 与解析 LP/MIP smoke tests |
-| Phase 2.2+ | ⏳ 未开始 | Fixed-column 四模型、Integrated Oracle、Benders、CG 等 |
+| Phase 2.2 | ✅ 完成 | Fixed-column SRM、六类约束、Gate/Market provisional proxy 与独立求解审计 |
+| Phase 2.3+ | ⏳ 未开始 | Fixed-column ARM / CRM / PRM、Integrated Oracle、Benders、CG 等 |
 
 因此当前准确表述是：
 
@@ -1608,6 +1609,16 @@ Incidence Matrix Builder
 Solver / Cost / ModelSolveResult Contract
 ```
 
+## 已完成 Task：Phase 2.2
+
+```text
+Fixed-Column Schedule Recovery Model
+SRM-C01 至 SRM-C06
+Provisional Aggregate Gate Inventory
+Market Service Preservation Proxy
+Independent Constraint / Objective Diagnostics
+```
+
 ## 再依次：
 
 ```text
@@ -1731,13 +1742,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 和 Phase 2.1 已完成。当前应开始：
+Phase 2.0、Phase 2.1 和 Phase 2.2 已完成。当前应开始：
 
 ```text
-Phase 2.2 Fixed-Column SRM
+Phase 2.3 Fixed-Column ARM
 ```
 
-这是第一个真正建立 AIR 业务优化模型的阶段。
+Phase 2.2 已建立第一个 AIR 业务优化子模型；下一阶段应补充 Aircraft String、Ferry 与 Maintenance 约束，并保持与 SRM 的 canonical ownership 边界。
 
 ---
 
