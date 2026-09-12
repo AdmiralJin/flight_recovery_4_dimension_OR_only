@@ -15,6 +15,8 @@ from backend.schemas.columns import (
     FlightChangeType,
     FlightOperationType,
     FlightOption,
+    PassengerItinerary,
+    PassengerItineraryStatus,
 )
 from backend.schemas.common import SchemaModel
 from backend.schemas.scenario import Scenario
@@ -124,6 +126,18 @@ class CrewPairingCostBreakdown:
     crew_reassignment_cost: float
     deadhead_minutes: int
     deadhead_cost: float
+
+
+@dataclass(frozen=True)
+class PassengerItineraryCostBreakdown:
+    total: float
+    passenger_count: int
+    status: PassengerItineraryStatus
+    arrival_delay_minutes: int | None
+    weighted_passenger_delay_minutes: int
+    delay_cost: float
+    unserved_passengers: int
+    unserved_cost: float
 
 
 def load_cost_config(path: str | Path) -> FixedColumnCostConfig:
@@ -283,4 +297,53 @@ def crew_pairing_cost(
         crew_reassignment_cost=reassignment_cost,
         deadhead_minutes=deadhead_minutes,
         deadhead_cost=deadhead_cost,
+    )
+
+
+def passenger_itinerary_cost(
+    passenger_count: int,
+    itinerary: PassengerItinerary,
+    costs: FixedColumnCostConfig,
+) -> PassengerItineraryCostBreakdown:
+    """Evaluate only the PRM-owned cost of one fixed passenger itinerary."""
+
+    if (
+        isinstance(passenger_count, bool)
+        or not isinstance(passenger_count, int)
+        or passenger_count <= 0
+    ):
+        raise ValueError("passenger_count must be a positive integer")
+
+    if itinerary.status is PassengerItineraryStatus.TRANSPORTED:
+        if itinerary.arrival_delay_minutes is None:
+            raise ValueError(
+                f"transported itinerary {itinerary.itinerary_id!r} has no arrival delay"
+            )
+        weighted_delay = passenger_count * itinerary.arrival_delay_minutes
+        delay_cost = weighted_delay * float(
+            costs.coefficients.passenger_delay_per_pax_minute.value
+        )
+        return PassengerItineraryCostBreakdown(
+            total=delay_cost,
+            passenger_count=passenger_count,
+            status=itinerary.status,
+            arrival_delay_minutes=itinerary.arrival_delay_minutes,
+            weighted_passenger_delay_minutes=weighted_delay,
+            delay_cost=delay_cost,
+            unserved_passengers=0,
+            unserved_cost=0.0,
+        )
+
+    unserved_cost = passenger_count * float(
+        costs.coefficients.unserved_passenger.value
+    )
+    return PassengerItineraryCostBreakdown(
+        total=unserved_cost,
+        passenger_count=passenger_count,
+        status=itinerary.status,
+        arrival_delay_minutes=None,
+        weighted_passenger_delay_minutes=0,
+        delay_cost=0.0,
+        unserved_passengers=passenger_count,
+        unserved_cost=unserved_cost,
     )

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "toy_case_003_capacity",
+  "scenario_id": "toy_case_003",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "FO_T3_F1_ORIG": 12,
+    "FO_T3_F2_ORIG": 10,
+    "FO_T3_F3_ORIG": 10
+  },
+  "notes": [
+    "Direct capacity fits only T3_P1; connection capacity fits T3_P2.",
+    "Expected optimum: P1 direct, P2 alternative, objective 3000 abstract cost units."
+  ]
+}

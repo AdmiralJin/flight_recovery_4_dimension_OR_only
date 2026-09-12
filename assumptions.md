@@ -1041,6 +1041,168 @@ Phase 3 Integrated Oracle 完成统一耦合与全资源审计后，另行形成
 
 ---
 
+## A-047 Phase 2.5 PRM External Schedule Boundary
+
+**来源状态：** `implementation_interface`
+
+**实现方式：**
+PRM 接收不可变 `PassengerRecoveryRequest(scenario_id, required_operated_option_ids, capacity_profile_id)`。测试与顺序流程复用 canonical `extract_required_operated_option_ids` 从 SRM 结果获得实际执行的 revenue Flight Options；PRM 不读取或重解 SRM schedule，也不依赖 ARM Result。
+
+**原因：**
+Phase 2.5 是独立 fixed-column passenger recovery 子模型，只消费外生 schedule 与 capacity。
+
+**影响：**
+schedule 不匹配的 transported itinerary 被显式固定为零；PRM 不得通过改变延误或取消决策恢复可行性。
+
+**未来替换条件：**
+Phase 3 Integrated Oracle 以显式 schedule-passenger coupling 取代顺序接口。
+
+---
+
+## A-048 Test Seat Capacity Profile and Paper (3.17) Mapping
+
+**来源状态：** `paper_defined:(3.17) + implementation_mapping_assumption`
+
+**实现方式：**
+`PassengerCapacityProfile.seat_capacity_by_option_id` 是每个 revenue OPERATE option 可供当前模型内 Passenger Commodities 使用的 residual seat inventory，对应论文 (3.17) 的 equipment capacity 减 nondisrupted planned passengers 后的右端项。它是版本化、只读的外生 test input，来源只能标记 `implementation_assumption` 或 `test_fixture`。
+
+**原因：**
+当前 Scenario 没有 aircraft/equipment seat capacity、remaining inventory 或 cabin/class inventory；`Flight.min_seats` 是 SRM market-service proxy，不能作为 seat capacity。
+
+**影响：**
+Phase 2.5 首次程序化执行 passenger seat-load constraint，但 profile 数字不是真实 aircraft capacity、航司库存或论文数据。所有 required operated options 必须有显式 capacity，禁止默认无限容量。
+
+**未来替换条件：**
+引入真实 equipment/cabin inventory，并由 selected ARM assignment 映射到 Flight Option residual capacity 后版本化替换。
+
+---
+
+## A-049 Passenger Group Indivisibility and Paper (3.18) Mapping
+
+**来源状态：** `paper_defined:(3.18) + implementation_mapping_assumption`
+
+**实现方式：**
+论文将 `z_{i,γ}`、`s_i` 定义为非负整数旅客人数流；当前项目的 `PassengerCommodity` 与 fixed `PassengerItinerary` 是 group-level 列，因此第一版为每条 itinerary 建 binary `w_i`，每个 group 恰选一条 transported 或 explicit unserved itinerary。group 不拆分；论文的独立 `s_i` 映射为显式 UNSERVED itinerary。
+
+**原因：**
+现有列由 `pax_group_id` 唯一归属，未提供可审计的 group splitting 输出合同。
+
+**影响：**
+容量冲突时整个 group 改签或 unserved，不能把部分成员分到不同 itineraries；这是比论文旅客流更粗的 fixed-column 映射。
+
+**未来替换条件：**
+若业务要求 group splitting，升级变量、结果 schema 与审计为整数 passenger flow，并重新核对 cost/capacity incidence。
+
+---
+
+## A-050 Fixed Passenger Itinerary Feasibility Trust
+
+**来源状态：** `fixed-column validation assumption`
+
+**实现方式：**
+PRM 建模前复用 Recovery Columns validator 对 group ownership、known revenue option、OD/station continuity、时间不重叠、final destination、arrival time/delay 与 UNSERVED shape 的校验；模型不动态生成 itinerary。
+
+**原因：**
+Phase 2.5 冻结现有人工列，不实现 Passenger Itinerary Generator。
+
+**影响：**
+当前连接规则仅证明 `previous_arrival <= next_departure`，不代表真实 Minimum Connection Time 或航空公司旅客保护政策。
+
+**未来替换条件：**
+Phase 7 引入正式 MCT、connection 与 itinerary generation contract 后升级。
+
+---
+
+## A-051 Passenger Seat Load Uses Commodity Count
+
+**来源状态：** `paper_defined:(3.17) + group_mapping`
+
+**实现方式：**
+选中 itinerary 在其每个 FLIGHT segment 上消耗 `PassengerCommodity.count` 个 seats；SURFACE 与 UNSERVED 不消耗 flight seats。约束为 `sum(count[g(i)] * A[o,i] * w_i) <= capacity[o]`。
+
+**原因：**
+论文容量左端是旅客人数，不是 itinerary/group 个数。
+
+**影响：**
+一个 15 人 group 消耗 15 seats，而不是 1 seat；group indivisibility 仍由 A-049 约束。
+
+**未来替换条件：**
+升级为可拆分 passenger flow 时，用整数流量本身替代 binary 乘 group count。
+
+---
+
+## A-052 PRM Delay and Unserved Cost Mapping
+
+**来源状态：** `paper_defined:(3.16) + implementation_cost_contract`
+
+**实现方式：**
+transported itinerary 成本为 `count * arrival_delay_minutes * passenger_delay_per_pax_minute`；UNSERVED 成本为 `count * unserved_passenger`，不再叠加 arrival delay。系数唯一来自 `FixedColumnCostConfig`，Columns `cost_components` 不是真源。
+
+**原因：**
+这分别映射论文 (3.16) 的 aggregate passenger delay 与 unable-to-assign cost，并遵守 A-025 canonical ownership。
+
+**影响：**
+PRM 不重复收取 SRM flight delay，也不凭经验增加 reaccommodation、surface、missed-connection penalty。当前单位仍是 abstract test units。
+
+**未来替换条件：**
+真实航司成本或论文扩展项形成版本化合同后再升级。
+
+---
+
+## A-053 Reaccommodation Diagnostic Mapping
+
+**来源状态：** `implementation_metric_mapping`
+
+**实现方式：**
+selected transported itinerary 的 base-flight sequence 与 Passenger Commodity `original_itinerary` 不同，或包含 SURFACE segment，则 group 计为 reaccommodated；仅由同一 base flight 的 ORIG option 改为 delayed option不计改签。UNSERVED 不同时计为 reaccommodated。
+
+**原因：**
+当前 Cost Contract 没有独立 reaccommodation penalty，且 option-level delay 不等于改变旅客路径。
+
+**影响：**
+reaccommodation 是可独立复算的 diagnostic，不是决策变量或 Cost Owner。
+
+**未来替换条件：**
+正式 fare/class、ticketing 或 protection policy 数据可支持更精细定义时版本化调整。
+
+---
+
+## A-054 Phase 2.5 PRM Single-Model Result Boundary
+
+**来源状态：** `implementation_interface`
+
+**实现方式：**
+PRM 返回 `ModelSolveResult`，diagnostics 固定标识 `model = PRM`、`single_model_only = true`，并独立复算 group selection、schedule compatibility、seat load/slack、delay、unserved、reaccommodation 与 objective。
+
+**原因：**
+本阶段只求解外生 schedule 和 test capacity 下的 fixed Passenger Itineraries。
+
+**影响：**
+PRM optimal 不代表完整 AIR recovery optimal、真实 aircraft capacity feasible 或真实 passenger protection plan feasible。
+
+**未来替换条件：**
+Phase 3 Integrated Oracle 完成统一耦合与全资源审计后另行形成完整恢复结果层。
+
+---
+
+## A-055 SRM Proxy and Future ARM Capacity Coupling
+
+**来源状态：** `implementation_boundary`
+
+**实现方式：**
+Phase 2.2 `SRM-C06 MARKET_SEAT_PROXY` 暂时保留为 schedule-level provisional constraint；Phase 2.5 capacity 是第一个显式 passenger seat-load constraint，但不从 ARM 推导。
+
+**原因：**
+SRM、ARM 与 PRM 当前仍为相互独立的 fixed-column 模型，删除 proxy 或伪造 equipment capacity 都会提前引入未冻结的跨模型语义。
+
+**影响：**
+test capacity 不得被当作 aircraft truth，ARM assignment 也不会在 PRM 内部重新求解。
+
+**未来替换条件：**
+Phase 3 冻结 selected aircraft/equipment 到 option capacity 的 handoff 后，统一审查 SRM proxy 的去留。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：
@@ -1050,8 +1212,6 @@ Phase 3 Integrated Oracle 完成统一耦合与全资源审计后，另行形成
 - Aircraft Turn Time；
 - Crew maximum duty / minimum rest；
 - Passenger MCT；
-- PRM `s_i` domain；
-- Seat Capacity 解释；
 - Reserve Crew；
 - Flight String Reduced Cost Mapping；
 - Crew Pairing Reduced Cost；

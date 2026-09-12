@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "toy_case_003",
+  "time_unit": "minute",
+  "notes": ["Phase 2.5 passenger capacity/reaccommodation fixed-column oracle."],
+  "flight_options": [
+    {"option_id": "FO_T3_F1_ORIG", "base_flight_id": "T3_F1", "operation_type": "operate", "change_types": ["unchanged"], "origin": "A", "destination": "C", "dep_time": "2026-01-15T08:00:00Z", "arr_time": "2026-01-15T10:00:00Z", "block_minutes": 120, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""},
+    {"option_id": "FO_T3_F2_ORIG", "base_flight_id": "T3_F2", "operation_type": "operate", "change_types": ["unchanged"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T08:15:00Z", "arr_time": "2026-01-15T09:15:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""},
+    {"option_id": "FO_T3_F3_ORIG", "base_flight_id": "T3_F3", "operation_type": "operate", "change_types": ["unchanged"], "origin": "B", "destination": "C", "dep_time": "2026-01-15T09:30:00Z", "arr_time": "2026-01-15T10:30:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""}
+  ],
+  "aircraft_strings": [],
+  "crew_pairings": [],
+  "passenger_itineraries": [
+    {"itinerary_id": "PI_T3_P1_DIRECT", "pax_group_id": "T3_P1", "status": "transported", "segments": [{"segment_type": "flight", "flight_option_id": "FO_T3_F1_ORIG", "origin": null, "destination": null, "dep_time": null, "arr_time": null}], "final_destination": "C", "arrival_time": "2026-01-15T10:00:00Z", "arrival_delay_minutes": 0, "cost_components": {}, "notes": ""},
+    {"itinerary_id": "PI_T3_P1_ALT", "pax_group_id": "T3_P1", "status": "transported", "segments": [{"segment_type": "flight", "flight_option_id": "FO_T3_F2_ORIG", "origin": null, "destination": null, "dep_time": null, "arr_time": null}, {"segment_type": "flight", "flight_option_id": "FO_T3_F3_ORIG", "origin": null, "destination": null, "dep_time": null, "arr_time": null}], "final_destination": "C", "arrival_time": "2026-01-15T10:30:00Z", "arrival_delay_minutes": 30, "cost_components": {}, "notes": ""},
+    {"itinerary_id": "PI_T3_P1_UNSERVED", "pax_group_id": "T3_P1", "status": "unserved", "segments": [], "final_destination": null, "arrival_time": null, "arrival_delay_minutes": null, "cost_components": {}, "notes": ""},
+    {"itinerary_id": "PI_T3_P2_DIRECT", "pax_group_id": "T3_P2", "status": "transported", "segments": [{"segment_type": "flight", "flight_option_id": "FO_T3_F1_ORIG", "origin": null, "destination": null, "dep_time": null, "arr_time": null}], "final_destination": "C", "arrival_time": "2026-01-15T10:00:00Z", "arrival_delay_minutes": 0, "cost_components": {}, "notes": ""},
+    {"itinerary_id": "PI_T3_P2_ALT", "pax_group_id": "T3_P2", "status": "transported", "segments": [{"segment_type": "flight", "flight_option_id": "FO_T3_F2_ORIG", "origin": null, "destination": null, "dep_time": null, "arr_time": null}, {"segment_type": "flight", "flight_option_id": "FO_T3_F3_ORIG", "origin": null, "destination": null, "dep_time": null, "arr_time": null}], "final_destination": "C", "arrival_time": "2026-01-15T10:30:00Z", "arrival_delay_minutes": 30, "cost_components": {}, "notes": ""},
+    {"itinerary_id": "PI_T3_P2_UNSERVED", "pax_group_id": "T3_P2", "status": "unserved", "segments": [], "final_destination": null, "arrival_time": null, "arrival_delay_minutes": null, "cost_components": {}, "notes": ""}
+  ]
+}

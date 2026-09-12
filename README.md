@@ -30,7 +30,8 @@ FastAPI + Pydantic
 | Phase 2.2 | ✅ 完成 | Fixed-column SRM、C01–C06、Gate Inventory proxy、Market-seat proxy、独立诊断 |
 | Phase 2.3 | ✅ 完成 | Fixed-column ARM、外生 schedule contract、Aircraft Strings、Ferry/Maintenance、独立诊断 |
 | Phase 2.4 | ✅ 完成 | Fixed-column CRM、canonical schedule handoff、Crew Pairings、Operating/Deadhead、独立诊断 |
-| Phase 2.5+ | ⏳ 未开始 | Fixed-column PRM、Integrated Oracle 等 |
+| Phase 2.5 | ✅ 完成 | Fixed-column PRM、外生 Seat Capacity、Passenger Itineraries、delay/unserved cost、独立诊断 |
+| Phase 3+ | ⏳ 未开始 | Full Integrated Fixed-column Oracle、Benders、Column Generation 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
@@ -333,8 +334,8 @@ solver_optimal
 Phase 2 fixed-column test cost contract 已覆盖 SRM 的 delay、cancellation、route-change
 成本，以及 ARM 的 aircraft reassignment、ferry 成本；这些系数使用
 `abstract_cost_units`，用于可审计的模型测试，不代表真实航空公司的生产成本。
-CRM 的 crew reassignment、deadhead 成本也已进入独立固定列模型；PRM owned costs
-和完整 SRM/ARM/CRM/PRM 联合目标仍未进入正式模型。
+CRM 的 crew reassignment、deadhead 成本与 PRM 的 passenger delay、unserved passenger
+成本也已分别进入独立固定列模型；完整 SRM/ARM/CRM/PRM 联合目标尚未进入正式模型。
 
 例如 80 分钟 + 2 次换机是否一定优于 110 分钟纯延误，取决于后续正式定义的成本。
 
@@ -376,11 +377,16 @@ objective
 
 ```text
 data/
+├── capacities/
+│   ├── phase2_test_seat_capacity_v1.json
+│   └── toy_case_003_capacity.json
 ├── examples/
 │   ├── toy_case_001.json
+│   ├── toy_case_003.json
 │   └── phase1_benchmark_001.json
 ├── columns/
-│   └── phase1_benchmark_001_columns.json
+│   ├── phase1_benchmark_001_columns.json
+│   └── toy_case_003_columns.json
 └── expected/
     └── phase1_benchmark_001_expected.json
 
@@ -440,9 +446,7 @@ Phase 1 已包含：
 当前下一工程任务是：
 
 ```text
-Phase 2.5 Fixed-column PRM
-        ↓
-Full Integrated Fixed-column Oracle
+Phase 3 Full Integrated Fixed-column Oracle
 ```
 
 完整开发路线见：

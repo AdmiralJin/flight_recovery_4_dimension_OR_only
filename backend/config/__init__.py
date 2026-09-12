@@ -9,10 +9,19 @@ from .costs import (
     CostSource,
     CostUnit,
     FixedColumnCostConfig,
+    PassengerItineraryCostBreakdown,
     aircraft_string_cost,
     crew_pairing_cost,
     load_cost_config,
+    passenger_itinerary_cost,
     schedule_flight_option_cost,
+)
+from .passenger_capacity import (
+    PassengerCapacityError,
+    PassengerCapacityProfile,
+    PassengerCapacitySource,
+    load_passenger_capacity_profile,
+    validate_passenger_capacity_profile,
 )
 
 __all__ = [
@@ -24,8 +33,15 @@ __all__ = [
     "CostSource",
     "CostUnit",
     "FixedColumnCostConfig",
+    "PassengerCapacityError",
+    "PassengerCapacityProfile",
+    "PassengerCapacitySource",
+    "PassengerItineraryCostBreakdown",
     "aircraft_string_cost",
     "crew_pairing_cost",
     "load_cost_config",
+    "load_passenger_capacity_profile",
+    "passenger_itinerary_cost",
     "schedule_flight_option_cost",
+    "validate_passenger_capacity_profile",
 ]

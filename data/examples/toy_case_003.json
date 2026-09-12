@@ -1,0 +1,33 @@
+{
+  "scenario_id": "toy_case_003",
+  "recovery_window": {
+    "start_time": "2026-01-15T08:00:00Z",
+    "end_time": "2026-01-15T12:00:00Z"
+  },
+  "airports": [
+    {"airport_id": "A", "name": "Alpha"},
+    {"airport_id": "B", "name": "Bravo"},
+    {"airport_id": "C", "name": "Charlie"}
+  ],
+  "flights": [
+    {"flight_id": "T3_F1", "origin": "A", "destination": "C", "sched_dep": "2026-01-15T08:00:00Z", "sched_arr": "2026-01-15T10:00:00Z", "duration": 120, "original_aircraft": "T3_AC1", "original_equipment": "E1", "original_crew": "T3_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "T3_F2", "origin": "A", "destination": "B", "sched_dep": "2026-01-15T08:15:00Z", "sched_arr": "2026-01-15T09:15:00Z", "duration": 60, "original_aircraft": "T3_AC2", "original_equipment": "E1", "original_crew": "T3_C2", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "T3_F3", "origin": "B", "destination": "C", "sched_dep": "2026-01-15T09:30:00Z", "sched_arr": "2026-01-15T10:30:00Z", "duration": 60, "original_aircraft": "T3_AC3", "original_equipment": "E1", "original_crew": "T3_C3", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0}
+  ],
+  "aircraft": [
+    {"tail_id": "T3_AC1", "equipment_type": "E1", "initial_station_at_t": "A", "required_station_at_T_end": "C", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["T3_F1"]},
+    {"tail_id": "T3_AC2", "equipment_type": "E1", "initial_station_at_t": "A", "required_station_at_T_end": "B", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["T3_F2"]},
+    {"tail_id": "T3_AC3", "equipment_type": "E1", "initial_station_at_t": "B", "required_station_at_T_end": "C", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["T3_F3"]}
+  ],
+  "crew": [
+    {"crew_id": "T3_C1", "rating": "E1", "start_station_at_t": "A", "required_station_at_T_end": "C", "original_duties": [["T3_F1"]], "original_pairing": ["T3_F1"]},
+    {"crew_id": "T3_C2", "rating": "E1", "start_station_at_t": "A", "required_station_at_T_end": "B", "original_duties": [["T3_F2"]], "original_pairing": ["T3_F2"]},
+    {"crew_id": "T3_C3", "rating": "E1", "start_station_at_t": "B", "required_station_at_T_end": "C", "original_duties": [["T3_F3"]], "original_pairing": ["T3_F3"]}
+  ],
+  "passengers": [
+    {"pax_group_id": "T3_P1", "count": 12, "origin": "A", "destination": "C", "original_departure": "2026-01-15T08:00:00Z", "scheduled_arrival": "2026-01-15T10:00:00Z", "original_itinerary": ["T3_F1"]},
+    {"pax_group_id": "T3_P2", "count": 10, "origin": "A", "destination": "C", "original_departure": "2026-01-15T08:00:00Z", "scheduled_arrival": "2026-01-15T10:00:00Z", "original_itinerary": ["T3_F1"]}
+  ],
+  "airport_intervals": [],
+  "disruptions": []
+}

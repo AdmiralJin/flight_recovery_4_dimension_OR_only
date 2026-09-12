@@ -488,16 +488,9 @@ solution_status = feasible
 optimal
 ```
 
-因为 Phase 2 尚未固定：
+Phase 2 已在 `abstract_cost_units` test profile 中冻结上述 SRM/ARM/CRM/PRM canonical costs，并分别完成单模型审计；但尚未把四类决策与成本放进同一个 Integrated Oracle。因此人工 Reference 的完整 AIR 目标仍未被证明全局最优，且测试成本不代表真实航空公司生产成本。
 
-- cancellation cost；
-- delay cost；
-- aircraft reassignment cost；
-- crew reassignment cost；
-- passenger disruption cost；
-- route-change cost。
-
-一旦这些成本明确，再由 fixed-column / integrated oracle 证明真正最优解。
+Phase 3 应由 Full Integrated Fixed-Column Oracle 在同一可行域和联合目标中重新验证。
 
 ---
 
@@ -528,3 +521,29 @@ backend/services/oracle_validator.py
 12. aircraft terminal / maintenance；
 13. airport capacity `[start,end)`；
 14. metrics 与 resolved result 一致。
+
+---
+
+# 8. Phase 2.5 Passenger Capacity Contract
+
+Passenger Itinerary v1.0.0 保持不变。Phase 2.5 另建独立、版本化输入：
+
+```text
+PassengerCapacityProfile
+```
+
+字段：
+
+```text
+schema_version = 1.0.0
+capacity_profile_id
+scenario_id
+source = implementation_assumption | test_fixture
+units = seats
+seat_capacity_by_option_id
+notes
+```
+
+`seat_capacity_by_option_id` 只允许引用已知 revenue `operate` Flight Option，容量必须是非负整数；unknown、CANCEL、FERRY、scenario mismatch、duplicate JSON key 均拒绝。PRM 的每个 required operated option 必须有显式容量，禁止默认 infinite capacity。
+
+该容量表示可供当前模型内 Passenger Commodities 使用的 test residual inventory，是论文 `(3.17)` 右端项的工程映射；它不是 `Flight.min_seats`、真实 aircraft/equipment capacity、cabin inventory、航空公司数据或论文数值。当前按 Python config contract 管理，与 `FixedColumnCostConfig` 一致，不修改 Recovery Columns JSON Schema。

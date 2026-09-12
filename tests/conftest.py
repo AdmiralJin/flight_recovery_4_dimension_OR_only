@@ -29,3 +29,13 @@ def phase1_columns_001_data() -> dict:
 @pytest.fixture
 def phase1_expected_001_data() -> dict:
     return _phase1_json("expected", "phase1_benchmark_001_expected.json")
+
+
+@pytest.fixture
+def toy_case_003_data() -> dict:
+    return _phase1_json("examples", "toy_case_003.json")
+
+
+@pytest.fixture
+def toy_case_003_columns_data() -> dict:
+    return _phase1_json("columns", "toy_case_003_columns.json")

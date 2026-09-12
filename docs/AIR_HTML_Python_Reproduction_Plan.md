@@ -19,7 +19,8 @@
 | Phase 2.2 | ✅ 完成 | Fixed-column SRM、六类约束、Gate/Market provisional proxy 与独立求解审计 |
 | Phase 2.3 | ✅ 完成 | Fixed-column ARM、Aircraft String selection、schedule coupling、Ferry/Maintenance 与独立审计 |
 | Phase 2.4 | ✅ 完成 | Fixed-column CRM、Crew Pairing selection、Operating/Deadhead coupling、CRM cost 与独立审计 |
-| Phase 2.5+ | ⏳ 未开始 | Fixed-column PRM、Integrated Oracle、Benders、CG 等 |
+| Phase 2.5 | ✅ 完成 | Fixed-column PRM、Seat Capacity、Passenger selection、delay/unserved cost 与独立审计 |
+| Phase 3+ | ⏳ 未开始 | Integrated Oracle、Benders、CG 等 |
 
 因此当前准确表述是：
 
@@ -775,7 +776,7 @@ Phase 2 fixed-column test cost contract 已定义并实现 SRM-owned 的 delay�
 cancellation、route-change 成本和 ARM-owned 的 aircraft reassignment、ferry
 成本。这些系数采用 `abstract_cost_units`，用于模型与审计测试，不等于真实航空公司
 生产成本。Phase 2.4 已进一步实现 CRM-owned 的 crew reassignment、deadhead
-成本；PRM owned costs 与完整联合目标仍未进入正式模型。
+成本；Phase 2.5 已实现 PRM-owned passenger delay、unserved passenger 成本，完整联合目标仍未进入正式模型。
 
 不能声称：
 
@@ -966,12 +967,21 @@ CANCEL 会被过滤，CRM 不重新选择航班方案。OPERATE 与 DEADHEAD 使
 (3.16)-(3.18)
 ```
 
-必须正式解决 Phase 1 暂未程序化证明的：
+Phase 2.5 已正式解决 Phase 1 暂未程序化证明的：
 
 - Seat Capacity；
 - Passenger Reaccommodation；
 - Unserved；
 - Arrival Delay Cost。
+
+论文到 fixed-column 的冻结映射为：
+
+- `(3.16)`：`count * arrival_delay_minutes * passenger_delay_per_pax_minute + count * unserved_passenger`；
+- `(3.17)`：每个 selected itinerary 按 group `count` 消耗 FLIGHT segment 对应的外生 residual seat capacity；
+- `(3.18)`：论文整数 passenger flow 映射为每个不可拆分 passenger group 恰选一条 binary itinerary，论文 `s_i` 映射为 explicit UNSERVED itinerary；
+- schedule consistency 与 fixed itinerary feasibility 分别为 implementation guard 和 pre-model validation，不伪装成额外 paper constraint。
+
+`PassengerCapacityProfile` 独立于 Scenario/ARM，明确禁止从 `Flight.min_seats` 或 equipment name 猜容量。SURFACE 不消耗 flight seats；reaccommodation 由 base-flight sequence 改变或引入 SURFACE 派生。`toy_case_003` 提供真正 active 的 12+10 人容量阈值、alternative 与 unserved Oracle。
 
 ---
 
@@ -1660,14 +1670,23 @@ Crew reassignment / Deadhead canonical objective
 Independent CRM diagnostics
 ```
 
+## 已完成 Task：Phase 2.5
+
+```text
+Fixed-Column Passenger Recovery Model
+Canonical SRM operated-option handoff reuse
+Versioned external residual seat-capacity profile
+Passenger group exactly-one and schedule consistency
+Passenger-count seat-load constraints
+Arrival-delay / unserved canonical objective
+Independent capacity, service, reaccommodation and objective diagnostics
+toy_case_003 passenger-capacity Oracle
+```
+
 ## 再依次：
 
 ```text
-Fixed SRM
-→ Fixed ARM
-→ Fixed CRM
-→ Fixed PRM
-→ Integrated Oracle
+Integrated Oracle
 → Scope
 → String Generator
 → Pairing Generator
@@ -1783,13 +1802,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0、Phase 2.1、Phase 2.2、Phase 2.3 和 Phase 2.4 已完成。当前应开始：
+Phase 2.0、Phase 2.1、Phase 2.2、Phase 2.3、Phase 2.4 和 Phase 2.5 已完成。当前应开始：
 
 ```text
-Phase 2.5 Fixed-Column PRM
+Phase 3 Full Integrated Fixed-Column Oracle
 ```
 
-Phase 2.4 已验证外生 schedule 与人工 Crew Pairings 的 crew recovery 子问题，并明确区分 operating/deadhead。下一阶段应建立 Passenger itinerary selection、seat capacity、passenger delay 与 unserved passenger objective。
+Phase 2 已分别验证外生 schedule 下的 Aircraft Strings、Crew Pairings 与 Passenger Itineraries 子问题。下一阶段才将 Schedule + Aircraft + Crew + Passenger 放入同一 MIP，并统一四个 canonical cost owner。
 
 ---
 

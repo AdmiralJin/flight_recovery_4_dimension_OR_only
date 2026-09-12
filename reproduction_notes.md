@@ -288,17 +288,14 @@ solution_status = feasible
 solver_optimal
 ```
 
-因为以下内容尚未正式实现和校准：
+当前 Phase 2 test cost 状态为：
 
-- SRM Objective；
-- ARM Cost；
-- CRM Cost；
-- PRM Cost；
-- Cancellation Penalty；
-- Aircraft Reassignment Penalty；
-- Crew Reassignment Penalty；
-- Passenger Reaccommodation Cost；
-- Destination Change / Ferry Cost。
+- SRM-owned delay / cancellation / route change 已实现；
+- ARM-owned aircraft reassignment / ferry 已实现；
+- CRM-owned crew reassignment / deadhead 已实现；
+- PRM-owned passenger delay / unserved passenger 已进入 Fixed-Column PRM，并按 passenger-minutes / passenger count 独立复算。
+
+上述成本仍是 `abstract_cost_units` / implementation test profile，不代表真实航空公司生产成本，也未完成真实业务校准。
 
 所以：
 
@@ -436,14 +433,43 @@ Benchmark 顺序测试得到：SRM optimum 70 的 schedule 在现有 fixed Aircr
 
 ---
 
-# 16. 当前仍未实现
+# 16. Phase 2.4：Fixed-Column CRM
+
+Phase 2.4 接收外生 `CrewRecoveryRequest.required_operated_option_ids`，复用 SRM 的 canonical operated-option handoff，不重新决定 schedule，并使用现有人工 `crew_pairings` 建立：
+
+- 每个 crew 恰选一条显式 Pairing；
+- required revenue option 由 OPERATE segment 恰覆盖一次；
+- non-required OPERATE / DEADHEAD schedule leakage 禁止；
+- fixed-column legality 与 terminal ownership 审计；
+- CRM-owned crew reassignment / deadhead objective；
+- 求解后独立复算 pairing selection、coverage、terminal、cost 与全部约束。
+
+当前 crew reassignment 是“按 reassigned operating flight leg 计数”的 Phase 2 implementation mapping；未来真实业务成本标定时必须重新确认实际计费粒度是 crew / duty / pairing / flight-leg 中哪一种。Phase 2.4 不改变该既有成本逻辑。
+
+---
+
+# 17. Phase 2.5：Fixed-Column PRM
+
+Phase 2.5 接收外生 `PassengerRecoveryRequest` 与独立 `PassengerCapacityProfile`，复用 canonical SRM operated-option handoff，不重新决定 schedule、aircraft 或 crew，并使用现有人工 `passenger_itineraries` 建立：
+
+- `PRM-C01`：每个 passenger group 恰选一条 transported / explicit unserved itinerary；
+- `PRM-C02`：引用 non-selected Flight Option 的 itinerary 固定为零；
+- `PRM-C03`：按 `PassengerCommodity.count` 消耗每个 FLIGHT segment 的外生 residual seat capacity；
+- `PRM-C04`：复用 fixed-column validator 的 OD、时间连续、arrival/delay 与 UNSERVED shape；
+- `(3.16)` PRM-owned arrival delay / unserved objective 与独立复算；
+- reaccommodation、unserved、weighted passenger delay、seat load/capacity/slack diagnostics。
+
+论文 `(3.16)-(3.18)` 的变量是非负整数旅客流；当前 fixed-column 映射使用 binary、不可拆分 passenger group，并以 explicit UNSERVED itinerary 映射论文 `s_i`。Capacity profile 表示可供模型内 passenger groups 使用的 test residual inventory，不使用 `Flight.min_seats`，也不代表真实 aircraft capacity。
+
+`toy_case_003` 提供容量瓶颈与 alternative itinerary 的可手算 Oracle。Phase 1 Manual schedule 下 PRM 复现 1800 pax-min、15 名 reaccommodated、0 unserved；SRM 70-cost schedule 下 PRM 可行，但因现有 fixed itinerary coverage 使 P6 的 12 人选择 explicit unserved。
+
+---
+
+# 18. 当前仍未实现
 
 截至当前阶段，以下仍未完成：
 
 ```text
-Fixed-column CRM
-Fixed-column PRM
-
 Full Integrated MIP Oracle
 
 Scope Limiting
@@ -459,9 +485,9 @@ Integrality / Branching
 
 ---
 
-# 17. 当前工程状态
+# 19. 当前工程状态
 
-Phase 1、Phase 2.0、Phase 2.1、Phase 2.2 与 Phase 2.3 已完成：
+Phase 1、Phase 2.0、Phase 2.1、Phase 2.2、Phase 2.3、Phase 2.4 与 Phase 2.5 已完成：
 
 ```text
 Benchmark design
@@ -487,25 +513,35 @@ External required-operated-option contract
 Aircraft String / schedule no-leakage constraints
 Terminal / fixed-column Maintenance audit
 Aircraft reassignment / Ferry objective audit
+Fixed-column Crew Recovery Model
+External required-operated-option contract reuse
+OPERATE / DEADHEAD separation and schedule no-leakage constraints
+Crew terminal / fixed-column legality audit
+Crew reassignment / deadhead objective audit
+Fixed-column Passenger Recovery Model
+External versioned residual seat-capacity contract
+Passenger group / schedule / capacity constraints
+Passenger delay / unserved objective and independent audit
+toy_case_003 passenger-capacity Oracle
 ```
 
-当前已建立 SRM 与 ARM 两个独立业务优化子模型。SRM→ARM benchmark 如实暴露现有 fixed Aircraft Strings 对 70-cost schedule 的 coverage 缺口；Phase 1 的 80 分钟 Manual Reference 仍是完整恢复人工参考，没有被改写。
+当前已建立 SRM、ARM、CRM 与 PRM 四个相互独立、fixed-column、可审计的业务恢复子模型。SRM→ARM benchmark 如实暴露现有 fixed Aircraft Strings 对 70-cost schedule 的 coverage 缺口；Phase 1 的 80 分钟 Manual Reference 仍是完整恢复人工参考，没有被改写。SRM market-seat proxy 继续作为 schedule-level provisional constraint；PRM seat capacity 是首个显式 passenger seat-load constraint。
 
 ---
 
-# 18. 下一工程步骤
+# 20. 下一工程步骤
 
 下一步进入：
 
 ```text
-Phase 2.4 Fixed-column CRM
+Phase 3 Full Integrated Fixed-Column Oracle
 ```
 
-Phase 2.4 应使用现有 Crew Pairings 建立 crew assignment、required flight-option coverage、deadhead、terminal/pairing feasibility 与 CRM canonical objective，并继续保持单模型结果边界。
+Phase 3 才将 Schedule + Aircraft + Crew + Passenger 放入同一 MIP，并统一四个 canonical cost owner。进入 Phase 3 前应总审查 cross-model coupling、seat-capacity source、market-seat proxy、tie-breaking 与 fixed-column coverage gaps。
 
 ---
 
-# 19. Reproduction Integrity Rule
+# 21. Reproduction Integrity Rule
 
 任何阶段都不允许用：
 
