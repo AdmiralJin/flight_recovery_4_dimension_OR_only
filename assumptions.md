@@ -1229,6 +1229,32 @@ Full Integrated Fixed-Column Oracle 通过 benchmark、independent audit 与等�
 
 ---
 
+## A-057 Phase 3 v1 Explicit Cross-model Linking
+
+**来源状态：** `implementation_mapping`
+
+**实现方式：**
+Integrated Oracle 不再接收 Phase 2 的外生 `required_operated_option_ids`。每个 revenue `OPERATE` option 建立 schedule binary `x[o]`，Aircraft String、Crew Pairing、Passenger Itinerary 分别使用 `y[s]`、`z[p]`、`w[i]`，并在同一 MIP 中执行：
+
+- selected Aircraft operating coverage `= x[o]`；
+- selected Crew operating coverage `= x[o]`，DEADHEAD 不计入 operating coverage；
+- 每个 selected DEADHEAD incidence 满足 `z[p] <= x[o]`；
+- itinerary 的每个 FLIGHT segment 满足 `w[i] <= x[o]`；
+- passenger load 满足 `load[o] <= residual_capacity[o] * x[o]`。
+
+`CANCEL` 仍是 base-flight coverage 中的 schedule option；选择它会令该 base flight 的所有 `OPERATE x[o]=0`，从而通过上述 linking 自动切断 Aircraft、operating Crew、Deadhead 和 Passenger 使用。`FERRY` 不建立 revenue schedule `x`，继续只存在于 Aircraft String 并由 ARM owner 收费；UNSERVED 不引用 Flight Option。
+
+**原因：**
+这是从 Phase 2 顺序子模型升级为单一 Integrated MIP 所必需的可审计耦合映射，并直接落实 Phase 3 实施计划的 feasible-region 语义。
+
+**影响：**
+Schedule、Aircraft、Crew 与 Passenger 可相互影响联合最优选择；未选 alternate option 不得被任何 selected resource/passenger column 泄漏使用。容量右端仍遵循 A-048/A-056 的 test/residual 语义。
+
+**未来替换条件：**
+引入动态列或分解算法时必须保持与本 Oracle 等价的 linking 语义；引入 aircraft physical capacity 时另行版本化替换 residual capacity 来源，不静默修改本假设。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：

@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "toy_case_004",
+  "time_unit": "minute",
+  "notes": ["Phase 3 toy oracle: lower-cost original option has no Aircraft String."],
+  "flight_options": [
+    {"option_id": "FO_T4_F1_ORIG", "base_flight_id": "T4_F1", "operation_type": "operate", "change_types": ["unchanged"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T08:00:00Z", "arr_time": "2026-01-15T09:00:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": "Lower SRM cost but deliberately lacks aircraft coverage."},
+    {"option_id": "FO_T4_F1_D10", "base_flight_id": "T4_F1", "operation_type": "operate", "change_types": ["delay"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T08:10:00Z", "arr_time": "2026-01-15T09:10:00Z", "block_minutes": 60, "departure_delay_minutes": 10, "arrival_delay_minutes": 10, "notes": "Slightly costlier schedule with a feasible Aircraft String."}
+  ],
+  "aircraft_strings": [
+    {"string_id": "AS_T4_AC1_D10", "aircraft_id": "T4_AC1", "leg_option_ids": ["FO_T4_F1_D10"], "start_station": "A", "end_station": "B", "maintenance_satisfied": true, "cost_components": {}, "notes": "Only aircraft-feasible schedule."}
+  ],
+  "crew_pairings": [
+    {"pairing_id": "CP_T4_C1_ORIG", "crew_id": "T4_C1", "duties": [{"duty_id": "CP_T4_C1_ORIG_D1", "segments": [{"segment_type": "operate", "flight_option_id": "FO_T4_F1_ORIG", "origin": null, "destination": null, "start_time": null, "end_time": null, "notes": ""}]}], "start_station": "A", "end_station": "B", "cost_components": {}, "notes": ""},
+    {"pairing_id": "CP_T4_C1_D10", "crew_id": "T4_C1", "duties": [{"duty_id": "CP_T4_C1_D10_D1", "segments": [{"segment_type": "operate", "flight_option_id": "FO_T4_F1_D10", "origin": null, "destination": null, "start_time": null, "end_time": null, "notes": ""}]}], "start_station": "A", "end_station": "B", "cost_components": {}, "notes": ""}
+  ],
+  "passenger_itineraries": [
+    {"itinerary_id": "PI_T4_P1_ORIG", "pax_group_id": "T4_P1", "status": "transported", "segments": [{"segment_type": "flight", "flight_option_id": "FO_T4_F1_ORIG", "origin": null, "destination": null, "dep_time": null, "arr_time": null}], "final_destination": "B", "arrival_time": "2026-01-15T09:00:00Z", "arrival_delay_minutes": 0, "cost_components": {}, "notes": ""},
+    {"itinerary_id": "PI_T4_P1_D10", "pax_group_id": "T4_P1", "status": "transported", "segments": [{"segment_type": "flight", "flight_option_id": "FO_T4_F1_D10", "origin": null, "destination": null, "dep_time": null, "arr_time": null}], "final_destination": "B", "arrival_time": "2026-01-15T09:10:00Z", "arrival_delay_minutes": 10, "cost_components": {}, "notes": ""},
+    {"itinerary_id": "PI_T4_P1_UNSERVED", "pax_group_id": "T4_P1", "status": "unserved", "segments": [], "final_destination": null, "arrival_time": null, "arrival_delay_minutes": null, "cost_components": {}, "notes": ""}
+  ]
+}

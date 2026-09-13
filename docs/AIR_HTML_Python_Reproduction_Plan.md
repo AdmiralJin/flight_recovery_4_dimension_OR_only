@@ -21,7 +21,8 @@
 | Phase 2.4 | ✅ 完成 | Fixed-column CRM、Crew Pairing selection、Operating/Deadhead coupling、CRM cost 与独立审计 |
 | Phase 2.5 | ✅ 完成 | Fixed-column PRM、Seat Capacity、Passenger selection、delay/unserved cost 与独立审计 |
 | Costs + Constraints Workbench | ✅ 完成 | Canonical costs、浏览器实验 override、统一约束目录与 deterministic precheck |
-| Phase 3+ | ⏳ 未开始 | Integrated Oracle、Benders、CG 等 |
+| Phase 3 | ✅ 完成 | Integrated Oracle、x/y/z/w 联合 MIP、五类 linking、统一成本与独立审计 |
+| Phase 4+ | ⏳ 未开始 | Scope Limiting、Benders、CG 等 |
 
 因此当前准确表述是：
 
@@ -779,7 +780,7 @@ Phase 2 fixed-column test cost contract 已定义并实现 SRM-owned 的 delay�
 cancellation、route-change 成本和 ARM-owned 的 aircraft reassignment、ferry
 成本。这些系数采用 `abstract_cost_units`，用于模型与审计测试，不等于真实航空公司
 生产成本。Phase 2.4 已进一步实现 CRM-owned 的 crew reassignment、deadhead
-成本；Phase 2.5 已实现 PRM-owned passenger delay、unserved passenger 成本，完整联合目标仍未进入正式模型。
+成本；Phase 2.5 已实现 PRM-owned passenger delay、unserved passenger 成本；Phase 3 已在 Integrated Oracle 中按四个 canonical owner 汇总完整联合目标。
 
 不能声称：
 
@@ -1115,11 +1116,13 @@ Passenger service
 
 ## Phase 3 验收
 
-- [ ] Integrated MIP 可运行；
-- [ ] Objective 各成本来源可解释；
-- [ ] 所有约束通过独立检查；
-- [ ] Benchmark 与 Manual Oracle Invariants 对齐；
-- [ ] 若结果优于 Manual Reference，有可人工解释原因。
+- [x] Integrated MIP 可运行；
+- [x] Objective 各成本来源可解释；
+- [x] 所有约束通过独立检查；
+- [x] Benchmark 与 Manual Oracle Invariants 对齐；
+- [x] Integrated optimum `18080` 等于 Manual Reference candidate objective `18080`。
+
+实现位于 `backend/core/integrated_oracle.py`。模型在一个 Gurobi MIP 内联合建立 `x/y/z/w`，显式执行 Schedule→Aircraft、Schedule→Crew、Deadhead→Schedule、Passenger→Schedule 与 Seat Capacity→Schedule linking。`toy_case_004`、`toy_case_005` 和 `phase1_benchmark_001` 均由 Gurobi 实际求解，并由 local/cross-model/objective audit 独立复算。
 
 ---
 
@@ -1813,13 +1816,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0、Phase 2.1、Phase 2.2、Phase 2.3、Phase 2.4 和 Phase 2.5 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5 以及 Phase 3 Full Integrated Fixed-Column Oracle 已完成。当前应开始：
 
 ```text
-Phase 3 Full Integrated Fixed-Column Oracle
+Phase 4 Scope Limiting
 ```
 
-Phase 2 已分别验证外生 schedule 下的 Aircraft Strings、Crew Pairings 与 Passenger Itineraries 子问题。下一阶段才将 Schedule + Aircraft + Crew + Passenger 放入同一 MIP，并统一四个 canonical cost owner。
+Phase 3 已用同一 MIP 和统一 canonical owner objective 建立后续算法的 fixed-column Ground Truth。下一阶段应先缩小 disruption scope；Flight/Crew/Passenger generators、Benders 与 Column Generation 仍按既定顺序后移。
 
 ---
 

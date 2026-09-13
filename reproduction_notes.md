@@ -470,8 +470,6 @@ Phase 2.5 接收外生 `PassengerRecoveryRequest` 与独立 `PassengerCapacityPr
 截至当前阶段，以下仍未完成：
 
 ```text
-Full Integrated MIP Oracle
-
 Scope Limiting
 Automatic Flight String Generator
 Automatic Crew Pairing Generator
@@ -487,7 +485,7 @@ Integrality / Branching
 
 # 19. 当前工程状态
 
-Phase 1、Phase 2.0、Phase 2.1、Phase 2.2、Phase 2.3、Phase 2.4 与 Phase 2.5 已完成：
+Phase 1、Phase 2.0 至 Phase 2.5，以及 Phase 3 已完成：
 
 ```text
 Benchmark design
@@ -523,9 +521,16 @@ External versioned residual seat-capacity contract
 Passenger group / schedule / capacity constraints
 Passenger delay / unserved objective and independent audit
 toy_case_003 passenger-capacity Oracle
+Full Integrated Fixed-column Oracle with x/y/z/w in one MIP
+Schedule/Aircraft, Schedule/Crew, Deadhead/Schedule linking
+Passenger/Schedule and residual Seat/Schedule linking
+Canonical SRM + ARM + CRM + PRM objective and independent recomputation
+toy_case_004 aircraft-coupling Oracle
+toy_case_005 passenger-coupling Oracle
+phase1_benchmark_001 integrated optimum and Manual Reference upper-bound audit
 ```
 
-当前已建立 SRM、ARM、CRM 与 PRM 四个相互独立、fixed-column、可审计的业务恢复子模型。SRM→ARM benchmark 如实暴露现有 fixed Aircraft Strings 对 70-cost schedule 的 coverage 缺口；Phase 1 的 80 分钟 Manual Reference 仍是完整恢复人工参考，没有被改写。SRM market-seat proxy 继续作为 schedule-level provisional constraint；PRM seat capacity 是首个显式 passenger seat-load constraint。
+Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
 
 ---
 
@@ -534,10 +539,10 @@ toy_case_003 passenger-capacity Oracle
 下一步进入：
 
 ```text
-Phase 3 Full Integrated Fixed-Column Oracle
+Phase 4 Scope Limiting
 ```
 
-Phase 3 才将 Schedule + Aircraft + Crew + Passenger 放入同一 MIP，并统一四个 canonical cost owner。进入 Phase 3 前应总审查 cross-model coupling、seat-capacity source、market-seat proxy、tie-breaking 与 fixed-column coverage gaps。
+Phase 3 Integrated Oracle 已成为后续算法的 fixed-column Ground Truth。Phase 4 只缩小受扰动范围；自动 Columns、Benders 与 Column Generation 不在本阶段提前实现。
 
 ---
 
@@ -586,7 +591,7 @@ Constraint precheck 仅检查当前输入和 fixed columns 的确定性结构条
 PRECHECK != MIP FEASIBILITY
 ```
 
-它不运行 SRM / ARM / CRM / PRM solver，不产生 Feasible 或 Optimal 结论。该工作台是人工审计与实验配置工具，不代表 Phase 3 Integrated Oracle 已完成。
+它不运行 SRM / ARM / CRM / PRM solver，不产生 Feasible 或 Optimal 结论。该工作台只是人工审计与实验配置工具，不承担 Phase 3 Integrated Oracle 的求解或验收。
 
 ---
 

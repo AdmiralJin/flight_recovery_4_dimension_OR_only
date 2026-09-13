@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "toy_case_005_capacity",
+  "scenario_id": "toy_case_005",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "FO_T5_F1_ORIG": 0,
+    "FO_T5_F1_D10": 10
+  },
+  "notes": ["TEST / RESIDUAL CAPACITY; original option has no residual seats."]
+}

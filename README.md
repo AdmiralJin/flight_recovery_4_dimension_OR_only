@@ -32,11 +32,12 @@ FastAPI + Pydantic
 | Phase 2.4 | ✅ 完成 | Fixed-column CRM、canonical schedule handoff、Crew Pairings、Operating/Deadhead、独立诊断 |
 | Phase 2.5 | ✅ 完成 | Fixed-column PRM、外生 Seat Capacity、Passenger Itineraries、delay/unserved cost、独立诊断 |
 | 审计工作台 | ✅ 完成 | Costs override、统一 Constraint Registry、deterministic precheck 与四视图前端 |
-| Phase 3+ | ⏳ 未开始 | Full Integrated Fixed-column Oracle、Benders、Column Generation 等 |
+| Phase 3 | ✅ 完成 | Full Integrated Fixed-column Oracle、x/y/z/w 联合 MIP、五类 linking、统一目标与独立审计 |
+| Phase 4+ | ⏳ 未开始 | Scope Limiting、Benders、Column Generation 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
-Phase 2 已形成 SRM、ARM、CRM、PRM 四个独立 fixed-column 模型及 independent audit。同一 Phase 1 Manual Reference 可分别通过 ARM、CRM、PRM，但这仍不是 Integrated Oracle；SRM 独立最优在有限 Aircraft Strings 下可能导致 ARM infeasible，该边界保留到 Phase 3 联合建模处理。
+Phase 3 已将 Schedule、Aircraft、Crew、Passenger 的 `x/y/z/w` 放入同一 MIP，以显式 linking constraints 取代 Phase 2 的外生 schedule handoff。`phase1_benchmark_001` 的 Manual Reference 通过完整联合审计，Integrated optimum 为 `18080`，与该候选上界相等；`toy_case_004/005` 分别验证 Aircraft 与 Passenger 对 schedule choice 的反向耦合。
 
 ---
 
@@ -84,7 +85,7 @@ Constraints 从后端统一 registry 展示当前 SRM / ARM / CRM / PRM 的 20 �
 PRECHECK != MIP FEASIBILITY
 ```
 
-它不会调用 solver，也不代表 Integrated Oracle 已完成。PRM 页面中的容量为只读的 `TEST / RESIDUAL CAPACITY`，不是 aircraft physical capacity。
+它不会调用 solver，也不承担 Phase 3 Integrated Oracle 的求解或验收。PRM 页面中的容量为只读的 `TEST / RESIDUAL CAPACITY`，不是 aircraft physical capacity。
 
 `Export Scenario` 仅导出 Scenario；`Export Workbench Config` 另行导出 Scenario、cost overrides 及 profile IDs。
 
@@ -477,8 +478,10 @@ Phase 1 已包含：
 当前下一工程任务是：
 
 ```text
-Phase 3 Full Integrated Fixed-column Oracle
+Phase 4 Scope Limiting
 ```
+
+Phase 3 oracle 继续使用人工 fixed columns、test cost 与 test/residual passenger capacity；它是后续分解/列生成的 Ground Truth，不代表真实航司生产最优。
 
 完整开发路线见：
 
