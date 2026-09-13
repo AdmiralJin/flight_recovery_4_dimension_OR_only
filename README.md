@@ -31,6 +31,7 @@ FastAPI + Pydantic
 | Phase 2.3 | ✅ 完成 | Fixed-column ARM、外生 schedule contract、Aircraft Strings、Ferry/Maintenance、独立诊断 |
 | Phase 2.4 | ✅ 完成 | Fixed-column CRM、canonical schedule handoff、Crew Pairings、Operating/Deadhead、独立诊断 |
 | Phase 2.5 | ✅ 完成 | Fixed-column PRM、外生 Seat Capacity、Passenger Itineraries、delay/unserved cost、独立诊断 |
+| 审计工作台 | ✅ 完成 | Costs override、统一 Constraint Registry、deterministic precheck 与四视图前端 |
 | Phase 3+ | ⏳ 未开始 | Full Integrated Fixed-column Oracle、Benders、Column Generation 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
@@ -62,6 +63,31 @@ http://127.0.0.1:8000
 
 ---
 
+# Workbench 视图与边界
+
+页面提供四个一级视图：
+
+```text
+Data
+Visualization
+Costs
+Constraints
+```
+
+Costs 读取后端提供的 canonical `phase2_test_costs_v1`，可在浏览器内设置非负有限数值 override，并分别显示 Baseline 与 Effective。Override 只覆盖 coefficient 的 `value`，不修改 owner、unit、source 或 source reference，也不会写回 canonical JSON。
+
+Constraints 从后端统一 registry 展示当前 SRM / ARM / CRM / PRM 的 20 个真实约束 ID、公式摘要、来源、assumption 和相关输入。`Run Precheck` 只执行确定性输入检查：
+
+```text
+PRECHECK != MIP FEASIBILITY
+```
+
+它不会调用 solver，也不代表 Integrated Oracle 已完成。PRM 页面中的容量为只读的 `TEST / RESIDUAL CAPACITY`，不是 aircraft physical capacity。
+
+`Export Scenario` 仅导出 Scenario；`Export Workbench Config` 另行导出 Scenario、cost overrides 及 profile IDs。
+
+---
+
 # Data Editor
 
 当前页面支持：
@@ -83,8 +109,9 @@ http://127.0.0.1:8000
 - Delete Row；
 - Reset；
 - Load Example；
-- Import JSON；
-- Export JSON；
+- Import Scenario；
+- Export Scenario；
+- Export Workbench Config；
 - Validate。
 
 人工编辑后的 Scenario 保存在当前浏览器页面内存状态中。

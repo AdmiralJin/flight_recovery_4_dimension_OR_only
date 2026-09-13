@@ -4,7 +4,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import ClassVar
+from typing import Annotated, ClassVar
 
 from pydantic import Field, FiniteFloat, model_validator
 
@@ -110,6 +110,17 @@ class FixedColumnCostConfig(SchemaModel):
     notes: list[str] = Field(default_factory=list)
 
 
+CostOverrideValue = Annotated[
+    float,
+    Field(strict=True, ge=0, allow_inf_nan=False),
+]
+
+
+class CostOverrideConfig(SchemaModel):
+    base_cost_profile_id: str = Field(min_length=1)
+    overrides: dict[str, CostOverrideValue] = Field(default_factory=dict)
+
+
 @dataclass(frozen=True)
 class AircraftStringCostBreakdown:
     total: float
@@ -144,6 +155,28 @@ def load_cost_config(path: str | Path) -> FixedColumnCostConfig:
     return FixedColumnCostConfig.model_validate_json(
         Path(path).read_text(encoding="utf-8")
     )
+
+
+def apply_cost_overrides(
+    baseline: FixedColumnCostConfig,
+    override_config: CostOverrideConfig,
+) -> FixedColumnCostConfig:
+    """Return an effective profile without mutating canonical cost metadata."""
+
+    if override_config.base_cost_profile_id != baseline.cost_profile_id:
+        raise ValueError(
+            "base_cost_profile_id differs from canonical profile: "
+            f"{override_config.base_cost_profile_id!r} != {baseline.cost_profile_id!r}"
+        )
+    known = set(type(baseline.coefficients).model_fields)
+    unknown = sorted(set(override_config.overrides) - known)
+    if unknown:
+        raise ValueError(f"unknown cost override keys: {unknown}")
+
+    data = baseline.model_dump(mode="python")
+    for key, value in override_config.overrides.items():
+        data["coefficients"][key]["value"] = value
+    return FixedColumnCostConfig.model_validate(data)
 
 
 def schedule_flight_option_cost(

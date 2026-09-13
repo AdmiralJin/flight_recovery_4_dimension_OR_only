@@ -1,0 +1,80 @@
+.status-card--wide {
+  min-width: min(580px, 48vw);
+  align-items: stretch;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.workbench-status { padding: 15px 17px; }
+.workbench-status + .workbench-status { border-left: 1px solid rgba(255,255,255,.14); }
+.workbench-status span { overflow-wrap: anywhere; }
+.audit-panel { border: 1px solid var(--line); border-radius: 15px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
+.audit-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 24px; border-bottom: 1px solid var(--line); }
+.audit-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
+.audit-boundary { margin: 0; padding: 14px 24px; border-bottom: 1px solid #eadfca; color: #684c1f; background: #fff8e9; line-height: 1.5; }
+.audit-message { min-height: 20px; margin: 14px 24px 0; color: var(--muted); }
+.audit-content, .constraint-groups { padding: 4px 24px 28px; }
+.cost-owner-section, .constraint-model-section { margin-top: 24px; }
+.owner-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 10px; }
+.owner-heading h3 { margin: 0; font-family: Georgia, serif; font-size: 24px; font-weight: 500; }
+.owner-heading span { color: var(--muted); font-size: 12px; font-weight: 800; }
+.audit-table-wrap { border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
+.cost-table { min-width: 1040px; }
+.cost-table td { padding: 11px 10px; }
+.cost-table summary { cursor: pointer; color: var(--forest); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-weight: 800; }
+.cost-table input { min-width: 100px; }
+.numeric-cell { text-align: right; font-variant-numeric: tabular-nums; font-weight: 750; }
+.effective-value { color: var(--forest); background: #eef7f2; }
+.compact-metadata, .constraint-metadata { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 10px; margin: 12px 0 2px; font-size: 12px; }
+.compact-metadata dt, .constraint-metadata dt { color: var(--muted); font-weight: 750; }
+.compact-metadata dd, .constraint-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.badge-stack { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.metadata-badge { display: inline-flex; width: fit-content; padding: 4px 7px; border: 1px solid transparent; border-radius: 999px; font-size: 10px; font-weight: 900; letter-spacing: .04em; }
+.metadata-badge.is-paper { color: #255745; background: #dff0e9; }
+.metadata-badge.is-assumption { color: #70480d; background: #fff0cf; }
+.metadata-badge.is-override { color: #214e79; background: #e2effa; }
+.metadata-badge.is-proxy { color: #8a312b; border-color: #d88c86; background: #fff0ee; }
+.metadata-badge.is-validation { color: #4c4b78; background: #ecebfd; }
+.metadata-badge.is-test-capacity { color: #842b26; border-color: #d98b85; background: #fff1ef; }
+.metadata-badge.is-deferred, .metadata-badge.is-neutral { color: #59635f; background: #edf0ee; }
+.metadata-badge.is-passed { color: #175e45; background: #d9f3e8; }
+.metadata-badge.is-warning { color: #70480d; background: #fff0cf; }
+.metadata-badge.is-failed { color: #842b26; background: #f8dfdc; }
+.badge.warning { color: #70480d; background: #fff0cf; }
+.capacity-profile-summary { margin: 20px 24px 0; padding: 18px; border: 1px solid #dfb0ab; border-radius: 11px; background: #fff8f6; }
+.capacity-profile-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.capacity-profile-head strong, .capacity-profile-head span { display: block; }
+.capacity-profile-head strong { color: #842b26; font-size: 13px; letter-spacing: .06em; }
+.capacity-profile-head span { margin-top: 3px; color: #6b5b58; font-size: 12px; }
+.capacity-option-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 13px; }
+.capacity-option-grid span, .derived-values span { padding: 4px 7px; border-radius: 5px; color: #4d5a55; background: rgba(255,255,255,.8); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; }
+.capacity-profile-summary p { margin: 12px 0 0; color: #6b5b58; font-size: 12px; line-height: 1.5; }
+.constraint-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.constraint-card { min-width: 0; padding: 17px; border: 1px solid var(--line); border-radius: 11px; background: #fbfcfb; }
+.constraint-card.is-proxy { border-color: #dfb0ab; background: #fff9f7; }
+.constraint-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.constraint-card-head code { color: var(--muted); font-size: 11px; font-weight: 800; }
+.constraint-card h4 { margin: 5px 0 0; font-family: Georgia, serif; font-size: 20px; font-weight: 500; }
+.formula-summary { display: block; margin: 14px 0; padding: 11px 12px; border-left: 3px solid var(--forest); color: #183f35; background: #edf5f1; overflow-wrap: anywhere; line-height: 1.45; }
+.constraint-note { color: #5c6863; font-size: 13px; line-height: 1.5; }
+.current-data-summary { margin-top: 13px; padding: 11px; border-radius: 8px; font-size: 12px; line-height: 1.45; }
+.current-data-summary.is-passed { color: #275646; background: #e6f4ed; }
+.current-data-summary.is-warning { color: #70480d; background: #fff4da; }
+.current-data-summary.is-failed { color: #842b26; background: #fbe7e5; }
+.current-data-summary strong { display: block; }
+.current-data-summary ul { margin: 8px 0 0; padding-left: 18px; }
+.derived-values { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.related-navigation { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 13px; padding-top: 12px; border-top: 1px solid #e2e7e4; }
+@media (max-width: 1100px) {
+  .status-card--wide { min-width: 0; width: 100%; }
+  .constraint-card-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .status-card--wide { grid-template-columns: 1fr; }
+  .workbench-status + .workbench-status { border-top: 1px solid rgba(255,255,255,.14); border-left: 0; }
+  .audit-panel-head, .capacity-profile-head { align-items: flex-start; flex-direction: column; }
+  .audit-content, .constraint-groups { padding-right: 14px; padding-left: 14px; }
+  .capacity-profile-summary { margin-right: 14px; margin-left: 14px; }
+}

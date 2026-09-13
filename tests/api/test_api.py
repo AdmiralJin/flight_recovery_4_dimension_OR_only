@@ -12,10 +12,12 @@ def test_health_and_frontend_are_served():
     table_script = client.get("/static/js/tables.js")
 
     assert health.status_code == 200
-    assert health.json() == {"status": "ok", "phase": "0"}
+    assert health.json() == {"status": "ok", "phase": "2.5-workbench"}
     assert page.status_code == 200
     assert "Load Example" in page.text
-    assert "Import JSON" in page.text
+    assert "Import Scenario" in page.text
+    assert "Costs" in page.text
+    assert "Constraints" in page.text
     assert table_script.status_code == 200
     assert "Airport Capacity" in table_script.text
 

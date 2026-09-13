@@ -551,7 +551,7 @@ function renderImpactExplanation(section, impact) {
   } else {
     section.append(textElement(
       "p",
-      "No direct exposure or aircraft/crew downstream risk under the current Phase 0.5 rules.",
+      "No direct exposure or aircraft/crew downstream risk under the current deterministic rules.",
       "viz-detail-note",
     ));
   }
@@ -594,7 +594,7 @@ function renderCrewDetail(parent, flight) {
       section.append(textElement("p", `Duty ${index + 1}`, "viz-sequence-label"));
       section.append(renderSequence(duty));
     });
-    section.append(textElement("p", "Duty legality is not computed in Phase 0.5.", "viz-detail-footnote"));
+    section.append(textElement("p", "Duty legality is not computed by this deterministic visualization.", "viz-detail-footnote"));
   }
   parent.append(section);
 }
@@ -761,7 +761,7 @@ function renderCapacityHeatmap() {
     group.append(label);
     const title = svgElement("title");
     const weather = cell.weatherRestrictions.length ? cell.weatherRestrictions.join(", ") : "none";
-    title.textContent = `${cell.airport} · ${formatUtcTime(cell.startTime)}–${formatUtcTime(cell.endTime)} UTC\nScheduled ${capacityMode}: ${cell.load}\nCapacity: ${cell.capacity}\n${capacityStatusLabel(cell.status)}\nGate capacity: ${cell.gateCapacity}\nPlanned gate occupancy: not computed in Phase 0.5\nCurfew: ${cell.curfew}\nWeather: ${weather}`;
+    title.textContent = `${cell.airport} · ${formatUtcTime(cell.startTime)}–${formatUtcTime(cell.endTime)} UTC\nScheduled ${capacityMode}: ${cell.load}\nCapacity: ${cell.capacity}\n${capacityStatusLabel(cell.status)}\nGate capacity: ${cell.gateCapacity}\nPlanned gate occupancy: not computed by this visualization\nCurfew: ${cell.curfew}\nWeather: ${weather}`;
     group.append(title);
     svg.append(group);
   }

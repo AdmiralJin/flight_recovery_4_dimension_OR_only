@@ -5,9 +5,11 @@ import pytest
 from pydantic import ValidationError
 
 from backend.config.costs import (
+    CostOverrideConfig,
     CostOwner,
     CostSource,
     FixedColumnCostConfig,
+    apply_cost_overrides,
     load_cost_config,
     schedule_flight_option_cost,
 )
@@ -115,3 +117,50 @@ def test_schedule_cost_uses_canonical_config_without_magic_numbers(
     assert schedule_flight_option_cost(
         scenario, options["FO_FERRY_CA_1140"], costs
     ) == 0.0
+
+
+def test_cost_override_changes_only_effective_value_and_keeps_baseline_immutable():
+    baseline = load_cost_config(COST_PATH)
+    before = baseline.model_dump(mode="json")
+    override = CostOverrideConfig(
+        base_cost_profile_id=baseline.cost_profile_id,
+        overrides={"flight_delay_per_minute": 7.5},
+    )
+
+    effective = apply_cost_overrides(baseline, override)
+
+    assert baseline.model_dump(mode="json") == before
+    assert effective.coefficients.flight_delay_per_minute.value == 7.5
+    assert (
+        effective.coefficients.flight_delay_per_minute.model_dump(exclude={"value"})
+        == baseline.coefficients.flight_delay_per_minute.model_dump(exclude={"value"})
+    )
+
+
+def test_cost_override_rejects_unknown_key_and_profile_mismatch():
+    baseline = load_cost_config(COST_PATH)
+    with pytest.raises(ValueError, match="unknown cost override keys"):
+        apply_cost_overrides(
+            baseline,
+            CostOverrideConfig(
+                base_cost_profile_id=baseline.cost_profile_id,
+                overrides={"not_a_cost": 1.0},
+            ),
+        )
+    with pytest.raises(ValueError, match="differs from canonical profile"):
+        apply_cost_overrides(
+            baseline,
+            CostOverrideConfig(
+                base_cost_profile_id="wrong-profile",
+                overrides={},
+            ),
+        )
+
+
+@pytest.mark.parametrize("value", [-1.0, float("nan"), float("inf")])
+def test_cost_override_rejects_negative_nan_and_infinity(value):
+    with pytest.raises(ValidationError):
+        CostOverrideConfig(
+            base_cost_profile_id="phase2_test_v1",
+            overrides={"flight_delay_per_minute": value},
+        )

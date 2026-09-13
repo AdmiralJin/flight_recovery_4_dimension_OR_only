@@ -563,3 +563,27 @@ Objective 是否使用同一成本定义？
 ```
 
 只有上述问题可以清楚回答，才能把复杂算法作为可信论文复现。
+
+---
+
+# 22. Costs + Constraints Workbench
+
+当前前端在既有 Data 与 Visualization 之外增加 Costs 和 Constraints 两个一级视图。
+
+Costs 的 canonical 单一真源仍为：
+
+```text
+data/costs/phase2_test_costs_v1.json
+```
+
+浏览器 cost override 只修改实验状态中的 coefficient value。后端拒绝未知 key、负数、NaN 与 Infinity；owner、unit、canonical source 和 source reference 不可通过 override 修改，canonical 文件也不会被自动写回。
+
+Constraints 由后端统一 registry 提供 20 个实际代码约束 ID，包含 model、kind、provenance、implementation status、公式摘要、输入依赖和 assumption refs。Gate Inventory 与 Market-seat 明确标记为 proxy；PRM 容量明确标记为 `TEST / RESIDUAL CAPACITY` 和 `NOT AIRCRAFT PHYSICAL CAPACITY`。
+
+Constraint precheck 仅检查当前输入和 fixed columns 的确定性结构条件：
+
+```text
+PRECHECK != MIP FEASIBILITY
+```
+
+它不运行 SRM / ARM / CRM / PRM solver，不产生 Feasible 或 Optimal 结论。该工作台是人工审计与实验配置工具，不代表 Phase 3 Integrated Oracle 已完成。

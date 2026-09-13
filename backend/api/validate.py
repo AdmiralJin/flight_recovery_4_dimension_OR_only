@@ -23,8 +23,7 @@ def solve_guard(data: Any = Body(...)) -> JSONResponse:
     return JSONResponse(
         {
             "status": "not_implemented",
-            "message": "Phase 0 validates data only; optimization starts after Phase 0 acceptance.",
+            "message": "The Workbench does not expose optimization; /api/solve remains disabled.",
         },
         status_code=501,
     )
-

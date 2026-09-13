@@ -4,37 +4,43 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:,">
-  <title>AIR Recovery · Phase 0.5</title>
+  <title>AIR Recovery Workbench</title>
   <link rel="stylesheet" href="/static/css/styles.css">
   <link rel="stylesheet" href="/static/css/visualization.css">
+  <link rel="stylesheet" href="/static/css/workbench.css">
 </head>
 <body>
   <header class="hero">
     <div>
-      <p class="eyebrow">PETERSEN AIR REPRODUCTION · PHASE 0.5</p>
-      <h1>Recovery data workbench</h1>
-      <p class="subtitle">先校验数据，再进入模型。当前版本不会运行任何优化。</p>
+      <p class="eyebrow">PETERSEN AIR REPRODUCTION · AUDIT WORKBENCH</p>
+      <h1>AIR Recovery Workbench</h1>
+      <p class="subtitle">Scenario · Costs · Constraints · Validation</p>
     </div>
-    <div class="status-card">
-      <span class="status-dot" aria-hidden="true"></span>
-      <div><strong>Data layer</strong><span id="record-summary">Loading example…</span></div>
+    <div class="status-card status-card--wide">
+      <div class="workbench-status"><strong>Scenario</strong><span id="record-summary">Loading example…</span></div>
+      <div class="workbench-status"><strong>Costs</strong><span id="cost-summary-status">Loading…</span></div>
+      <div class="workbench-status"><strong>Constraints</strong><span id="constraint-summary-status">Not checked</span></div>
     </div>
   </header>
 
   <main>
     <section class="command-bar" aria-label="Scenario actions">
       <button id="load-example" class="button primary">Load Example</button>
-      <button id="import-json" class="button">Import JSON</button>
-      <button id="export-json" class="button">Export JSON</button>
-      <button id="reset-all" class="button">Reset All</button>
+      <button id="import-json" class="button">Import Scenario</button>
+      <button id="export-scenario" class="button">Export Scenario</button>
+      <button id="export-workbench" class="button">Export Workbench Config</button>
+      <button id="reset-scenario" class="button">Reset Scenario</button>
+      <button id="reset-workbench" class="button">Reset Workbench</button>
       <div class="command-spacer"></div>
       <button id="validate" class="button accent">Validate</button>
       <input id="file-input" type="file" accept="application/json,.json" hidden>
     </section>
 
     <nav class="view-switcher" aria-label="Workbench view">
-      <button id="show-data-view" class="view-switch" aria-pressed="true">Data Editor</button>
+      <button id="show-data-view" class="view-switch" aria-pressed="true">Data</button>
       <button id="show-visualization-view" class="view-switch" aria-pressed="false">Visualization</button>
+      <button id="show-costs-view" class="view-switch" aria-pressed="false">Costs</button>
+      <button id="show-constraints-view" class="view-switch" aria-pressed="false">Constraints</button>
     </nav>
 
     <div id="data-view">
@@ -97,9 +103,46 @@
         <div id="capacity-heatmap" class="viz-scroll-region"></div>
       </section>
     </div>
+
+    <div id="costs-view" hidden>
+      <section class="audit-panel" aria-labelledby="costs-title">
+        <div class="audit-panel-head">
+          <div>
+            <p class="section-kicker">CANONICAL COST PROFILE</p>
+            <h2 id="costs-title">Phase 2 costs and experiment overrides</h2>
+          </div>
+          <div class="audit-actions">
+            <span id="cost-status-badge" class="badge neutral">Baseline</span>
+            <button id="validate-costs" class="button accent">Validate Costs</button>
+            <button id="reset-cost-overrides" class="button">Reset Cost Overrides</button>
+          </div>
+        </div>
+        <p class="audit-boundary">Overrides change only the browser experiment state. Owner, unit, canonical source and source reference remain unchanged.</p>
+        <div id="cost-validation-message" class="audit-message" aria-live="polite"></div>
+        <div id="costs-container" class="audit-content"></div>
+      </section>
+    </div>
+
+    <div id="constraints-view" hidden>
+      <section class="audit-panel" aria-labelledby="constraints-title">
+        <div class="audit-panel-head">
+          <div>
+            <p class="section-kicker">PHASE 2 MODEL REGISTRY</p>
+            <h2 id="constraints-title">Constraint inspector</h2>
+          </div>
+          <div class="audit-actions">
+            <span id="precheck-status-badge" class="badge neutral">Not checked</span>
+            <button id="run-precheck" class="button accent">Run Precheck</button>
+          </div>
+        </div>
+        <p class="audit-boundary"><strong>PRECHECK ≠ MIP FEASIBILITY.</strong> These are deterministic input checks only; they never run SRM, ARM, CRM or PRM.</p>
+        <div id="capacity-profile-summary" class="capacity-profile-summary"></div>
+        <div id="constraints-container" class="constraint-groups"></div>
+      </section>
+    </div>
   </main>
 
-  <footer>Phase 0.5 · validated scenario visualization without optimization results</footer>
+  <footer>Audit workbench · Scenario editing, deterministic visualization, cost experiments and constraint metadata · Solver API disabled</footer>
   <script type="module" src="/static/js/app.js"></script>
 </body>
 </html>

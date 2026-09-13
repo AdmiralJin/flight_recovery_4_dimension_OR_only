@@ -20,11 +20,14 @@
 | Phase 2.3 | ✅ 完成 | Fixed-column ARM、Aircraft String selection、schedule coupling、Ferry/Maintenance 与独立审计 |
 | Phase 2.4 | ✅ 完成 | Fixed-column CRM、Crew Pairing selection、Operating/Deadhead coupling、CRM cost 与独立审计 |
 | Phase 2.5 | ✅ 完成 | Fixed-column PRM、Seat Capacity、Passenger selection、delay/unserved cost 与独立审计 |
+| Costs + Constraints Workbench | ✅ 完成 | Canonical costs、浏览器实验 override、统一约束目录与 deterministic precheck |
 | Phase 3+ | ⏳ 未开始 | Integrated Oracle、Benders、CG 等 |
 
 因此当前准确表述是：
 
 > **Phase 1 已完成数据、候选列和人工 Oracle 的程序化语义闭环；这不等于已证明 AIR 恢复目标的数学全局最优性。**
+
+当前 HTML 工作台已扩展为 Data / Visualization / Costs / Constraints 四个一级视图。Costs 和 Constraints 是人工审计与实验配置工具；约束公式由后端 registry 单一提供，precheck 不运行 solver，且不构成 MIP feasibility 或 Integrated Oracle 结论。PRM 容量展示为只读 test/residual capacity，不等同于 aircraft physical capacity。
 
 ---
 

@@ -22,6 +22,14 @@ from .crew_incidence import (
     CrewRecoveryIncidence,
     build_crew_recovery_incidence,
 )
+from .constraint_registry import (
+    CONSTRAINT_REGISTRY,
+    ConstraintImplementationStatus,
+    ConstraintKind,
+    ConstraintMetadata,
+    ConstraintProvenance,
+    list_constraint_metadata,
+)
 from .incidence import BinaryIncidence, RecoveryIncidence, build_recovery_incidence
 from .passenger_incidence import (
     PassengerRecoveryIncidence,
@@ -68,6 +76,11 @@ __all__ = [
     "CrmBuildError",
     "CrewRecoveryIncidence",
     "CrewRecoveryRequest",
+    "CONSTRAINT_REGISTRY",
+    "ConstraintImplementationStatus",
+    "ConstraintKind",
+    "ConstraintMetadata",
+    "ConstraintProvenance",
     "FixedColumnArmModel",
     "FixedColumnCrmModel",
     "FixedColumnPrmModel",
@@ -96,6 +109,7 @@ __all__ = [
     "build_recovery_incidence",
     "build_recovery_indices",
     "extract_required_operated_option_ids",
+    "list_constraint_metadata",
     "recompute_arm_diagnostics",
     "recompute_crm_diagnostics",
     "recompute_prm_diagnostics",
