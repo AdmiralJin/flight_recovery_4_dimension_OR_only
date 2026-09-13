@@ -1,5 +1,6 @@
 import {
   loadCanonicalCosts,
+  loadBenchmarkPrecheckInputs,
   loadConstraintRegistry,
   loadExample,
   runConstraintPrecheck,
@@ -36,6 +37,8 @@ const workbenchState = {
   costValidation: "baseline",
   constraintMetadata: [],
   constraintPrecheck: null,
+  recoveryColumns: null,
+  passengerCapacityProfile: null,
   capacityProfileSummary: null,
   modelProfile: "phase2_fixed_column",
 };
@@ -259,7 +262,11 @@ async function runPrecheck() {
   button.disabled = true;
   button.textContent = "Checking…";
   try {
-    const result = await runConstraintPrecheck(workbenchState.scenario);
+    const result = await runConstraintPrecheck(
+      workbenchState.scenario,
+      workbenchState.recoveryColumns,
+      workbenchState.passengerCapacityProfile,
+    );
     if (requestId !== precheckRequestId) return;
     workbenchState.constraintPrecheck = result;
     renderConstraints();
@@ -286,9 +293,14 @@ async function openConstraints() {
 
 async function setExample() {
   try {
-    const scenario = await loadExample();
+    const [scenario, precheckInputs] = await Promise.all([
+      loadExample(),
+      loadBenchmarkPrecheckInputs(),
+    ]);
     workbenchState.scenario = scenario;
     workbenchState.scenarioBaseline = clone(scenario);
+    workbenchState.recoveryColumns = precheckInputs.recovery_columns;
+    workbenchState.passengerCapacityProfile = precheckInputs.passenger_capacity_profile;
     workbenchState.scenarioValidation = null;
     workbenchState.constraintPrecheck = null;
     activeSection = "scenario";
@@ -306,14 +318,19 @@ async function setExample() {
 
 async function initializeWorkbench() {
   try {
-    const [scenario, costs, registry] = await Promise.all([
-      loadExample(), loadCanonicalCosts(), loadConstraintRegistry(),
+    const [scenario, costs, registry, precheckInputs] = await Promise.all([
+      loadExample(),
+      loadCanonicalCosts(),
+      loadConstraintRegistry(),
+      loadBenchmarkPrecheckInputs(),
     ]);
     workbenchState.scenario = scenario;
     workbenchState.scenarioBaseline = clone(scenario);
     workbenchState.costBaseline = costs;
     workbenchState.costEffective = clone(costs);
     workbenchState.constraintMetadata = registry.constraints;
+    workbenchState.recoveryColumns = precheckInputs.recovery_columns;
+    workbenchState.passengerCapacityProfile = precheckInputs.passenger_capacity_profile;
     workbenchState.capacityProfileSummary = registry.capacity_profile_summary;
     workbenchState.modelProfile = registry.model_profile;
     renderShell();
@@ -453,6 +470,10 @@ fileInput.addEventListener("change", async () => {
     }
     workbenchState.scenario = result.normalized_data;
     workbenchState.scenarioBaseline = clone(result.normalized_data);
+    if (workbenchState.recoveryColumns?.scenario_id !== result.normalized_data.scenario_id) {
+      workbenchState.recoveryColumns = null;
+      workbenchState.passengerCapacityProfile = null;
+    }
     workbenchState.scenarioValidation = "valid";
     workbenchState.constraintPrecheck = null;
     activeSection = "scenario";

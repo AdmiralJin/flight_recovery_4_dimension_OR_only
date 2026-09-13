@@ -1026,11 +1026,13 @@ Broken / Infeasible Case
 
 ## Phase 2 验收
 
-- [ ] 四模型分别可运行；
-- [ ] Incidence Matrices 独立测试；
-- [ ] 正常结果符合人工预期；
-- [ ] 破坏案例得到预期变化；
-- [ ] Solver OPTIMAL 不是唯一判断。
+- [x] 四模型分别可运行；
+- [x] Incidence Matrices 独立测试；
+- [x] 正常结果符合人工预期；
+- [x] 破坏案例得到预期变化；
+- [x] Solver OPTIMAL 不是唯一判断，四模型均有 independent audit；
+- [x] 同一 Phase 1 Manual Reference 分别通过 ARM、CRM、PRM；
+- [x] SRM 独立最优到 ARM 的有限列 infeasible 已保留为已知边界。
 
 ---
 
@@ -1066,12 +1068,18 @@ CRM Cost
 PRM Cost
 ```
 
-此阶段必须正式冻结：
+Phase 3 v1 冻结原则：
 
-- 各成本项；
-- 单位；
-- 权重；
-- Tie-breaking Policy。
+- 定位为 Full Integrated Fixed-Column Oracle，只验证四模型联合建模与跨模型耦合；
+- 继续使用现有人工 Recovery Columns，不动态生成列；
+- 直接使用 `phase2_test_costs_v1`，按 canonical owner 汇总 SRM + ARM + CRM + PRM；
+- 不增加模型级权重、隐藏 epsilon 或人为 tie-breaking penalty，允许等价最优解；
+- 继续使用 Phase 2 `TEST / RESIDUAL CAPACITY`，它不是 aircraft physical capacity；
+- PassengerCommodity 不拆分，一组整体选择一条 itinerary 或 UNSERVED；
+- 暂时保留 SRM Market-seat Proxy，并持续标记 `PROVISIONAL / PROXY`；
+- 不加入南航特定业务规则，不进入 Benders / Column Generation，不追求生产级参数。
+
+上述冻结边界登记于 `assumptions.md` A-056。
 
 ---
 

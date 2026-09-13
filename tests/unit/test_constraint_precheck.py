@@ -73,3 +73,18 @@ def test_precheck_warns_when_passenger_capacity_is_missing(
     check = _by_id(result)[prm.PRM_C03_SEAT_CAPACITY]
     assert check["status"] == "warning"
     assert check["derived_values"]["capacity_profile_present"] is False
+
+
+def test_scenario_only_precheck_runs_available_checks_instead_of_uniform_warning(
+    phase1_benchmark_001_data,
+):
+    result = precheck_constraints(phase1_benchmark_001_data)
+    checks = _by_id(result)
+
+    assert result["overall_status"] == "warning"
+    assert {item["status"] for item in result["results"]} == {"passed", "warning"}
+    assert checks[srm.SRM_C03_ARRIVAL_CAPACITY]["status"] == "passed"
+    assert checks[srm.SRM_C04_DEPARTURE_CAPACITY]["status"] == "passed"
+    assert checks[srm.SRM_C06_MARKET_SEAT]["status"] == "passed"
+    assert checks[srm.SRM_C01_FLIGHT_COVERAGE]["status"] == "warning"
+    assert checks[prm.PRM_C03_SEAT_CAPACITY]["status"] == "warning"

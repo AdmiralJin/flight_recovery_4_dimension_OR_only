@@ -1,7 +1,14 @@
 export async function loadExample() {
-  const response = await fetch("/api/examples/toy_case_001");
+  const response = await fetch("/api/examples/phase1_benchmark_001");
   if (!response.ok) throw new Error(`Example request failed (${response.status})`);
   return response.json();
+}
+
+export async function loadBenchmarkPrecheckInputs() {
+  return checkedJson(
+    await fetch("/api/model/constraints/benchmark-inputs"),
+    "Benchmark precheck input request",
+  );
 }
 
 export async function validateScenario(data) {

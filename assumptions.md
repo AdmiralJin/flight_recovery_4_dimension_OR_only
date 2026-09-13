@@ -1203,6 +1203,32 @@ Phase 3 冻结 selected aircraft/equipment 到 option capacity 的 handoff 后�
 
 ---
 
+## A-056 Phase 3 v1 Frozen Boundary
+
+**来源状态：** `implementation_phase_boundary`
+
+**实现方式：**
+Phase 3 v1 正式定义为 `Full Integrated Fixed-Column Oracle`，用于验证 SRM、ARM、CRM、PRM 联合建模及跨模型耦合。冻结原则如下：
+
+- 继续使用现有 fixed Recovery Columns，不动态生成 Flight Options、Aircraft Strings、Crew Pairings 或 Passenger Itineraries；
+- 继续使用 `phase2_test_costs_v1`，Integrated Objective 仅按 A-025 canonical owner 汇总 SRM + ARM + CRM + PRM 成本；
+- 不增加模型级权重、隐藏 epsilon 或人为 tie-breaking penalty，允许等价最优解；
+- 继续使用 A-048 的 Phase 2 test/residual Passenger Capacity Profile，并明确它不是 aircraft physical capacity；
+- 继续保持 A-049 的 PassengerCommodity group 不拆分，一组整体选择一条 itinerary 或 UNSERVED；
+- Phase 3 v1 暂时保留 A-055 的 SRM Market-seat Proxy，并持续标记 `PROVISIONAL / PROXY`；
+- 不加入南航特定业务规则，不进入 Benders / Column Generation，也不追求生产级真实参数。
+
+**原因：**
+Phase 3 v1 的唯一目标是建立可审计的整体 fixed-column Oracle；同时改变列空间、业务规则、容量真源、成本权重或分解算法会使跨模型耦合验证失去清晰基线。
+
+**影响：**
+Phase 3 v1 的可行性和最优性只在当前人工列、test cost 与 test/residual capacity 合同内成立，不代表真实航空公司生产恢复最优。
+
+**未来替换条件：**
+Full Integrated Fixed-Column Oracle 通过 benchmark、independent audit 与等价解审查后，再分别版本化引入业务规则、真实 capacity、动态列与分解算法。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：

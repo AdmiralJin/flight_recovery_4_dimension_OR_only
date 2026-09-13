@@ -36,6 +36,8 @@ FastAPI + Pydantic
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
+Phase 2 已形成 SRM、ARM、CRM、PRM 四个独立 fixed-column 模型及 independent audit。同一 Phase 1 Manual Reference 可分别通过 ARM、CRM、PRM，但这仍不是 Integrated Oracle；SRM 独立最优在有限 Aircraft Strings 下可能导致 ARM infeasible，该边界保留到 Phase 3 联合建模处理。
+
 ---
 
 # 数据编辑入口
@@ -86,6 +88,8 @@ PRECHECK != MIP FEASIBILITY
 
 `Export Scenario` 仅导出 Scenario；`Export Workbench Config` 另行导出 Scenario、cost overrides 及 profile IDs。
 
+工作台的 `Load Example` 默认加载 `phase1_benchmark_001`，并同时加载其 canonical Recovery Columns 与 Phase 2 test/residual passenger capacity，使 Constraints 能执行完整 benchmark precheck；导入其他 Scenario 时会清空不匹配的 Columns/Capacity，按 Scenario-only 模式明确降级。
+
 ---
 
 # Data Editor
@@ -120,14 +124,14 @@ PRECHECK != MIP FEASIBILITY
 
 # Visualization
 
-同一页面提供：
+同一工作台提供四个一级视图：
 
 ```text
-Data Editor
+Data
 Visualization
+Costs
+Constraints
 ```
-
-两种一级视图。
 
 进入 Visualization 时，系统先校验当前 Scenario；校验失败则拒绝绘图。
 

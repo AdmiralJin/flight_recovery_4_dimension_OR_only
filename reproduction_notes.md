@@ -587,3 +587,21 @@ PRECHECK != MIP FEASIBILITY
 ```
 
 它不运行 SRM / ARM / CRM / PRM solver，不产生 Feasible 或 Optimal 结论。该工作台是人工审计与实验配置工具，不代表 Phase 3 Integrated Oracle 已完成。
+
+---
+
+# 23. Phase 2 Final Review 与 Phase 3 v1 冻结
+
+Phase 2 最终审查继续保持四个独立 fixed-column 子模型，不将其伪装为 Integrated Oracle。同一 Phase 1 Manual Reference schedule 已分别作为 ARM、CRM、PRM 的独立 Gurobi smoke；三个模型各自 feasible 且 independent audit 通过，但没有把三个 objective 相加称为 integrated objective。
+
+SRM 独立最优在当前有限 Aircraft Strings 下可能使 ARM infeasible。这是被保留的正确边界，不通过修改 SRM cost、SRM solution 或偷偷补列掩盖；Phase 3 需要联合优化 Schedule 与资源恢复来处理该耦合。
+
+Phase 3 v1 冻结为：
+
+```text
+Full Integrated Fixed-Column Oracle
+```
+
+它继续复用 `phase2_test_costs_v1`、当前人工列、不可拆分 PassengerCommodity group、test/residual passenger capacity 和 provisional SRM Market-seat Proxy。Integrated Objective 只按 canonical owner 汇总 SRM + ARM + CRM + PRM，不增加模型级权重、隐藏 epsilon 或 tie-breaking penalty，允许等价最优解。
+
+Phase 3 v1 不加入南航特定业务规则，不动态生成 Columns，不进入 Benders / Column Generation，也不宣称使用生产级真实参数。完整冻结说明见 `assumptions.md` A-056。

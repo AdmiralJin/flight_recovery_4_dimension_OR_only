@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,9 @@ router = APIRouter(prefix="/api/model/constraints", tags=["model-metadata"])
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CAPACITY_PROFILE_PATH = (
     PROJECT_ROOT / "data" / "capacities" / "phase2_test_seat_capacity_v1.json"
+)
+BENCHMARK_COLUMNS_PATH = (
+    PROJECT_ROOT / "data" / "columns" / "phase1_benchmark_001_columns.json"
 )
 
 
@@ -41,6 +45,17 @@ def get_constraints() -> dict:
             "display_label": "TEST / RESIDUAL CAPACITY",
             "not_physical_aircraft_capacity": True,
         },
+    }
+
+
+@router.get("/benchmark-inputs")
+def get_benchmark_precheck_inputs() -> dict:
+    capacity = load_passenger_capacity_profile(CAPACITY_PROFILE_PATH)
+    columns = json.loads(BENCHMARK_COLUMNS_PATH.read_text(encoding="utf-8"))
+    return {
+        "scenario_id": columns["scenario_id"],
+        "recovery_columns": columns,
+        "passenger_capacity_profile": capacity.model_dump(mode="json"),
     }
 
 

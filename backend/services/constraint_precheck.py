@@ -42,13 +42,80 @@ def _result(
     }
 
 
-def _no_columns(constraint_id: str, scenario_summary: dict[str, Any]):
+def _no_columns(
+    constraint_id: str,
+    scenario_summary: dict[str, Any],
+    *,
+    capacity_present: bool,
+):
     return _result(
         constraint_id,
         PrecheckStatus.WARNING,
-        "Recovery Columns were not supplied; structural precheck is incomplete.",
-        derived_values=scenario_summary,
+        "This check depends on Recovery Columns; Scenario-only precheck is incomplete.",
+        derived_values={
+            **scenario_summary,
+            "recovery_columns_present": False,
+            "capacity_profile_present": capacity_present,
+        },
     )
+
+
+def _scenario_only_results(
+    metadata: tuple[Any, ...],
+    scenario: Any,
+    scenario_summary: dict[str, Any],
+    capacity_present: bool,
+) -> list[dict[str, Any]]:
+    """Check Scenario-owned prerequisites without claiming column feasibility."""
+
+    scenario_checks = {
+        srm.SRM_C03_ARRIVAL_CAPACITY: _result(
+            srm.SRM_C03_ARRIVAL_CAPACITY,
+            PrecheckStatus.PASSED,
+            "Scenario arrival-capacity inputs passed validation; option memberships await Recovery Columns.",
+            derived_values={
+                "airport_interval_count": len(scenario.airport_intervals),
+                "arrival_capacity_total": sum(
+                    interval.arr_capacity for interval in scenario.airport_intervals
+                ),
+                "recovery_columns_present": False,
+            },
+        ),
+        srm.SRM_C04_DEPARTURE_CAPACITY: _result(
+            srm.SRM_C04_DEPARTURE_CAPACITY,
+            PrecheckStatus.PASSED,
+            "Scenario departure-capacity inputs passed validation; option memberships await Recovery Columns.",
+            derived_values={
+                "airport_interval_count": len(scenario.airport_intervals),
+                "departure_capacity_total": sum(
+                    interval.dep_capacity for interval in scenario.airport_intervals
+                ),
+                "recovery_columns_present": False,
+            },
+        ),
+        srm.SRM_C06_MARKET_SEAT: _result(
+            srm.SRM_C06_MARKET_SEAT,
+            PrecheckStatus.PASSED,
+            "Scenario market flags and proxy inputs passed validation; option enforcement awaits Recovery Columns.",
+            derived_values={
+                "mode": srm.MARKET_SEAT_MODE,
+                "market_flight_count": scenario_summary["market_flights"],
+                "market_min_seats_total": sum(
+                    item.min_seats for item in scenario.flights if item.market_flag
+                ),
+                "recovery_columns_present": False,
+            },
+        ),
+    }
+    return [
+        scenario_checks.get(item.constraint_id)
+        or _no_columns(
+            item.constraint_id,
+            scenario_summary,
+            capacity_present=capacity_present,
+        )
+        for item in metadata
+    ]
 
 
 def precheck_constraints(
@@ -91,9 +158,12 @@ def precheck_constraints(
         "airport_intervals": len(scenario.airport_intervals),
     }
     if columns_data is None:
-        results = [
-            _no_columns(item.constraint_id, scenario_summary) for item in metadata
-        ]
+        results = _scenario_only_results(
+            metadata,
+            scenario,
+            scenario_summary,
+            capacity_data is not None,
+        )
         return {
             "precheck_semantics": "DETERMINISTIC_PRECHECK_NOT_MIP_FEASIBILITY",
             "overall_status": PrecheckStatus.WARNING.value,

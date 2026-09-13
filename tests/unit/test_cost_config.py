@@ -45,6 +45,28 @@ def test_canonical_cost_profile_loads_with_units_sources_and_owners():
     assert costs.coefficients.unserved_passenger.owner is CostOwner.PRM
 
 
+def test_phase2_cost_ownership_is_complete_and_has_no_duplicate_owner():
+    costs = load_cost_config(COST_PATH)
+    expected = {
+        "flight_delay_per_minute": CostOwner.SRM,
+        "flight_cancellation": CostOwner.SRM,
+        "origin_change": CostOwner.SRM,
+        "destination_change": CostOwner.SRM,
+        "aircraft_reassignment": CostOwner.ARM,
+        "ferry_per_minute": CostOwner.ARM,
+        "crew_reassignment": CostOwner.CRM,
+        "deadhead_per_minute": CostOwner.CRM,
+        "passenger_delay_per_pax_minute": CostOwner.PRM,
+        "unserved_passenger": CostOwner.PRM,
+    }
+
+    actual = {
+        name: coefficient.owner
+        for name, coefficient in costs.coefficients
+    }
+    assert actual == expected
+
+
 def test_cost_config_serialization_round_trip():
     costs = load_cost_config(COST_PATH)
     assert FixedColumnCostConfig.model_validate_json(costs.model_dump_json()) == costs

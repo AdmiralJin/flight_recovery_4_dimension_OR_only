@@ -61,6 +61,19 @@ def test_constraint_api_returns_registry_and_read_only_test_capacity():
     assert payload["capacity_profile_summary"]["not_physical_aircraft_capacity"] is True
 
 
+def test_constraint_api_serves_complete_canonical_benchmark_precheck_inputs():
+    response = client.get("/api/model/constraints/benchmark-inputs")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["scenario_id"] == "phase1_benchmark_001"
+    assert payload["recovery_columns"]["scenario_id"] == payload["scenario_id"]
+    assert payload["passenger_capacity_profile"]["scenario_id"] == payload["scenario_id"]
+    assert payload["recovery_columns"]["aircraft_strings"]
+    assert payload["recovery_columns"]["crew_pairings"]
+    assert payload["recovery_columns"]["passenger_itineraries"]
+
+
 def test_constraint_precheck_api_does_not_claim_solver_feasibility(toy_case):
     response = client.post(
         "/api/model/constraints/precheck",
@@ -71,4 +84,23 @@ def test_constraint_precheck_api_does_not_claim_solver_feasibility(toy_case):
     payload = response.json()
     assert payload["precheck_semantics"] == "DETERMINISTIC_PRECHECK_NOT_MIP_FEASIBILITY"
     assert payload["overall_status"] == "warning"
+    assert len(payload["results"]) == 20
+
+
+def test_constraint_precheck_api_runs_complete_benchmark_inputs(
+    phase1_benchmark_001_data,
+):
+    inputs = client.get("/api/model/constraints/benchmark-inputs").json()
+    response = client.post(
+        "/api/model/constraints/precheck",
+        json={
+            "scenario": phase1_benchmark_001_data,
+            "recovery_columns": inputs["recovery_columns"],
+            "capacity_profile": inputs["passenger_capacity_profile"],
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert not [item for item in payload["results"] if item["status"] == "failed"]
     assert len(payload["results"]) == 20

@@ -96,3 +96,13 @@ test("constraint renderer distinguishes provenance and navigates to canonical Da
   assert.match(appSource, /renderConstraintInspector\([\s\S]*showDataView/);
   assert.match(appSource, /const workbenchState = \{[\s\S]*scenario:[\s\S]*costBaseline:[\s\S]*constraintMetadata:/);
 });
+
+test("frontend precheck sends benchmark Scenario, Recovery Columns, and capacity", () => {
+  assert.match(appSource, /recoveryColumns: null/);
+  assert.match(appSource, /passengerCapacityProfile: null/);
+  assert.match(
+    appSource,
+    /runConstraintPrecheck\([\s\S]*workbenchState\.scenario,[\s\S]*workbenchState\.recoveryColumns,[\s\S]*workbenchState\.passengerCapacityProfile/,
+  );
+  assert.match(appSource, /loadBenchmarkPrecheckInputs\(\)/);
+});
