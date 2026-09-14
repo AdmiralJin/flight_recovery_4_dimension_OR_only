@@ -1,0 +1,42 @@
+{
+  "scenario_id": "toy_case_006_scope",
+  "recovery_window": {
+    "start_time": "2026-01-15T07:00:00Z",
+    "end_time": "2026-01-15T12:00:00Z"
+  },
+  "airports": [
+    {"airport_id": "A", "name": "Alpha"},
+    {"airport_id": "B", "name": "Bravo"},
+    {"airport_id": "C", "name": "Charlie"},
+    {"airport_id": "D", "name": "Delta"},
+    {"airport_id": "E", "name": "Echo"}
+  ],
+  "flights": [
+    {"flight_id": "S6_F1", "origin": "A", "destination": "B", "sched_dep": "2026-01-15T08:00:00Z", "sched_arr": "2026-01-15T09:00:00Z", "duration": 60, "original_aircraft": "S6_AC1", "original_equipment": "E1", "original_crew": "S6_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 30},
+    {"flight_id": "S6_F2", "origin": "B", "destination": "C", "sched_dep": "2026-01-15T09:30:00Z", "sched_arr": "2026-01-15T10:30:00Z", "duration": 60, "original_aircraft": "S6_AC1", "original_equipment": "E1", "original_crew": "S6_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 30},
+    {"flight_id": "S6_U1", "origin": "D", "destination": "E", "sched_dep": "2026-01-15T08:30:00Z", "sched_arr": "2026-01-15T09:30:00Z", "duration": 60, "original_aircraft": "S6_AC2", "original_equipment": "E1", "original_crew": "S6_C2", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0}
+  ],
+  "aircraft": [
+    {"tail_id": "S6_AC1", "equipment_type": "E1", "initial_station_at_t": "A", "required_station_at_T_end": "C", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["S6_F1", "S6_F2"]},
+    {"tail_id": "S6_AC2", "equipment_type": "E1", "initial_station_at_t": "D", "required_station_at_T_end": "E", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["S6_U1"]}
+  ],
+  "crew": [
+    {"crew_id": "S6_C1", "rating": "E1", "start_station_at_t": "A", "required_station_at_T_end": "C", "original_duties": [["S6_F1", "S6_F2"]], "original_pairing": ["S6_F1", "S6_F2"]},
+    {"crew_id": "S6_C2", "rating": "E1", "start_station_at_t": "D", "required_station_at_T_end": "E", "original_duties": [["S6_U1"]], "original_pairing": ["S6_U1"]}
+  ],
+  "passengers": [
+    {"pax_group_id": "S6_P1", "count": 10, "origin": "A", "destination": "C", "original_departure": "2026-01-15T08:00:00Z", "scheduled_arrival": "2026-01-15T10:30:00Z", "original_itinerary": ["S6_F1", "S6_F2"]},
+    {"pax_group_id": "S6_P2", "count": 5, "origin": "D", "destination": "E", "original_departure": "2026-01-15T08:30:00Z", "scheduled_arrival": "2026-01-15T09:30:00Z", "original_itinerary": ["S6_U1"]}
+  ],
+  "airport_intervals": [
+    {"airport": "A", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T08:10:00Z", "arr_capacity": 10, "dep_capacity": 0, "gate_capacity": 10, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "A", "start_time": "2026-01-15T08:10:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 10, "dep_capacity": 10, "gate_capacity": 10, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "B", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 10, "dep_capacity": 10, "gate_capacity": 10, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "C", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 10, "dep_capacity": 10, "gate_capacity": 10, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "D", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 10, "dep_capacity": 10, "gate_capacity": 10, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "E", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 10, "dep_capacity": 10, "gate_capacity": 10, "curfew_flag": false, "weather_restrictions": []}
+  ],
+  "disruptions": [
+    {"airport": "A", "start_time": "2026-01-15T07:50:00Z", "end_time": "2026-01-15T08:10:00Z", "capacity_change": -1, "restriction_type": "departure_capacity_reduction"}
+  ]
+}

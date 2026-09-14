@@ -59,3 +59,13 @@ def toy_case_005_data() -> dict:
 @pytest.fixture
 def toy_case_005_columns_data() -> dict:
     return _phase1_json("columns", "toy_case_005_columns.json")
+
+
+@pytest.fixture
+def toy_case_006_scope_data() -> dict:
+    return _phase1_json("examples", "toy_case_006_scope.json")
+
+
+@pytest.fixture
+def toy_case_006_scope_columns_data() -> dict:
+    return _phase1_json("columns", "toy_case_006_scope_columns.json")

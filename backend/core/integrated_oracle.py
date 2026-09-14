@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Any
 
@@ -42,6 +42,13 @@ from .passenger_incidence import (
 )
 from .prm import FixedColumnPrmModel, PassengerRecoveryRequest
 from .srm import FixedColumnSrmModel
+from .scope import (
+    OriginalCandidates,
+    RecoveryScope,
+    resolve_original_candidates,
+    scope_metrics,
+    validate_recovery_scope,
+)
 
 
 INTEGRATED_MODEL_NAME = "full_integrated_fixed_column_oracle"
@@ -53,6 +60,11 @@ INTEGRATED_L03_DEADHEAD_SCHEDULE = "INTEGRATED-L03-DEADHEAD-SCHEDULE"
 INTEGRATED_L04_PASSENGER_SCHEDULE = "INTEGRATED-L04-PASSENGER-SCHEDULE"
 INTEGRATED_L05_SEAT_SCHEDULE = "INTEGRATED-L05-SEAT-SCHEDULE"
 
+SCOPE_FIX_FLIGHT = "SCOPE-FIX-FLIGHT"
+SCOPE_FIX_AIRCRAFT = "SCOPE-FIX-AIRCRAFT"
+SCOPE_FIX_CREW = "SCOPE-FIX-CREW"
+SCOPE_FIX_PASSENGER = "SCOPE-FIX-PASSENGER"
+
 LINKING_CONSTRAINTS = MappingProxyType(
     {
         INTEGRATED_L01_SCHEDULE_AIRCRAFT: "sum(A_FS[o,s] * y[s]) = x[o]",
@@ -60,6 +72,15 @@ LINKING_CONSTRAINTS = MappingProxyType(
         INTEGRATED_L03_DEADHEAD_SCHEDULE: "z[p] <= x[o] for each deadhead incidence",
         INTEGRATED_L04_PASSENGER_SCHEDULE: "w[i] <= x[o] for each flight segment",
         INTEGRATED_L05_SEAT_SCHEDULE: "sum(pax[g(i)] * A_PI[o,i] * w[i]) <= capacity[o] * x[o]",
+    }
+)
+
+SCOPE_FIX_CONSTRAINTS = MappingProxyType(
+    {
+        SCOPE_FIX_FLIGHT: "x[original_option(f)] = 1 for each out-of-scope flight",
+        SCOPE_FIX_AIRCRAFT: "y[original_string(a)] = 1 for each out-of-scope aircraft",
+        SCOPE_FIX_CREW: "z[original_pairing(k)] = 1 for each out-of-scope crew",
+        SCOPE_FIX_PASSENGER: "w[original_itinerary(g)] = 1 for each out-of-scope passenger group",
     }
 )
 
@@ -104,6 +125,11 @@ class IntegratedFixedColumnModel:
     string_costs: Mapping[str, Any]
     pairing_costs: Mapping[str, Any]
     itinerary_costs: Mapping[str, Any]
+    scope: RecoveryScope | None = None
+    original_candidates: OriginalCandidates | None = None
+    scope_metrics: Mapping[str, Any] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
 
 
 def _validation_message(scope: str, issues: list[Any]) -> str:
@@ -198,6 +224,8 @@ def build_integrated_fixed_column_oracle(
     capacity_profile: PassengerCapacityProfile,
     costs: FixedColumnCostConfig,
     solver: SolverAdapter,
+    *,
+    scope: RecoveryScope | None = None,
 ) -> IntegratedFixedColumnModel:
     """Build one MIP containing Phase 3 v1 x/y/z/w decisions."""
 
@@ -214,6 +242,19 @@ def build_integrated_fixed_column_oracle(
             f"integrated incidence build failed: {exc}"
         ) from exc
     _require_candidates(indices, incidence)
+    original_candidates = None
+    resolved_scope_metrics: Mapping[str, Any] = MappingProxyType({})
+    if scope is not None:
+        try:
+            validate_recovery_scope(scenario, columns, scope)
+            original_candidates = resolve_original_candidates(scenario, columns)
+        except (KeyError, ValueError) as exc:
+            raise IntegratedOracleBuildError(
+                f"scope validation failed: {exc}"
+            ) from exc
+        resolved_scope_metrics = MappingProxyType(
+            scope_metrics(scenario, columns, scope)
+        )
 
     options = {item.option_id: item for item in columns.flight_options}
     aircraft = {item.tail_id: item for item in scenario.aircraft}
@@ -453,6 +494,51 @@ def build_integrated_fixed_column_oracle(
             name=_name(prm.PRM_C01_GROUP_SELECTION, group_id),
         )
 
+    # Phase 4 scope limiting preserves the complete Phase 3 model and freezes
+    # only out-of-scope owners to their semantically resolved original choice.
+    if scope is not None:
+        assert original_candidates is not None
+        scoped_flights = set(scope.flight_ids)
+        scoped_aircraft = set(scope.aircraft_ids)
+        scoped_crew = set(scope.crew_ids)
+        scoped_passengers = set(scope.passenger_group_ids)
+        for flight_id in indices.flights.ids:
+            if flight_id not in scoped_flights:
+                option_id = original_candidates.flight_option_by_flight[flight_id]
+                solver.add_linear_constraint(
+                    {x[option_id]: 1.0},
+                    ConstraintSense.EQUAL,
+                    1.0,
+                    name=_name(SCOPE_FIX_FLIGHT, flight_id),
+                )
+        for aircraft_id in indices.aircraft.ids:
+            if aircraft_id not in scoped_aircraft:
+                string_id = original_candidates.aircraft_string_by_aircraft[aircraft_id]
+                solver.add_linear_constraint(
+                    {y[string_id]: 1.0},
+                    ConstraintSense.EQUAL,
+                    1.0,
+                    name=_name(SCOPE_FIX_AIRCRAFT, aircraft_id),
+                )
+        for crew_id in indices.crew.ids:
+            if crew_id not in scoped_crew:
+                pairing_id = original_candidates.crew_pairing_by_crew[crew_id]
+                solver.add_linear_constraint(
+                    {z[pairing_id]: 1.0},
+                    ConstraintSense.EQUAL,
+                    1.0,
+                    name=_name(SCOPE_FIX_CREW, crew_id),
+                )
+        for group_id in indices.passenger_groups.ids:
+            if group_id not in scoped_passengers:
+                itinerary_id = original_candidates.passenger_itinerary_by_group[group_id]
+                solver.add_linear_constraint(
+                    {w[itinerary_id]: 1.0},
+                    ConstraintSense.EQUAL,
+                    1.0,
+                    name=_name(SCOPE_FIX_PASSENGER, group_id),
+                )
+
     # Cross-model linking replaces the Phase 2 external schedule requests.
     for option_id in indices.revenue_operate_options.ids:
         aircraft_coefficients = {
@@ -543,6 +629,9 @@ def build_integrated_fixed_column_oracle(
         string_costs=MappingProxyType(string_costs),
         pairing_costs=MappingProxyType(pairing_costs),
         itinerary_costs=MappingProxyType(itinerary_costs),
+        scope=scope,
+        original_candidates=original_candidates,
+        scope_metrics=resolved_scope_metrics,
     )
 
 
@@ -572,8 +661,90 @@ def _link_check(
         "rhs": rhs,
         "slack": slack,
         "satisfied": satisfied,
-        "formula": LINKING_CONSTRAINTS[constraint_id],
+        "formula": (
+            LINKING_CONSTRAINTS[constraint_id]
+            if constraint_id in LINKING_CONSTRAINTS
+            else SCOPE_FIX_CONSTRAINTS[constraint_id]
+        ),
     }
+
+
+def _scope_fix_checks(
+    model: IntegratedFixedColumnModel,
+    x_values: Mapping[str, float],
+    y_values: Mapping[str, float],
+    z_values: Mapping[str, float],
+    w_values: Mapping[str, float],
+) -> dict[str, Any]:
+    if model.scope is None:
+        return {
+            "enabled": False,
+            "flight": [],
+            "aircraft": [],
+            "crew": [],
+            "passenger": [],
+            "all_constraints_satisfied": True,
+            "constraint_violation_count": 0,
+        }
+    assert model.original_candidates is not None
+    scope = model.scope
+    groups = (
+        (
+            "flight",
+            SCOPE_FIX_FLIGHT,
+            model.indices.flights.ids,
+            set(scope.flight_ids),
+            model.original_candidates.flight_option_by_flight,
+            x_values,
+        ),
+        (
+            "aircraft",
+            SCOPE_FIX_AIRCRAFT,
+            model.indices.aircraft.ids,
+            set(scope.aircraft_ids),
+            model.original_candidates.aircraft_string_by_aircraft,
+            y_values,
+        ),
+        (
+            "crew",
+            SCOPE_FIX_CREW,
+            model.indices.crew.ids,
+            set(scope.crew_ids),
+            model.original_candidates.crew_pairing_by_crew,
+            z_values,
+        ),
+        (
+            "passenger",
+            SCOPE_FIX_PASSENGER,
+            model.indices.passenger_groups.ids,
+            set(scope.passenger_group_ids),
+            model.original_candidates.passenger_itinerary_by_group,
+            w_values,
+        ),
+    )
+    result: dict[str, Any] = {"enabled": True}
+    all_checks = []
+    for label, constraint_id, owners, scoped, originals, values in groups:
+        checks = [
+            _link_check(
+                constraint_id,
+                owner_id,
+                values[originals[owner_id]],
+                "==",
+                1.0,
+            )
+            for owner_id in owners
+            if owner_id not in scoped
+        ]
+        result[label] = checks
+        all_checks.extend(checks)
+    result["all_constraints_satisfied"] = all(
+        item["satisfied"] for item in all_checks
+    )
+    result["constraint_violation_count"] = sum(
+        not item["satisfied"] for item in all_checks
+    )
+    return result
 
 
 def recompute_integrated_diagnostics(
@@ -763,6 +934,9 @@ def recompute_integrated_diagnostics(
         + passenger_checks
         + seat_checks
     )
+    scope_audit = _scope_fix_checks(
+        model, x_values, y_values, z_values, w_values
+    )
     objective_breakdown = {
         "srm": srm_audit["objective_breakdown"],
         "arm": arm_audit["objective_breakdown"],
@@ -782,10 +956,15 @@ def recompute_integrated_diagnostics(
         for audit in (srm_audit, arm_audit, crm_audit, prm_audit)
     )
     cross_ok = all(item["satisfied"] for item in cross_checks)
+    scope_ok = scope_audit["all_constraints_satisfied"]
     return {
         "model": "INTEGRATED",
         "single_model_only": False,
-        "phase": "3-v1-full-integrated-fixed-column-oracle",
+        "phase": (
+            "4-v1-scope-limited-integrated-fixed-column-oracle"
+            if model.scope is not None
+            else "3-v1-full-integrated-fixed-column-oracle"
+        ),
         "linking_contract": dict(LINKING_CONSTRAINTS),
         "capacity_semantics": "TEST / RESIDUAL CAPACITY; NOT AIRCRAFT PHYSICAL CAPACITY",
         "selected_option_by_flight": srm_audit["selected_option_by_flight"],
@@ -807,14 +986,17 @@ def recompute_integrated_diagnostics(
                 not item["satisfied"] for item in cross_checks
             ),
         },
+        "scope_fix_audit": scope_audit,
+        "scope_metrics": dict(model.scope_metrics),
         "objective_breakdown": objective_breakdown,
-        "all_constraints_satisfied": local_ok and cross_ok,
+        "all_constraints_satisfied": local_ok and cross_ok and scope_ok,
         "constraint_violation_count": (
             sum(
                 audit["constraint_violation_count"]
                 for audit in (srm_audit, arm_audit, crm_audit, prm_audit)
             )
             + sum(not item["satisfied"] for item in cross_checks)
+            + scope_audit["constraint_violation_count"]
         ),
     }
 
@@ -928,6 +1110,7 @@ def solve_integrated_fixed_column_oracle(
     costs: FixedColumnCostConfig,
     solver: SolverAdapter,
     *,
+    scope: RecoveryScope | None = None,
     solver_parameters: Mapping[str, bool | int | float | str] | None = None,
 ) -> ModelSolveResult:
     """Validate, solve, and independently audit the Phase 3 v1 oracle."""
@@ -936,16 +1119,27 @@ def solve_integrated_fixed_column_oracle(
         scenario_data, columns_data, request, capacity_profile, costs
     )
     model = build_integrated_fixed_column_oracle(
-        scenario, columns, request, capacity_profile, costs, solver
+        scenario,
+        columns,
+        request,
+        capacity_profile,
+        costs,
+        solver,
+        scope=scope,
     )
     outcome = solver.solve(solver_parameters)
     selected_variables: dict[str, float] = {}
     diagnostics: dict[str, Any] = {
         "model": "INTEGRATED",
         "single_model_only": False,
-        "phase": "3-v1-full-integrated-fixed-column-oracle",
+        "phase": (
+            "4-v1-scope-limited-integrated-fixed-column-oracle"
+            if scope is not None
+            else "3-v1-full-integrated-fixed-column-oracle"
+        ),
         "linking_contract": dict(LINKING_CONSTRAINTS),
         "capacity_semantics": "TEST / RESIDUAL CAPACITY; NOT AIRCRAFT PHYSICAL CAPACITY",
+        "scope_metrics": dict(model.scope_metrics),
         "solver": dict(outcome.diagnostics),
     }
     if outcome.has_solution:

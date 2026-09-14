@@ -22,7 +22,8 @@
 | Phase 2.5 | ✅ 完成 | Fixed-column PRM、Seat Capacity、Passenger selection、delay/unserved cost 与独立审计 |
 | Costs + Constraints Workbench | ✅ 完成 | Canonical costs、浏览器实验 override、统一约束目录与 deterministic precheck |
 | Phase 3 | ✅ 完成 | Integrated Oracle、x/y/z/w 联合 MIP、五类 linking、统一成本与独立审计 |
-| Phase 4+ | ⏳ 未开始 | Scope Limiting、Benders、CG 等 |
+| Phase 4 | ✅ 完成 | Fixed-point Scope、Scope 外原计划冻结、Full-vs-Scope Oracle |
+| Phase 5+ | ⏳ 未开始 | Flight String Generator、Benders、CG 等 |
 
 因此当前准确表述是：
 
@@ -1128,6 +1129,8 @@ Passenger service
 
 # 10. Phase 4：Scope Limiting
 
+状态：✅ 已完成（2026-09-14）
+
 实现论文 Appendix Algorithms 3–6。
 
 输入：
@@ -1164,6 +1167,16 @@ OBJ_scope == OBJ_full
 ```
 
 同时期望 Scope 明显减小。
+
+实现说明：
+
+- `backend/core/scope.py` 提供 immutable `RecoveryScope`、direct seed、fixed-point closure、安全校验、语义 original candidate resolver 与 metrics；
+- closure 复用现有 incidence / gate inventory，并覆盖 fixed-column reassignment、deadhead、reaccommodation、airport capacity、gate 与 seat shared coupling；
+- Integrated Oracle 的 `scope=None` 保持 Phase 3 Full Oracle；传入 scope 时不物理裁剪模型，仅把 scope 外 owner 固定到唯一原计划 candidate；
+- `toy_case_006_scope` 验证 `OBJ_scope == OBJ_full == 2040`，free binary candidates 为 `10/14`；
+- `phase1_benchmark_001` 因三架直接受扰 aircraft 及共享 gate/candidate 网络连通，会正确闭包为 Full Scope，不能伪报缩减。
+
+Phase 4 只保证当前人工 fixed-column universe；它不是论文 Algorithms 3–6 在动态候选生成环境中的逐字实现。
 
 ---
 
@@ -1819,10 +1832,10 @@ Small-scale Oracle
 Phase 2.0 至 Phase 2.5 以及 Phase 3 Full Integrated Fixed-Column Oracle 已完成。当前应开始：
 
 ```text
-Phase 4 Scope Limiting
+Phase 5 Flight String Generator
 ```
 
-Phase 3 已用同一 MIP 和统一 canonical owner objective 建立后续算法的 fixed-column Ground Truth。下一阶段应先缩小 disruption scope；Flight/Crew/Passenger generators、Benders 与 Column Generation 仍按既定顺序后移。
+Phase 4 已在 fixed-column Ground Truth 上完成 Scope closure 与 Full-vs-Scope 等价验证。下一阶段应实现 Flight String Generator；Crew/Passenger generators、Benders 与 Column Generation 仍按既定顺序后移。
 
 ---
 

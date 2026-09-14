@@ -1255,6 +1255,78 @@ Schedule、Aircraft、Crew 与 Passenger 可相互影响联合最优选择；未
 
 ---
 
+## A-058 Phase 4 Paper Mapping and Fixed-column Closure Extension
+
+**来源状态：** `paper_defined:Appendix Algorithms 3-6 + implementation_safety_extension`
+
+**实现方式：**
+论文 Algorithm 3 映射为 Scope 总控闭包；Algorithm 4 映射为 direct disruption 与 aircraft rotation/candidate string 的航班传播；Algorithm 5 映射为 crew pairing 的 OPERATE/DEADHEAD 传播；Algorithm 6 映射为 passenger itinerary 与替代航班传播。当前实现额外沿 fixed-column reassignment、airport capacity row、aggregate gate checkpoint 与 shared seat usage 传播，直到 Flight / Aircraft / Crew / Passenger 集合不再扩张。
+
+**原因：**
+论文伪代码面向其生成算法与 eligible move-up 定义；当前仓库尚无动态 generator，Phase 3 MIP 的可行域由人工 fixed columns 及共享约束共同定义。只照搬单轮论文伪代码会遗漏当前 Oracle 中真实存在的耦合。
+
+**影响：**
+这是可追溯的论文映射，不宣称逐字或精确复现 Algorithms 3-6。Scope 只对当前已验证 fixed-column universe 保证安全闭包。
+
+**未来替换条件：**
+Phase 5+ 引入 generator、正式 eligible move-up、turn time 与业务规则后，按新的候选宇宙重新验证传播与论文映射。
+
+---
+
+## A-059 Phase 4 Scope Freeze Semantics
+
+**来源状态：** `implementation_phase_boundary`
+
+**实现方式：**
+Phase 4 v1 不删除 Scenario、Columns、变量或 Phase 3 约束。Scope 内 owner 的全部 candidates 保持自由；Scope 外 Flight / Aircraft / Crew / Passenger owner 分别通过 `SCOPE-FIX-*` 约束固定到唯一语义原计划 candidate。`scope=None` 不增加任何冻结约束并保持 Phase 3 Full Oracle 数学模型。
+
+**原因：**
+物理裁剪可能破坏 airport capacity、gate boundary、terminal、maintenance 或 seat linking 的全局语义。冻结方式可直接用 Full Oracle 审计等价性。
+
+**影响：**
+Phase 4 的缩减指标是 free decision candidates，而不是 Solver 模型中物理变量数量。Scope objective 只在当前 fixed columns、cost profile 与 residual capacity profile 下与 Full objective 比较。
+
+**未来替换条件：**
+等价性在更广泛案例持续成立后，另立 Phase 4.2 Reduced Materialization，并重新审计边界常数与所有共享约束。
+
+---
+
+## A-060 Semantic Original Candidate Resolution
+
+**来源状态：** `implementation_contract`
+
+**实现方式：**
+原计划 Flight Option 按 OPERATE、唯一 UNCHANGED、原 route/times/block 与零 delay 识别；Aircraft String 按 original rotation 对应的 original revenue options 顺序识别；Crew Pairing 按 original pairing 对应的 original OPERATE options 顺序识别；Passenger Itinerary 按 original itinerary 对应的 original FLIGHT options 顺序识别。候选 ID 文本不参与判断；缺失或多解均显式失败。
+
+**原因：**
+`*_ORIGINAL` 等命名是测试数据惯例，不是业务语义，不能成为冻结正确性的依据。
+
+**影响：**
+所有要被 Scope 冻结的数据集都必须提供唯一可解析的原计划 candidate。FERRY、DEADHEAD 与 SURFACE 不被当作 original revenue sequence 的组成部分，但若造成多个语义匹配仍会因唯一性检查被拒绝。
+
+**未来替换条件：**
+若未来 Schema 增加版本化的显式 original-candidate 标志，可在保持语义交叉校验的前提下升级 resolver。
+
+---
+
+## A-061 Conservative Shared-row Closure and Benchmark Connectivity
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+只要 scoped option 与其他 option 同处一个 arrival/departure capacity row 或 aggregate gate checkpoint，相关 revenue base flights 就加入 Scope；共享 scoped option 的 passenger groups 也加入 Scope。不会仅因行当前 slack 较大而跳过传播。
+
+**原因：**
+行是否 binding 是解相关属性，在求解前据此裁剪会产生循环推理并可能改变最优解。
+
+**影响：**
+保守闭包可能较大。`phase1_benchmark_001` 的三个直接受扰航班经累计 gate、resource candidates 与 passenger alternatives 连通全部实体，因此合法结果是 Full Scope；实际缩减由保留独立无关组件的 `toy_case_006_scope` 验证（free binary candidates `10/14`）。
+
+**未来替换条件：**
+若引入经证明安全的约束分解、边界固定或 reduced materialization，可在不依赖最优解猜测的前提下收紧 shared-row closure。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：

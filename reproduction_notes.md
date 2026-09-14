@@ -465,12 +465,46 @@ Phase 2.5 接收外生 `PassengerRecoveryRequest` 与独立 `PassengerCapacityPr
 
 ---
 
-# 18. 当前仍未实现
+# 18. Phase 4 Scope Limiting
+
+Phase 4 已核对论文 Appendix Algorithms 3-6，并在当前 fixed-column universe 上实现可审计映射：
+
+```text
+direct departure disruption
+→ scoped base flights/options
+→ aircraft strings / crew pairings / passenger itineraries
+→ additional revenue flights
+→ airport capacity / gate / seat shared coupling
+→ fixed-point closure
+```
+
+`RecoveryScope` 是 immutable、stable-ordering 的结果对象，并为 scoped entities/candidates 保存 deterministic propagation reasons。当前正式支持 `departure_capacity_reduction`，使用 `[start_time, end_time)`；未知 restriction type 显式失败。
+
+Phase 4 v1 保留完整 Phase 3 MIP。Scope 外 owner 通过不依赖 ID 命名的 semantic original resolver 固定到原计划，Scope 内 owner 保持自由。独立 audit 同时检查 Phase 3 local/cross-model constraints、objective 与 Scope fixes。
+
+验证结果：
+
+```text
+toy_case_006_scope:
+  OBJ_full  = 2040
+  OBJ_scope = 2040
+  free binary candidates = 10 / 14
+
+phase1_benchmark_001:
+  OBJ_full  = 18080
+  OBJ_scope = 18080
+  strict closure = Full Scope
+```
+
+主 benchmark 的 Full Scope 是其 candidate/shared-row 依赖图实际全连通的结果，不通过漏掉 gate/capacity 传播制造缩减。`toy_case_006_scope` 保留一组完全独立的 Flight/Aircraft/Crew/Passenger，用于验收真实冻结与缩减。
+
+---
+
+# 19. 当前仍未实现
 
 截至当前阶段，以下仍未完成：
 
 ```text
-Scope Limiting
 Automatic Flight String Generator
 Automatic Crew Pairing Generator
 Automatic Passenger Itinerary Generator
@@ -483,7 +517,7 @@ Integrality / Branching
 
 ---
 
-# 19. 当前工程状态
+# 20. 当前工程状态
 
 Phase 1、Phase 2.0 至 Phase 2.5，以及 Phase 3 已完成：
 
@@ -528,25 +562,30 @@ Canonical SRM + ARM + CRM + PRM objective and independent recomputation
 toy_case_004 aircraft-coupling Oracle
 toy_case_005 passenger-coupling Oracle
 phase1_benchmark_001 integrated optimum and Manual Reference upper-bound audit
+Immutable deterministic Recovery Scope and direct disruption seed
+Resource/passenger/shared-row fixed-point closure
+Semantic original candidate resolver and Scope safety invariants
+Scope-limited Integrated Oracle with independent freeze audit
+toy_case_006_scope Full-vs-Scope equivalence and real reduction
 ```
 
 Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
 
 ---
 
-# 20. 下一工程步骤
+# 21. 下一工程步骤
 
 下一步进入：
 
 ```text
-Phase 4 Scope Limiting
+Phase 5 Flight String Generator
 ```
 
-Phase 3 Integrated Oracle 已成为后续算法的 fixed-column Ground Truth。Phase 4 只缩小受扰动范围；自动 Columns、Benders 与 Column Generation 不在本阶段提前实现。
+Phase 3 Integrated Oracle 继续作为 fixed-column Ground Truth，Phase 4 Recovery Scope 成为后续 candidate generator 的输入边界。下一步只实现合法 Flight Strings；Crew/Passenger generators、Benders 与 Column Generation 不提前实现。
 
 ---
 
-# 21. Reproduction Integrity Rule
+# 22. Reproduction Integrity Rule
 
 任何阶段都不允许用：
 
@@ -571,7 +610,7 @@ Objective 是否使用同一成本定义？
 
 ---
 
-# 22. Costs + Constraints Workbench
+# 23. Costs + Constraints Workbench
 
 当前前端在既有 Data 与 Visualization 之外增加 Costs 和 Constraints 两个一级视图。
 
@@ -595,7 +634,7 @@ PRECHECK != MIP FEASIBILITY
 
 ---
 
-# 23. Phase 2 Final Review 与 Phase 3 v1 冻结
+# 24. Phase 2 Final Review 与 Phase 3 v1 冻结
 
 Phase 2 最终审查继续保持四个独立 fixed-column 子模型，不将其伪装为 Integrated Oracle。同一 Phase 1 Manual Reference schedule 已分别作为 ARM、CRM、PRM 的独立 Gurobi smoke；三个模型各自 feasible 且 independent audit 通过，但没有把三个 objective 相加称为 integrated objective。
 
