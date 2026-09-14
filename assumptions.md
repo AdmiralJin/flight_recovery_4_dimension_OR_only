@@ -542,7 +542,7 @@ max(0, recovered_arrival - scheduled_arrival)
 ## A-021 Phase 2 Primary Solver 与抽象边界
 
 **来源状态：**
-论文实现使用 CPLEX 12.1，但本项目后续明确需要稳定访问 MIP status、objective bound、gap、LP dual 和 reduced cost。具体 Python Solver 及工程抽象不属于论文算法定义。
+论文实现使用 CPLEX 12.1；本项目当前已通过 Solver Adapter 使用 Gurobi，并要求稳定访问 MIP status、objective bound、gap、LP dual 和 reduced cost。具体 Python Solver 及工程抽象不属于论文算法定义。
 
 **实现方式：**
 Phase 2 Primary Solver 选为 Gurobi 13.0.3，依赖固定为 `gurobipy==13.0.3`。SRM/ARM/CRM/PRM 只能依赖 `SolverAdapter`，不得散落 `gurobipy` 调用。Adapter 显式声明 MIP、LP dual、reduced cost、MIP gap 和 objective bound 能力。
@@ -1302,7 +1302,7 @@ Phase 4 的缩减指标是 free decision candidates，而不是 Solver 模型中
 `*_ORIGINAL` 等命名是测试数据惯例，不是业务语义，不能成为冻结正确性的依据。
 
 **影响：**
-所有要被 Scope 冻结的数据集都必须提供唯一可解析的原计划 candidate。FERRY、DEADHEAD 与 SURFACE 不被当作 original revenue sequence 的组成部分，但若造成多个语义匹配仍会因唯一性检查被拒绝。
+所有要被 Scope 冻结的数据集都必须提供唯一可解析的原计划 candidate。原 Aircraft String 不得含额外 FERRY/positioning leg，原 Crew Pairing 不得含额外 DEADHEAD/ground/rest segment，原 Passenger Itinerary 不得含额外 SURFACE/recovery-only segment；这类候选即使 revenue/flight sequence 相同也不匹配原计划。
 
 **未来替换条件：**
 若未来 Schema 增加版本化的显式 original-candidate 标志，可在保持语义交叉校验的前提下升级 resolver。
@@ -1327,13 +1327,102 @@ Phase 4 的缩减指标是 free decision candidates，而不是 Solver 模型中
 
 ---
 
+## A-062 Phase 5 Aircraft Turn Time Test Profile
+
+**来源状态：** `implementation_assumption`
+
+**实现方式：**
+Phase 5 使用版本化 `FlightStringGenerationConfig`，`min_turn(aircraft)` 取 equipment override，否则取 `default_min_turn_minutes`。测试配置 `phase5_test_string_generation_v1` 默认 `15` 分钟；`E1` 显式 override 为 `0` 分钟，以保留 Phase 1 benchmark 已冻结的零间隔人工候选列。
+
+**原因：**
+Turn Time 首次进入自动 String legality，不能成为代码 Magic Number；同时不得静默改变既有 Phase 3/4 Oracle 的候选含义。
+
+**影响：**
+`E1=0` 只是向后兼容的工程测试边界，不是生产航空公司的合法过站标准。其他未 override 机型使用 15 分钟测试值。
+
+**未来替换条件：**
+接入航司机型、机场、国内/国际与维修场景的正式 turn-time 数据后，发布新的配置版本并重新生成/审计全部 Strings。
+
+---
+
+## A-063 Phase 5 Airport-local Restriction Boundary
+
+**来源状态：** `implementation_assumption`
+
+**实现方式：**
+String Generator 仅把 `curfew_flag` 以及显式 hard-local tokens `closed`、`departure_closed`、`arrival_closed` 作为 aircraft-local 禁止条件。`reduced_departure_rate` 和 disruption `departure_capacity_reduction` 不删除 Flight Option，继续由 Integrated SRM airport-capacity constraints 处理。重叠 local intervals 被视为歧义并拒绝对应 movement。
+
+**原因：**
+容量削减是多航班共享约束，提前在单机网络删除 option 会错误收缩可行域；当前 `weather_restrictions` 没有完整航司语义字典。
+
+**影响：**
+未知 weather token 不被猜测为 hard closure。当前只承诺上述最小 hard-local 语义。
+
+**未来替换条件：**
+建立版本化机场限制 taxonomy 与业务规则后，扩展 eligibility 并增加逐规则 Oracle。
+
+---
+
+## A-064 Phase 5 Maintenance Simplification
+
+**来源状态：** `implementation_assumption`
+
+**实现方式：**
+当前 Schema 无 maintenance task、duration、due time 或 capacity。`maintenance_required=false` 的生成列标记 `maintenance_satisfied=true`；`maintenance_required=true` 时，仅当 required terminal station 属于 `maintenance_stations` 才能输出，并继续要求 `maintenance_satisfied=true`。
+
+**原因：**
+该规则与现有 Column Validator、ARM-C04 能独立证明的语义一致，不虚构维修排程。
+
+**影响：**
+“到达维修站”不代表真实维修任务已在某一时段完成。
+
+**未来替换条件：**
+增加 maintenance task/time/capacity Schema 后，用正式资源约束替换此 terminal proxy。
+
+---
+
+## A-065 Phase 5 Explicit Idle String
+
+**来源状态：** `implementation_assumption`
+
+**实现方式：**
+仅当 aircraft initial station 等于 required terminal station，且当前 maintenance proxy 允许时，生成零 leg 的显式 idle Aircraft String。ARM/Integrated Oracle 仍对每架 Aircraft 恰选一条 String，不用“零条被选列”暗示 idle。
+
+**原因：**
+保持 existing exactly-one String selection contract，并使 idle 决策可审计。
+
+**影响：**
+Idle String 不承担未建模的 parking、crew 或 maintenance duration 语义。
+
+**未来替换条件：**
+引入 ground-state network 或正式 parking/maintenance constraints 后重新定义 idle column。
+
+---
+
+## A-066 Phase 5 Existing-option Full Enumeration Boundary
+
+**来源状态：** `implementation_phase_boundary`
+
+**实现方式：**
+Phase 5 只消费已有 Flight Options，以 Flight Network + DFS 显式枚举所有合法 Aircraft Strings。Scoped Aircraft 全量生成；out-of-scope Aircraft 只生成语义原计划 String；`scope=None` 对所有 Aircraft 全量生成。现有 FERRY option 可用，但不自动创建 FERRY、delay 或 route-change option。
+
+**原因：**
+必须先把 String legality 与 path completeness 对齐 brute-force oracle，再进入 Pricing 或同时扩大 Flight Option universe。
+
+**影响：**
+这是 explicit/full candidate generation，不计算 reduced cost、不读取 dual、不执行 Column Generation 或 Benders。完整性只相对于输入 Flight Options 成立。
+
+**未来替换条件：**
+Phase 5 通过后进入 Crew Pairing Generator；Flight Option generation、Pricing/CG 继续按独立阶段实现和验收。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：
 
-- Integrated Master Objective 与 tie-breaking；
 - 真实航空公司成本标定与正式货币单位；
-- Aircraft Turn Time；
+- 生产级 Aircraft Turn Time 标定；
 - Crew maximum duty / minimum rest；
 - Passenger MCT；
 - Reserve Crew；

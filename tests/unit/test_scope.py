@@ -283,6 +283,65 @@ def test_semantic_original_resolver_rejects_nonunique_match(
         resolve_original_candidates(scenario, columns)
 
 
+@pytest.mark.parametrize("kind", ["ferry", "deadhead", "surface"])
+def test_semantic_original_resolver_rejects_recovery_only_segments(
+    toy_case_006_scope_data, toy_case_006_scope_columns_data, kind
+):
+    columns_data = deepcopy(toy_case_006_scope_columns_data)
+    if kind == "ferry":
+        columns_data["flight_options"].append(
+            {
+                "option_id": "S6_FERRY_EXTRA",
+                "base_flight_id": None,
+                "operation_type": "ferry",
+                "change_types": ["positioning"],
+                "origin": "C",
+                "destination": "C",
+                "dep_time": "2026-01-15T11:00:00Z",
+                "arr_time": "2026-01-15T11:10:00Z",
+                "block_minutes": 10,
+                "departure_delay_minutes": None,
+                "arrival_delay_minutes": None,
+                "notes": "Resolver-only shape test.",
+            }
+        )
+        columns_data["aircraft_strings"][0]["leg_option_ids"].append(
+            "S6_FERRY_EXTRA"
+        )
+    elif kind == "deadhead":
+        columns_data["crew_pairings"][0]["duties"][0]["segments"].append(
+            {
+                "segment_type": "deadhead",
+                "flight_option_id": "S6_D2",
+                "origin": None,
+                "destination": None,
+                "start_time": None,
+                "end_time": None,
+                "notes": "Resolver-only shape test.",
+            }
+        )
+    else:
+        columns_data["passenger_itineraries"][0]["segments"].append(
+            {
+                "segment_type": "surface",
+                "flight_option_id": None,
+                "origin": "C",
+                "destination": "C",
+                "dep_time": "2026-01-15T10:40:00Z",
+                "arr_time": "2026-01-15T10:50:00Z",
+            }
+        )
+    scenario, columns = _validated(toy_case_006_scope_data, columns_data)
+
+    expected = {
+        "ferry": "aircraft string",
+        "deadhead": "crew pairing",
+        "surface": "passenger itinerary",
+    }[kind]
+    with pytest.raises(ScopeBuildError, match=expected):
+        resolve_original_candidates(scenario, columns)
+
+
 def test_validate_scope_rejects_broken_closure(
     toy_case_006_scope_data, toy_case_006_scope_columns_data
 ):

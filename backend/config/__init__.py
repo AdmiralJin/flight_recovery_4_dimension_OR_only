@@ -25,6 +25,12 @@ from .passenger_capacity import (
     load_passenger_capacity_profile,
     validate_passenger_capacity_profile,
 )
+from .string_generation import (
+    FlightStringGenerationConfig,
+    FlightStringGenerationConfigError,
+    StringGenerationSource,
+    load_flight_string_generation_config,
+)
 
 __all__ = [
     "AircraftStringCostBreakdown",
@@ -36,14 +42,18 @@ __all__ = [
     "CostSource",
     "CostUnit",
     "FixedColumnCostConfig",
+    "FlightStringGenerationConfig",
+    "FlightStringGenerationConfigError",
     "PassengerCapacityError",
     "PassengerCapacityProfile",
     "PassengerCapacitySource",
     "PassengerItineraryCostBreakdown",
+    "StringGenerationSource",
     "aircraft_string_cost",
     "apply_cost_overrides",
     "crew_pairing_cost",
     "load_cost_config",
+    "load_flight_string_generation_config",
     "load_passenger_capacity_profile",
     "passenger_itinerary_cost",
     "schedule_flight_option_cost",

@@ -23,7 +23,8 @@
 | Costs + Constraints Workbench | ✅ 完成 | Canonical costs、浏览器实验 override、统一约束目录与 deterministic precheck |
 | Phase 3 | ✅ 完成 | Integrated Oracle、x/y/z/w 联合 MIP、五类 linking、统一成本与独立审计 |
 | Phase 4 | ✅ 完成 | Fixed-point Scope、Scope 外原计划冻结、Full-vs-Scope Oracle |
-| Phase 5+ | ⏳ 未开始 | Flight String Generator、Benders、CG 等 |
+| Phase 5 | ✅ 完成 | Existing-option Flight Network、Turn Time、Aircraft String 全量生成、brute-force Oracle |
+| Phase 6+ | ⏳ 未开始 | Crew Pairing Generator、Passenger Itinerary Generator、Benders、CG 等 |
 
 因此当前准确表述是：
 
@@ -1182,7 +1183,7 @@ Phase 4 只保证当前人工 fixed-column universe；它不是论文 Algorithms
 
 # 11. Phase 5：Flight String Generator
 
-第一版：
+**状态：Completed。** 第一版严格保持：
 
 > 只生成合法列，不做 Pricing。
 
@@ -1207,8 +1208,23 @@ brute-force / full-enumeration oracle
 
 要求：
 
-- 不生成非法列；
-- 不遗漏 Oracle Optimal 所需关键列。
+- [x] 不生成非法列；
+- [x] 不遗漏当前 fixed-column optimum 所需关键列。
+
+实现结果：
+
+```text
+backend/core/flight_network.py
+backend/core/string_generator.py
+data/config/phase5_test_string_generation_v1.json
+```
+
+- 使用 existing Flight Options，不自动生成 delay / route-change / ferry options；
+- 使用版本化 Turn Time profile，默认 15 分钟，E1 测试兼容 override 为 0 分钟；
+- `toy_case_007_string_generator` 上 smart DFS 与 brute-force permutation Oracle 完全一致；
+- `phase1_benchmark_001` 生成 77 条 Strings，覆盖 11/11 条人工 semantic keys；
+- 生成列重新进入 Integrated Oracle 后 objective 仍为 `18080`，全部独立 audit 通过；
+- 本阶段不读取 dual、不计算 reduced cost，不实现 Pricing、Column Generation 或 Benders。
 
 ---
 
@@ -1829,13 +1845,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5 以及 Phase 3 Full Integrated Fixed-Column Oracle 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5、Phase 3、Phase 4 与 Phase 5 已完成。当前应开始：
 
 ```text
-Phase 5 Flight String Generator
+Phase 6 Crew Pairing Generator
 ```
 
-Phase 4 已在 fixed-column Ground Truth 上完成 Scope closure 与 Full-vs-Scope 等价验证。下一阶段应实现 Flight String Generator；Crew/Passenger generators、Benders 与 Column Generation 仍按既定顺序后移。
+Phase 5 已完成 existing-option Aircraft String 全量生成、独立 legality validation、brute-force Oracle 对齐和 Integrated Oracle 回归。下一阶段应实现 Crew Pairing Generator；Passenger generator、Benders 与 Column Generation 仍按既定顺序后移。
 
 ---
 

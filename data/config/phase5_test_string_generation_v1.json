@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "phase5_test_string_generation_v1",
+  "default_min_turn_minutes": 15,
+  "equipment_overrides": {
+    "E1": 0
+  },
+  "source": "test_fixture",
+  "notes": [
+    "Engineering-only Phase 5 profile; not calibrated airline turn-time data.",
+    "E1 remains at the Phase 1 zero-turn compatibility boundary so existing benchmark reference strings remain comparable."
+  ]
+}

@@ -9,7 +9,7 @@ HTML / Vanilla JavaScript
         ↓ JSON / HTTP
 FastAPI + Pydantic
         ↓
-后续 OR Models / Solver
+Fixed-column OR Models + Solver Adapter / Gurobi
 ```
 
 当前重点仍然是：
@@ -34,13 +34,16 @@ FastAPI + Pydantic
 | 审计工作台 | ✅ 完成 | Costs override、统一 Constraint Registry、deterministic precheck 与四视图前端 |
 | Phase 3 | ✅ 完成 | Full Integrated Fixed-column Oracle、x/y/z/w 联合 MIP、五类 linking、统一目标与独立审计 |
 | Phase 4 | ✅ 完成 | Direct disruption seed、fixed-point Scope closure、Scope 外原计划冻结、Full-vs-Scope Oracle |
-| Phase 5+ | ⏳ 未开始 | Flight String Generator、Benders、Column Generation 等 |
+| Phase 5 | ✅ 完成 | Existing-option Flight Network、Turn Time、Aircraft String 全量生成、brute-force Oracle |
+| Phase 6+ | ⏳ 未开始 | Crew Pairing Generator、Passenger Itinerary Generator、Benders、Column Generation 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
 Phase 3 已将 Schedule、Aircraft、Crew、Passenger 的 `x/y/z/w` 放入同一 MIP，以显式 linking constraints 取代 Phase 2 的外生 schedule handoff。`phase1_benchmark_001` 的 Manual Reference 通过完整联合审计，Integrated optimum 为 `18080`，与该候选上界相等；`toy_case_004/005` 分别验证 Aircraft 与 Passenger 对 schedule choice 的反向耦合。
 
 Phase 4 在完整 fixed-column universe 上从受支持的直接 departure disruption 自动构造确定性 fixed-point scope。Scope 内 owner 保持自由，Scope 外 Flight / Aircraft / Crew / Passenger owner 通过语义解析固定到唯一原计划 candidate；完整 Phase 3 约束和变量均保留。`toy_case_006_scope` 的 Full 与 Scope objective 均为 `2040`，自由 binary candidates 从 `14` 降至 `10`。主 benchmark 的严格共享耦合闭包会安全扩展为 Full Scope，因此用于验证无遗漏，而不作为缩减样例。
+
+Phase 5 使用已有 Flight Options 建立 aircraft-local DAG，并通过显式 Turn Time profile、Station/Timing/Horizon/Curfew/Equipment/Maintenance/Terminal 规则执行 DFS 全量枚举。`toy_case_007_string_generator` 与独立全排列 Oracle 的合法路径集合完全一致；主 benchmark 从 11 条人工 Aircraft Strings 扩展为 77 条生成 Strings，覆盖全部人工关键列，Integrated optimum 保持 `18080`。
 
 ---
 
@@ -452,7 +455,7 @@ POST /api/solve
 其中：
 
 - `/api/validate`：执行 Scenario 结构与跨实体一致性校验；
-- `/api/solve`：真正 Solver 接入前仍应保持安全闸门，不应返回伪优化结果。
+- `/api/solve`：后端 Solver/Oracle 已存在，但前端 Solve API 与 Recovered Plan UI 尚未接入，因此该路由继续保持安全闸门，不返回伪优化结果。
 
 ---
 
@@ -490,15 +493,29 @@ solve_integrated_fixed_column_oracle(..., scope=scope)
 
 ---
 
+# Phase 5 Flight String Generator
+
+核心入口：
+
+```text
+backend/core/flight_network.py
+backend/core/string_generator.py
+data/config/phase5_test_string_generation_v1.json
+```
+
+Phase 5 只从 existing Flight Options 生成显式 Aircraft Strings，并通过独立 legality validator 与小规模 brute-force permutation oracle 验收。它不是 Pricing 或 Column Generation，不生成新的 Flight Options。
+
+---
+
 # 下一步
 
 当前下一工程任务是：
 
 ```text
-Phase 5 Flight String Generator
+Phase 6 Crew Pairing Generator
 ```
 
-Phase 4 产出的 Recovery Scope 将作为后续 candidate generator 的输入边界。当前 Oracle 继续使用人工 fixed columns、test cost 与 test/residual passenger capacity；它是后续分解/列生成的 Ground Truth，不代表真实航司生产最优。
+Phase 5 已验证 Aircraft String 自动生成。下一步应在同样的“先 explicit generation、后 pricing”边界下实现 Crew Pairing Generator。当前 Oracle 继续使用 test cost 与 test/residual passenger capacity；它是后续分解/列生成的 Ground Truth，不代表真实航司生产最优。
 
 完整开发路线见：
 

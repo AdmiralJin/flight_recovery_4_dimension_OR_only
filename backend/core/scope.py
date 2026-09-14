@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 from collections import Counter
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from types import MappingProxyType
 
 from backend.schemas.columns import (
     CrewSegmentType,
     FlightChangeType,
+    FlightOption,
     FlightOperationType,
     PassengerSegmentType,
     RecoveryColumns,
@@ -509,25 +510,9 @@ def resolve_original_candidates(
     """Resolve original candidates only from business semantics, never IDs."""
 
     options = {item.option_id: item for item in columns.flight_options}
-    original_option: dict[str, str] = {}
-    for flight in scenario.flights:
-        matches = [
-            option.option_id
-            for option in columns.flight_options
-            if option.base_flight_id == flight.flight_id
-            and option.operation_type is FlightOperationType.OPERATE
-            and option.change_types == [FlightChangeType.UNCHANGED]
-            and option.origin == flight.origin
-            and option.destination == flight.destination
-            and option.dep_time == flight.sched_dep
-            and option.arr_time == flight.sched_arr
-            and option.block_minutes == flight.duration
-            and option.departure_delay_minutes == 0
-            and option.arrival_delay_minutes == 0
-        ]
-        original_option[flight.flight_id] = _unique_candidate(
-            "flight option", flight.flight_id, matches
-        )
+    original_option = dict(
+        resolve_original_flight_option_ids(scenario, columns.flight_options)
+    )
 
     original_string: dict[str, str] = {}
     for aircraft in scenario.aircraft:
@@ -542,7 +527,7 @@ def resolve_original_candidates(
                 if options[option_id].operation_type is FlightOperationType.OPERATE
                 and options[option_id].base_flight_id is not None
             )
-            if revenue == expected:
+            if revenue == expected and len(revenue) == len(string.leg_option_ids):
                 matches.append(string.string_id)
         original_string[aircraft.tail_id] = _unique_candidate(
             "aircraft string", aircraft.tail_id, matches
@@ -561,7 +546,10 @@ def resolve_original_candidates(
                 for segment in duty.segments
                 if segment.segment_type is CrewSegmentType.OPERATE
             )
-            if operated == expected_options:
+            all_segments = tuple(
+                segment for duty in pairing.duties for segment in duty.segments
+            )
+            if operated == expected_options and len(operated) == len(all_segments):
                 matches.append(pairing.pairing_id)
         original_pairing[crew.crew_id] = _unique_candidate(
             "crew pairing", crew.crew_id, matches
@@ -579,7 +567,7 @@ def resolve_original_candidates(
                 for segment in itinerary.segments
                 if segment.segment_type is PassengerSegmentType.FLIGHT
             )
-            if segments == expected_options:
+            if segments == expected_options and len(segments) == len(itinerary.segments):
                 matches.append(itinerary.itinerary_id)
         original_itinerary[group.pax_group_id] = _unique_candidate(
             "passenger itinerary", group.pax_group_id, matches
@@ -591,6 +579,33 @@ def resolve_original_candidates(
         crew_pairing_by_crew=original_pairing,
         passenger_itinerary_by_group=original_itinerary,
     )
+
+
+def resolve_original_flight_option_ids(
+    scenario: Scenario, flight_options: Sequence[FlightOption]
+) -> Mapping[str, str]:
+    """Resolve each original schedule option without relying on its ID text."""
+
+    original_option: dict[str, str] = {}
+    for flight in scenario.flights:
+        matches = [
+            option.option_id
+            for option in flight_options
+            if option.base_flight_id == flight.flight_id
+            and option.operation_type is FlightOperationType.OPERATE
+            and option.change_types == [FlightChangeType.UNCHANGED]
+            and option.origin == flight.origin
+            and option.destination == flight.destination
+            and option.dep_time == flight.sched_dep
+            and option.arr_time == flight.sched_arr
+            and option.block_minutes == flight.duration
+            and option.departure_delay_minutes == 0
+            and option.arrival_delay_minutes == 0
+        ]
+        original_option[flight.flight_id] = _unique_candidate(
+            "flight option", flight.flight_id, matches
+        )
+    return MappingProxyType(original_option)
 
 
 def scope_metrics(

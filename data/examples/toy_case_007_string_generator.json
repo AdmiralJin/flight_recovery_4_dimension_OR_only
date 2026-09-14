@@ -1,0 +1,40 @@
+{
+  "scenario_id": "toy_case_007_string_generator",
+  "recovery_window": {
+    "start_time": "2026-01-15T07:00:00Z",
+    "end_time": "2026-01-15T12:00:00Z"
+  },
+  "airports": [
+    {"airport_id": "A", "name": "Alpha"},
+    {"airport_id": "B", "name": "Bravo"},
+    {"airport_id": "C", "name": "Charlie"},
+    {"airport_id": "D", "name": "Delta"},
+    {"airport_id": "E", "name": "Echo"}
+  ],
+  "flights": [
+    {"flight_id": "S7_F1", "origin": "A", "destination": "B", "sched_dep": "2026-01-15T08:00:00Z", "sched_arr": "2026-01-15T09:00:00Z", "duration": 60, "original_aircraft": "S7_AC1", "original_equipment": "E2", "original_crew": "S7_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 30},
+    {"flight_id": "S7_F2", "origin": "B", "destination": "C", "sched_dep": "2026-01-15T09:10:00Z", "sched_arr": "2026-01-15T10:10:00Z", "duration": 60, "original_aircraft": "S7_AC3", "original_equipment": "E2", "original_crew": "S7_C3", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "S7_F3", "origin": "B", "destination": "C", "sched_dep": "2026-01-15T09:20:00Z", "sched_arr": "2026-01-15T10:20:00Z", "duration": 60, "original_aircraft": "S7_AC1", "original_equipment": "E2", "original_crew": "S7_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "S7_F4", "origin": "C", "destination": "A", "sched_dep": "2026-01-15T10:40:00Z", "sched_arr": "2026-01-15T11:40:00Z", "duration": 60, "original_aircraft": "S7_AC1", "original_equipment": "E2", "original_crew": "S7_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "S7_U1", "origin": "D", "destination": "E", "sched_dep": "2026-01-15T08:30:00Z", "sched_arr": "2026-01-15T09:30:00Z", "duration": 60, "original_aircraft": "S7_AC2", "original_equipment": "E2", "original_crew": "S7_C2", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0}
+  ],
+  "aircraft": [
+    {"tail_id": "S7_AC1", "equipment_type": "E2", "initial_station_at_t": "A", "required_station_at_T_end": "A", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["S7_F1", "S7_F3", "S7_F4"]},
+    {"tail_id": "S7_AC2", "equipment_type": "E2", "initial_station_at_t": "D", "required_station_at_T_end": "E", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["S7_U1"]},
+    {"tail_id": "S7_AC3", "equipment_type": "E2", "initial_station_at_t": "B", "required_station_at_T_end": "C", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["S7_F2"]}
+  ],
+  "crew": [
+    {"crew_id": "S7_C1", "rating": "E2", "start_station_at_t": "A", "required_station_at_T_end": "A", "original_duties": [["S7_F1", "S7_F3", "S7_F4"]], "original_pairing": ["S7_F1", "S7_F3", "S7_F4"]},
+    {"crew_id": "S7_C2", "rating": "E2", "start_station_at_t": "D", "required_station_at_T_end": "E", "original_duties": [["S7_U1"]], "original_pairing": ["S7_U1"]},
+    {"crew_id": "S7_C3", "rating": "E2", "start_station_at_t": "B", "required_station_at_T_end": "C", "original_duties": [["S7_F2"]], "original_pairing": ["S7_F2"]}
+  ],
+  "passengers": [],
+  "airport_intervals": [
+    {"airport": "A", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "B", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "C", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "D", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "E", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []}
+  ],
+  "disruptions": []
+}

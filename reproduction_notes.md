@@ -500,12 +500,45 @@ phase1_benchmark_001:
 
 ---
 
-# 19. 当前仍未实现
+# 19. Phase 5 Flight String Generator
+
+Phase 5 已在“只消费 existing Flight Options、不进入 Pricing”的边界内完成：
+
+```text
+Scenario + existing Flight Options + RecoveryScope + versioned Turn-Time Config
+→ deterministic aircraft-local Flight Network
+→ DFS explicit/full path enumeration
+→ generated AircraftString columns
+→ independent legality validation
+```
+
+生成器检查 aircraft ownership、equipment compatibility、Station continuity、Flight timing、显式 Turn Time、Max Delay、Recovery Horizon、hard airport-local restrictions、Maintenance terminal proxy 与 required terminal station。CANCEL 不进入 String；输入中已有的 FERRY 可以作为 leg；合法 idle 用零 leg 的显式 String 表达。
+
+`scope=None` 对全部 aircraft 全量生成；提供 `RecoveryScope` 时只对 scoped aircraft 枚举，scope 外 aircraft 仅保留经语义解析确认的原计划 String。Original resolver 已加严：原计划 Aircraft/Crew/Passenger 候选不能夹带额外 FERRY、DEADHEAD、surface 或 recovery-only segment。
+
+正确性验证：
+
+```text
+toy_case_007_string_generator:
+  smart DFS legal set = brute-force permutation legal set
+  generated strings = 6 (AC1=3, AC2=1, AC3=2)
+
+phase1_benchmark_001:
+  manual strings = 11
+  generated strings = 77 (AC1=10, AC2=27, AC3=13, AC4=27)
+  manual semantic key coverage = 11 / 11
+  Integrated objective = 18080 (与人工 Strings 相同)
+```
+
+Turn Time 使用版本化测试配置：默认 15 分钟，E1 为兼容已冻结 Phase 1 人工列显式 override 为 0 分钟。该配置和 maintenance terminal proxy 都是工程测试假设，不代表真实航司生产规则。
+
+---
+
+# 20. 当前仍未实现
 
 截至当前阶段，以下仍未完成：
 
 ```text
-Automatic Flight String Generator
 Automatic Crew Pairing Generator
 Automatic Passenger Itinerary Generator
 
@@ -517,7 +550,7 @@ Integrality / Branching
 
 ---
 
-# 20. 当前工程状态
+# 21. 当前工程状态
 
 Phase 1、Phase 2.0 至 Phase 2.5，以及 Phase 3 已完成：
 
@@ -567,25 +600,34 @@ Resource/passenger/shared-row fixed-point closure
 Semantic original candidate resolver and Scope safety invariants
 Scope-limited Integrated Oracle with independent freeze audit
 toy_case_006_scope Full-vs-Scope equivalence and real reduction
+Versioned Aircraft Turn-Time configuration
+Deterministic aircraft-local Flight Network
+Existing-option Aircraft String DFS full enumeration
+Independent generated String legality validation
+Explicit original / idle / FERRY semantics
+Scope-aware generation with out-of-scope original retention
+toy_case_007 smart-vs-brute-force legal-set Oracle
+phase1_benchmark_001 77 generated Strings and 11/11 manual-key coverage
+Generated-String Integrated Oracle objective 18080
 ```
 
 Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
 
 ---
 
-# 21. 下一工程步骤
+# 22. 下一工程步骤
 
 下一步进入：
 
 ```text
-Phase 5 Flight String Generator
+Phase 6 Crew Pairing Generator
 ```
 
-Phase 3 Integrated Oracle 继续作为 fixed-column Ground Truth，Phase 4 Recovery Scope 成为后续 candidate generator 的输入边界。下一步只实现合法 Flight Strings；Crew/Passenger generators、Benders 与 Column Generation 不提前实现。
+Phase 5 已完成 existing-option Aircraft String 的显式全量生成及 Oracle 对齐。下一步应沿用“先合法列全量生成、再进入 Pricing”的边界实现 Crew Pairing Generator；Passenger generator、Benders 与 Column Generation 不提前实现。
 
 ---
 
-# 22. Reproduction Integrity Rule
+# 23. Reproduction Integrity Rule
 
 任何阶段都不允许用：
 
@@ -610,7 +652,7 @@ Objective 是否使用同一成本定义？
 
 ---
 
-# 23. Costs + Constraints Workbench
+# 24. Costs + Constraints Workbench
 
 当前前端在既有 Data 与 Visualization 之外增加 Costs 和 Constraints 两个一级视图。
 
@@ -634,7 +676,7 @@ PRECHECK != MIP FEASIBILITY
 
 ---
 
-# 24. Phase 2 Final Review 与 Phase 3 v1 冻结
+# 25. Phase 2 Final Review 与 Phase 3 v1 冻结
 
 Phase 2 最终审查继续保持四个独立 fixed-column 子模型，不将其伪装为 Integrated Oracle。同一 Phase 1 Manual Reference schedule 已分别作为 ARM、CRM、PRM 的独立 Gurobi smoke；三个模型各自 feasible 且 independent audit 通过，但没有把三个 objective 相加称为 integrated objective。
 

@@ -50,6 +50,12 @@ from .gate_inventory import (
     GateInventoryData,
     build_gate_inventory_data,
 )
+from .flight_network import (
+    AircraftFlightNetwork,
+    FlightLegEligibility,
+    build_aircraft_flight_network,
+    validate_flight_option_for_aircraft,
+)
 from .indices import (
     CapacityIntervalKey,
     OrderedIndex,
@@ -78,6 +84,7 @@ from .scope import (
     build_recovery_scope,
     direct_disrupted_flight_ids,
     resolve_original_candidates,
+    resolve_original_flight_option_ids,
     scope_metrics,
     validate_recovery_scope,
 )
@@ -92,9 +99,19 @@ from .srm import (
     recompute_srm_diagnostics,
     solve_fixed_column_srm,
 )
+from .string_generator import (
+    FlightStringGenerationError,
+    StringGenerationResult,
+    StringLegalityResult,
+    brute_force_legal_aircraft_strings,
+    generate_aircraft_strings,
+    generate_aircraft_strings_with_metrics,
+    validate_generated_aircraft_string,
+)
 
 __all__ = [
     "AircraftRecoveryRequest",
+    "AircraftFlightNetwork",
     "ArmBuildError",
     "BinaryIncidence",
     "CapacityIntervalKey",
@@ -110,6 +127,8 @@ __all__ = [
     "FixedColumnCrmModel",
     "FixedColumnPrmModel",
     "FixedColumnSrmModel",
+    "FlightLegEligibility",
+    "FlightStringGenerationError",
     "GateCheckpoint",
     "GateInventoryBuildError",
     "GateInventoryData",
@@ -133,11 +152,14 @@ __all__ = [
     "SCOPE_FIX_FLIGHT",
     "SCOPE_FIX_PASSENGER",
     "SrmBuildError",
+    "StringGenerationResult",
+    "StringLegalityResult",
     "analyze_arm_fixed_columns",
     "analyze_crm_fixed_columns",
     "analyze_prm_fixed_columns",
     "audit_integrated_candidate",
     "build_crew_recovery_incidence",
+    "build_aircraft_flight_network",
     "build_fixed_column_arm",
     "build_fixed_column_crm",
     "build_fixed_column_srm",
@@ -148,8 +170,11 @@ __all__ = [
     "build_recovery_incidence",
     "build_recovery_indices",
     "build_recovery_scope",
+    "brute_force_legal_aircraft_strings",
     "direct_disrupted_flight_ids",
     "extract_required_operated_option_ids",
+    "generate_aircraft_strings",
+    "generate_aircraft_strings_with_metrics",
     "list_constraint_metadata",
     "recompute_arm_diagnostics",
     "recompute_crm_diagnostics",
@@ -157,6 +182,7 @@ __all__ = [
     "recompute_prm_diagnostics",
     "recompute_srm_diagnostics",
     "resolve_original_candidates",
+    "resolve_original_flight_option_ids",
     "scope_metrics",
     "solve_fixed_column_arm",
     "solve_fixed_column_crm",
@@ -164,4 +190,6 @@ __all__ = [
     "solve_fixed_column_srm",
     "solve_integrated_fixed_column_oracle",
     "validate_recovery_scope",
+    "validate_flight_option_for_aircraft",
+    "validate_generated_aircraft_string",
 ]
