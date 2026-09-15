@@ -22,6 +22,13 @@ from .crew_incidence import (
     CrewRecoveryIncidence,
     build_crew_recovery_incidence,
 )
+from .crew_network import (
+    CrewFlightNetwork,
+    CrewLegEligibility,
+    CrewLegKey,
+    build_crew_flight_network,
+    validate_flight_option_for_crew,
+)
 from .constraint_registry import (
     CONSTRAINT_REGISTRY,
     ConstraintImplementationStatus,
@@ -108,6 +115,16 @@ from .string_generator import (
     generate_aircraft_strings_with_metrics,
     validate_generated_aircraft_string,
 )
+from .pairing_generator import (
+    CrewPairingGenerationError,
+    PairingGenerationResult,
+    PairingLegalityResult,
+    brute_force_legal_crew_pairings,
+    generate_crew_pairings,
+    generate_crew_pairings_with_metrics,
+    pairing_semantic_key,
+    validate_generated_crew_pairing,
+)
 
 __all__ = [
     "AircraftRecoveryRequest",
@@ -118,6 +135,10 @@ __all__ = [
     "CrmBuildError",
     "CrewRecoveryIncidence",
     "CrewRecoveryRequest",
+    "CrewFlightNetwork",
+    "CrewLegEligibility",
+    "CrewLegKey",
+    "CrewPairingGenerationError",
     "CONSTRAINT_REGISTRY",
     "ConstraintImplementationStatus",
     "ConstraintKind",
@@ -140,6 +161,8 @@ __all__ = [
     "OrderedIndex",
     "PassengerRecoveryIncidence",
     "PassengerRecoveryRequest",
+    "PairingGenerationResult",
+    "PairingLegalityResult",
     "PrmBuildError",
     "RecoveryIncidence",
     "RecoveryScope",
@@ -159,6 +182,7 @@ __all__ = [
     "analyze_prm_fixed_columns",
     "audit_integrated_candidate",
     "build_crew_recovery_incidence",
+    "build_crew_flight_network",
     "build_aircraft_flight_network",
     "build_fixed_column_arm",
     "build_fixed_column_crm",
@@ -171,11 +195,15 @@ __all__ = [
     "build_recovery_indices",
     "build_recovery_scope",
     "brute_force_legal_aircraft_strings",
+    "brute_force_legal_crew_pairings",
     "direct_disrupted_flight_ids",
     "extract_required_operated_option_ids",
     "generate_aircraft_strings",
     "generate_aircraft_strings_with_metrics",
+    "generate_crew_pairings",
+    "generate_crew_pairings_with_metrics",
     "list_constraint_metadata",
+    "pairing_semantic_key",
     "recompute_arm_diagnostics",
     "recompute_crm_diagnostics",
     "recompute_integrated_diagnostics",
@@ -191,5 +219,7 @@ __all__ = [
     "solve_integrated_fixed_column_oracle",
     "validate_recovery_scope",
     "validate_flight_option_for_aircraft",
+    "validate_flight_option_for_crew",
     "validate_generated_aircraft_string",
+    "validate_generated_crew_pairing",
 ]

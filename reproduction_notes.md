@@ -534,12 +534,46 @@ Turn Time 使用版本化测试配置：默认 15 分钟，E1 为兼容已冻结
 
 ---
 
+# 19.1 Phase 6 Crew Pairing Generator
+
+Phase 6 在每次候选宇宙变化后重新构造 `RecoveryScope`，并只消费已有 revenue OPERATE Flight Options；其完整性表述严格限定为 **full explicit enumeration within the Phase 6 v1 generation profile**：
+
+```text
+Scenario + existing Flight Options + latest RecoveryScope + versioned Crew Config
+→ deterministic crew-local OPERATE/DEADHEAD Network
+→ single-duty DFS explicit enumeration
+→ generated CrewPairing columns
+→ independent legality validation
+```
+
+OPERATE 检查现有 `Crew.rating`；DEADHEAD 不计 operating coverage，但 Integrated Oracle 要求对应 Flight Option 被选中。Generator 检查 ownership、Station/Timing、Min Connection、Duty duration、Recovery Horizon、Terminal、Original/Idle、重复 option/base flight 与测试配置中的 DEADHEAD 上限。Airport/gate/passenger capacity 和 Aircraft String selection 不进入 crew-local network。
+
+正确性验证：
+
+```text
+toy_case_008_crew_pairing_generator:
+  C1 smart DFS legal set = brute-force permutation/role legal set = 5
+  total generated pairings = 8 (C1=5, C2=3)
+
+phase1_benchmark_001:
+  manual pairings = 10
+  generated pairings = 374 (C1=28, C2=122, C3=56, C4=73, C5=95)
+  manual semantic key coverage = 10 / 10
+  generated OPERATE leg incidences = 1094
+  generated DEADHEAD leg incidences = 288
+  Full Integrated objective = 18080 (与人工 Pairings 相同)
+  Scope-limited Integrated objective = 18080
+```
+
+当前单 duty、0 分钟 benchmark connection、480 分钟 duty bound、最多 1 个 DEADHEAD 都是版本化工程测试边界，不代表真实航司 Crew legality。Phase 6 未实现多 duty/rest、Crew Rostering、Pricing、Reduced Cost、Column Generation 或 Benders。
+
+---
+
 # 20. 当前仍未实现
 
 截至当前阶段，以下仍未完成：
 
 ```text
-Automatic Crew Pairing Generator
 Automatic Passenger Itinerary Generator
 
 Benders
@@ -609,6 +643,15 @@ Scope-aware generation with out-of-scope original retention
 toy_case_007 smart-vs-brute-force legal-set Oracle
 phase1_benchmark_001 77 generated Strings and 11/11 manual-key coverage
 Generated-String Integrated Oracle objective 18080
+Versioned Crew Pairing generation configuration
+Deterministic crew-local OPERATE/DEADHEAD Network
+Single-duty Crew Pairing DFS explicit enumeration
+Independent generated Pairing legality validation
+Explicit original / idle / terminal semantics
+Scope-aware generation with out-of-scope original retention
+toy_case_008 smart-vs-brute-force legal-set Oracle
+phase1_benchmark_001 374 generated Pairings and 10/10 manual-key coverage
+Generated-Pairing Integrated Oracle objective 18080
 ```
 
 Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
@@ -620,10 +663,10 @@ Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独
 下一步进入：
 
 ```text
-Phase 6 Crew Pairing Generator
+Phase 7 Passenger Itinerary Generator
 ```
 
-Phase 5 已完成 existing-option Aircraft String 的显式全量生成及 Oracle 对齐。下一步应沿用“先合法列全量生成、再进入 Pricing”的边界实现 Crew Pairing Generator；Passenger generator、Benders 与 Column Generation 不提前实现。
+Phase 5/6 已完成 existing-option Aircraft String 与 Crew Pairing 的显式生成及 Oracle 对齐。下一步应沿用“先合法列全量生成、再进入 Pricing”的边界实现 Passenger Itinerary Generator；Benders 与 Column Generation 不提前实现。
 
 ---
 

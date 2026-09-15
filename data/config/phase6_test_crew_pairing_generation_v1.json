@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "phase6_test_crew_pairing_generation_v1",
+  "default_min_connection_minutes": 0,
+  "max_duty_minutes": 480,
+  "max_deadhead_legs": 1,
+  "allow_deadhead": true,
+  "allow_idle": true,
+  "source": "test_fixture",
+  "notes": [
+    "IMPLEMENTATION ASSUMPTION: zero-minute connection preserves frozen benchmark pairings with back-to-back legs.",
+    "IMPLEMENTATION ASSUMPTION: 480 minutes is a test-only single-duty bound, not a FAR/CCAR rule.",
+    "IMPLEMENTATION ASSUMPTION: at most one deadhead leg per pairing keeps the explicit benchmark inside the repository's size-limited solver gate.",
+    "Phase 6 v1 has no multi-duty or overnight-rest representation."
+  ]
+}
