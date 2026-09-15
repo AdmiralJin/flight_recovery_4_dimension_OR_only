@@ -1579,6 +1579,96 @@ Passenger Group 保持不可拆分 binary selection。生成 55 条 benchmark it
 
 ---
 
+## A-076 Phase 8 Fixed-Column Logic-Based Benders Partition
+
+**来源状态：** `implementation_extension`
+
+**实现方式：**
+Phase 8 将 SRM 的 Schedule Flight Option `x` 保留在 Master，并增加非负连续变量 `theta[arm]`、`theta[crm]`、`theta[prm]`；ARM、CRM、PRM 继续使用现有 binary fixed-column MIP 和独立 diagnostics，不复制资源或旅客模型。
+
+**原因：**
+当前三个 recourse model 都是 MIP，现有 solver adapter 明确禁止从 MIP solution 读取 LP dual。因此 Phase 8 是 Logic-Based Fixed-Column Benders correctness baseline，不声称实现 classical LP-dual Benders cuts。
+
+**影响：**
+目标成本 ownership 保持 SRM → Master、ARM/CRM/PRM → 对应 recourse，不增加隐藏权重或重复成本。Integrated Oracle 继续作为 Ground Truth。
+
+**未来替换条件：**
+只有显式建立并验证连续 recourse relaxation、dual mapping 与强 cut 公式后，才可升级为 classical Benders。
+
+---
+
+## A-077 Phase 8 Exact-Schedule Cut Semantics
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+若任一 recourse MIP 对当前 schedule 不可行，加入只排除该 schedule 的 no-good cut。若 owner recourse 最优值为 `Qk`，加入 `theta_k >= Qk - M_k * delta(schedule, visited)` 的 conditional exact-recourse cut；cut ID 仅由 cut type、owner 和 canonical schedule signature 的 SHA-256 摘要生成。
+
+**原因：**
+这些 cut 在 binary recourse 下弱但精确，可对有限 Schedule universe 保证可审计的有限收敛，而无需伪造 dual multiplier。
+
+**影响：**
+算法目标是 correctness，不是大规模性能；可能访问多个 schedule 并重复求解 subproblem。visited schedule 之外的 recourse lower bound 仅为 0。
+
+**未来替换条件：**
+引入经证明有效的 combinatorial/dual strengthened cuts 后，必须继续对 tiny universe 做 exhaustive cut-validity 回归。
+
+---
+
+## A-078 Phase 8 Owner Big-M and Nonnegative Recourse
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+`M_ARM`、`M_CRM`、`M_PRM` 分别按当前 scope-restricted universe 中每个 Aircraft、Crew、Passenger Group 的最大候选 owner cost 求和，禁止 magic constant。每个 owner 必须至少有一条候选，且当前 canonical owner costs 必须非负。
+
+**原因：**
+每个 owner 恰选一条 fixed candidate，因此该和是任何可行 owner-selection recourse objective 的安全上界，并使非 visited schedule 上的 conditional cut 不强于 `theta >= 0`。
+
+**影响：**
+若未来允许负 recourse cost，现有 theta 下界与 Big-M 证明失效，必须重新设计。
+
+**未来替换条件：**
+成本合同改变或使用更强 schedule-dependent bound 时，需重新证明 upper-bound validity 并更新测试。
+
+---
+
+## A-079 Phase 8 Fixed Universe, Scope and Cut Lifetime
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+每次 solve 对 Scenario、Flight Options、Aircraft Strings、Crew Pairings、Passenger Itineraries、cost/capacity profile、scope 与 Benders config 生成稳定 fingerprint。cuts 只在该 immutable solve state 内使用，不跨 solve 持久化。Master 的 out-of-scope Flight 固定到语义 original option；subproblem 对 out-of-scope resource/passenger owner 使用 original-only 列视图。
+
+**原因：**
+candidate universe、scope 或 profile 变化会改变 recourse function 和 Big-M，旧 cut 不能自动视为有效。
+
+**影响：**
+Phase 8 不生成、删除或动态插入任何列；未来 Column Generation 不得直接复用本阶段 cuts。
+
+**未来替换条件：**
+只有后续阶段为动态列宇宙建立正式 cut validity/invalidation policy 后，才能安全复用。
+
+---
+
+## A-080 Phase 8 Bound, Status and Final Audit Rule
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+只有 OPTIMAL Master objective 才更新 LB；只有所有启用 recourse subproblem 都为 OPTIMAL 时才形成 UB。FEASIBLE/NO_SOLUTION/ERROR 等非终局状态均 ABORT，达到最大迭代返回 NOT_CONVERGED。全组件最优 incumbent 必须重新送入现有 Integrated diagnostics，检查 local、linking、scope 和 objective。
+
+**原因：**
+未证明最优的 MIP objective 不能生成 exact optimality cut，也不能作为合法 Benders bound。
+
+**影响：**
+`solver_status=OPTIMAL` 本身仍不足以验收；Phase 8 PASS 同时要求 LB/UB 收敛、Integrated audit 和 Oracle objective equality。
+
+**未来替换条件：**
+若支持 time-limit incumbent 或异步 subproblem，必须引入有证明的 bound/cut 处理规则，不能沿用当前 exact-cut 分支。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：

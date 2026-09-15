@@ -1,5 +1,12 @@
 """Versioned configuration contracts."""
 
+from .benders import (
+    BendersImplementationSource,
+    FixedColumnBendersConfig,
+    FixedColumnBendersConfigError,
+    load_fixed_column_benders_config,
+)
+
 from .costs import (
     AircraftStringCostBreakdown,
     CrewPairingCostBreakdown,
@@ -46,6 +53,7 @@ from .string_generation import (
 
 __all__ = [
     "AircraftStringCostBreakdown",
+    "BendersImplementationSource",
     "CrewPairingCostBreakdown",
     "CostCoefficient",
     "CostCoefficients",
@@ -56,6 +64,8 @@ __all__ = [
     "CrewPairingGenerationConfig",
     "CrewPairingGenerationConfigError",
     "FixedColumnCostConfig",
+    "FixedColumnBendersConfig",
+    "FixedColumnBendersConfigError",
     "FlightStringGenerationConfig",
     "FlightStringGenerationConfigError",
     "ItineraryGenerationSource",
@@ -71,6 +81,7 @@ __all__ = [
     "apply_cost_overrides",
     "crew_pairing_cost",
     "load_cost_config",
+    "load_fixed_column_benders_config",
     "load_crew_pairing_generation_config",
     "load_flight_string_generation_config",
     "load_passenger_itinerary_generation_config",

@@ -603,6 +603,27 @@ phase1_benchmark_001:
 
 Benchmark profile 的 0 分钟 MCT、最多 3 个 flight legs 与 FLIGHT-only 都是版本化测试边界，不代表真实航司 MCT/行程规则。Phase 7 不实现 Passenger Pricing、Surface network、旅客拆分、舱位等级、Column Generation 或 Benders。
 
+## Phase 8 Fixed-Column Logic-Based Benders
+
+Phase 8 在完全冻结的 Phase 7 candidate universe 上实现：
+
+```text
+SRM x + thetaA/thetaC/thetaP Master
+        ↓
+existing ARM / CRM / PRM binary MIP recourse
+        ↓
+exact-schedule no-good feasibility cuts
++ conditional exact-recourse Big-M optimality cuts
+        ↓
+Integrated diagnostics audit
+```
+
+这是工程 correctness decomposition baseline。当前 recourse 是 binary MIP，因此没有读取 LP dual，也不声称复现 classical dual-derived Benders cuts。Master 每轮从 SRM 重新构建，owner Big-M 从实际 scope-restricted fixed candidates 程序化计算；cuts 只对当前 candidate universe、scope、cost/capacity profile 有效。
+
+验证结果：`toy_case_010_fixed_column_benders` 在 4 轮中产生 feasibility 与三类 owner optimality cuts，Benders/Integrated objective 均为 `220`。`toy_case_004`、`toy_case_005`、`toy_case_006_scope` 的 full/scope 均与 Integrated Oracle 等价。Phase 7 benchmark universe（21 个 schedule candidates、77 Strings、374 Pairings、55 Itineraries）在 8 轮、7 个 visited schedules、17 个 unique cuts 后达到 `LB = UB = 18080`，最终 local/linking/scope/objective audit 全通过。
+
+Phase 8 不实现 Pricing、Reduced Cost、Column Generation、Benders + Column Generation、callbacks、dual stabilization 或动态列。
+
 ---
 
 # 20. 当前仍未实现
@@ -610,7 +631,6 @@ Benchmark profile 的 0 分钟 MCT、最多 3 个 flight legs 与 FLIGHT-only �
 截至当前阶段，以下仍未完成：
 
 ```text
-Benders
 Column Generation
 Benders + Column Generation
 Integrality / Branching
@@ -695,6 +715,16 @@ toy_case_009 smart-vs-brute-force legal-set Oracle
 phase1_benchmark_001 55 generated Itineraries and 17/17 manual-key coverage
 Generated-Itinerary PRM objective 18000
 Generated-Itinerary Full/Scope Integrated objective 18080
+Versioned logic-based fixed-column Benders configuration
+SRM Master with nonnegative ARM/CRM/PRM recourse variables
+Exact-schedule feasibility and conditional exact-recourse optimality cuts
+Programmatic owner-specific Big-M bounds
+Scope-restricted recourse candidate views
+Deterministic cut IDs, input fingerprint, LB/UB trajectory and status handling
+toy_case_010 feasibility/optimality cut convergence Oracle
+toy_case_004/005 and toy_case_006_scope Benders/Integrated equality
+phase1_benchmark_001 generated-universe Benders objective 18080
+Final Benders incumbent Integrated diagnostics audit
 ```
 
 Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
@@ -706,10 +736,10 @@ Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独
 下一步进入：
 
 ```text
-Phase 8 Fixed-Column Benders
+Phase 9 Flight / Aircraft String Column Generation
 ```
 
-Phase 5/6/7 已完成 Aircraft String、Crew Pairing 与 Passenger Itinerary 的显式生成及 Oracle 对齐。下一步应在固定候选宇宙上实现 Benders，并以 `OBJ_Benders == OBJ_Integrated_Oracle` 为第一验收标准；在此之前不进入 Column Generation。
+Phase 8 已将固定候选宇宙分解为 SRM Master 与 ARM/CRM/PRM exact MIP recourse，并在 toy、scope 与完整 benchmark 上证明 `OBJ_Benders == OBJ_Integrated_Oracle`。下一步可先单独实现 Flight / Aircraft String Pricing 与 Column Generation，并同时保持 Integrated Oracle 和 Fixed-Column Benders 两个 Ground Truth；尚不组合 Benders + CG。
 
 ---
 

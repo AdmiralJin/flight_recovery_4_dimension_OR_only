@@ -37,7 +37,8 @@ Fixed-column OR Models + Solver Adapter / Gurobi
 | Phase 5 | ✅ 完成 | Existing-option Flight Network、Turn Time、Aircraft String 全量生成、brute-force Oracle |
 | Phase 6 | ✅ 完成 | Crew-local Network、OPERATE/DEADHEAD、Crew Pairing 显式生成、brute-force Oracle |
 | Phase 7 | ✅ 完成 | Passenger-local Network、MCT、TRANSPORTED/UNSERVED Itinerary 显式生成、brute-force Oracle |
-| Phase 8+ | ⏳ 未开始 | Fixed-column Benders、Column Generation 等 |
+| Phase 8 | ✅ 完成 | Logic-based Fixed-column Benders、exact-schedule cuts、LB/UB 与 Integrated audit |
+| Phase 9+ | ⏳ 未开始 | Flight/Aircraft String Column Generation、Benders + CG 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
@@ -50,6 +51,8 @@ Phase 5 使用已有 Flight Options 建立 aircraft-local DAG，并通过显式 
 Phase 6 使用最新候选宇宙重建 Scope 后，以 existing revenue `OPERATE` Flight Options 建立 crew-local DAG，并执行 **full explicit enumeration within the Phase 6 v1 generation profile**。每个 option 可形成 OPERATE 或 DEADHEAD leg；仅 OPERATE 检查现有 `Crew.rating`，DEADHEAD 不计 operating coverage。`toy_case_008_crew_pairing_generator` 的 DFS 与独立 brute-force 集合一致；主 benchmark 生成 374 条 Pairings，覆盖 10/10 人工关键列，再次重建 Scope 后 Full 与 Scope-limited Integrated objective 均为 `18080`。
 
 Phase 7 使用 existing revenue Flight Options 建立 passenger-local DAG，并执行 **full explicit enumeration within the Phase 7 v1 generation profile**。Generator 处理 O-D、时间、MCT、Recovery Horizon、最大航段数、Original 与显式 UNSERVED；seat capacity 仍由 PRM/Integrated Oracle 统一处理。`toy_case_009` 的 Smart 与 brute-force 集合一致；主 benchmark 生成 55 条 Itineraries，覆盖人工候选 17/17，PRM objective 保持 `18000`，Full 与 Scope-limited Integrated objective 均保持 `18080`。
+
+Phase 8 在固定候选宇宙上复用 SRM/ARM/CRM/PRM，实现 correctness-first Logic-Based Benders。binary recourse 采用 exact schedule no-good feasibility cuts 与 owner-specific conditional exact-recourse cuts，不冒充 classical LP-dual Benders。`toy_case_010` 在 4 轮收敛到 `220`；主 benchmark 在 8 轮、17 个 unique cuts 后达到 `LB = UB = Integrated Oracle = 18080`，最终 Integrated diagnostics 全通过。
 
 ---
 
@@ -545,15 +548,29 @@ Phase 7 v1 只从已有 revenue OPERATE Flight Options 生成 FLIGHT-only transp
 
 ---
 
+# Phase 8 Fixed-Column Benders
+
+核心入口：
+
+```text
+backend/config/benders.py
+backend/core/benders.py
+data/config/phase8_test_benders_v1.json
+```
+
+Phase 8 v1 以 SRM `x` 为 Master，并使用现有 ARM/CRM/PRM binary MIP 作为 exact recourse。可行性 cut 仅排除一个 canonical schedule；最优性 cut 只在被访问 schedule 上令 `theta` tight，Big-M 从当前 scope-restricted owner candidates 计算。每次求解冻结 candidate universe，并以现有 Integrated diagnostics 独立复算最终 `x/y/z/w`、linking、scope 与 objective。
+
+---
+
 # 下一步
 
 当前下一工程任务是：
 
 ```text
-Phase 8 Fixed-Column Benders
+Phase 9 Flight / Aircraft String Column Generation
 ```
 
-Phase 5/6/7 已分别验证 Aircraft String、Crew Pairing 与 Passenger Itinerary 自动生成。下一步应在固定候选列上实现 Benders，并以 `OBJ_Benders == OBJ_Integrated_Oracle` 为第一验收门槛；在此之前不进入 Pricing 或 Column Generation。
+Phase 8 已在固定候选列上证明 `OBJ_Benders == OBJ_Integrated_Oracle`。下一步应先独立实现 Flight / Aircraft String Pricing 与 Column Generation，并分别对齐 Full Enumeration、Integrated Oracle 与 Fixed-Column Benders；暂不组合 Benders + Column Generation。
 
 完整开发路线见：
 
