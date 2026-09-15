@@ -536,7 +536,7 @@ Turn Time 使用版本化测试配置：默认 15 分钟，E1 为兼容已冻结
 
 # 19.1 Phase 6 Crew Pairing Generator
 
-Phase 6 在每次候选宇宙变化后重新构造 `RecoveryScope`，并只消费已有 revenue OPERATE Flight Options：
+Phase 6 在每次候选宇宙变化后重新构造 `RecoveryScope`，并只消费已有 revenue OPERATE Flight Options；其完整性表述严格限定为 **full explicit enumeration within the Phase 6 v1 generation profile**：
 
 ```text
 Scenario + existing Flight Options + latest RecoveryScope + versioned Crew Config
@@ -561,7 +561,8 @@ phase1_benchmark_001:
   manual semantic key coverage = 10 / 10
   generated OPERATE leg incidences = 1094
   generated DEADHEAD leg incidences = 288
-  Integrated objective = 18080 (与人工 Pairings 相同)
+  Full Integrated objective = 18080 (与人工 Pairings 相同)
+  Scope-limited Integrated objective = 18080
 ```
 
 当前单 duty、0 分钟 benchmark connection、480 分钟 duty bound、最多 1 个 DEADHEAD 都是版本化工程测试边界，不代表真实航司 Crew legality。Phase 6 未实现多 duty/rest、Crew Rostering、Pricing、Reduced Cost、Column Generation 或 Benders。

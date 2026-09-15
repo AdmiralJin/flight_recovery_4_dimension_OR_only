@@ -95,7 +95,10 @@ def _make_pairing(crew: Crew, legs: Sequence[CrewLegKey]) -> CrewPairing:
         start_station=crew.start_station_at_t,
         end_station=crew.required_station_at_T_end,
         cost_components={},
-        notes="Phase 6 deterministic explicit/full-enumeration candidate.",
+        notes=(
+            "Phase 6 deterministic full explicit enumeration within the v1 "
+            "generation profile."
+        ),
     )
 
 
@@ -399,7 +402,9 @@ def generate_crew_pairings_with_metrics(
         "rejected_candidate_count_by_reason": dict(sorted(rejected_counts.items())),
         "original_pairing_status_by_crew": original_status,
         "generation_runtime_seconds": perf_counter() - started,
-        "generation_mode": "explicit_full_enumeration_without_pricing",
+        "generation_mode": (
+            "full_explicit_enumeration_within_phase6_v1_profile_without_pricing"
+        ),
     }
     return PairingGenerationResult(
         pairings=tuple(all_pairings), networks=networks, metrics=metrics

@@ -46,7 +46,7 @@ Phase 4 在完整 fixed-column universe 上从受支持的直接 departure disru
 
 Phase 5 使用已有 Flight Options 建立 aircraft-local DAG，并通过显式 Turn Time profile、Station/Timing/Horizon/Curfew/Equipment/Maintenance/Terminal 规则执行 DFS 全量枚举。`toy_case_007_string_generator` 与独立全排列 Oracle 的合法路径集合完全一致；主 benchmark 从 11 条人工 Aircraft Strings 扩展为 77 条生成 Strings，覆盖全部人工关键列，Integrated optimum 保持 `18080`。
 
-Phase 6 使用最新候选宇宙重建 Scope 后，以 existing revenue `OPERATE` Flight Options 建立 crew-local DAG。每个 option 可形成 OPERATE 或 DEADHEAD leg；仅 OPERATE 检查现有 `Crew.rating`，DEADHEAD 不计 operating coverage。`toy_case_008_crew_pairing_generator` 的 DFS 与独立 brute-force 集合一致；主 benchmark 生成 374 条 Pairings，覆盖 10/10 人工关键列，再次重建 Scope 后 Integrated optimum 保持 `18080`。
+Phase 6 使用最新候选宇宙重建 Scope 后，以 existing revenue `OPERATE` Flight Options 建立 crew-local DAG，并执行 **full explicit enumeration within the Phase 6 v1 generation profile**。每个 option 可形成 OPERATE 或 DEADHEAD leg；仅 OPERATE 检查现有 `Crew.rating`，DEADHEAD 不计 operating coverage。`toy_case_008_crew_pairing_generator` 的 DFS 与独立 brute-force 集合一致；主 benchmark 生成 374 条 Pairings，覆盖 10/10 人工关键列，再次重建 Scope 后 Full 与 Scope-limited Integrated objective 均为 `18080`。
 
 ---
 

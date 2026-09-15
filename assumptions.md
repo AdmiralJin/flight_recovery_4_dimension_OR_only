@@ -1494,7 +1494,7 @@ Phase 6 v1 每条生成 Pairing 恰含一个 duty。Duty duration 定义为首 l
 **来源状态：** `implementation_phase_boundary`
 
 **实现方式：**
-Scoped Crew 在配置边界内通过 crew-local DAG + DFS 枚举全部合法 Pairings；out-of-scope Crew 只保留由 original Flight Options 构成、且经独立 validator 验证的 original Pairing；`scope=None` 全量生成。仅当 Crew 起点等于 required terminal 且配置允许时生成显式零 leg idle Pairing。所有输出使用稳定 semantic key 与派生 ID，并再次通过 pure legality validator。
+Scoped Crew 通过 crew-local DAG + DFS 执行 **full explicit enumeration within the Phase 6 v1 generation profile**；out-of-scope Crew 只保留由 original Flight Options 构成、且经独立 validator 验证的 original Pairing；`scope=None` 在相同 profile 内对全部 Crew 生成。仅当 Crew 起点等于 required terminal 且配置允许时生成显式零 leg idle Pairing。所有输出使用稳定 semantic key 与派生 ID，并再次通过 pure legality validator。
 
 **原因：**
 CRM/Integrated Oracle 对每个 Crew 恰选一条 Pairing，不能以“零条候选被选”表达 idle；Scope 外候选必须保持原计划冻结语义。

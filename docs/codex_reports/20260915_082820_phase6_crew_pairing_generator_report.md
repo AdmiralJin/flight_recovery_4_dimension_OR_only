@@ -137,7 +137,7 @@ Smart Generator 使用 crew-local network + DFS：
 - 使用 `crew_id + ordered(segment_type, flight_option_id)` 的 SHA-256 派生稳定 ID；
 - deterministic、stable ordering、无语义重复。
 
-`scope=None` 对全部 Crew 生成；提供 Scope 时只对 scoped Crew 全量枚举，out-of-scope Crew 只保留合法 original Pairing。
+生成完整性严格表述为 **full explicit enumeration within the Phase 6 v1 generation profile**。`scope=None` 在该 profile 内对全部 Crew 生成；提供 Scope 时只对 scoped Crew 枚举，out-of-scope Crew 只保留合法 original Pairing。
 
 ## 9. Independent Legality Validator
 
@@ -241,9 +241,11 @@ missing = 0
 Solver = Gurobi 13.0.3
 Status = OPTIMAL
 Objective with manual Pairings = 18080
-Objective with generated Pairings = 18080
+Full objective with generated Pairings = 18080
+Scope-limited objective with generated Pairings = 18080
 Local constraint audit = PASS
 Cross-model linking audit = PASS
+Scope fix audit = PASS
 Objective audit = PASS
 ```
 
@@ -317,6 +319,7 @@ manual key coverage and Integrated regression
 - [x] benchmark 人工 Pairings 10/10 覆盖；
 - [x] generated Pairings 回灌 Integrated Oracle；
 - [x] 生成后再次 rebuild Scope；
+- [x] 新 Scope 下 Full 与 Scope-limited Integrated objective 相等；
 - [x] objective 保持 18080；
 - [x] full pytest 0 failed / 0 skipped；
 - [x] Phase 3/4/5 regression 无回归；

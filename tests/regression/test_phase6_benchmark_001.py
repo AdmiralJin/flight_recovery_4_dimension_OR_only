@@ -97,7 +97,7 @@ def test_generated_benchmark_pairings_cover_manual_and_preserve_objective(
         capacity.capacity_profile_id,
     )
     with GurobiAdapter(output_flag=False) as solver:
-        result = solve_integrated_fixed_column_oracle(
+        full_result = solve_integrated_fixed_column_oracle(
             phase1_benchmark_001_data,
             phase6_data,
             request,
@@ -105,8 +105,25 @@ def test_generated_benchmark_pairings_cover_manual_and_preserve_objective(
             costs,
             solver,
         )
+    with GurobiAdapter(output_flag=False) as solver:
+        scoped_result = solve_integrated_fixed_column_oracle(
+            phase1_benchmark_001_data,
+            phase6_data,
+            request,
+            capacity,
+            costs,
+            solver,
+            scope=scope_after,
+        )
 
-    assert result.status is SolverStatus.OPTIMAL
-    assert result.objective_value == pytest.approx(18080.0)
-    assert result.diagnostics["all_constraints_satisfied"]
-    assert result.diagnostics["cross_model_audit"]["all_constraints_satisfied"]
+    assert full_result.status is SolverStatus.OPTIMAL
+    assert scoped_result.status is SolverStatus.OPTIMAL
+    assert full_result.objective_value == pytest.approx(18080.0)
+    assert scoped_result.objective_value == pytest.approx(
+        full_result.objective_value, abs=1e-6
+    )
+    assert full_result.diagnostics["all_constraints_satisfied"]
+    assert full_result.diagnostics["cross_model_audit"]["all_constraints_satisfied"]
+    assert scoped_result.diagnostics["all_constraints_satisfied"]
+    assert scoped_result.diagnostics["cross_model_audit"]["all_constraints_satisfied"]
+    assert scoped_result.diagnostics["scope_fix_audit"]["all_constraints_satisfied"]
