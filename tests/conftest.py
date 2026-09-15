@@ -91,3 +91,17 @@ def toy_case_008_crew_pairing_generator_columns_data() -> dict:
     return _phase1_json(
         "columns", "toy_case_008_crew_pairing_generator_columns.json"
     )
+
+
+@pytest.fixture
+def toy_case_009_passenger_itinerary_generator_data() -> dict:
+    return _phase1_json(
+        "examples", "toy_case_009_passenger_itinerary_generator.json"
+    )
+
+
+@pytest.fixture
+def toy_case_009_passenger_itinerary_generator_columns_data() -> dict:
+    return _phase1_json(
+        "columns", "toy_case_009_passenger_itinerary_generator_columns.json"
+    )

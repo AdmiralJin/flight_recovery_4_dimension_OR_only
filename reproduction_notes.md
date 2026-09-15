@@ -569,13 +569,47 @@ phase1_benchmark_001:
 
 ---
 
+# 19.2 Phase 7 Passenger Itinerary Generator
+
+Phase 7 是明确标记的 `Implementation Assumption / Extension`。它只消费 existing revenue OPERATE Flight Options，并执行 **full explicit enumeration within the Phase 7 v1 generation profile**：
+
+```text
+Scenario + existing Flight Options + latest RecoveryScope + versioned Passenger Config
+→ deterministic passenger-local Flight Network
+→ FLIGHT-only DFS path enumeration + explicit UNSERVED
+→ independent itinerary legality validation
+→ generated PassengerItinerary columns
+→ rebuild canonical RecoveryScope
+```
+
+Generator 检查 passenger ownership、O-D/时间连续性、MCT、Recovery Horizon、最大航段数、重复 option/base flight、original/Scope 与 arrival delay；CANCEL/FERRY 不进入网络，SURFACE v1 禁用。Passenger count 和 seat capacity 不参与局部剪枝，容量竞争继续由 PRM-C03 与 INTEGRATED-L05 负责。
+
+正确性验证：
+
+```text
+toy_case_009_passenger_itinerary_generator:
+  P1 smart DFS legal set = brute-force permutation legal set = 4
+  generated itineraries = 7 (5 transported, 2 unserved)
+
+phase1_benchmark_001:
+  manual itineraries = 17
+  generated itineraries = 55 (47 transported, 8 unserved)
+  by group = P1:10, P2:11, P3:8, P4:8, P5:7, P6:5, P7:4, P8:2
+  manual semantic key coverage = 17 / 17
+  PRM objective = 18000
+  Full Integrated objective = 18080
+  Scope-limited Integrated objective = 18080
+```
+
+Benchmark profile 的 0 分钟 MCT、最多 3 个 flight legs 与 FLIGHT-only 都是版本化测试边界，不代表真实航司 MCT/行程规则。Phase 7 不实现 Passenger Pricing、Surface network、旅客拆分、舱位等级、Column Generation 或 Benders。
+
+---
+
 # 20. 当前仍未实现
 
 截至当前阶段，以下仍未完成：
 
 ```text
-Automatic Passenger Itinerary Generator
-
 Benders
 Column Generation
 Benders + Column Generation
@@ -652,6 +686,15 @@ Scope-aware generation with out-of-scope original retention
 toy_case_008 smart-vs-brute-force legal-set Oracle
 phase1_benchmark_001 374 generated Pairings and 10/10 manual-key coverage
 Generated-Pairing Integrated Oracle objective 18080
+Versioned Passenger Itinerary generation configuration
+Deterministic passenger-local Flight Network
+FLIGHT-only Passenger Itinerary DFS explicit enumeration
+Independent generated Itinerary legality validation
+Explicit original / UNSERVED / Scope semantics
+toy_case_009 smart-vs-brute-force legal-set Oracle
+phase1_benchmark_001 55 generated Itineraries and 17/17 manual-key coverage
+Generated-Itinerary PRM objective 18000
+Generated-Itinerary Full/Scope Integrated objective 18080
 ```
 
 Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
@@ -663,10 +706,10 @@ Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独
 下一步进入：
 
 ```text
-Phase 7 Passenger Itinerary Generator
+Phase 8 Fixed-Column Benders
 ```
 
-Phase 5/6 已完成 existing-option Aircraft String 与 Crew Pairing 的显式生成及 Oracle 对齐。下一步应沿用“先合法列全量生成、再进入 Pricing”的边界实现 Passenger Itinerary Generator；Benders 与 Column Generation 不提前实现。
+Phase 5/6/7 已完成 Aircraft String、Crew Pairing 与 Passenger Itinerary 的显式生成及 Oracle 对齐。下一步应在固定候选宇宙上实现 Benders，并以 `OBJ_Benders == OBJ_Integrated_Oracle` 为第一验收标准；在此之前不进入 Column Generation。
 
 ---
 
