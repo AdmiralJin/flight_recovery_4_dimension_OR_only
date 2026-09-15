@@ -25,7 +25,8 @@
 | Phase 4 | ✅ 完成 | Fixed-point Scope、Scope 外原计划冻结、Full-vs-Scope Oracle |
 | Phase 5 | ✅ 完成 | Existing-option Flight Network、Turn Time、Aircraft String 全量生成、brute-force Oracle |
 | Phase 6 | ✅ 完成 | Crew-local Network、OPERATE/DEADHEAD、Crew Pairing 显式生成、brute-force Oracle |
-| Phase 7+ | ⏳ 未开始 | Passenger Itinerary Generator、Benders、CG 等 |
+| Phase 7 | ✅ 完成 | Passenger-local Network、MCT、TRANSPORTED/UNSERVED Itinerary 显式生成、brute-force Oracle |
+| Phase 8+ | ⏳ 未开始 | Fixed-column Benders、Column Generation 等 |
 
 因此当前准确表述是：
 
@@ -1266,19 +1267,27 @@ generated Aircraft Strings
 
 # 13. Phase 7：Passenger Itinerary Generator
 
-论文没有完整给出 Itinerary Generation Algorithm，因此明确标记：
+论文没有完整给出 Itinerary Generation Algorithm，因此本实现明确标记：
 
 ```text
 Implementation Assumption / Extension
 ```
 
-第一版考虑：
+Phase 7 v1 已完成：
 
 - O-D continuity；
-- MCT；
+- 版本化 MCT；
 - Recovery Horizon；
-- Available flights；
-- Seat Capacity 在 PRM 内处理。
+- existing revenue OPERATE flights；
+- maximum flight legs；
+- deterministic FLIGHT-only DFS；
+- explicit UNSERVED；
+- independent legality validator；
+- tiny permutation Oracle；
+- Scope-aware original-only handling；
+- Seat Capacity 在 PRM / Integrated Oracle 内处理。
+
+完整性边界为 **full explicit enumeration within the Phase 7 v1 generation profile**。`toy_case_009` 中 P1 Smart/Brute-force legal set 均为 4；主 benchmark 生成 55 条 Itineraries，覆盖人工 17/17，PRM objective 为 `18000`，Full 与 Scope-limited Integrated objective 均为 `18080`。
 
 ---
 
@@ -1853,13 +1862,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5 与 Phase 6 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6 与 Phase 7 已完成。当前应开始：
 
 ```text
-Phase 7 Passenger Itinerary Generator
+Phase 8 Fixed-Column Benders
 ```
 
-Phase 5/6 已完成 existing-option Aircraft String 与 Crew Pairing 显式生成、独立 legality validation、brute-force Oracle 对齐和 Integrated Oracle 回归。下一阶段应实现 Passenger Itinerary Generator；Benders 与 Column Generation 仍按既定顺序后移。
+Phase 5/6/7 已完成 Aircraft String、Crew Pairing 与 Passenger Itinerary 显式生成、独立 legality validation、brute-force Oracle 对齐和 Integrated Oracle 回归。下一阶段应实现 Fixed-Column Benders；在其与 Integrated Oracle 对齐前不进入 Column Generation。
 
 ---
 

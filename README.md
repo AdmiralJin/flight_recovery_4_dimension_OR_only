@@ -36,7 +36,8 @@ Fixed-column OR Models + Solver Adapter / Gurobi
 | Phase 4 | ✅ 完成 | Direct disruption seed、fixed-point Scope closure、Scope 外原计划冻结、Full-vs-Scope Oracle |
 | Phase 5 | ✅ 完成 | Existing-option Flight Network、Turn Time、Aircraft String 全量生成、brute-force Oracle |
 | Phase 6 | ✅ 完成 | Crew-local Network、OPERATE/DEADHEAD、Crew Pairing 显式生成、brute-force Oracle |
-| Phase 7+ | ⏳ 未开始 | Passenger Itinerary Generator、Benders、Column Generation 等 |
+| Phase 7 | ✅ 完成 | Passenger-local Network、MCT、TRANSPORTED/UNSERVED Itinerary 显式生成、brute-force Oracle |
+| Phase 8+ | ⏳ 未开始 | Fixed-column Benders、Column Generation 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
@@ -47,6 +48,8 @@ Phase 4 在完整 fixed-column universe 上从受支持的直接 departure disru
 Phase 5 使用已有 Flight Options 建立 aircraft-local DAG，并通过显式 Turn Time profile、Station/Timing/Horizon/Curfew/Equipment/Maintenance/Terminal 规则执行 DFS 全量枚举。`toy_case_007_string_generator` 与独立全排列 Oracle 的合法路径集合完全一致；主 benchmark 从 11 条人工 Aircraft Strings 扩展为 77 条生成 Strings，覆盖全部人工关键列，Integrated optimum 保持 `18080`。
 
 Phase 6 使用最新候选宇宙重建 Scope 后，以 existing revenue `OPERATE` Flight Options 建立 crew-local DAG，并执行 **full explicit enumeration within the Phase 6 v1 generation profile**。每个 option 可形成 OPERATE 或 DEADHEAD leg；仅 OPERATE 检查现有 `Crew.rating`，DEADHEAD 不计 operating coverage。`toy_case_008_crew_pairing_generator` 的 DFS 与独立 brute-force 集合一致；主 benchmark 生成 374 条 Pairings，覆盖 10/10 人工关键列，再次重建 Scope 后 Full 与 Scope-limited Integrated objective 均为 `18080`。
+
+Phase 7 使用 existing revenue Flight Options 建立 passenger-local DAG，并执行 **full explicit enumeration within the Phase 7 v1 generation profile**。Generator 处理 O-D、时间、MCT、Recovery Horizon、最大航段数、Original 与显式 UNSERVED；seat capacity 仍由 PRM/Integrated Oracle 统一处理。`toy_case_009` 的 Smart 与 brute-force 集合一致；主 benchmark 生成 55 条 Itineraries，覆盖人工候选 17/17，PRM objective 保持 `18000`，Full 与 Scope-limited Integrated objective 均保持 `18080`。
 
 ---
 
@@ -527,15 +530,30 @@ Phase 6 v1 只生成单 duty 的显式 Pairings，检查 ownership、qualificati
 
 ---
 
+# Phase 7 Passenger Itinerary Generator
+
+核心入口：
+
+```text
+backend/config/itinerary_generation.py
+backend/core/passenger_network.py
+backend/core/itinerary_generator.py
+data/config/phase7_test_itinerary_generation_v1.json
+```
+
+Phase 7 v1 只从已有 revenue OPERATE Flight Options 生成 FLIGHT-only transported paths，并为每个 Passenger Group 生成显式 UNSERVED candidate。它检查 passenger ownership、O-D/时间连续性、版本化 MCT、Recovery Horizon、最大航段数、重复 option/base flight、arrival/delay、original 与 Scope；不以 seat capacity 做局部剪枝，也不生成 SURFACE 或新 Flight Options。
+
+---
+
 # 下一步
 
 当前下一工程任务是：
 
 ```text
-Phase 7 Passenger Itinerary Generator
+Phase 8 Fixed-Column Benders
 ```
 
-Phase 5/6 已分别验证 Aircraft String 与 Crew Pairing 自动生成。下一步应继续在“先 explicit generation、后 pricing”边界下实现 Passenger Itinerary Generator。当前 Oracle 继续使用 test cost 与 test/residual passenger capacity；它是后续分解/列生成的 Ground Truth，不代表真实航司生产最优。
+Phase 5/6/7 已分别验证 Aircraft String、Crew Pairing 与 Passenger Itinerary 自动生成。下一步应在固定候选列上实现 Benders，并以 `OBJ_Benders == OBJ_Integrated_Oracle` 为第一验收门槛；在此之前不进入 Pricing 或 Column Generation。
 
 完整开发路线见：
 

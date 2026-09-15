@@ -1422,7 +1422,7 @@ Phase 5 通过后进入 Crew Pairing Generator；Flight Option generation、Pric
 **来源状态：** `implementation_safety_assumption`
 
 **实现方式：**
-`RecoveryScope` 只对构建它时传入的 `Scenario + RecoveryColumns` 候选宇宙闭包。任何 Flight Options、Aircraft Strings、Crew Pairings 或 Passenger Itineraries 发生变化后，进入下一生成器或 Scope-limited Solver 前必须重新调用 `build_recovery_scope(...)`。正式流水线为：Phase 5 generated Strings → rebuild Scope → Phase 6 generated Pairings → rebuild Scope → Phase 7。
+`RecoveryScope` 只对构建它时传入的 `Scenario + RecoveryColumns` 候选宇宙闭包。任何 Flight Options、Aircraft Strings、Crew Pairings 或 Passenger Itineraries 发生变化后，进入下一生成器或 Scope-limited Solver 前必须重新调用 `build_recovery_scope(...)`。正式流水线为：Phase 5 generated Strings → rebuild Scope → Phase 6 generated Pairings → rebuild Scope → Phase 7 generated Itineraries → rebuild Scope → Phase 8。
 
 **原因：**
 新候选可能引入新的航班、资源 owner、共享 capacity/gate/seat 行和传播依赖；沿用旧 Scope 无法证明闭包安全。
@@ -1507,6 +1507,78 @@ Phase 6 是 explicit candidate generation，不读取 dual、不计算 reduced c
 
 ---
 
+## A-072 Phase 7 Passenger Generator Is an Engineering Extension
+
+**来源状态：** `implementation_extension`
+
+**实现方式：**
+论文未提供当前仓库可直接照搬的完整 Passenger Itinerary generation algorithm。Phase 7 使用 passenger-local DAG + deterministic DFS，并以独立 permutation Oracle 验证 **full explicit enumeration within the Phase 7 v1 generation profile**。
+
+**原因：**
+必须先建立可审计的 passenger candidate universe，才能在后续 Benders/Pricing 中验证动态生成的正确性。
+
+**影响：**
+Phase 7 不读取 dual、不计算 reduced cost，不实现 Passenger Pricing、Column Generation 或 Benders，也不代表论文原算法的逐字复现。
+
+**未来替换条件：**
+后续 Passenger Pricing 必须先在相同小实例上与本显式 universe 对齐。
+
+---
+
+## A-073 Phase 7 MCT and Maximum-leg Test Profile
+
+**来源状态：** `implementation_assumption`
+
+**实现方式：**
+版本化 `phase7_test_itinerary_generation_v1` 使用 `default_mct_minutes=0`、`max_flight_legs=3`、`allow_unserved=true`、`allow_surface=false`。零分钟 MCT 用于保留 benchmark 已冻结的背靠背人工 itinerary；toy Oracle 独立使用 30 分钟 MCT 测试 exact-boundary 与少 1 分钟的拒绝行为。
+
+**原因：**
+当前数据没有机场/航站楼/国内国际分类的真实 MCT 表；最大航段数是显式枚举的组合规模边界。
+
+**影响：**
+这些值不是航司生产规则。生成完整性只相对于输入 Flight Options 与 Phase 7 v1 profile 成立。
+
+**未来替换条件：**
+接入版本化真实 MCT 与 itinerary policy 后发布新 profile，并重跑 Oracle、PRM 与 Integrated 回归。
+
+---
+
+## A-074 Phase 7 Local Legality and Capacity Boundary
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+Generator 仅检查单条 itinerary 的 revenue option、O-D、时间、MCT、Recovery Horizon、最大航段数、重复 option/base flight 和 arrival delay。它不读取 passenger count 或 seat-capacity profile，不以容量删除局部合法 itinerary。
+
+**原因：**
+单列时空合法性不同于多个 Passenger Groups 同时选择后的共享容量可行性。后者继续由 PRM-C03 与 INTEGRATED-L05 处理。
+
+**影响：**
+Passenger count 大于某 option 的 test/residual capacity 时，该 itinerary 仍可能生成，但 Solver 不会在违反容量时选择它。Residual capacity 不代表 aircraft physical capacity。
+
+**未来替换条件：**
+只有在保持全局容量约束等价性的正式 pricing dominance 证明下，才可使用容量信息安全剪枝。
+
+---
+
+## A-075 Phase 7 Original, UNSERVED, Surface and Scope Semantics
+
+**来源状态：** `implementation_phase_boundary`
+
+**实现方式：**
+每个 scoped Passenger Group 在 v1 profile 内生成全部合法 FLIGHT-only TRANSPORTED paths，并始终保留显式 UNSERVED；out-of-scope group 只保留通过业务字段解析和独立 validator 确认的 original itinerary，不能偷偷替换为 UNSERVED。`scope=None` 对全部 groups 生成。SURFACE Schema 保留，但 v1 generator 不创建，validator 在 profile 禁用时报告 `surface_disabled`。
+
+**原因：**
+PRM/Integrated Oracle 对每组恰选一条 itinerary；UNSERVED 必须是可审计候选。当前没有可靠的 surface O-D/time/cost/capacity 数据源。
+
+**影响：**
+Passenger Group 保持不可拆分 binary selection。生成 55 条 benchmark itineraries 后必须重新构建 canonical Scope，旧 Scope 仅能作为 generator owner 展开输入。
+
+**未来替换条件：**
+建立正式 surface network 或 split-flow 数学模型后，以新 Schema/profile 单独扩展。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：
@@ -1514,7 +1586,7 @@ Phase 6 是 explicit candidate generation，不读取 dual、不计算 reduced c
 - 真实航空公司成本标定与正式货币单位；
 - 生产级 Aircraft Turn Time 标定；
 - Crew maximum duty / minimum rest；
-- Passenger MCT；
+- 生产级 Passenger MCT；
 - Reserve Crew；
 - Flight String Reduced Cost Mapping；
 - Crew Pairing Reduced Cost；
