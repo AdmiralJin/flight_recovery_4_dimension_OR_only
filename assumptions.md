@@ -1417,6 +1417,96 @@ Phase 5 通过后进入 Crew Pairing Generator；Flight Option generation、Pric
 
 ---
 
+## A-067 Candidate Universe Change Requires Scope Rebuild
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+`RecoveryScope` 只对构建它时传入的 `Scenario + RecoveryColumns` 候选宇宙闭包。任何 Flight Options、Aircraft Strings、Crew Pairings 或 Passenger Itineraries 发生变化后，进入下一生成器或 Scope-limited Solver 前必须重新调用 `build_recovery_scope(...)`。正式流水线为：Phase 5 generated Strings → rebuild Scope → Phase 6 generated Pairings → rebuild Scope → Phase 7。
+
+**原因：**
+新候选可能引入新的航班、资源 owner、共享 capacity/gate/seat 行和传播依赖；沿用旧 Scope 无法证明闭包安全。
+
+**影响：**
+Scope 不是可跨候选宇宙缓存的 Scenario 属性。Phase 6 benchmark 在生成 77 条 Strings 后和生成 374 条 Pairings 后各重建一次 Scope。
+
+**未来替换条件：**
+只有实现带候选宇宙指纹和严格增量闭包证明的 Scope cache 后，才允许复用计算结果。
+
+---
+
+## A-068 Phase 6 Crew Connection and Enumeration Test Profile
+
+**来源状态：** `implementation_assumption`
+
+**实现方式：**
+版本化 `phase6_test_crew_pairing_generation_v1` 使用 `default_min_connection_minutes=0`、`max_duty_minutes=480`、`max_deadhead_legs=1`、`allow_deadhead=true`、`allow_idle=true`。零分钟 connection 用于保留 benchmark 已冻结的背靠背人工 Pairings；最多一个 DEADHEAD 是 Phase 6 v1 的显式枚举边界，使完整 linking model 可通过仓库的 size-limited solver gate。
+
+**原因：**
+当前 Schema 没有航司 Crew Connection、Duty/Rest 或 roster 规则真源，且无限制 DEADHEAD 组合会在 benchmark 产生 1,187 条 Pairings 及过多 linking constraints。
+
+**影响：**
+这些参数都是工程测试值，不是 FAR/CCAR 或任何真实航司标准。生成完整性仅相对于该配置和输入 Flight Options 成立。
+
+**未来替换条件：**
+接入正式 crew-rule profile 与不受 size limit 的求解环境后，发布新配置、取消或调整 DEADHEAD 上限，并重新执行 brute-force 与 Integrated 回归。
+
+---
+
+## A-069 Phase 6 Qualification and DEADHEAD Boundary
+
+**来源状态：** `implementation_assumption`
+
+**实现方式：**
+Crew Schema 目前只提供单一 `rating`。OPERATE leg 要求 base Flight 的 `original_equipment == Crew.rating`；DEADHEAD 表示乘机调位，不执行航班，因此不检查执飞机型资质。两类 leg 都只能引用已有 revenue OPERATE Flight Option；CANCEL 和 FERRY option 不可作为机组飞行 segment。
+
+**原因：**
+该语义与现有 Column Validator、CRM operating/deadhead incidence 和 Integrated linking 一致，不虚构 rank、position、fleet family 或真实 qualification database。
+
+**影响：**
+当前模型仍是 aggregate single crew-unit coverage，不证明完整驾驶舱/客舱编制。DEADHEAD 不计入 operating coverage，并要求其 Flight Option 被 schedule 选中。
+
+**未来替换条件：**
+Schema 增加 crew role、rank、fleet qualification、seat/position requirement 后，版本化扩展 eligibility 与 coverage constraints。
+
+---
+
+## A-070 Phase 6 Single-duty and Rest Boundary
+
+**来源状态：** `implementation_phase_boundary`
+
+**实现方式：**
+Phase 6 v1 每条生成 Pairing 恰含一个 duty。Duty duration 定义为首 leg departure 到末 leg arrival，并受配置上限约束；相邻 legs 检查 Station continuity 和 Min Connection。GROUND_TRANSFER、REST、多 duty、overnight rest 均不生成。
+
+**原因：**
+现有 Scenario/Crew Schema 无 sign-on、sign-off、reporting time、duty history、rest location 或跨日 roster 字段，无法可靠实现真实 duty/rest 法规。
+
+**影响：**
+480 分钟测试上限只能证明当前单 duty toy/benchmark 的工程合法性，不能声称生产级 crew legality。
+
+**未来替换条件：**
+增加 duty/rest 数据合同和规则真源后，用多 duty state network 替换此 v1 边界。
+
+---
+
+## A-071 Phase 6 Original, Idle, Scope and Explicit-generation Semantics
+
+**来源状态：** `implementation_phase_boundary`
+
+**实现方式：**
+Scoped Crew 在配置边界内通过 crew-local DAG + DFS 枚举全部合法 Pairings；out-of-scope Crew 只保留由 original Flight Options 构成、且经独立 validator 验证的 original Pairing；`scope=None` 全量生成。仅当 Crew 起点等于 required terminal 且配置允许时生成显式零 leg idle Pairing。所有输出使用稳定 semantic key 与派生 ID，并再次通过 pure legality validator。
+
+**原因：**
+CRM/Integrated Oracle 对每个 Crew 恰选一条 Pairing，不能以“零条候选被选”表达 idle；Scope 外候选必须保持原计划冻结语义。
+
+**影响：**
+Phase 6 是 explicit candidate generation，不读取 dual、不计算 reduced cost、不做 Pricing/Column Generation/Benders。Airport/gate/passenger capacity 和 aircraft-string selection 仍由 Integrated Oracle 处理。
+
+**未来替换条件：**
+显式生成与 pricing oracle 在小规模实例上证明等价后，才可引入动态列生成。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：

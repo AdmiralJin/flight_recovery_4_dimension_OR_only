@@ -25,6 +25,12 @@ from .passenger_capacity import (
     load_passenger_capacity_profile,
     validate_passenger_capacity_profile,
 )
+from .pairing_generation import (
+    CrewPairingGenerationConfig,
+    CrewPairingGenerationConfigError,
+    PairingGenerationSource,
+    load_crew_pairing_generation_config,
+)
 from .string_generation import (
     FlightStringGenerationConfig,
     FlightStringGenerationConfigError,
@@ -41,6 +47,8 @@ __all__ = [
     "CostOwner",
     "CostSource",
     "CostUnit",
+    "CrewPairingGenerationConfig",
+    "CrewPairingGenerationConfigError",
     "FixedColumnCostConfig",
     "FlightStringGenerationConfig",
     "FlightStringGenerationConfigError",
@@ -48,11 +56,13 @@ __all__ = [
     "PassengerCapacityProfile",
     "PassengerCapacitySource",
     "PassengerItineraryCostBreakdown",
+    "PairingGenerationSource",
     "StringGenerationSource",
     "aircraft_string_cost",
     "apply_cost_overrides",
     "crew_pairing_cost",
     "load_cost_config",
+    "load_crew_pairing_generation_config",
     "load_flight_string_generation_config",
     "load_passenger_capacity_profile",
     "passenger_itinerary_cost",

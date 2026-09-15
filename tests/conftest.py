@@ -79,3 +79,15 @@ def toy_case_007_string_generator_data() -> dict:
 @pytest.fixture
 def toy_case_007_string_generator_columns_data() -> dict:
     return _phase1_json("columns", "toy_case_007_string_generator_columns.json")
+
+
+@pytest.fixture
+def toy_case_008_crew_pairing_generator_data() -> dict:
+    return _phase1_json("examples", "toy_case_008_crew_pairing_generator.json")
+
+
+@pytest.fixture
+def toy_case_008_crew_pairing_generator_columns_data() -> dict:
+    return _phase1_json(
+        "columns", "toy_case_008_crew_pairing_generator_columns.json"
+    )

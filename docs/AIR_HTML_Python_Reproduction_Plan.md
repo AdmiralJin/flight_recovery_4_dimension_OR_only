@@ -24,7 +24,8 @@
 | Phase 3 | ✅ 完成 | Integrated Oracle、x/y/z/w 联合 MIP、五类 linking、统一成本与独立审计 |
 | Phase 4 | ✅ 完成 | Fixed-point Scope、Scope 外原计划冻结、Full-vs-Scope Oracle |
 | Phase 5 | ✅ 完成 | Existing-option Flight Network、Turn Time、Aircraft String 全量生成、brute-force Oracle |
-| Phase 6+ | ⏳ 未开始 | Crew Pairing Generator、Passenger Itinerary Generator、Benders、CG 等 |
+| Phase 6 | ✅ 完成 | Crew-local Network、OPERATE/DEADHEAD、Crew Pairing 显式生成、brute-force Oracle |
+| Phase 7+ | ⏳ 未开始 | Passenger Itinerary Generator、Benders、CG 等 |
 
 因此当前准确表述是：
 
@@ -1845,13 +1846,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4 与 Phase 5 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5 与 Phase 6 已完成。当前应开始：
 
 ```text
-Phase 6 Crew Pairing Generator
+Phase 7 Passenger Itinerary Generator
 ```
 
-Phase 5 已完成 existing-option Aircraft String 全量生成、独立 legality validation、brute-force Oracle 对齐和 Integrated Oracle 回归。下一阶段应实现 Crew Pairing Generator；Passenger generator、Benders 与 Column Generation 仍按既定顺序后移。
+Phase 5/6 已完成 existing-option Aircraft String 与 Crew Pairing 显式生成、独立 legality validation、brute-force Oracle 对齐和 Integrated Oracle 回归。下一阶段应实现 Passenger Itinerary Generator；Benders 与 Column Generation 仍按既定顺序后移。
 
 ---
 

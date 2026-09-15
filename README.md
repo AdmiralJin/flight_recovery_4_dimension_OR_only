@@ -35,7 +35,8 @@ Fixed-column OR Models + Solver Adapter / Gurobi
 | Phase 3 | ✅ 完成 | Full Integrated Fixed-column Oracle、x/y/z/w 联合 MIP、五类 linking、统一目标与独立审计 |
 | Phase 4 | ✅ 完成 | Direct disruption seed、fixed-point Scope closure、Scope 外原计划冻结、Full-vs-Scope Oracle |
 | Phase 5 | ✅ 完成 | Existing-option Flight Network、Turn Time、Aircraft String 全量生成、brute-force Oracle |
-| Phase 6+ | ⏳ 未开始 | Crew Pairing Generator、Passenger Itinerary Generator、Benders、Column Generation 等 |
+| Phase 6 | ✅ 完成 | Crew-local Network、OPERATE/DEADHEAD、Crew Pairing 显式生成、brute-force Oracle |
+| Phase 7+ | ⏳ 未开始 | Passenger Itinerary Generator、Benders、Column Generation 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
@@ -44,6 +45,8 @@ Phase 3 已将 Schedule、Aircraft、Crew、Passenger 的 `x/y/z/w` 放入同一
 Phase 4 在完整 fixed-column universe 上从受支持的直接 departure disruption 自动构造确定性 fixed-point scope。Scope 内 owner 保持自由，Scope 外 Flight / Aircraft / Crew / Passenger owner 通过语义解析固定到唯一原计划 candidate；完整 Phase 3 约束和变量均保留。`toy_case_006_scope` 的 Full 与 Scope objective 均为 `2040`，自由 binary candidates 从 `14` 降至 `10`。主 benchmark 的严格共享耦合闭包会安全扩展为 Full Scope，因此用于验证无遗漏，而不作为缩减样例。
 
 Phase 5 使用已有 Flight Options 建立 aircraft-local DAG，并通过显式 Turn Time profile、Station/Timing/Horizon/Curfew/Equipment/Maintenance/Terminal 规则执行 DFS 全量枚举。`toy_case_007_string_generator` 与独立全排列 Oracle 的合法路径集合完全一致；主 benchmark 从 11 条人工 Aircraft Strings 扩展为 77 条生成 Strings，覆盖全部人工关键列，Integrated optimum 保持 `18080`。
+
+Phase 6 使用最新候选宇宙重建 Scope 后，以 existing revenue `OPERATE` Flight Options 建立 crew-local DAG。每个 option 可形成 OPERATE 或 DEADHEAD leg；仅 OPERATE 检查现有 `Crew.rating`，DEADHEAD 不计 operating coverage。`toy_case_008_crew_pairing_generator` 的 DFS 与独立 brute-force 集合一致；主 benchmark 生成 374 条 Pairings，覆盖 10/10 人工关键列，再次重建 Scope 后 Integrated optimum 保持 `18080`。
 
 ---
 
@@ -507,15 +510,32 @@ Phase 5 只从 existing Flight Options 生成显式 Aircraft Strings，并通过
 
 ---
 
+# Phase 6 Crew Pairing Generator
+
+核心入口：
+
+```text
+backend/config/pairing_generation.py
+backend/core/crew_network.py
+backend/core/pairing_generator.py
+data/config/phase6_test_crew_pairing_generation_v1.json
+```
+
+Phase 6 v1 只生成单 duty 的显式 Pairings，检查 ownership、qualification、Station/Timing、版本化 Min Connection、Duty Time、Recovery Horizon、Terminal、Original/Idle 与 DEADHEAD 规则。它不生成 Flight Options，不实现真实 FAR/CCAR duty/rest 全集，也不进入 Pricing、Reduced Cost、Column Generation 或 Benders。
+
+任何 Aircraft String、Crew Pairing 或 Passenger Itinerary 候选宇宙变化后，必须先针对新 `RecoveryColumns` 重新调用 `build_recovery_scope(...)`，禁止沿用旧 Scope。
+
+---
+
 # 下一步
 
 当前下一工程任务是：
 
 ```text
-Phase 6 Crew Pairing Generator
+Phase 7 Passenger Itinerary Generator
 ```
 
-Phase 5 已验证 Aircraft String 自动生成。下一步应在同样的“先 explicit generation、后 pricing”边界下实现 Crew Pairing Generator。当前 Oracle 继续使用 test cost 与 test/residual passenger capacity；它是后续分解/列生成的 Ground Truth，不代表真实航司生产最优。
+Phase 5/6 已分别验证 Aircraft String 与 Crew Pairing 自动生成。下一步应继续在“先 explicit generation、后 pricing”边界下实现 Passenger Itinerary Generator。当前 Oracle 继续使用 test cost 与 test/residual passenger capacity；它是后续分解/列生成的 Ground Truth，不代表真实航司生产最优。
 
 完整开发路线见：
 
