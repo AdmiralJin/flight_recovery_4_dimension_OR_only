@@ -1729,6 +1729,66 @@ dual 符号、漏行、scope 泄漏和求解中输入漂移都会产生看似收
 
 ---
 
+## A-085 Phase 10 Fixed-schedule Crew LP Boundary
+
+**来源状态：** `implementation_scope_assumption`
+
+**实现方式：**
+Phase 10 只在 `CrewRecoveryRequest.required_operated_option_ids` 给定的固定 Schedule 上求 Crew Pairing LP。连续 `z` 保持 CRM 的 pairing selection、required OPERATE coverage、nonrequired OPERATE/DEADHEAD prohibition 与 terminal ownership 行语义；Pairing legality 继续由 Phase 6 validator 保证。
+
+**原因：**
+Crew reduced cost 与 OPERATE/DEADHEAD 语义必须先独立对齐 All-Pairings LP，才能讨论 Benders + CG。
+
+**影响：**
+正确验收关系为 `OBJ_CREW_CG_LP == OBJ_ALL_PAIRINGS_LP`，不声称得到 integer Crew optimum。
+
+---
+
+## A-086 Phase 10 Crew Phase-I Contract
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+Phase I 对 RHS=1 的 Crew selection、required OPERATE coverage 与 terminal rows 分别加入代价为 1 的人工变量，真实 Pairing 成本为 0；RHS=0 的 nonrequired OPERATE/DEADHEAD rows 不加 artificial。人工目标为正且不存在负 reduced-cost Pairing 时返回 INFEASIBLE。
+
+**原因：**
+空池或 original-only pool 不保证固定 Schedule 下 Crew coverage 可行，正式 CG 不得依靠预枚举全池恢复可行性。
+
+**影响：**
+Phase I 不使用 deadhead/reassignment true cost，Phase II 才使用 canonical CRM owner cost。
+
+---
+
+## A-087 Phase 10 Typed Pricing and Full-enumeration Separation
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+正式 pricer 复用 Phase 6 `CrewFlightNetwork`，只对 required revenue options 搜索 OPERATE/DEADHEAD typed paths，并跟踪 used option/base flight、deadhead count、first departure 与 duty elapsed。每个 emitted Pairing 再通过 Phase 6 legality validator。正式 CG 不接收或调用 Phase 6 full enumerator；full pool 只用于 Oracle 和 audit。
+
+**原因：**
+OPERATE 贡献 coverage dual，DEADHEAD 只产生 reposition/deadhead cost；混淆二者会得到错误 reduced cost。
+
+**影响：**
+当前 deterministic resource-state traversal 以正确性为优先，未实现生产规模 dominance、stabilization 或并行 pricing。
+
+---
+
+## A-088 Phase 10 Scope, Dual and Cost Contract
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+Scope 内 Crew 定价，Scope 外 Crew 仅保留由 original flight semantics 重建并验证的 Pairing。Reduced cost 统一由 selection、required/nonrequired OPERATE、nonrequired DEADHEAD、terminal 实际行系数计算；现有变量的 manual RC 必须与 solver public reduced-cost 接口一致。成本继续调用 `crew_pairing_cost()`，不复制 reassignment/deadhead 规则。
+
+**原因：**
+scope 泄漏、dual 漏行、OPERATE/DEADHEAD 系数错误或成本重复实现都会造成伪收敛。
+
+**影响：**
+当前不做 Aircraft/Crew 联合 pricing、Benders + CG、Passenger CG、branching 或 integrality recovery。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：
@@ -1738,7 +1798,6 @@ dual 符号、漏行、scope 泄漏和求解中输入漂移都会产生看似收
 - Crew maximum duty / minimum rest；
 - 生产级 Passenger MCT；
 - Reserve Crew；
-- Crew Pairing Reduced Cost；
 - 正式/tail-level Gate Inventory；
 - Diversion / Destination Change 的业务语义；
 - Algorithm 1 / Algorithm 2 中的符号或实现歧义；

@@ -125,3 +125,15 @@ def toy_case_011_aircraft_string_column_generation_columns_data() -> dict:
     return _phase1_json(
         "columns", "toy_case_011_aircraft_string_column_generation_columns.json"
     )
+
+
+@pytest.fixture
+def toy_case_012_crew_pairing_column_generation_data() -> dict:
+    return _phase1_json("examples", "toy_case_012_crew_pairing_column_generation.json")
+
+
+@pytest.fixture
+def toy_case_012_crew_pairing_column_generation_columns_data() -> dict:
+    return _phase1_json(
+        "columns", "toy_case_012_crew_pairing_column_generation_columns.json"
+    )
