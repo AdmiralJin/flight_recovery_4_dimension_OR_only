@@ -28,6 +28,17 @@ test("workbench exposes Data, Visualization, Costs, and Constraints views", () =
   assert.doesNotMatch(html, /Phase 0\.5/);
 });
 
+test("recovery controls wire solve, comparison and export without claiming production readiness", () => {
+  for (const id of ["solve-recovery", "recovery-view", "recovery-mode", "export-recovered-result"]) {
+    assert.match(html, new RegExp(`id=["']${id}["']`));
+  }
+  for (const mode of ["original", "disrupted", "recovered", "difference"]) {
+    assert.match(html, new RegExp(`<option value=["']${mode}["']`));
+  }
+  assert.match(appSource, /solveRecovery\(currentSolveBundle\(\)\)/);
+  assert.match(appSource, /checkSolveReadiness\(bundle\)/);
+});
+
 test("cost overrides change only the effective copy and reset to baseline", () => {
   const before = structuredClone(baseline);
   const effective = costsBundle.module.buildEffectiveCostProfile(

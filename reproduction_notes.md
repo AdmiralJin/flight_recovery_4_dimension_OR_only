@@ -56,7 +56,7 @@ Phase 0 不包含：
 - Benders；
 - Column Generation。
 
-`/api/solve` 仍然是安全闸门：合法数据在真正 Solver 接入前不应假装求解成功。
+Phase 0 时 `/api/solve` 曾是安全闸门：在真正 Solver 接入前，合法数据也不应假装求解成功。Phase 13 已将其替换为正式求解接口，见第 27–28 节。
 
 ---
 
@@ -626,9 +626,9 @@ Phase 8 不实现 Pricing、Reduced Cost、Column Generation、Benders + Column 
 
 ---
 
-# 20. 当前仍未实现
+# 20. Phase 8 当时仍未实现的层级（历史记录）
 
-截至当前阶段，以下仍未完成：
+截至 Phase 8 时，以下尚未完成；这些层级已分别在 Phase 9–12 实现：
 
 ```text
 Column Generation
@@ -757,15 +757,15 @@ Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独
 
 ---
 
-# 22. 下一工程步骤
+# 22. Phase 11 时的下一工程步骤（历史记录）
 
-下一步进入：
+Phase 11 完成后，当时的下一步是：
 
 ```text
 Phase 12 Integrality / Branching
 ```
 
-Phase 11 已在 toy 与完整 benchmark 上证明 `OBJ_BENDERS_CG == OBJ_FULL_EXPLICIT_INTEGRATED`。Aircraft/Crew full-LP 值只形成下界，generated-pool binary 解只形成上界；若二者不能闭合，求解器返回 `INTEGRALITY_REQUIRED`。下一步实现 branching 下的动态定价与整数恢复。
+Phase 11 已在 toy 与完整 benchmark 上证明 `OBJ_BENDERS_CG == OBJ_FULL_EXPLICIT_INTEGRATED`。Aircraft/Crew full-LP 值只形成下界，generated-pool binary 解只形成上界；若二者不能闭合，求解器返回 `INTEGRALITY_REQUIRED`。Phase 12 随后实现了 branching 下的动态定价与整数恢复。
 
 ---
 
@@ -843,3 +843,19 @@ Phase 12 在固定 Schedule 下对 Aircraft String 与 Crew Pairing 的隐式列
 `toy_case_015` 的 Crew root LP 为 195，整数最优为 200，9 个节点闭合；`toy_case_016` 上 Phase 11 返回 `INTEGRALITY_REQUIRED`（LB=95195，UB=95200），Phase 12 与完整显式 Integrated Oracle 均为 95200。主 benchmark 保持 18080。
 
 正式求解只支持 `scope=None`，使用预备 Flight Options 与固定显式 Passenger Itineraries；它不调用 Phase 5/6 full enumerators，不代表生产级航空公司规则或规模性能。Aircraft 当前测试宇宙未产生自然整数缺口，不为此改变数学模型。
+
+---
+
+# 27. Phase 13 Solver Integration / Recovered Result 冻结
+
+Phase 13 将版本化 `SolveRequest` 经输入就绪检查交给 Phase 12 exact solver。API 的 422 用于缺失或无效输入；合法但不可行、未收敛的求解均以 HTTP 200 和稳定 `RecoveredResult.status` 返回。`result_builder` 独立复核 selected owner、Aircraft/Crew coverage、Passenger references、目标分量和业务指标，并要求 Integrated final audit PASS 才输出 optimal 决策。
+
+主 benchmark API objective `18080`；`toy_case_016` API objective `95200`。另有 Scenario-only、非法成本覆盖、合法但 infeasible、节点上限导致 not_converged 的回归。浏览器实测 Solve、Recovered、Disrupted、Difference 与结果导出可用。完整研究工作台 v1 已闭合，但真实数据接入、业务约束、规模性能和 production readiness 仍在后续范围。
+
+---
+
+# 28. AIR Recovery Research Workbench v1 最终边界
+
+Phase 13 完成 AIR 复现/研究工作台 v1。求解链依次包含 Integrated Oracle → Benders → Aircraft/Crew Column Generation → Benders + CG → Branch-and-Price → 稳定 Solve API → Recovered Result → Recovery UI。该里程碑可审计、属于研究级工作台，不是生产航空公司恢复系统。
+
+核心算法路线图至 Phase 13 冻结。后续开发独立转入航司特定 Business Migration：真实数据映射、Flight Option 生成与筛选、成本标定、业务规则、大规模运行时与稳定性、运行验证。

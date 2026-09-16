@@ -1,6 +1,9 @@
 import {
   loadCanonicalCosts,
   loadBenchmarkPrecheckInputs,
+  loadSolveExampleBundle,
+  checkSolveReadiness,
+  solveRecovery,
   loadConstraintRegistry,
   loadExample,
   runConstraintPrecheck,
@@ -18,6 +21,7 @@ import {
   renderConstraintInspector,
 } from "./constraints.js";
 import { showClientError, showValidation } from "./results.js";
+import { renderRecovery } from "./recovery.js";
 import { blankRow, renderEditor, sections } from "./tables.js";
 import {
   renderVisualization,
@@ -41,12 +45,19 @@ const workbenchState = {
   passengerCapacityProfile: null,
   capacityProfileSummary: null,
   modelProfile: "phase2_fixed_column",
+  solveBundle: null,
+  solveReadiness: null,
+  recoveredResult: null,
+  solveError: null,
+  solving: false,
+  recoverySortDelay: false,
 };
 
 let activeSection = "scenario";
 let activeView = "data";
 let visualizationRequestId = 0;
 let precheckRequestId = 0;
+let solveReadinessRequestId = 0;
 
 const editor = document.querySelector("#editor");
 const tabs = document.querySelector("#tabs");
@@ -54,12 +65,14 @@ const actions = document.querySelector("#table-actions");
 const viewElements = {
   data: document.querySelector("#data-view"),
   visualization: document.querySelector("#visualization-view"),
+  recovery: document.querySelector("#recovery-view"),
   costs: document.querySelector("#costs-view"),
   constraints: document.querySelector("#constraints-view"),
 };
 const viewButtons = {
   data: document.querySelector("#show-data-view"),
   visualization: document.querySelector("#show-visualization-view"),
+  recovery: document.querySelector("#show-recovery-view"),
   costs: document.querySelector("#show-costs-view"),
   constraints: document.querySelector("#show-constraints-view"),
 };
@@ -96,8 +109,97 @@ function updateSummary() {
 function markScenarioChanged() {
   workbenchState.scenarioValidation = null;
   workbenchState.constraintPrecheck = null;
+  invalidateRecovery();
+  refreshSolveReadiness();
   updateSummary();
   renderTabs();
+}
+
+function currentSolveBundle() {
+  if (!workbenchState.solveBundle) return null;
+  return {
+    ...clone(workbenchState.solveBundle),
+    scenario: clone(workbenchState.scenario),
+    recovery_columns: clone(workbenchState.solveBundle.recovery_columns),
+    capacity_profile: clone(workbenchState.solveBundle.capacity_profile),
+    cost_overrides: clone(workbenchState.costOverrides),
+  };
+}
+
+function updateSolveButton() {
+  const button = document.querySelector("#solve-recovery");
+  const ready = workbenchState.solveReadiness?.solve_ready && !workbenchState.solving;
+  button.disabled = !ready;
+  button.textContent = workbenchState.solving ? "Solving…" : "Solve";
+  const status = document.querySelector("#solve-status");
+  if (!status) return;
+  if (workbenchState.solving) status.textContent = "Solving exact recovery…";
+  else if (workbenchState.solveError) status.textContent = `Solve failed: ${workbenchState.solveError}`;
+  else if (!workbenchState.solveReadiness?.solve_ready) {
+    const missing = workbenchState.solveReadiness?.missing_inputs || ["Load a complete Solve Bundle"];
+    status.textContent = `Not solve ready: ${missing.join(", ")}`;
+  } else if (workbenchState.recoveredResult) status.textContent = `Solver status: ${workbenchState.recoveredResult.status}`;
+  else status.textContent = "Ready to solve · input readiness is not optimization feasibility.";
+}
+
+function invalidateRecovery() {
+  workbenchState.recoveredResult = null;
+  workbenchState.solveError = null;
+  workbenchState.solveReadiness = null;
+  document.querySelector("#export-recovered-result").disabled = true;
+  updateSolveButton();
+}
+
+async function refreshSolveReadiness() {
+  const requestId = ++solveReadinessRequestId;
+  const bundle = currentSolveBundle();
+  if (!bundle) {
+    workbenchState.solveReadiness = { solve_ready: false, missing_inputs: ["missing_flight_options", "missing_capacity_profile"] };
+    updateSolveButton();
+    return;
+  }
+  try {
+    const readiness = await checkSolveReadiness(bundle);
+    if (requestId !== solveReadinessRequestId) return;
+    workbenchState.solveReadiness = readiness;
+  } catch (error) {
+    if (requestId !== solveReadinessRequestId) return;
+    workbenchState.solveReadiness = { solve_ready: false, missing_inputs: [error.message] };
+  }
+  updateSolveButton();
+}
+
+function openRecovery() {
+  activeView = "recovery";
+  renderShell();
+  renderRecovery(
+    document.querySelector("#recovery-container"), workbenchState.scenario,
+    workbenchState.recoveredResult,
+    document.querySelector("#recovery-mode").value,
+    workbenchState.recoverySortDelay,
+  );
+  updateSolveButton();
+}
+
+async function runSolve() {
+  if (workbenchState.solving) return;
+  await refreshSolveReadiness();
+  if (!workbenchState.solveReadiness?.solve_ready) return openRecovery();
+  workbenchState.solving = true;
+  updateSolveButton();
+  try {
+    workbenchState.recoveredResult = await solveRecovery(currentSolveBundle());
+    document.querySelector("#export-recovered-result").disabled = false;
+    openRecovery();
+  } catch (error) {
+    workbenchState.recoveredResult = null;
+    workbenchState.solveError = error.message;
+    openRecovery();
+    showClientError(error.message);
+  } finally {
+    workbenchState.solving = false;
+    updateSolveButton();
+  }
 }
 
 function renderTabs() {
@@ -198,6 +300,8 @@ function handleCostOverride(key, rawValue, input) {
       workbenchState.costBaseline,
       workbenchState.costOverrides,
     );
+    invalidateRecovery();
+    refreshSolveReadiness();
     input.setCustomValidity("");
     setCostStatus(
       Object.keys(workbenchState.costOverrides).length ? "modified" : "baseline",
@@ -293,14 +397,20 @@ async function openConstraints() {
 
 async function setExample() {
   try {
-    const [scenario, precheckInputs] = await Promise.all([
+    const [scenario, precheckInputs, solveBundle] = await Promise.all([
       loadExample(),
       loadBenchmarkPrecheckInputs(),
+      loadSolveExampleBundle(),
     ]);
     workbenchState.scenario = scenario;
     workbenchState.scenarioBaseline = clone(scenario);
     workbenchState.recoveryColumns = precheckInputs.recovery_columns;
     workbenchState.passengerCapacityProfile = precheckInputs.passenger_capacity_profile;
+    workbenchState.solveBundle = solveBundle;
+    workbenchState.costOverrides = clone(solveBundle.cost_overrides || {});
+    workbenchState.costEffective = buildEffectiveCostProfile(workbenchState.costBaseline, workbenchState.costOverrides);
+    invalidateRecovery();
+    await refreshSolveReadiness();
     workbenchState.scenarioValidation = null;
     workbenchState.constraintPrecheck = null;
     activeSection = "scenario";
@@ -309,6 +419,7 @@ async function setExample() {
     else {
       renderShell();
       if (activeView === "data") renderDataView();
+      else if (activeView === "recovery") openRecovery();
       else renderCostView();
     }
   } catch (error) {
@@ -318,11 +429,12 @@ async function setExample() {
 
 async function initializeWorkbench() {
   try {
-    const [scenario, costs, registry, precheckInputs] = await Promise.all([
+    const [scenario, costs, registry, precheckInputs, solveBundle] = await Promise.all([
       loadExample(),
       loadCanonicalCosts(),
       loadConstraintRegistry(),
       loadBenchmarkPrecheckInputs(),
+      loadSolveExampleBundle(),
     ]);
     workbenchState.scenario = scenario;
     workbenchState.scenarioBaseline = clone(scenario);
@@ -331,10 +443,12 @@ async function initializeWorkbench() {
     workbenchState.constraintMetadata = registry.constraints;
     workbenchState.recoveryColumns = precheckInputs.recovery_columns;
     workbenchState.passengerCapacityProfile = precheckInputs.passenger_capacity_profile;
+    workbenchState.solveBundle = solveBundle;
     workbenchState.capacityProfileSummary = registry.capacity_profile_summary;
     workbenchState.modelProfile = registry.model_profile;
     renderShell();
     renderDataView();
+    await refreshSolveReadiness();
   } catch (error) {
     showClientError(`Workbench initialization failed: ${error.message}`);
   }
@@ -351,16 +465,33 @@ function downloadJson(payload, filename) {
 
 viewButtons.data.addEventListener("click", () => showDataView());
 viewButtons.visualization.addEventListener("click", openVisualization);
+viewButtons.recovery.addEventListener("click", openRecovery);
 viewButtons.costs.addEventListener("click", openCosts);
 viewButtons.constraints.addEventListener("click", openConstraints);
 document.querySelector("#load-example").addEventListener("click", setExample);
+document.querySelector("#solve-recovery").addEventListener("click", runSolve);
+document.querySelector("#recovery-mode").addEventListener("change", openRecovery);
+document.querySelector("#recovery-container").addEventListener("click", (event) => {
+  if (event.target.id !== "sort-recovery-delay") return;
+  workbenchState.recoverySortDelay = !workbenchState.recoverySortDelay;
+  openRecovery();
+});
+document.querySelector("#export-recovered-result").addEventListener("click", () => {
+  if (workbenchState.recoveredResult) downloadJson(
+    workbenchState.recoveredResult,
+    `${workbenchState.scenario.scenario_id}_recovered_result.json`,
+  );
+});
 document.querySelector("#reset-scenario").addEventListener("click", () => {
   workbenchState.scenario = clone(workbenchState.scenarioBaseline);
   workbenchState.scenarioValidation = null;
   workbenchState.constraintPrecheck = null;
+  invalidateRecovery();
+  refreshSolveReadiness();
   if (activeView === "data") renderDataView();
   else if (activeView === "visualization") openVisualization();
   else if (activeView === "constraints") openConstraints();
+  else if (activeView === "recovery") openRecovery();
   updateSummary();
 });
 document.querySelector("#reset-workbench").addEventListener("click", () => {
@@ -369,10 +500,13 @@ document.querySelector("#reset-workbench").addEventListener("click", () => {
   workbenchState.costOverrides = {};
   workbenchState.costEffective = clone(workbenchState.costBaseline);
   workbenchState.constraintPrecheck = null;
+  invalidateRecovery();
+  refreshSolveReadiness();
   setCostStatus("baseline", "Scenario and cost overrides restored to their loaded baselines.");
   if (activeView === "data") renderDataView();
   else if (activeView === "visualization") openVisualization();
   else if (activeView === "constraints") openConstraints();
+  else if (activeView === "recovery") openRecovery();
   else renderCostView();
 });
 document.querySelector("#reset-section").addEventListener("click", () => {
@@ -425,6 +559,8 @@ document.querySelector("#validate-costs").addEventListener("click", async () => 
       overrides: workbenchState.costOverrides,
     });
     workbenchState.costEffective = result.effective_profile;
+    invalidateRecovery();
+    refreshSolveReadiness();
     setCostStatus("valid", `Validated ${Object.keys(result.overrides).length} override(s); canonical metadata is unchanged.`);
     renderCostView();
   } catch (error) {
@@ -434,6 +570,8 @@ document.querySelector("#validate-costs").addEventListener("click", async () => 
 document.querySelector("#reset-cost-overrides").addEventListener("click", () => {
   workbenchState.costOverrides = {};
   workbenchState.costEffective = clone(workbenchState.costBaseline);
+  invalidateRecovery();
+  refreshSolveReadiness();
   setCostStatus("baseline", "Overrides cleared; effective values equal the canonical baseline.");
   renderCostView();
 });
@@ -459,10 +597,15 @@ fileInput.addEventListener("change", async () => {
   if (!file) return;
   try {
     const imported = JSON.parse(await file.text());
-    if ("scenario" in imported || "cost_overrides" in imported) {
-      throw new Error("Select a Scenario JSON file; Workbench Config import is not enabled.");
+    const isSolveBundle = imported.schema_version === "1.0.0" && "recovery_columns" in imported;
+    if (!isSolveBundle && ("scenario" in imported || "cost_overrides" in imported)) {
+      throw new Error("Select a Scenario or complete Solve Bundle JSON file.");
     }
-    const result = await validateScenario(imported);
+    if (isSolveBundle) {
+      const readiness = await checkSolveReadiness(imported);
+      if (!readiness.solve_ready) throw new Error(`Solve Bundle is not ready: ${[...readiness.missing_inputs, ...readiness.invalid_profiles].join(", ")}`);
+    }
+    const result = await validateScenario(isSolveBundle ? imported.scenario : imported);
     if (!result.valid) {
       showValidation(result);
       if (activeView === "visualization") renderVisualizationBlocked(result, showDataView);
@@ -474,6 +617,11 @@ fileInput.addEventListener("change", async () => {
       workbenchState.recoveryColumns = null;
       workbenchState.passengerCapacityProfile = null;
     }
+    workbenchState.solveBundle = isSolveBundle ? imported : null;
+    workbenchState.costOverrides = isSolveBundle ? clone(imported.cost_overrides || {}) : {};
+    workbenchState.costEffective = buildEffectiveCostProfile(workbenchState.costBaseline, workbenchState.costOverrides);
+    invalidateRecovery();
+    await refreshSolveReadiness();
     workbenchState.scenarioValidation = "valid";
     workbenchState.constraintPrecheck = null;
     activeSection = "scenario";

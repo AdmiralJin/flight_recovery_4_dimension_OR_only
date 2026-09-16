@@ -31,13 +31,14 @@
 | Phase 10 | ✅ 完成 | Fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD Pricing |
 | Phase 11 | ✅ 完成 | Schedule Benders + Aircraft/Crew CG、certified LP cuts、binary incumbent、Integrated audit |
 | Phase 12 | ✅ 完成 | Aircraft/Crew exact Branch-and-Price、typed branching、Schedule exact-recourse cuts |
-| Phase 13+ | ⏳ 未开始 | Recovered Result Visualization、稳定 Solve API 等 |
+| Phase 13 | ✅ 完成 | SolveRequest / RecoveredResult、Solve API、独立审计、Recovery UI |
+| Business Migration | 📌 后续 | 真实数据、业务规则与规模性能工程；不增加核心算法 Phase |
 
 因此当前准确表述是：
 
 > **Phase 1 已完成数据、候选列和人工 Oracle 的程序化语义闭环；这不等于已证明 AIR 恢复目标的数学全局最优性。**
 
-当前 HTML 工作台已扩展为 Data / Visualization / Costs / Constraints 四个一级视图。Costs 和 Constraints 是人工审计与实验配置工具；约束公式由后端 registry 单一提供，precheck 不运行 solver，且不构成 MIP feasibility 或 Integrated Oracle 结论。PRM 容量展示为只读 test/residual capacity，不等同于 aircraft physical capacity。
+当前 HTML 工作台有 Data / Visualization / Recovery / Costs / Constraints 五个一级视图。Costs 和 Constraints 是人工审计与实验配置工具；约束公式由后端 registry 单一提供，precheck 不运行 solver，且不构成 MIP feasibility 或 Integrated Oracle 结论。Recovery 显示真实求解结果，Visualization 的风险标记不等于恢复决策。PRM 容量展示为只读 test/residual capacity，不等同于 aircraft physical capacity。
 
 ---
 
@@ -1505,9 +1506,9 @@ phase1_benchmark_001: Phase 12 = 18080
 
 # 19. Phase 13：Recovered Result Visualization
 
-Phase 0.5 已经有 Original/Disruption Visualization。
+Phase 0.5 已有 Original/Disruption Visualization；Phase 13 已接入独立 Recovery 视图。
 
-Solver 接入后扩展为：
+现有对比模式：
 
 ```text
 Original
@@ -1516,7 +1517,7 @@ Recovered
 Difference
 ```
 
-至少显示：
+当前显示：
 
 ## Summary
 
@@ -1950,15 +1951,20 @@ Small-scale Oracle
 
 ---
 
-# 29. 当前立即执行的下一任务
+# 29. 核心路线图完成；后续进入 Business Migration
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8、Phase 9、Phase 10、Phase 11 与 Phase 12 已完成。当前应开始：
+Phase 0–13 的 AIR Core Reproduction / Research Workbench v1 已完成，核心算法路线图冻结。后续工作独立归入 Business Migration：
 
 ```text
-Phase 13 Recovered Result Visualization / Solver Integration
+真实航司数据映射
+Flight Option generation / screening
+成本标定
+航司特定运行规则
+大规模 runtime / stability
+业务运行验证
 ```
 
-Phase 12 已在不调用 Aircraft/Crew full enumerators 的正式路径中闭合 Phase 11 的 LP/整数边界，并保持主 benchmark `18080`。下一阶段应稳定 Solve API、Recovered Result schema 与 Original/Disrupted/Recovered/Difference 可视化，同时继续暴露 runtime、cuts、columns 与 bounds 诊断。
+Phase 13 已通过完整 Solve Bundle 接入 Phase 12，独立复算 `RecoveredResult` 并在 UI 显示 Original/Disrupted/Recovered/Difference。主 benchmark API 结果为 `18080`，`toy_case_016` 为 `95200`；健康检查仍明确 `production_ready=false`。Flight Options 外部提供，Passenger Itineraries 显式提供，v1 仅支持 `scope=None`。
 
 ---
 

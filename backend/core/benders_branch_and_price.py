@@ -165,6 +165,7 @@ class BendersBranchAndPriceResult:
     selected_crew_pairings: tuple[str, ...]
     selected_passenger_itineraries: tuple[str, ...]
     diagnostics: Mapping[str, Any]
+    solution_columns: RecoveryColumns | None = field(default=None, repr=False)
 
     def __post_init__(self) -> None:
         for name in ("x_values", "y_values", "z_values", "w_values", "diagnostics"):
@@ -426,6 +427,7 @@ def solve_benders_with_branch_and_price(
             phase11.selected_crew_pairings,
             phase11.selected_passenger_itineraries,
             diagnostics,
+            phase11.solution_columns,
         )
 
     terminal_map = {
@@ -458,6 +460,7 @@ def solve_benders_with_branch_and_price(
                 "formal_full_enumerators_used": False,
                 "runtime_seconds": perf_counter() - started,
             },
+            None,
         )
 
     lp_cuts = list(phase11.cuts)
@@ -567,6 +570,7 @@ def solve_benders_with_branch_and_price(
             tuple(key for key, value in z_values.items() if value > 0.5),
             tuple(key for key, value in w_values.items() if value > 0.5),
             diagnostics,
+            incumbent.columns if incumbent else None,
         )
 
     for exact_iteration in range(1, benders_config.max_benders_iterations + 1):

@@ -365,7 +365,7 @@ P4 在 Phase 1 Reference 中由 `F2→F3` 改签到 `F8`。
 ## A-015 Phase 1 Passenger Seat Feasibility
 
 **来源状态：**  
-完整 PRM Seat Capacity 约束尚未实现。
+Phase 1 时完整 PRM Seat Capacity 约束尚未实现；Phase 2.5 后已加入 test/residual capacity 约束。
 
 **实现方式：**  
 Phase 1 人工列中的备用 Passenger Itinerary 先作为“路径候选”存在。当前 Manual Reference 对 P4→F8 的选择用于验证 Reaccommodation 接口和资源耦合，但尚未由正式 PRM Seat-Capacity Model 程序化证明。
@@ -381,7 +381,7 @@ Phase 2 PRM 必须正式定义并验证 Passenger Capacity；在此之前，Phas
 ## A-016 Manual Reference 与 Proven Optimal 的区别
 
 **来源状态：**  
-论文给出优化目标，但当前代码尚未完成四模型与完整成本系数。
+论文给出优化目标，但 Phase 1 当时尚未完成四模型与完整成本系数；后续 Phase 2/3 已补齐测试成本与联合模型。
 
 **实现方式：**
 
@@ -513,7 +513,7 @@ recovered solution
 防止把确定性输入分析与优化结果混淆。
 
 **影响：**  
-Recovered Plan 视图应在 Solver/Expected Result 接口正式接入后再启用。
+Phase 13 已通过正式 Solver/RecoveredResult 接口启用独立 Recovery 视图；Visualization 仍不将风险标记当成恢复决策。
 
 ---
 
@@ -1193,7 +1193,7 @@ Phase 3 Integrated Oracle 完成统一耦合与全资源审计后另行形成完
 Phase 2.2 `SRM-C06 MARKET_SEAT_PROXY` 暂时保留为 schedule-level provisional constraint；Phase 2.5 capacity 是第一个显式 passenger seat-load constraint，但不从 ARM 推导。
 
 **原因：**
-SRM、ARM 与 PRM 当前仍为相互独立的 fixed-column 模型，删除 proxy 或伪造 equipment capacity 都会提前引入未冻结的跨模型语义。
+在 Phase 2.2/2.5 的阶段合同中，SRM、ARM 与 PRM 仍是相互独立的 fixed-column 模型；此处记录当时保留 proxy 的原因，不否认后续 Phase 3 的 Integrated Oracle。
 
 **影响：**
 test capacity 不得被当作 aircraft truth，ARM assignment 也不会在 PRM 内部重新求解。
@@ -1263,7 +1263,7 @@ Schedule、Aircraft、Crew 与 Passenger 可相互影响联合最优选择；未
 论文 Algorithm 3 映射为 Scope 总控闭包；Algorithm 4 映射为 direct disruption 与 aircraft rotation/candidate string 的航班传播；Algorithm 5 映射为 crew pairing 的 OPERATE/DEADHEAD 传播；Algorithm 6 映射为 passenger itinerary 与替代航班传播。当前实现额外沿 fixed-column reassignment、airport capacity row、aggregate gate checkpoint 与 shared seat usage 传播，直到 Flight / Aircraft / Crew / Passenger 集合不再扩张。
 
 **原因：**
-论文伪代码面向其生成算法与 eligible move-up 定义；当前仓库尚无动态 generator，Phase 3 MIP 的可行域由人工 fixed columns 及共享约束共同定义。只照搬单轮论文伪代码会遗漏当前 Oracle 中真实存在的耦合。
+论文伪代码面向其生成算法与 eligible move-up 定义；Phase 4 当时尚无动态 generator，Phase 3 MIP 的可行域由人工 fixed columns 及共享约束共同定义。只照搬单轮论文伪代码会遗漏该 Oracle 中真实存在的耦合。
 
 **影响：**
 这是可追溯的论文映射，不宣称逐字或精确复现 Algorithms 3-6。Scope 只对当前已验证 fixed-column universe 保证安全闭包。
@@ -1891,6 +1891,22 @@ Phase 12 v1 继续要求 `scope=None`；Passenger Itineraries 固定显式，PRM
 
 **影响：**
 Flight Options 同样保持固定；正式 Aircraft/Crew/Integrated Phase 12 solver 不允许调用 Phase 5/6 full enumerators。
+
+---
+
+## A-096 Phase 13 Solve Bundle and Readiness Boundary
+
+**来源状态：** `implementation_scope_assumption`
+
+Phase 13 `/api/solve` 只接受版本化完整输入：Scenario、外部提供的既有 Flight Options、显式 Passenger Itineraries、Passenger Capacity、canonical 成本及白名单算法 profile。Scenario-only 会明确拒绝；`/api/solve/precheck` 仅判断输入与语义就绪，绝不承诺优化可行。正式入口不允许预生成 Aircraft Strings / Crew Pairings，仍只支持 `scope=None`（full-scope only）。示例 bundle 可为演示预先装配 Passenger Itineraries，但正式求解路径不隐式生成它们；Flight Option generation 尚未实现。
+
+## A-097 Phase 13 Result and UI Boundary
+
+**来源状态：** `implementation_scope_assumption`
+
+`RecoveredResult` 从 Phase 12 已审计的 selected x/y/z/w 与 generated columns 构造，再独立检查 ownership、operated coverage、Passenger itinerary references、成本分量与 metrics。非最优终态不展示伪造的恢复航班。Disrupted 页面是原计划的扰动暴露/传播风险，不是优化决策；Difference 只比较已求解结果与原计划。Phase 13 不新增 Flight Option Generator、真实航空公司规则或后台作业。
+
+此结果层是 application contract；`/api/health` 明确 `production_ready=false`。Phase 0–13 的核心复现路线完成不代表业务迁移或生产可用。
 
 ---
 

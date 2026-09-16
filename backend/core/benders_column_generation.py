@@ -243,6 +243,7 @@ class BendersCgResult:
     selected_crew_pairings: tuple[str, ...]
     selected_passenger_itineraries: tuple[str, ...]
     diagnostics: Mapping[str, Any]
+    solution_columns: RecoveryColumns | None = field(default=None, repr=False)
 
     def __post_init__(self) -> None:
         for name in ("x_values", "y_values", "z_values", "w_values", "diagnostics"):
@@ -651,6 +652,7 @@ def _result(
             else ()
         ),
         diagnostics=diagnostics,
+        solution_columns=incumbent.columns if incumbent else None,
     )
 
 
