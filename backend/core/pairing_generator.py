@@ -76,9 +76,7 @@ def crew_pairing_id(crew_id: str, legs: Sequence[CrewLegKey]) -> str:
     return f"GEN_CP_{safe_crew}_{digest}"
 
 
-def make_generated_crew_pairing(
-    crew: Crew, legs: Sequence[CrewLegKey]
-) -> CrewPairing:
+def make_generated_crew_pairing(crew: Crew, legs: Sequence[CrewLegKey]) -> CrewPairing:
     """Build a pairing while preserving the Phase 6 identity contract."""
 
     pairing_id = crew_pairing_id(crew.crew_id, legs)
