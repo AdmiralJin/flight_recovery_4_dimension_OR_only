@@ -1789,6 +1789,51 @@ scope 泄漏、dual 漏行、OPERATE/DEADHEAD 系数错误或成本重复实现�
 
 ---
 
+## A-089 Phase 11 Dynamic-Column Cut Validity
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+Phase 11 不复用 Phase 8 固定列 recourse cut。Aircraft/Crew optimality cut 只接受各自 Column Generation 在无负 reduced-cost 列后给出的 full implicit LP objective；restricted RMP objective、generated-pool binary objective 与 restricted-pool infeasibility 均不得成为下界割或 no-good。Passenger 继续使用 exact fixed-column MIP。每个 cut 携带 implicit-universe fingerprint 与 certificate provenance。
+
+**原因：**
+动态列池尚未定价完毕时的 RMP 值和不可行性只描述当前显式子集，不能代表完整隐式列空间。
+
+**影响：**
+Phase 11 的 Master 下界来自 Schedule cost、pricing-certified Aircraft/Crew LP 与 Passenger exact MIP；任何 CG `NOT_CONVERGED`/`ABORTED` 都会终止本次分解而不生成 cut。
+
+---
+
+## A-090 Phase 11 Lower/Upper Bound and Integrality Boundary
+
+**来源状态：** `implementation_scope_assumption`
+
+**实现方式：**
+Aircraft/Crew full-LP objective 仅用于 conditional lower-bound cut；CG 返回列上的 binary ARM/CRM 可行解仅用于 incumbent upper bound。只有 LP 与 generated-pool binary objective 在 integrality tolerance 内相等时，才记录该 owner 的 integer exactness certificate。若相同 Schedule 已无新合法 cut、全局 LB 仍低于 UB 且存在 LP/integer gap，则返回 `INTEGRALITY_REQUIRED`。
+
+**原因：**
+LP pricing 收敛不等于整数列空间闭合，非负 reduced-cost 列仍可能参与更优整数解。
+
+**影响：**
+Phase 11 不实现 Branch-and-Price、Crew follow-on branching 或其他整数恢复；这些工作明确留给 Phase 12。
+
+---
+
+## A-091 Phase 11 Full-Scope and Candidate-Pool Boundary
+
+**来源状态：** `implementation_scope_assumption`
+
+**实现方式：**
+Phase 11 v1 只接受 `scope=None`，并要求正式输入中的 `aircraft_strings` 与 `crew_pairings` 为空。每个首次访问的 Schedule 独立启动 Phase 9 Aircraft CG 与 Phase 10 Crew CG，不跨 Schedule warm-start；Passenger Itineraries 固定显式。最终 generated pools 与 binary selections 通过 Integrated diagnostics 独立复核。
+
+**原因：**
+动态 Scope 会改变隐式列 universe；接受预生成全列也会破坏正式求解器与 Phase 5/6 全枚举器的独立性。
+
+**影响：**
+Implicit-universe fingerprint 覆盖 Scenario、Flight Options、Passenger Itineraries、成本/容量、两类生成配置、两类 CG 配置、Phase 11 配置与 scope mode，但不包含运行中生成的列 ID。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：
@@ -1801,6 +1846,6 @@ scope 泄漏、dual 漏行、OPERATE/DEADHEAD 系数错误或成本重复实现�
 - 正式/tail-level Gate Inventory；
 - Diversion / Destination Change 的业务语义；
 - Algorithm 1 / Algorithm 2 中的符号或实现歧义；
-- Benders Cut 与动态列之间的有效性规则。
+- 生产级 Benders Cut strengthening 与动态列稳定化策略。
 
 任何新增假设必须先记录，再实现。
