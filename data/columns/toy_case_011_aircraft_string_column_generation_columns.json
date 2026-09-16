@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "toy_case_011_aircraft_string_column_generation",
+  "time_unit": "minute",
+  "notes": ["Phase 9 nontrivial full-column and column-generation oracle."],
+  "flight_options": [
+    {"option_id": "S11_REQ1", "base_flight_id": "S11_F1", "operation_type": "operate", "change_types": ["unchanged"], "origin": "A", "destination": "C", "dep_time": "2026-01-15T08:05:00Z", "arr_time": "2026-01-15T09:05:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""},
+    {"option_id": "S11_REQ2", "base_flight_id": "S11_F2", "operation_type": "operate", "change_types": ["unchanged"], "origin": "D", "destination": "F", "dep_time": "2026-01-15T08:05:00Z", "arr_time": "2026-01-15T09:05:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""},
+    {"option_id": "S11_A1_FERRY_AB", "base_flight_id": null, "operation_type": "ferry", "change_types": ["positioning"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T07:05:00Z", "arr_time": "2026-01-15T07:20:00Z", "block_minutes": 15, "departure_delay_minutes": null, "arrival_delay_minutes": null, "notes": "Expensive Phase I tie path."},
+    {"option_id": "S11_A2_FERRY_BA", "base_flight_id": null, "operation_type": "ferry", "change_types": ["positioning"], "origin": "B", "destination": "A", "dep_time": "2026-01-15T07:35:00Z", "arr_time": "2026-01-15T07:50:00Z", "block_minutes": 15, "departure_delay_minutes": null, "arrival_delay_minutes": null, "notes": "Expensive Phase I tie path."},
+    {"option_id": "S11_B1_FERRY_DE", "base_flight_id": null, "operation_type": "ferry", "change_types": ["positioning"], "origin": "D", "destination": "E", "dep_time": "2026-01-15T07:05:00Z", "arr_time": "2026-01-15T07:20:00Z", "block_minutes": 15, "departure_delay_minutes": null, "arrival_delay_minutes": null, "notes": "Expensive Phase I tie path."},
+    {"option_id": "S11_B2_FERRY_ED", "base_flight_id": null, "operation_type": "ferry", "change_types": ["positioning"], "origin": "E", "destination": "D", "dep_time": "2026-01-15T07:35:00Z", "arr_time": "2026-01-15T07:50:00Z", "block_minutes": 15, "departure_delay_minutes": null, "arrival_delay_minutes": null, "notes": "Expensive Phase I tie path."}
+  ],
+  "aircraft_strings": [],
+  "crew_pairings": [],
+  "passenger_itineraries": []
+}

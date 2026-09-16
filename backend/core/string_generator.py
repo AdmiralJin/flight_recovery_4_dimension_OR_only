@@ -47,11 +47,17 @@ class StringGenerationResult:
         object.__setattr__(self, "metrics", MappingProxyType(dict(self.metrics)))
 
 
-def _canonical_key(aircraft_id: str, option_ids: Sequence[str]) -> tuple[str, tuple[str, ...]]:
+def aircraft_string_semantic_key(
+    aircraft_id: str, option_ids: Sequence[str]
+) -> tuple[str, tuple[str, ...]]:
+    """Return the stable Phase 5/9 identity of an aircraft path."""
+
     return aircraft_id, tuple(option_ids)
 
 
-def _string_id(aircraft_id: str, option_ids: Sequence[str]) -> str:
+def aircraft_string_id(aircraft_id: str, option_ids: Sequence[str]) -> str:
+    """Return the deterministic ID shared by full enumeration and pricing."""
+
     payload = "\x00".join((aircraft_id, *option_ids)).encode("utf-8")
     digest = hashlib.sha256(payload).hexdigest()[:16].upper()
     safe_aircraft = "".join(
@@ -60,9 +66,13 @@ def _string_id(aircraft_id: str, option_ids: Sequence[str]) -> str:
     return f"GEN_AS_{safe_aircraft}_{digest}"
 
 
-def _make_string(aircraft: Aircraft, option_ids: Sequence[str]) -> AircraftString:
+def make_generated_aircraft_string(
+    aircraft: Aircraft, option_ids: Sequence[str]
+) -> AircraftString:
+    """Build a generated column without changing the Phase 5 ID contract."""
+
     return AircraftString(
-        string_id=_string_id(aircraft.tail_id, option_ids),
+        string_id=aircraft_string_id(aircraft.tail_id, option_ids),
         aircraft_id=aircraft.tail_id,
         leg_option_ids=list(option_ids),
         start_station=aircraft.initial_station_at_t,
@@ -71,6 +81,13 @@ def _make_string(aircraft: Aircraft, option_ids: Sequence[str]) -> AircraftStrin
         cost_components={},
         notes="Phase 5 deterministic explicit/full-enumeration candidate.",
     )
+
+
+# Backward-local aliases keep the Phase 5 implementation readable while exposing
+# the exact same identity contract to the Phase 9 pricer.
+_canonical_key = aircraft_string_semantic_key
+_string_id = aircraft_string_id
+_make_string = make_generated_aircraft_string
 
 
 def validate_generated_aircraft_string(

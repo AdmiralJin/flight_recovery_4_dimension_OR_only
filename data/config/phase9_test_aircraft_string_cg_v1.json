@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "phase9-test-aircraft-string-cg-v1",
+  "pricing_epsilon": 1e-7,
+  "feasibility_epsilon": 1e-7,
+  "reduced_cost_audit_tolerance": 1e-6,
+  "max_iterations": 100,
+  "max_columns_per_aircraft_per_iteration": 1,
+  "source": "test_fixture",
+  "notes": [
+    "Fresh restricted master is rebuilt in every iteration.",
+    "At most one negative-reduced-cost string is admitted per priced aircraft."
+  ]
+}

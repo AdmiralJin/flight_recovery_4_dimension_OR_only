@@ -27,7 +27,8 @@
 | Phase 6 | ✅ 完成 | Crew-local Network、OPERATE/DEADHEAD、Crew Pairing 显式生成、brute-force Oracle |
 | Phase 7 | ✅ 完成 | Passenger-local Network、MCT、TRANSPORTED/UNSERVED Itinerary 显式生成、brute-force Oracle |
 | Phase 8 | ✅ 完成 | Logic-based Fixed-column Benders、exact-schedule cuts、LB/UB 与 Integrated audit |
-| Phase 9+ | ⏳ 未开始 | Flight/Aircraft String Column Generation、Benders + CG 等 |
+| Phase 9 | ✅ 完成 | Fixed-schedule Aircraft String Full LP、Phase I/II Column Generation、DAG Pricing、穷举终止审计 |
+| Phase 10+ | ⏳ 未开始 | Crew Pairing Column Generation、Benders + CG 等 |
 
 因此当前准确表述是：
 
@@ -1345,6 +1346,8 @@ OBJ_Integrated_Oracle
 
 # 15. Phase 9：Flight String Column Generation
 
+状态：✅ 已完成（2026-09-16）。实现边界收敛为 fixed-schedule Aircraft String LP pricing + column generation；不生成 Flight Options，不与 Benders 联合。
+
 目标：
 
 > 不再预枚举全部 Flight Strings。
@@ -1374,6 +1377,14 @@ Full-column LP Oracle
 ```text
 OBJ_CG == OBJ_full_columns
 ```
+
+当前 toy 与 benchmark 已验证：
+
+```text
+OBJ_CG_LP == OBJ_FULL_COLUMN_AIRCRAFT_LP
+```
+
+正式 CG 不接收 full string pool；Phase 5 全量枚举只在独立 pricing oracle、full-column LP 和 termination audit 中使用。
 
 终止时暴力检查未加入列：
 
@@ -1878,13 +1889,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7 与 Phase 8 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8 与 Phase 9 已完成。当前应开始：
 
 ```text
-Phase 9 Flight / Aircraft String Column Generation
+Phase 10 Crew Pairing Column Generation
 ```
 
-Phase 8 已完成固定列 Logic-Based Benders、cut validity、LB/UB、scope 与 Integrated audit 回归。下一阶段先独立实现 Flight / Aircraft String Pricing 和 Column Generation，并同时保留 Integrated Oracle 与 Fixed-Column Benders 作为 Ground Truth；在 Pricing/CG 独立通过前不组合 Benders + CG。
+Phase 9 已完成 fixed-schedule Aircraft String Full-Column LP、Phase I/II Column Generation、reduced-cost audit、scope 与 full-pool termination audit。下一阶段独立实现 Crew Pairing Pricing 和 Column Generation，并以 Phase 6 full enumeration / All-Pairings LP 为 Ground Truth；在 Crew CG 独立通过前不组合 Benders + CG。
 
 ---
 
