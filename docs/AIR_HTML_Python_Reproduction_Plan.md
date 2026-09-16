@@ -31,7 +31,8 @@
 | Phase 10 | ✅ 完成 | Fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD Pricing |
 | Phase 11 | ✅ 完成 | Schedule Benders + Aircraft/Crew CG、certified LP cuts、binary incumbent、Integrated audit |
 | Phase 12 | ✅ 完成 | Aircraft/Crew exact Branch-and-Price、typed branching、Schedule exact-recourse cuts |
-| Phase 13+ | ⏳ 未开始 | Recovered Result Visualization、稳定 Solve API 等 |
+| Phase 13 | ✅ 完成 | SolveRequest / RecoveredResult、Solve API、独立审计、Recovery UI |
+| Phase 13+ | 📌 后续 | 真实数据、业务规则与规模性能工程 |
 
 因此当前准确表述是：
 
@@ -1952,13 +1953,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8、Phase 9、Phase 10、Phase 11 与 Phase 12 已完成。当前应开始：
+Phase 2.0 至 Phase 13 的研究工作台 v1 已完成。后续重点：
 
 ```text
-Phase 13 Recovered Result Visualization / Solver Integration
+真实航司数据映射、业务规则与规模性能验证
 ```
 
-Phase 12 已在不调用 Aircraft/Crew full enumerators 的正式路径中闭合 Phase 11 的 LP/整数边界，并保持主 benchmark `18080`。下一阶段应稳定 Solve API、Recovered Result schema 与 Original/Disrupted/Recovered/Difference 可视化，同时继续暴露 runtime、cuts、columns 与 bounds 诊断。
+Phase 13 已通过完整 Solve Bundle 接入 Phase 12，独立复算 `RecoveredResult` 并在 UI 显示 Original/Disrupted/Recovered/Difference。主 benchmark API 结果为 `18080`，`toy_case_016` 为 `95200`；健康检查仍明确 `production_ready=false`。Flight Options 外部提供，Passenger Itineraries 显式提供，v1 仅支持 `scope=None`。
 
 ---
 

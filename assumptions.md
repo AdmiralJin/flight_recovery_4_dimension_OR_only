@@ -1894,6 +1894,20 @@ Flight Options 同样保持固定；正式 Aircraft/Crew/Integrated Phase 12 sol
 
 ---
 
+## A-096 Phase 13 Solve Bundle and Readiness Boundary
+
+**来源状态：** `implementation_scope_assumption`
+
+Phase 13 `/api/solve` 只接受版本化完整输入：Scenario、既有 Flight Options、显式 Passenger Itineraries、Passenger Capacity、canonical 成本及白名单算法 profile。Scenario-only 会明确拒绝；`/api/solve/precheck` 仅判断输入与语义就绪，绝不承诺优化可行。正式入口不允许预生成 Aircraft/Crew 列，仍只支持 `scope=None`。示例 bundle 可为演示预先装配 Passenger Itineraries，但求解路径不隐式生成它们。
+
+## A-097 Phase 13 Result and UI Boundary
+
+**来源状态：** `implementation_scope_assumption`
+
+`RecoveredResult` 从 Phase 12 已审计的 selected x/y/z/w 与 generated columns 构造，再独立检查 ownership、operated coverage、Passenger itinerary references、成本分量与 metrics。非最优终态不展示伪造的恢复航班。Disrupted 页面是原计划的扰动暴露/传播风险，不是优化决策；Difference 只比较已求解结果与原计划。Phase 13 不新增 Flight Option Generator、真实航空公司规则或后台作业。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：

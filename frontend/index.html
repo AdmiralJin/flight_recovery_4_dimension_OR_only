@@ -8,13 +8,14 @@
   <link rel="stylesheet" href="/static/css/styles.css">
   <link rel="stylesheet" href="/static/css/visualization.css">
   <link rel="stylesheet" href="/static/css/workbench.css">
+  <link rel="stylesheet" href="/static/css/recovery.css">
 </head>
 <body>
   <header class="hero">
     <div>
       <p class="eyebrow">PETERSEN AIR REPRODUCTION · AUDIT WORKBENCH</p>
       <h1>AIR Recovery Workbench</h1>
-      <p class="subtitle">Scenario · Costs · Constraints · Validation</p>
+      <p class="subtitle">Scenario · Solve · Recovery · Audit</p>
     </div>
     <div class="status-card status-card--wide">
       <div class="workbench-status"><strong>Scenario</strong><span id="record-summary">Loading example…</span></div>
@@ -33,12 +34,14 @@
       <button id="reset-workbench" class="button">Reset Workbench</button>
       <div class="command-spacer"></div>
       <button id="validate" class="button accent">Validate</button>
+      <button id="solve-recovery" class="button primary" disabled>Solve</button>
       <input id="file-input" type="file" accept="application/json,.json" hidden>
     </section>
 
     <nav class="view-switcher" aria-label="Workbench view">
       <button id="show-data-view" class="view-switch" aria-pressed="true">Data</button>
       <button id="show-visualization-view" class="view-switch" aria-pressed="false">Visualization</button>
+      <button id="show-recovery-view" class="view-switch" aria-pressed="false">Recovery</button>
       <button id="show-costs-view" class="view-switch" aria-pressed="false">Costs</button>
       <button id="show-constraints-view" class="view-switch" aria-pressed="false">Constraints</button>
     </nav>
@@ -104,6 +107,21 @@
       </section>
     </div>
 
+    <div id="recovery-view" hidden>
+      <div class="recovery-toolbar">
+        <label for="recovery-mode">Compare</label>
+        <select id="recovery-mode">
+          <option value="original">Original</option>
+          <option value="disrupted">Disrupted / Risk</option>
+          <option value="recovered" selected>Recovered</option>
+          <option value="difference">Difference</option>
+        </select>
+        <button id="export-recovered-result" class="button" disabled>Export Recovered Result</button>
+        <span id="solve-status" role="status" aria-live="polite">Load a complete Solve Bundle to begin.</span>
+      </div>
+      <div id="recovery-container"></div>
+    </div>
+
     <div id="costs-view" hidden>
       <section class="audit-panel" aria-labelledby="costs-title">
         <div class="audit-panel-head">
@@ -142,7 +160,7 @@
     </div>
   </main>
 
-  <footer>Audit workbench · Scenario editing, deterministic visualization, cost experiments and constraint metadata · Solver API disabled</footer>
+  <footer>AIR research workbench v1 · Synchronous exact solve · Full scope / prepared Flight Options only · Not production-ready</footer>
   <script type="module" src="/static/js/app.js"></script>
 </body>
 </html>

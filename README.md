@@ -42,7 +42,8 @@ Fixed-column OR Models + Solver Adapter / Gurobi
 | Phase 10 | ✅ 完成 | Fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD Pricing |
 | Phase 11 | ✅ 完成 | Schedule Benders + Aircraft/Crew CG、certified LP cuts、binary incumbent、Integrated audit |
 | Phase 12 | ✅ 完成 | Aircraft/Crew exact Branch-and-Price、typed branching、Schedule exact-recourse cuts |
-| Phase 13+ | ⏳ 未开始 | Recovered Result Visualization、稳定 Solve API 等 |
+| Phase 13 | ✅ 完成 | 稳定 Solve API、独立复算的 RecoveredResult、Recovery 对比视图与 JSON 导出 |
+| Phase 13+ | 📌 后续 | 真实航司数据映射、业务规则扩展、规模与性能工程 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
@@ -65,6 +66,8 @@ Phase 10 在固定 Schedule 下实现独立 Crew Pairing LP Column Generation。
 Phase 11 将 SRM Schedule Master 与 Phase 9/10 CG 组合，但不复用 Phase 8 固定列 cuts。Aircraft/Crew 仅以 pricing-certified full-LP objective 生成下界 cut；CG 返回列上的 binary ARM/CRM 只形成安全 incumbent 上界，Passenger 继续使用 exact PRM。`toy_case_013` 依次访问 Aircraft infeasible、Passenger 高成本与 integrated-optimal 三个 Schedule，并收敛到 `LB = UB = 220`；主 benchmark 在 8 个 Master 轮次后达到 `LB = UB = Full Explicit Integrated Oracle = 18080`。正式入口拒绝预生成 Aircraft/Crew 全列与动态 Scope，无法闭合 LP/整数 gap 时返回 `INTEGRALITY_REQUIRED`。
 
 Phase 12 在每个 branch node 内重新完成受分支约束的 CG：Aircraft 优先按 tail-option assignment 分支并以 exact String 为兜底；Crew 优先按 crew-local typed follow-on 分支，再以 typed leg / exact Pairing 兜底。`toy_case_015` 的 Crew root LP 为 `195`、整数最优为 `200`，B&P 以 9 个节点闭合；`toy_case_016` 上 Phase 11 返回 `INTEGRALITY_REQUIRED (LB=95195, UB=95200)`，Phase 12 通过 exact schedule recourse cut 达到 `LB = UB = Full Explicit Integrated Oracle = 95200`。主 benchmark 保持 `18080`。Passenger 仍为固定显式 Itinerary exact MIP，v1 仍只支持 `scope=None`。
+
+Phase 13 将 Phase 12 exact solver 接入版本化 `POST /api/solve`。输入必须是完整 Solve Bundle（Scenario、已有 Flight Options、显式 Passenger Itineraries、座位容量、成本与算法 profile）；`POST /api/solve/precheck` 只判断输入就绪，不承诺优化可行。结果使用 `RecoveredResult` 独立复算选择、覆盖、目标分量与指标，提供 Original / Disrupted / Recovered / Difference 对比、诊断及 JSON 导出。API 回归：主 benchmark `18080`、`toy_case_016` `95200`，并覆盖 invalid / infeasible / not_converged。正式求解不调用 Aircraft/Crew full enumerators，仅支持 `scope=None`，且不生成新的 Flight Options。**Core AIR reproduction / research workbench v1 complete**；这不等于真实航司生产就绪。
 
 ---
 
@@ -90,6 +93,8 @@ python -m uvicorn backend.main:app --reload
 ```text
 http://127.0.0.1:8000
 ```
+
+默认示例会加载完整 Solve Bundle；点击 `Solve` 调用同步 exact solver，并在 `Recovery` 中查看四种对比及导出结果。`Import Scenario` 支持导入 Scenario JSON 或完整的 `SolveRequest` JSON。仅导入 Scenario 不会自动生成 Flight Options 或使 Solve 按钮就绪。程序化调用可先 `GET /api/solve/example-bundle/phase1_benchmark_001`，再将返回 JSON 送至 `POST /api/solve/precheck` 和 `POST /api/solve`；`toy_case_016_benders_branch_and_price` 也有对应示例 bundle。
 
 ---
 
@@ -579,10 +584,10 @@ Phase 8 v1 以 SRM `x` 为 Master，并使用现有 ARM/CRM/PRM binary MIP 作�
 当前下一工程任务是：
 
 ```text
-Phase 12 Integrality / Branching
+真实航司数据映射、业务规则与规模化性能验证
 ```
 
-Phase 11 已证明 toy 与 `phase1_benchmark_001` 上 `OBJ_BENDERS_CG == OBJ_FULL_EXPLICIT_INTEGRATED`，并明确区分 LP lower bound 与 generated-pool binary upper bound。下一步处理 Aircraft/Crew recourse 的整数分支与 Branch-and-Price；不得用 binary recourse objective 冒充 Benders lower-bound cut。
+研究工作台 v1 的核心复现链路已经闭合。下一步不再扩展本轮数学模型，而是先验证真实数据的字段映射、Flight Option 来源、运行时限、业务规则与结果解释；当前 API 和 UI 明确标记 `production_ready=false`。
 
 完整开发路线见：
 

@@ -12,7 +12,14 @@ def test_health_and_frontend_are_served():
     table_script = client.get("/static/js/tables.js")
 
     assert health.status_code == 200
-    assert health.json() == {"status": "ok", "phase": "2.5-workbench"}
+    assert health.json() == {
+        "status": "ok",
+        "solver_enabled": True,
+        "algorithm": "benders_branch_and_price_v1",
+        "scope_mode": "full_only",
+        "flight_option_generation": False,
+        "production_ready": False,
+    }
     assert page.status_code == 200
     assert "Load Example" in page.text
     assert "Import Scenario" in page.text
@@ -51,13 +58,8 @@ def test_validate_returns_actionable_location(toy_case):
     } in response.json()["errors"]
 
 
-def test_solve_guard_blocks_invalid_and_defers_valid_data(toy_case):
-    toy_case["flights"][0]["origin"] = "NO_SUCH_AIRPORT"
-    invalid = client.post("/api/solve", json=toy_case)
-    assert invalid.status_code == 422
-    assert "blocked" in invalid.json()["message"]
-
-    toy_case["flights"][0]["origin"] = "A"
-    valid = client.post("/api/solve", json=toy_case)
-    assert valid.status_code == 501
-    assert valid.json()["status"] == "not_implemented"
+def test_scenario_only_solve_is_rejected(toy_case):
+    result = client.post("/api/solve/precheck", json={"scenario": toy_case})
+    assert result.status_code == 200
+    assert result.json()["solve_ready"] is False
+    assert "missing_flight_options" in result.json()["missing_inputs"]

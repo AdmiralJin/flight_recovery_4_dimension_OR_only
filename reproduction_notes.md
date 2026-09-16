@@ -843,3 +843,11 @@ Phase 12 在固定 Schedule 下对 Aircraft String 与 Crew Pairing 的隐式列
 `toy_case_015` 的 Crew root LP 为 195，整数最优为 200，9 个节点闭合；`toy_case_016` 上 Phase 11 返回 `INTEGRALITY_REQUIRED`（LB=95195，UB=95200），Phase 12 与完整显式 Integrated Oracle 均为 95200。主 benchmark 保持 18080。
 
 正式求解只支持 `scope=None`，使用预备 Flight Options 与固定显式 Passenger Itineraries；它不调用 Phase 5/6 full enumerators，不代表生产级航空公司规则或规模性能。Aircraft 当前测试宇宙未产生自然整数缺口，不为此改变数学模型。
+
+---
+
+# 27. Phase 13 Solver Integration / Recovered Result 冻结
+
+Phase 13 将版本化 `SolveRequest` 经输入就绪检查交给 Phase 12 exact solver。API 的 422 用于缺失或无效输入；合法但不可行、未收敛的求解均以 HTTP 200 和稳定 `RecoveredResult.status` 返回。`result_builder` 独立复核 selected owner、Aircraft/Crew coverage、Passenger references、目标分量和业务指标，并要求 Integrated final audit PASS 才输出 optimal 决策。
+
+主 benchmark API objective `18080`；`toy_case_016` API objective `95200`。另有 Scenario-only、非法成本覆盖、合法但 infeasible、节点上限导致 not_converged 的回归。浏览器实测 Solve、Recovered、Disrupted、Difference 与结果导出可用。完整研究工作台 v1 已闭合，但真实数据接入、业务约束、规模性能和 production readiness 仍在后续范围。
