@@ -725,6 +725,14 @@ toy_case_010 feasibility/optimality cut convergence Oracle
 toy_case_004/005 and toy_case_006_scope Benders/Integrated equality
 phase1_benchmark_001 generated-universe Benders objective 18080
 Final Benders incumbent Integrated diagnostics audit
+Fixed-schedule full-column Aircraft String LP Oracle
+Fresh-rebuild restricted Aircraft String LP master
+Explicit Phase I artificial-variable feasibility restoration
+Public-dual `c - pi*a` reduced-cost mapping and solver RC audit
+Aircraft-local DAG pricing without full-pool dependency
+toy_case_011 Phase II negative-reduced-cost improvement
+phase1_benchmark_001 77-full-column versus 15-CG-column equality
+Full-pool omitted-column termination audit
 ```
 
 Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
@@ -736,10 +744,10 @@ Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独
 下一步进入：
 
 ```text
-Phase 9 Flight / Aircraft String Column Generation
+Phase 10 Crew Pairing Column Generation
 ```
 
-Phase 8 已将固定候选宇宙分解为 SRM Master 与 ARM/CRM/PRM exact MIP recourse，并在 toy、scope 与完整 benchmark 上证明 `OBJ_Benders == OBJ_Integrated_Oracle`。下一步可先单独实现 Flight / Aircraft String Pricing 与 Column Generation，并同时保持 Integrated Oracle 和 Fixed-Column Benders 两个 Ground Truth；尚不组合 Benders + CG。
+Phase 9 已在固定 Schedule 下建立 Full-column Aircraft String LP、Phase I/II RMP、DAG pricing 和 full-pool termination audit，并在 toy 与完整 benchmark 上证明 `OBJ_CG_LP == OBJ_FULL_COLUMN_AIRCRAFT_LP`。下一步单独实现 Crew Pairing Pricing 与 Column Generation；尚不组合 Benders + CG，也不做 branching/integrality recovery。
 
 ---
 

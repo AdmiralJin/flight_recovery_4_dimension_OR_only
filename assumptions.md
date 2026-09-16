@@ -1669,6 +1669,66 @@ Phase 8 不生成、删除或动态插入任何列；未来 Column Generation �
 
 ---
 
+## A-081 Phase 9 Fixed-schedule LP Boundary
+
+**来源状态：** `implementation_scope_assumption`
+
+**实现方式：**
+Phase 9 只在 `AircraftRecoveryRequest.required_operated_option_ids` 给定的固定 Schedule 上求 Aircraft String LP。RMP 使用非负连续 `y`，保持 ARM 的 aircraft selection、required/non-required option coverage、terminal 与 maintenance 行语义；不声称恢复 binary ARM optimum，也不把 Integrated/Benders 的 `18080` 作为本阶段直接验收值。
+
+**原因：**
+必须先把 Aircraft String reduced cost、dual mapping 与列生成终止条件独立闭环，才能安全进入 Crew CG 或 Benders + CG。
+
+**影响：**
+正确验收关系为 `OBJ_CG_LP == OBJ_FULL_COLUMN_AIRCRAFT_LP`。
+
+---
+
+## A-082 Phase 9 Two-phase Feasibility Restoration
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+Phase I 对所有 RHS=1 的 selection、required coverage、terminal 与 maintenance 等式各加入一个代价为 1 的非负人工变量，真实列成本为 0；只有人工变量目标不高于 feasibility epsilon 才进入 Phase II。若正人工目标下不存在负 reduced-cost 列，则返回 INFEASIBLE。
+
+**原因：**
+original-only 或空初始列池不保证覆盖固定 Schedule，正式 CG 不能依赖预先全量枚举来制造可行 RMP。
+
+**影响：**
+Phase I dual 只用于可行性定价；Phase II 才使用 canonical Aircraft String owner cost。
+
+---
+
+## A-083 Phase 9 Pricing and Full-enumeration Separation
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+正式 pricer 复用 Phase 5 aircraft-local Flight Network，只遍历 required revenue options 与输入 ferry options，并跟踪已用 base flight；它不得调用或接收 Phase 5 full string pool。稳定 semantic key/ID 与 Phase 5 共享。Phase 5 全量枚举仅允许出现在 Full-column LP、pricing oracle 和 termination exhaustive audit 边界。
+
+**原因：**
+若正式求解器内部先枚举全列再扫描 reduced cost，就不是真正的 Column Generation。
+
+**影响：**
+当前 correctness-first DFS/label traversal 仍可能在单机网络上访问很多合法路径，但不物化全局 full pool；大规模 dominance/stabilization 留待后续。
+
+---
+
+## A-084 Phase 9 Dual, Reduced Cost and Scope Contract
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+Reduced cost 严格按主问题实际行系数计算 `c - Σπa`；每轮对已存在变量比较手算 reduced cost 与 solver 公共接口返回值。Scope 内 aircraft 定价，Scope 外 aircraft 只保留语义 original string。每轮重建 RMP，并对固定输入生成和复核 fingerprint。
+
+**原因：**
+dual 符号、漏行、scope 泄漏和求解中输入漂移都会产生看似收敛但数学上错误的结果。
+
+**影响：**
+当前不做 dual stabilization、multi-column 全局选择、branching 或 integrality recovery。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：
@@ -1678,7 +1738,6 @@ Phase 8 不生成、删除或动态插入任何列；未来 Column Generation �
 - Crew maximum duty / minimum rest；
 - 生产级 Passenger MCT；
 - Reserve Crew；
-- Flight String Reduced Cost Mapping；
 - Crew Pairing Reduced Cost；
 - 正式/tail-level Gate Inventory；
 - Diversion / Destination Change 的业务语义；

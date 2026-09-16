@@ -27,7 +27,8 @@
 | Phase 6 | ✅ 完成 | Crew-local Network、OPERATE/DEADHEAD、Crew Pairing 显式生成、brute-force Oracle |
 | Phase 7 | ✅ 完成 | Passenger-local Network、MCT、TRANSPORTED/UNSERVED Itinerary 显式生成、brute-force Oracle |
 | Phase 8 | ✅ 完成 | Logic-based Fixed-column Benders、exact-schedule cuts、LB/UB 与 Integrated audit |
-| Phase 9+ | ⏳ 未开始 | Flight/Aircraft String Column Generation、Benders + CG 等 |
+| Phase 9 | ✅ 完成 | Fixed-schedule Aircraft String Full LP、Phase I/II Column Generation、DAG Pricing、穷举终止审计 |
+| Phase 10+ | ⏳ 未开始 | Crew Pairing Column Generation、Benders + CG 等 |
 
 因此当前准确表述是：
 
@@ -1345,6 +1346,8 @@ OBJ_Integrated_Oracle
 
 # 15. Phase 9：Flight String Column Generation
 
+状态：✅ 已完成（2026-09-16）。实现边界收敛为 fixed-schedule Aircraft String LP pricing + column generation；不生成 Flight Options，不与 Benders 联合。
+
 目标：
 
 > 不再预枚举全部 Flight Strings。
@@ -1374,6 +1377,14 @@ Full-column LP Oracle
 ```text
 OBJ_CG == OBJ_full_columns
 ```
+
+当前 toy 与 benchmark 已验证：
+
+```text
+OBJ_CG_LP == OBJ_FULL_COLUMN_AIRCRAFT_LP
+```
+
+正式 CG 不接收 full string pool；Phase 5 全量枚举只在独立 pricing oracle、full-column LP 和 termination audit 中使用。
 
 终止时暴力检查未加入列：
 

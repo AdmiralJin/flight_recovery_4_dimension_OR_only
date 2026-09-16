@@ -6,6 +6,12 @@ from .benders import (
     FixedColumnBendersConfigError,
     load_fixed_column_benders_config,
 )
+from .aircraft_string_column_generation import (
+    AircraftStringColumnGenerationConfig,
+    AircraftStringColumnGenerationConfigError,
+    AircraftStringColumnGenerationSource,
+    load_aircraft_string_column_generation_config,
+)
 
 from .costs import (
     AircraftStringCostBreakdown,
@@ -52,6 +58,9 @@ from .string_generation import (
 )
 
 __all__ = [
+    "AircraftStringColumnGenerationConfig",
+    "AircraftStringColumnGenerationConfigError",
+    "AircraftStringColumnGenerationSource",
     "AircraftStringCostBreakdown",
     "BendersImplementationSource",
     "CrewPairingCostBreakdown",
@@ -81,6 +90,7 @@ __all__ = [
     "apply_cost_overrides",
     "crew_pairing_cost",
     "load_cost_config",
+    "load_aircraft_string_column_generation_config",
     "load_fixed_column_benders_config",
     "load_crew_pairing_generation_config",
     "load_flight_string_generation_config",
