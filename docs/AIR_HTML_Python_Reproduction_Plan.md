@@ -29,7 +29,8 @@
 | Phase 8 | ✅ 完成 | Logic-based Fixed-column Benders、exact-schedule cuts、LB/UB 与 Integrated audit |
 | Phase 9 | ✅ 完成 | Fixed-schedule Aircraft String Full LP、Phase I/II Column Generation、DAG Pricing、穷举终止审计 |
 | Phase 10 | ✅ 完成 | Fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD Pricing |
-| Phase 11+ | ⏳ 未开始 | Benders + Column Generation、integrality recovery 等 |
+| Phase 11 | ✅ 完成 | Schedule Benders + Aircraft/Crew CG、certified LP cuts、binary incumbent、Integrated audit |
+| Phase 12+ | ⏳ 未开始 | Integrality / Branch-and-Price、Recovered Result Visualization 等 |
 
 因此当前准确表述是：
 
@@ -1423,7 +1424,34 @@ OBJ_CREW_CG_LP == OBJ_ALL_PAIRINGS_LP
 
 # 17. Phase 11：Benders + Column Generation
 
-只有：
+Phase 11 已完成。正式入口为：
+
+```text
+backend/config/benders_column_generation.py
+backend/core/benders_column_generation.py
+solve_benders_with_column_generation(...)
+```
+
+实现边界：
+
+- SRM `x + thetaA + thetaC + thetaP` Master；
+- Aircraft/Crew cut 只来自 pricing-certified full LP；
+- Passenger cut 来自 fixed explicit Itinerary exact MIP；
+- generated-pool binary ARM/CRM 只用于 UB，不作为 LB cut；
+- Phase-I certified infeasibility或 exact PRM infeasibility才允许 schedule no-good；
+- implicit-universe fingerprint 不含运行中动态 pool IDs；
+- 正式入口不调用或接收 Phase 5/6 full enumerators；
+- v1 仅支持 `scope=None`；
+- LP/整数 gap 无法闭合时返回 `INTEGRALITY_REQUIRED`，不生成无效 cut。
+
+验收结果：
+
+```text
+toy_case_013: LB = UB = Full Explicit Integrated Oracle = 220
+phase1_benchmark_001: LB = UB = Full Explicit Integrated Oracle = 18080
+```
+
+Phase 11 只在以下三个先决模块独立通过后组合：
 
 - Fixed-column Benders；
 - Flight CG；
@@ -1433,9 +1461,9 @@ OBJ_CREW_CG_LP == OBJ_ALL_PAIRINGS_LP
 
 特别注意：
 
-> 新列加入后旧 Benders Cut 的有效性不能想当然。
+> 新列加入后旧 Benders Cut 的有效性不能想当然；只有同一 implicit universe 上经完整 pricing 证明的 LP cut 可跨显式 pool 增长继续使用。
 
-必须严格实现 Cut Invalidation / Validity Policy。
+Cut Invalidation / Validity Policy 已通过 provenance、fingerprint、负例与 integrality-boundary 测试固定。
 
 ---
 
@@ -1900,13 +1928,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8、Phase 9 与 Phase 10 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8、Phase 9、Phase 10 与 Phase 11 已完成。当前应开始：
 
 ```text
-Phase 11 Benders + Column Generation
+Phase 12 Integrality / Branching
 ```
 
-Phase 10 已完成 fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD reduced-cost audit、scope 与 full-pool termination audit。下一阶段进入 Benders + CG 前，必须先定义动态列与现有 cuts 的 validity、invalidation/refresh、recourse lower-bound refresh 和 candidate-universe fingerprint 规则。
+Phase 11 已在 toy 与完整 benchmark 上证明 Schedule Benders + Aircraft/Crew CG 与 Full Explicit Integrated Oracle 目标一致，并以 `INTEGRALITY_REQUIRED` 明确保护 LP/整数边界。下一阶段应实现 branching 下的 ARM/CRM pricing 与整数闭合，不得通过 invalid no-good 或 binary lower-bound cut 绕过该边界。
 
 ---
 

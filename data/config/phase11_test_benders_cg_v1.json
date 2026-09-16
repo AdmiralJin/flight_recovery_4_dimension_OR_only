@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "phase11-test-benders-cg-v1",
+  "max_benders_iterations": 500,
+  "absolute_gap_tolerance": 1e-6,
+  "relative_gap_tolerance": 1e-8,
+  "integrality_tolerance": 1e-6,
+  "require_full_scope": true,
+  "source": "test_fixture",
+  "notes": [
+    "Aircraft and Crew lower-bound cuts require pricing-certified full LP values.",
+    "Generated-pool binary ARM/CRM solutions are upper-bound incumbents only."
+  ]
+}

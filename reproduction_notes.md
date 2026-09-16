@@ -741,6 +741,16 @@ Crew manual `c - pi*a` versus solver reduced-cost audit
 toy_case_012 deadhead/reassignment Phase II improvement
 phase1_benchmark_001 374-full-pairing versus 34-CG-pairing equality
 Crew full-pool omitted-pairing termination audit
+Versioned Schedule Benders + Column Generation configuration
+Implicit-universe fingerprint excluding materialized dynamic pool IDs
+Pricing-certified Aircraft/Crew full-LP conditional lower-bound cuts
+Exact Passenger MIP cuts and certified schedule no-good cuts
+Generated-pool binary ARM/CRM integer-feasible upper bounds
+Explicit `INTEGRALITY_REQUIRED` LP/integer boundary
+toy_case_013 three-Schedule Benders-CG Oracle equality at 220
+phase1_benchmark_001 Benders-CG / Full Explicit Integrated equality at 18080
+Formal Phase 11 independence from Aircraft/Crew full enumerators
+Final generated-column incumbent Integrated diagnostics audit
 ```
 
 Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
@@ -752,10 +762,10 @@ Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独
 下一步进入：
 
 ```text
-Phase 11 Benders + Column Generation
+Phase 12 Integrality / Branching
 ```
 
-Phase 10 已在固定 Schedule 下建立 All-Pairings Crew LP、Phase I/II RMP、typed-DAG pricing 和 full-pool termination audit，并在 toy、scope 与完整 benchmark 上证明 `OBJ_CREW_CG_LP == OBJ_ALL_PAIRINGS_LP`。下一步进入 Benders + CG 前必须先解决动态列与现有 cut 的有效性/刷新策略；尚不做 branching/integrality recovery。
+Phase 11 已在 toy 与完整 benchmark 上证明 `OBJ_BENDERS_CG == OBJ_FULL_EXPLICIT_INTEGRATED`。Aircraft/Crew full-LP 值只形成下界，generated-pool binary 解只形成上界；若二者不能闭合，求解器返回 `INTEGRALITY_REQUIRED`。下一步实现 branching 下的动态定价与整数恢复。
 
 ---
 
