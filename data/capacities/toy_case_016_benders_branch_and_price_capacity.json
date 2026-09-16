@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "toy_case_016_benders_branch_and_price_capacity",
+  "scenario_id": "toy_case_016_benders_branch_and_price",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "T16_O1": 10,
+    "T16_F2_ORIG": 10,
+    "T16_O2": 10,
+    "T16_F3_ORIG": 10,
+    "T16_O3": 10,
+    "T16_D1_ORIG": 10,
+    "T16_D2_ORIG": 10,
+    "T16_D3_ORIG": 10
+  },
+  "notes": ["TEST / RESIDUAL CAPACITY; no passenger groups are present in this integrality fixture."]
+}

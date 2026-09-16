@@ -833,3 +833,13 @@ Full Integrated Fixed-Column Oracle
 它继续复用 `phase2_test_costs_v1`、当前人工列、不可拆分 PassengerCommodity group、test/residual passenger capacity 和 provisional SRM Market-seat Proxy。Integrated Objective 只按 canonical owner 汇总 SRM + ARM + CRM + PRM，不增加模型级权重、隐藏 epsilon 或 tie-breaking penalty，允许等价最优解。
 
 Phase 3 v1 不加入南航特定业务规则，不动态生成 Columns，不进入 Benders / Column Generation，也不宣称使用生产级真实参数。完整冻结说明见 `assumptions.md` A-056。
+
+---
+
+# 26. Phase 12 Integrality / Branch-and-Price 冻结
+
+Phase 12 在固定 Schedule 下对 Aircraft String 与 Crew Pairing 的隐式列空间运行 exact Branch-and-Price。每个分支节点在自身限制下重新完成 Column Generation；parent columns 仅为合法 warm start。只有根节点 LP 与可行整数值相等，或 Branch-and-Price 完整证明整数最优时，Schedule Benders 才使用 exact integer recourse cut。Phase 11 的 pricing-certified LP cuts 继续保留。
+
+`toy_case_015` 的 Crew root LP 为 195，整数最优为 200，9 个节点闭合；`toy_case_016` 上 Phase 11 返回 `INTEGRALITY_REQUIRED`（LB=95195，UB=95200），Phase 12 与完整显式 Integrated Oracle 均为 95200。主 benchmark 保持 18080。
+
+正式求解只支持 `scope=None`，使用预备 Flight Options 与固定显式 Passenger Itineraries；它不调用 Phase 5/6 full enumerators，不代表生产级航空公司规则或规模性能。Aircraft 当前测试宇宙未产生自然整数缺口，不为此改变数学模型。

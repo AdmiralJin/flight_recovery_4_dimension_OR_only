@@ -12,6 +12,12 @@ from .benders_column_generation import (
     BendersColumnGenerationSource,
     load_benders_column_generation_config,
 )
+from .branch_and_price import (
+    BranchAndPriceConfig,
+    BranchAndPriceConfigError,
+    BranchAndPriceSource,
+    load_branch_and_price_config,
+)
 from .aircraft_string_column_generation import (
     AircraftStringColumnGenerationConfig,
     AircraftStringColumnGenerationConfigError,
@@ -78,6 +84,9 @@ __all__ = [
     "BendersColumnGenerationConfig",
     "BendersColumnGenerationConfigError",
     "BendersColumnGenerationSource",
+    "BranchAndPriceConfig",
+    "BranchAndPriceConfigError",
+    "BranchAndPriceSource",
     "CrewPairingCostBreakdown",
     "CostCoefficient",
     "CostCoefficients",
@@ -111,6 +120,7 @@ __all__ = [
     "load_aircraft_string_column_generation_config",
     "load_fixed_column_benders_config",
     "load_benders_column_generation_config",
+    "load_branch_and_price_config",
     "load_crew_pairing_generation_config",
     "load_crew_pairing_column_generation_config",
     "load_flight_string_generation_config",

@@ -149,3 +149,23 @@ def toy_case_013_benders_column_generation_columns_data() -> dict:
     return _phase1_json(
         "columns", "toy_case_013_benders_column_generation_columns.json"
     )
+
+
+@pytest.fixture
+def toy_case_015_crew_integrality_data() -> dict:
+    return _phase1_json("examples", "toy_case_015_crew_integrality.json")
+
+
+@pytest.fixture
+def toy_case_015_crew_integrality_columns_data() -> dict:
+    return _phase1_json("columns", "toy_case_015_crew_integrality_columns.json")
+
+
+@pytest.fixture
+def toy_case_016_benders_branch_and_price_data() -> dict:
+    return _phase1_json("examples", "toy_case_016_benders_branch_and_price.json")
+
+
+@pytest.fixture
+def toy_case_016_benders_branch_and_price_columns_data() -> dict:
+    return _phase1_json("columns", "toy_case_016_benders_branch_and_price_columns.json")

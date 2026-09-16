@@ -41,7 +41,8 @@ Fixed-column OR Models + Solver Adapter / Gurobi
 | Phase 9 | ✅ 完成 | Fixed-schedule Aircraft String Full LP、Phase I/II Column Generation、DAG Pricing、穷举终止审计 |
 | Phase 10 | ✅ 完成 | Fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD Pricing |
 | Phase 11 | ✅ 完成 | Schedule Benders + Aircraft/Crew CG、certified LP cuts、binary incumbent、Integrated audit |
-| Phase 12+ | ⏳ 未开始 | Integrality / Branch-and-Price、Recovered Result Visualization 等 |
+| Phase 12 | ✅ 完成 | Aircraft/Crew exact Branch-and-Price、typed branching、Schedule exact-recourse cuts |
+| Phase 13+ | ⏳ 未开始 | Recovered Result Visualization、稳定 Solve API 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
@@ -62,6 +63,8 @@ Phase 9 在固定 Schedule 下实现独立 Aircraft String LP Column Generation�
 Phase 10 在固定 Schedule 下实现独立 Crew Pairing LP Column Generation。All-Pairings LP 保留 CRM 的 pairing selection、required OPERATE coverage、nonrequired OPERATE/DEADHEAD prohibition 与 terminal rows；typed-DAG pricer 区分 OPERATE/DEADHEAD，并执行 qualification、MCT、duty、deadhead 与 duplicate resource checks。`toy_case_012` 从目标 `300` 的长航段 deadhead 池改进到 `150`；主 benchmark 的 374 条 full pairings 与 34 条 CG pairings 均得到目标 `0`，340 条遗漏列最小 reduced cost 为 `0`。
 
 Phase 11 将 SRM Schedule Master 与 Phase 9/10 CG 组合，但不复用 Phase 8 固定列 cuts。Aircraft/Crew 仅以 pricing-certified full-LP objective 生成下界 cut；CG 返回列上的 binary ARM/CRM 只形成安全 incumbent 上界，Passenger 继续使用 exact PRM。`toy_case_013` 依次访问 Aircraft infeasible、Passenger 高成本与 integrated-optimal 三个 Schedule，并收敛到 `LB = UB = 220`；主 benchmark 在 8 个 Master 轮次后达到 `LB = UB = Full Explicit Integrated Oracle = 18080`。正式入口拒绝预生成 Aircraft/Crew 全列与动态 Scope，无法闭合 LP/整数 gap 时返回 `INTEGRALITY_REQUIRED`。
+
+Phase 12 在每个 branch node 内重新完成受分支约束的 CG：Aircraft 优先按 tail-option assignment 分支并以 exact String 为兜底；Crew 优先按 crew-local typed follow-on 分支，再以 typed leg / exact Pairing 兜底。`toy_case_015` 的 Crew root LP 为 `195`、整数最优为 `200`，B&P 以 9 个节点闭合；`toy_case_016` 上 Phase 11 返回 `INTEGRALITY_REQUIRED (LB=95195, UB=95200)`，Phase 12 通过 exact schedule recourse cut 达到 `LB = UB = Full Explicit Integrated Oracle = 95200`。主 benchmark 保持 `18080`。Passenger 仍为固定显式 Itinerary exact MIP，v1 仍只支持 `scope=None`。
 
 ---
 

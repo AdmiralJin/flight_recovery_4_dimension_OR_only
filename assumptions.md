@@ -1834,6 +1834,66 @@ Implicit-universe fingerprint 覆盖 Scenario、Flight Options、Passenger Itine
 
 ---
 
+## A-092 Phase 12 Aircraft Branching Contract
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+Aircraft Branch-and-Price 优先对 `Aircraft × required Flight Option` 的 fractional assignment 做 0/1 branching；若 assignment aggregates 已整数而 `y` 仍 fractional，则对 deterministic fractional Aircraft String semantic key 做 forbid/force fallback。
+
+**原因：**
+分支约束必须可直接限制 Aircraft DAG pricing universe，同时 exact-string fallback 保证 fractional column solution 能有限推进。
+
+**影响：**
+每个 child 只保留满足 required/forbidden option 与 forced/forbidden String 的列，并重新完成 pricing；parent pool 只作为合法 warm start。
+
+---
+
+## A-093 Phase 12 Crew Typed Branching Contract
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+Crew Branch-and-Price 优先使用 crew-local typed follow-on branching，branch key 同时包含 `OPERATE/DEADHEAD` 与 Flight Option ID；若无 fractional follow-on，则依次使用 typed-leg membership 和 exact Pairing semantic key fallback。
+
+**原因：**
+OPERATE 与 DEADHEAD 对 coverage、成本和 reposition 语义不同，不能退化为 base Flight branching。
+
+**影响：**
+Crew pricer 在每个 node 的 restricted typed-path universe 内完整搜索，继续执行 qualification、station、MCT、duty、deadhead、terminal 与 duplicate checks。
+
+---
+
+## A-094 Phase 12 Node Pricing and Exact Recourse
+
+**来源状态：** `implementation_safety_assumption`
+
+**实现方式：**
+每个 branch node 的 LP lower bound 仅在 branch-restricted CG 返回 `OPTIMAL` 后有效。只有 Branch-and-Price 树完全关闭并返回 `OPTIMAL` 的 integer objective 才能生成 exact Schedule recourse cut；node/CG limit 返回 `NOT_CONVERGED`。
+
+**原因：**
+只过滤现有 RMP columns 或使用 generated-pool MIP objective 都不能证明完整隐式 integer universe 的最优性。
+
+**影响：**
+Branch restriction fingerprint 进入 node CG fingerprint；不同 node 不复用 bound、dual 或 pricing certificate。
+
+---
+
+## A-095 Phase 12 Passenger and Scope Boundary
+
+**来源状态：** `implementation_scope_assumption`
+
+**实现方式：**
+Phase 12 v1 继续要求 `scope=None`；Passenger Itineraries 固定显式，PRM 继续使用 exact binary MIP，不实现 Passenger Column Generation 或 Passenger Branch-and-Price。
+
+**原因：**
+本阶段只闭合 Aircraft/Crew 动态列的整数性，避免同时引入 dynamic Scope 与第三套 pricing/branching 复杂度。
+
+**影响：**
+Flight Options 同样保持固定；正式 Aircraft/Crew/Integrated Phase 12 solver 不允许调用 Phase 5/6 full enumerators。
+
+---
+
 # 后续必须继续登记的假设
 
 进入 Phase 2+ 后，至少还需要继续补充：

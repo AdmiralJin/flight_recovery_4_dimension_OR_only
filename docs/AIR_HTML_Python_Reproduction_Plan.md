@@ -30,7 +30,8 @@
 | Phase 9 | ✅ 完成 | Fixed-schedule Aircraft String Full LP、Phase I/II Column Generation、DAG Pricing、穷举终止审计 |
 | Phase 10 | ✅ 完成 | Fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD Pricing |
 | Phase 11 | ✅ 完成 | Schedule Benders + Aircraft/Crew CG、certified LP cuts、binary incumbent、Integrated audit |
-| Phase 12+ | ⏳ 未开始 | Integrality / Branch-and-Price、Recovered Result Visualization 等 |
+| Phase 12 | ✅ 完成 | Aircraft/Crew exact Branch-and-Price、typed branching、Schedule exact-recourse cuts |
+| Phase 13+ | ⏳ 未开始 | Recovered Result Visualization、稳定 Solve API 等 |
 
 因此当前准确表述是：
 
@@ -1469,13 +1470,36 @@ Cut Invalidation / Validity Policy 已通过 provenance、fingerprint、负例�
 
 # 18. Phase 12：Integrality / Branching
 
-最后再实现：
+Phase 12 已完成。正式入口为：
 
-- ARM Integrality；
-- CRM Follow-on Branching；
-- PRM Branching。
+```text
+backend/config/branch_and_price.py
+backend/core/aircraft_string_branch_and_price.py
+backend/core/crew_pairing_branch_and_price.py
+backend/core/benders_branch_and_price.py
+solve_benders_with_branch_and_price(...)
+```
 
-此前 LP / Decomposition 必须完成 Oracle 验证。
+实现内容：
+
+- Aircraft tail-option assignment branching 与 exact String fallback；
+- Crew typed follow-on、typed leg 与 exact Pairing fallback；
+- 每个 node 都在 branch-restricted universe 内重新完成 CG；
+- parent legal columns 仅作为 child warm start；
+- Schedule Benders 保留 Phase 11 LP cuts，并仅用已证明的 integer objective 生成 exact schedule cut；
+- Passenger 保持固定显式 Itinerary exact MIP，不进入 Passenger B&P；
+- 正式入口不调用 Phase 5/6 full enumerators，且 v1 仅支持 `scope=None`。
+
+验收结果：
+
+```text
+toy_case_015: Crew root LP = 195, exact integer = 200, B&P nodes = 9
+toy_case_016: Phase 11 = INTEGRALITY_REQUIRED (LB=95195, UB=95200)
+toy_case_016: Phase 12 = Full Explicit Integrated Oracle = 95200
+phase1_benchmark_001: Phase 12 = 18080
+```
+
+当前 Aircraft 模型在现有测试 universe 中未构造出自然整数缺口；其 branch-aware pricing、限制传播、精确 String fallback 和 root-integral 路径均已实现并测试。Crew toy 提供实际多层分支闭合证据。
 
 ---
 
@@ -1928,13 +1952,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8、Phase 9、Phase 10 与 Phase 11 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8、Phase 9、Phase 10、Phase 11 与 Phase 12 已完成。当前应开始：
 
 ```text
-Phase 12 Integrality / Branching
+Phase 13 Recovered Result Visualization / Solver Integration
 ```
 
-Phase 11 已在 toy 与完整 benchmark 上证明 Schedule Benders + Aircraft/Crew CG 与 Full Explicit Integrated Oracle 目标一致，并以 `INTEGRALITY_REQUIRED` 明确保护 LP/整数边界。下一阶段应实现 branching 下的 ARM/CRM pricing 与整数闭合，不得通过 invalid no-good 或 binary lower-bound cut 绕过该边界。
+Phase 12 已在不调用 Aircraft/Crew full enumerators 的正式路径中闭合 Phase 11 的 LP/整数边界，并保持主 benchmark `18080`。下一阶段应稳定 Solve API、Recovered Result schema 与 Original/Disrupted/Recovered/Difference 可视化，同时继续暴露 runtime、cuts、columns 与 bounds 诊断。
 
 ---
 
