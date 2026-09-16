@@ -1889,13 +1889,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7 与 Phase 8 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8 与 Phase 9 已完成。当前应开始：
 
 ```text
-Phase 9 Flight / Aircraft String Column Generation
+Phase 10 Crew Pairing Column Generation
 ```
 
-Phase 8 已完成固定列 Logic-Based Benders、cut validity、LB/UB、scope 与 Integrated audit 回归。下一阶段先独立实现 Flight / Aircraft String Pricing 和 Column Generation，并同时保留 Integrated Oracle 与 Fixed-Column Benders 作为 Ground Truth；在 Pricing/CG 独立通过前不组合 Benders + CG。
+Phase 9 已完成 fixed-schedule Aircraft String Full-Column LP、Phase I/II Column Generation、reduced-cost audit、scope 与 full-pool termination audit。下一阶段独立实现 Crew Pairing Pricing 和 Column Generation，并以 Phase 6 full enumeration / All-Pairings LP 为 Ground Truth；在 Crew CG 独立通过前不组合 Benders + CG。
 
 ---
 
