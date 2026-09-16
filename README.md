@@ -9,10 +9,10 @@ HTML / Vanilla JavaScript
         ↓ JSON / HTTP
 FastAPI + Pydantic
         ↓
-Fixed-column OR Models + Solver Adapter / Gurobi
+Integrated Oracle / Benders / Column Generation / Branch-and-Price + Gurobi
 ```
 
-当前重点仍然是：
+贯穿 Phase 0–13 的研发原则是：
 
 > **先建立可人工核验的数据、候选列和 Oracle，再实现复杂优化算法。**
 
@@ -31,7 +31,7 @@ Fixed-column OR Models + Solver Adapter / Gurobi
 | Phase 2.3 | ✅ 完成 | Fixed-column ARM、外生 schedule contract、Aircraft Strings、Ferry/Maintenance、独立诊断 |
 | Phase 2.4 | ✅ 完成 | Fixed-column CRM、canonical schedule handoff、Crew Pairings、Operating/Deadhead、独立诊断 |
 | Phase 2.5 | ✅ 完成 | Fixed-column PRM、外生 Seat Capacity、Passenger Itineraries、delay/unserved cost、独立诊断 |
-| 审计工作台 | ✅ 完成 | Costs override、统一 Constraint Registry、deterministic precheck 与四视图前端 |
+| 审计工作台 | ✅ 完成 | Costs override、统一 Constraint Registry、deterministic precheck 与 Costs/Constraints 视图 |
 | Phase 3 | ✅ 完成 | Full Integrated Fixed-column Oracle、x/y/z/w 联合 MIP、五类 linking、统一目标与独立审计 |
 | Phase 4 | ✅ 完成 | Direct disruption seed、fixed-point Scope closure、Scope 外原计划冻结、Full-vs-Scope Oracle |
 | Phase 5 | ✅ 完成 | Existing-option Flight Network、Turn Time、Aircraft String 全量生成、brute-force Oracle |
@@ -43,7 +43,7 @@ Fixed-column OR Models + Solver Adapter / Gurobi
 | Phase 11 | ✅ 完成 | Schedule Benders + Aircraft/Crew CG、certified LP cuts、binary incumbent、Integrated audit |
 | Phase 12 | ✅ 完成 | Aircraft/Crew exact Branch-and-Price、typed branching、Schedule exact-recourse cuts |
 | Phase 13 | ✅ 完成 | 稳定 Solve API、独立复算的 RecoveredResult、Recovery 对比视图与 JSON 导出 |
-| Phase 13+ | 📌 后续 | 真实航司数据映射、业务规则扩展、规模与性能工程 |
+| Business Migration | 📌 后续 | 真实航司数据映射、业务规则扩展、规模与性能工程；不属于新增核心算法 Phase |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
@@ -100,11 +100,12 @@ http://127.0.0.1:8000
 
 # Workbench 视图与边界
 
-页面提供四个一级视图：
+页面提供五个一级视图：
 
 ```text
 Data
 Visualization
+Recovery
 Costs
 Constraints
 ```
@@ -157,11 +158,12 @@ PRECHECK != MIP FEASIBILITY
 
 # Visualization
 
-同一工作台提供四个一级视图：
+同一工作台提供五个一级视图：
 
 ```text
 Data
 Visualization
+Recovery
 Costs
 Constraints
 ```
@@ -195,7 +197,7 @@ Cancellation
 Optimized Recovery
 ```
 
-Recovered Plan 需要等后续 Solver / Expected Result 接口正式接入。
+求解后的恢复方案已在独立的 Recovery 视图中提供；本节的 Visualization 仍只表示输入暴露与传播风险，不把风险标记当成优化动作。
 
 ---
 
@@ -399,7 +401,7 @@ Phase 2 fixed-column test cost contract 已覆盖 SRM 的 delay、cancellation�
 成本，以及 ARM 的 aircraft reassignment、ferry 成本；这些系数使用
 `abstract_cost_units`，用于可审计的模型测试，不代表真实航空公司的生产成本。
 CRM 的 crew reassignment、deadhead 成本与 PRM 的 passenger delay、unserved passenger
-成本也已分别进入独立固定列模型；完整 SRM/ARM/CRM/PRM 联合目标尚未进入正式模型。
+成本也已分别进入独立固定列模型；这一段记录 Phase 2 时的状态。Phase 3 起已实现完整 SRM/ARM/CRM/PRM 联合目标。
 
 例如 80 分钟 + 2 次换机是否一定优于 110 分钟纯延误，取决于后续正式定义的成本。
 
@@ -475,13 +477,17 @@ docs/
 GET  /api/health
 GET  /api/examples/toy_case_001
 POST /api/validate
+POST /api/solve/precheck
 POST /api/solve
+GET  /api/solve/example-bundle/{case_id}
 ```
 
 其中：
 
 - `/api/validate`：执行 Scenario 结构与跨实体一致性校验；
-- `/api/solve`：后端 Solver/Oracle 已存在，但前端 Solve API 与 Recovered Plan UI 尚未接入，因此该路由继续保持安全闸门，不返回伪优化结果。
+- `/api/solve/precheck`：检查完整 Solve Bundle 的输入就绪状态，不判断数学可行性；
+- `/api/solve`：调用 Phase 12 exact solver，返回版本化、独立审计的 `RecoveredResult`；
+- `/api/solve/example-bundle/{case_id}`：提供显式演示输入。健康检查标明 `solver_enabled=true`、`production_ready=false`、`scope_mode=full_only`、`flight_option_generation=false`。
 
 ---
 
@@ -579,12 +585,15 @@ Phase 8 v1 以 SRM `x` 为 Master，并使用现有 ARM/CRM/PRM binary MIP 作�
 
 ---
 
-# 下一步
+# 后续：Business Migration
 
-当前下一工程任务是：
+核心复现路线图已冻结。下一条独立工程路线是：
 
 ```text
-真实航司数据映射、业务规则与规模化性能验证
+M1 — 真实航司数据映射
+Flight Option generation / screening
+成本标定与航司特定运行规则
+大规模 runtime / stability 与业务运行验证
 ```
 
 研究工作台 v1 的核心复现链路已经闭合。下一步不再扩展本轮数学模型，而是先验证真实数据的字段映射、Flight Option 来源、运行时限、业务规则与结果解释；当前 API 和 UI 明确标记 `production_ready=false`。

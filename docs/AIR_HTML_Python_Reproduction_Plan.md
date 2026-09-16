@@ -32,13 +32,13 @@
 | Phase 11 | ✅ 完成 | Schedule Benders + Aircraft/Crew CG、certified LP cuts、binary incumbent、Integrated audit |
 | Phase 12 | ✅ 完成 | Aircraft/Crew exact Branch-and-Price、typed branching、Schedule exact-recourse cuts |
 | Phase 13 | ✅ 完成 | SolveRequest / RecoveredResult、Solve API、独立审计、Recovery UI |
-| Phase 13+ | 📌 后续 | 真实数据、业务规则与规模性能工程 |
+| Business Migration | 📌 后续 | 真实数据、业务规则与规模性能工程；不增加核心算法 Phase |
 
 因此当前准确表述是：
 
 > **Phase 1 已完成数据、候选列和人工 Oracle 的程序化语义闭环；这不等于已证明 AIR 恢复目标的数学全局最优性。**
 
-当前 HTML 工作台已扩展为 Data / Visualization / Costs / Constraints 四个一级视图。Costs 和 Constraints 是人工审计与实验配置工具；约束公式由后端 registry 单一提供，precheck 不运行 solver，且不构成 MIP feasibility 或 Integrated Oracle 结论。PRM 容量展示为只读 test/residual capacity，不等同于 aircraft physical capacity。
+当前 HTML 工作台有 Data / Visualization / Recovery / Costs / Constraints 五个一级视图。Costs 和 Constraints 是人工审计与实验配置工具；约束公式由后端 registry 单一提供，precheck 不运行 solver，且不构成 MIP feasibility 或 Integrated Oracle 结论。Recovery 显示真实求解结果，Visualization 的风险标记不等于恢复决策。PRM 容量展示为只读 test/residual capacity，不等同于 aircraft physical capacity。
 
 ---
 
@@ -1506,9 +1506,9 @@ phase1_benchmark_001: Phase 12 = 18080
 
 # 19. Phase 13：Recovered Result Visualization
 
-Phase 0.5 已经有 Original/Disruption Visualization。
+Phase 0.5 已有 Original/Disruption Visualization；Phase 13 已接入独立 Recovery 视图。
 
-Solver 接入后扩展为：
+现有对比模式：
 
 ```text
 Original
@@ -1517,7 +1517,7 @@ Recovered
 Difference
 ```
 
-至少显示：
+当前显示：
 
 ## Summary
 
@@ -1951,12 +1951,17 @@ Small-scale Oracle
 
 ---
 
-# 29. 当前立即执行的下一任务
+# 29. 核心路线图完成；后续进入 Business Migration
 
-Phase 2.0 至 Phase 13 的研究工作台 v1 已完成。后续重点：
+Phase 0–13 的 AIR Core Reproduction / Research Workbench v1 已完成，核心算法路线图冻结。后续工作独立归入 Business Migration：
 
 ```text
-真实航司数据映射、业务规则与规模性能验证
+真实航司数据映射
+Flight Option generation / screening
+成本标定
+航司特定运行规则
+大规模 runtime / stability
+业务运行验证
 ```
 
 Phase 13 已通过完整 Solve Bundle 接入 Phase 12，独立复算 `RecoveredResult` 并在 UI 显示 Original/Disrupted/Recovered/Difference。主 benchmark API 结果为 `18080`，`toy_case_016` 为 `95200`；健康检查仍明确 `production_ready=false`。Flight Options 外部提供，Passenger Itineraries 显式提供，v1 仅支持 `scope=None`。
