@@ -63,7 +63,9 @@ def pairing_semantic_key(
     )
 
 
-def _pairing_id(crew_id: str, legs: Sequence[CrewLegKey]) -> str:
+def crew_pairing_id(crew_id: str, legs: Sequence[CrewLegKey]) -> str:
+    """Return the stable Phase 6/10 identifier for a typed crew path."""
+
     payload = "\x00".join(
         (crew_id, *(f"{leg.segment_type.value}:{leg.flight_option_id}" for leg in legs))
     ).encode("utf-8")
@@ -74,8 +76,12 @@ def _pairing_id(crew_id: str, legs: Sequence[CrewLegKey]) -> str:
     return f"GEN_CP_{safe_crew}_{digest}"
 
 
-def _make_pairing(crew: Crew, legs: Sequence[CrewLegKey]) -> CrewPairing:
-    pairing_id = _pairing_id(crew.crew_id, legs)
+def make_generated_crew_pairing(
+    crew: Crew, legs: Sequence[CrewLegKey]
+) -> CrewPairing:
+    """Build a pairing while preserving the Phase 6 identity contract."""
+
+    pairing_id = crew_pairing_id(crew.crew_id, legs)
     segments = [
         CrewSegment(
             segment_type=leg.segment_type,
@@ -100,6 +106,10 @@ def _make_pairing(crew: Crew, legs: Sequence[CrewLegKey]) -> CrewPairing:
             "generation profile."
         ),
     )
+
+
+_pairing_id = crew_pairing_id
+_make_pairing = make_generated_crew_pairing
 
 
 def validate_generated_crew_pairing(

@@ -12,6 +12,12 @@ from .aircraft_string_column_generation import (
     AircraftStringColumnGenerationSource,
     load_aircraft_string_column_generation_config,
 )
+from .crew_pairing_column_generation import (
+    CrewPairingColumnGenerationConfig,
+    CrewPairingColumnGenerationConfigError,
+    CrewPairingColumnGenerationSource,
+    load_crew_pairing_column_generation_config,
+)
 
 from .costs import (
     AircraftStringCostBreakdown,
@@ -72,6 +78,9 @@ __all__ = [
     "CostUnit",
     "CrewPairingGenerationConfig",
     "CrewPairingGenerationConfigError",
+    "CrewPairingColumnGenerationConfig",
+    "CrewPairingColumnGenerationConfigError",
+    "CrewPairingColumnGenerationSource",
     "FixedColumnCostConfig",
     "FixedColumnBendersConfig",
     "FixedColumnBendersConfigError",
@@ -93,6 +102,7 @@ __all__ = [
     "load_aircraft_string_column_generation_config",
     "load_fixed_column_benders_config",
     "load_crew_pairing_generation_config",
+    "load_crew_pairing_column_generation_config",
     "load_flight_string_generation_config",
     "load_passenger_itinerary_generation_config",
     "load_passenger_capacity_profile",

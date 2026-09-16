@@ -28,7 +28,8 @@
 | Phase 7 | ✅ 完成 | Passenger-local Network、MCT、TRANSPORTED/UNSERVED Itinerary 显式生成、brute-force Oracle |
 | Phase 8 | ✅ 完成 | Logic-based Fixed-column Benders、exact-schedule cuts、LB/UB 与 Integrated audit |
 | Phase 9 | ✅ 完成 | Fixed-schedule Aircraft String Full LP、Phase I/II Column Generation、DAG Pricing、穷举终止审计 |
-| Phase 10+ | ⏳ 未开始 | Crew Pairing Column Generation、Benders + CG 等 |
+| Phase 10 | ✅ 完成 | Fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD Pricing |
+| Phase 11+ | ⏳ 未开始 | Benders + Column Generation、integrality recovery 等 |
 
 因此当前准确表述是：
 
@@ -1396,6 +1397,8 @@ reduced_cost >= -epsilon
 
 # 16. Phase 10：Crew Pairing Column Generation
 
+状态：✅ 已完成（2026-09-16）。实现边界为 fixed-schedule Crew Pairing LP pricing + column generation；继续复用 Phase 6 v1 single-duty legality，不代表完整真实 crew scheduling。
+
 实现 Crew Pairing Reduced Cost。
 
 Toy/Benchmark：
@@ -1407,6 +1410,14 @@ crew column-generation LP
 ```
 
 必须一致。
+
+当前 toy、scope 与 benchmark 已验证：
+
+```text
+OBJ_CREW_CG_LP == OBJ_ALL_PAIRINGS_LP
+```
+
+正式 Crew CG 不接收 full pairing pool；Phase 6 全量枚举只用于 All-Pairings LP、pricing oracle 与 termination audit。
 
 ---
 
@@ -1889,13 +1900,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8 与 Phase 9 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7、Phase 8、Phase 9 与 Phase 10 已完成。当前应开始：
 
 ```text
-Phase 10 Crew Pairing Column Generation
+Phase 11 Benders + Column Generation
 ```
 
-Phase 9 已完成 fixed-schedule Aircraft String Full-Column LP、Phase I/II Column Generation、reduced-cost audit、scope 与 full-pool termination audit。下一阶段独立实现 Crew Pairing Pricing 和 Column Generation，并以 Phase 6 full enumeration / All-Pairings LP 为 Ground Truth；在 Crew CG 独立通过前不组合 Benders + CG。
+Phase 10 已完成 fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD reduced-cost audit、scope 与 full-pool termination audit。下一阶段进入 Benders + CG 前，必须先定义动态列与现有 cuts 的 validity、invalidation/refresh、recourse lower-bound refresh 和 candidate-universe fingerprint 规则。
 
 ---
 

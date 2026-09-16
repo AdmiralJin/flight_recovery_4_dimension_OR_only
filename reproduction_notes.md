@@ -733,6 +733,14 @@ Aircraft-local DAG pricing without full-pool dependency
 toy_case_011 Phase II negative-reduced-cost improvement
 phase1_benchmark_001 77-full-column versus 15-CG-column equality
 Full-pool omitted-column termination audit
+Fixed-schedule All-Pairings Crew LP Oracle
+Fresh-rebuild restricted Crew Pairing LP master
+Crew Phase I artificial-variable feasibility restoration
+Typed OPERATE/DEADHEAD Crew DAG pricing without full-pool dependency
+Crew manual `c - pi*a` versus solver reduced-cost audit
+toy_case_012 deadhead/reassignment Phase II improvement
+phase1_benchmark_001 374-full-pairing versus 34-CG-pairing equality
+Crew full-pool omitted-pairing termination audit
 ```
 
 Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
@@ -744,10 +752,10 @@ Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独
 下一步进入：
 
 ```text
-Phase 10 Crew Pairing Column Generation
+Phase 11 Benders + Column Generation
 ```
 
-Phase 9 已在固定 Schedule 下建立 Full-column Aircraft String LP、Phase I/II RMP、DAG pricing 和 full-pool termination audit，并在 toy 与完整 benchmark 上证明 `OBJ_CG_LP == OBJ_FULL_COLUMN_AIRCRAFT_LP`。下一步单独实现 Crew Pairing Pricing 与 Column Generation；尚不组合 Benders + CG，也不做 branching/integrality recovery。
+Phase 10 已在固定 Schedule 下建立 All-Pairings Crew LP、Phase I/II RMP、typed-DAG pricing 和 full-pool termination audit，并在 toy、scope 与完整 benchmark 上证明 `OBJ_CREW_CG_LP == OBJ_ALL_PAIRINGS_LP`。下一步进入 Benders + CG 前必须先解决动态列与现有 cut 的有效性/刷新策略；尚不做 branching/integrality recovery。
 
 ---
 

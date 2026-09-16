@@ -39,7 +39,8 @@ Fixed-column OR Models + Solver Adapter / Gurobi
 | Phase 7 | ✅ 完成 | Passenger-local Network、MCT、TRANSPORTED/UNSERVED Itinerary 显式生成、brute-force Oracle |
 | Phase 8 | ✅ 完成 | Logic-based Fixed-column Benders、exact-schedule cuts、LB/UB 与 Integrated audit |
 | Phase 9 | ✅ 完成 | Fixed-schedule Aircraft String Full LP、Phase I/II Column Generation、DAG Pricing、穷举终止审计 |
-| Phase 10+ | ⏳ 未开始 | Crew Pairing Column Generation、Benders + CG 等 |
+| Phase 10 | ✅ 完成 | Fixed-schedule Crew Pairing All-Pairings LP、Phase I/II Column Generation、OPERATE/DEADHEAD Pricing |
+| Phase 11+ | ⏳ 未开始 | Benders + Column Generation、integrality recovery 等 |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
 
@@ -56,6 +57,8 @@ Phase 7 使用 existing revenue Flight Options 建立 passenger-local DAG，并�
 Phase 8 在固定候选宇宙上复用 SRM/ARM/CRM/PRM，实现 correctness-first Logic-Based Benders。binary recourse 采用 exact schedule no-good feasibility cuts 与 owner-specific conditional exact-recourse cuts，不冒充 classical LP-dual Benders。`toy_case_010` 在 4 轮收敛到 `220`；主 benchmark 在 8 轮、17 个 unique cuts 后达到 `LB = UB = Integrated Oracle = 18080`，最终 Integrated diagnostics 全通过。
 
 Phase 9 在固定 Schedule 下实现独立 Aircraft String LP Column Generation。Full-column LP 保留现有 ARM selection、coverage、terminal 与 maintenance 行语义；RMP 每轮重建，Phase I 使用显式人工变量恢复可行性，Phase II 使用 aircraft reassignment/ferry owner cost。正式 DAG pricer 只读取 Flight Options、dual 与当前列，不调用 Phase 5 全量枚举；Phase 5 full pool 仅用于独立 Oracle/audit。`toy_case_011` 从目标 `300` 的 ferry 列改进到 `0`，主 benchmark 使用 77 条 full strings 对拍，CG 仅保留 15 条列且满足 `OBJ_CG_LP = OBJ_FULL_COLUMN_LP = 0`。
+
+Phase 10 在固定 Schedule 下实现独立 Crew Pairing LP Column Generation。All-Pairings LP 保留 CRM 的 pairing selection、required OPERATE coverage、nonrequired OPERATE/DEADHEAD prohibition 与 terminal rows；typed-DAG pricer 区分 OPERATE/DEADHEAD，并执行 qualification、MCT、duty、deadhead 与 duplicate resource checks。`toy_case_012` 从目标 `300` 的长航段 deadhead 池改进到 `150`；主 benchmark 的 374 条 full pairings 与 34 条 CG pairings 均得到目标 `0`，340 条遗漏列最小 reduced cost 为 `0`。
 
 ---
 
@@ -570,10 +573,10 @@ Phase 8 v1 以 SRM `x` 为 Master，并使用现有 ARM/CRM/PRM binary MIP 作�
 当前下一工程任务是：
 
 ```text
-Phase 10 Crew Pairing Column Generation
+Phase 11 Benders + Column Generation
 ```
 
-Phase 9 已在固定 Schedule 下证明 `OBJ_AIRCRAFT_CG_LP == OBJ_FULL_COLUMN_AIRCRAFT_LP`，并通过 full-pool omitted reduced-cost audit。下一步独立实现 Crew Pairing Pricing 与 Column Generation；暂不组合 Benders + Column Generation，也不做 branching/integrality recovery。
+Phase 10 已在固定 Schedule 下证明 `OBJ_CREW_CG_LP == OBJ_ALL_PAIRINGS_LP`，并通过 full-pool omitted reduced-cost audit。下一步进入 Phase 11 前，必须先明确动态列与现有 Benders cuts 的 validity、invalidation/refresh、recourse lower-bound refresh 和 candidate-universe fingerprint 规则；不能直接把 Phase 9/10 CG 塞入 Phase 8 Benders。
 
 完整开发路线见：
 
