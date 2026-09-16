@@ -26,7 +26,8 @@
 | Phase 5 | ✅ 完成 | Existing-option Flight Network、Turn Time、Aircraft String 全量生成、brute-force Oracle |
 | Phase 6 | ✅ 完成 | Crew-local Network、OPERATE/DEADHEAD、Crew Pairing 显式生成、brute-force Oracle |
 | Phase 7 | ✅ 完成 | Passenger-local Network、MCT、TRANSPORTED/UNSERVED Itinerary 显式生成、brute-force Oracle |
-| Phase 8+ | ⏳ 未开始 | Fixed-column Benders、Column Generation 等 |
+| Phase 8 | ✅ 完成 | Logic-based Fixed-column Benders、exact-schedule cuts、LB/UB 与 Integrated audit |
+| Phase 9+ | ⏳ 未开始 | Flight/Aircraft String Column Generation、Benders + CG 等 |
 
 因此当前准确表述是：
 
@@ -1293,6 +1294,21 @@ Phase 7 v1 已完成：
 
 # 14. Phase 8：Fixed-Column Benders
 
+Phase 8 已完成 correctness-first fixed-column decomposition。由于现有 ARM/CRM/PRM 都是 binary MIP，本阶段明确采用 Logic-Based baseline，而不是 classical LP-dual cuts：
+
+```text
+SRM x + thetaA/thetaC/thetaP Master
+        ↓
+existing ARM / CRM / PRM exact MIP recourse
+        ↓
+exact schedule no-good feasibility cut
++ conditional exact-recourse owner Big-M cuts
+```
+
+实现保持 candidate universe immutable，支持 Full 与 canonical RecoveryScope；scope 外 Flight 在 Master 固定 original option，scope 外资源/旅客在 recourse 使用 semantic original-only view。最终 incumbent 继续由 Integrated diagnostics 独立检查。
+
+验收结果：`toy_case_010` 的 Benders/Integrated objective 均为 `220`；`toy_case_004/005/006_scope` 等价；Phase 7 benchmark candidate universe 在 8 轮、17 个 unique cuts 后达到 `LB = UB = 18080`，与 Integrated Oracle 完全一致。
+
 固定：
 
 ```text
@@ -1862,13 +1878,13 @@ Small-scale Oracle
 
 # 29. 当前立即执行的下一任务
 
-Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6 与 Phase 7 已完成。当前应开始：
+Phase 2.0 至 Phase 2.5、Phase 3、Phase 4、Phase 5、Phase 6、Phase 7 与 Phase 8 已完成。当前应开始：
 
 ```text
-Phase 8 Fixed-Column Benders
+Phase 9 Flight / Aircraft String Column Generation
 ```
 
-Phase 5/6/7 已完成 Aircraft String、Crew Pairing 与 Passenger Itinerary 显式生成、独立 legality validation、brute-force Oracle 对齐和 Integrated Oracle 回归。下一阶段应实现 Fixed-Column Benders；在其与 Integrated Oracle 对齐前不进入 Column Generation。
+Phase 8 已完成固定列 Logic-Based Benders、cut validity、LB/UB、scope 与 Integrated audit 回归。下一阶段先独立实现 Flight / Aircraft String Pricing 和 Column Generation，并同时保留 Integrated Oracle 与 Fixed-Column Benders 作为 Ground Truth；在 Pricing/CG 独立通过前不组合 Benders + CG。
 
 ---
 

@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "toy_case_010_fixed_column_benders_capacity",
+  "scenario_id": "toy_case_010_fixed_column_benders",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "FO_T10_F1_ORIG": 10,
+    "FO_T10_F1_D10": 10,
+    "FO_T10_F1_D20": 10
+  },
+  "notes": ["TEST / RESIDUAL CAPACITY; not aircraft physical capacity."]
+}
