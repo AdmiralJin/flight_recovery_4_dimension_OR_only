@@ -18,6 +18,7 @@ from backend.schemas.crew import Crew
 from backend.schemas.scenario import Scenario
 
 from .crew_network import CrewLegKey, build_crew_flight_network
+from .branch_restrictions import CrewBranchRestrictions, crew_path_semantic_key
 from .crew_pairing_master import CrewPairingMasterDuals, CrewPairingMasterPhase
 from .crm import CrewRecoveryRequest
 from .pairing_generator import (
@@ -133,6 +134,7 @@ def price_crew_pairings(
     *,
     pricing_epsilon: float,
     max_columns: int = 1,
+    branch_restrictions: CrewBranchRestrictions | None = None,
 ) -> CrewPairingPricingResult:
     """Search the fixed-schedule typed Crew DAG without a full pairing pool."""
 
@@ -158,6 +160,9 @@ def price_crew_pairings(
 
     def emit(path: tuple[CrewLegKey, ...]) -> None:
         nonlocal paths_evaluated, omitted_paths_evaluated, duplicates
+        key = crew_path_semantic_key(crew.crew_id, path)
+        if branch_restrictions is not None and not branch_restrictions.allows_key(key):
+            return
         candidate = make_generated_crew_pairing(crew, path)
         audit = validate_generated_crew_pairing(
             scenario, flight_options, crew, candidate, pairing_config

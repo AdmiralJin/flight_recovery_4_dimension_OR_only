@@ -30,10 +30,15 @@ from .aircraft_string_pricing import (
     price_aircraft_strings,
 )
 from .arm import AircraftRecoveryRequest
+from .branch_restrictions import (
+    AircraftBranchRestrictions,
+    branch_restriction_fingerprint,
+)
 from .scope import RecoveryScope, resolve_original_flight_option_ids
 from .string_generator import (
     aircraft_string_semantic_key,
     make_generated_aircraft_string,
+    validate_generated_aircraft_string,
 )
 
 
@@ -105,6 +110,7 @@ def aircraft_string_cg_input_fingerprint(
     string_config: FlightStringGenerationConfig,
     cg_config: AircraftStringColumnGenerationConfig,
     scope: RecoveryScope | None,
+    branch_restrictions: AircraftBranchRestrictions | None = None,
 ) -> str:
     payload = {
         "scenario": scenario.model_dump(mode="json"),
@@ -117,6 +123,9 @@ def aircraft_string_cg_input_fingerprint(
         "string_config": string_config.model_dump(mode="json"),
         "cg_config": cg_config.model_dump(mode="json"),
         "scope_aircraft_ids": None if scope is None else scope.aircraft_ids,
+        "branch_restriction_fingerprint": branch_restriction_fingerprint(
+            branch_restrictions
+        ),
     }
     encoded = json.dumps(
         payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False
@@ -180,6 +189,8 @@ def solve_aircraft_string_column_generation(
     solver_factory: Callable[[], SolverAdapter],
     *,
     scope: RecoveryScope | None = None,
+    branch_restrictions: AircraftBranchRestrictions | None = None,
+    initial_columns: Sequence[AircraftString] = (),
 ) -> AircraftStringColumnGenerationResult:
     """Solve the fixed-schedule aircraft LP without accepting a full string pool."""
 
@@ -188,6 +199,10 @@ def solve_aircraft_string_column_generation(
         scenario, flight_options, (), request, string_config
     )
     aircraft_ids = {item.tail_id for item in scenario.aircraft}
+    if branch_restrictions is not None and scope is not None:
+        raise AircraftStringColumnGenerationError(
+            "branch-restricted Aircraft CG requires scope=None"
+        )
     if scope is not None:
         unknown = set(scope.aircraft_ids) - aircraft_ids
         if unknown:
@@ -198,7 +213,58 @@ def solve_aircraft_string_column_generation(
     priced_aircraft = tuple(
         item for item in scenario.aircraft if item.tail_id in priced_ids
     )
+    option_ids = {item.option_id for item in flight_options}
+    if branch_restrictions is not None:
+        branch_owners = (
+            set(branch_restrictions.required_options_by_aircraft)
+            | set(branch_restrictions.forbidden_options_by_aircraft)
+            | set(branch_restrictions.forced_string_key_by_aircraft)
+            | {key[0] for key in branch_restrictions.forbidden_string_keys}
+        )
+        unknown_owners = branch_owners - aircraft_ids
+        if unknown_owners:
+            raise AircraftStringColumnGenerationError(
+                f"branch restrictions contain unknown aircraft: {sorted(unknown_owners)}"
+            )
+        branch_options = set().union(
+            *branch_restrictions.required_options_by_aircraft.values(),
+            *branch_restrictions.forbidden_options_by_aircraft.values(),
+            *(set(key[1]) for key in branch_restrictions.forbidden_string_keys),
+            *(
+                set(key[1])
+                for key in branch_restrictions.forced_string_key_by_aircraft.values()
+            ),
+        )
+        unknown_options = branch_options - option_ids
+        if unknown_options:
+            raise AircraftStringColumnGenerationError(
+                f"branch restrictions contain unknown options: {sorted(unknown_options)}"
+            )
     pool = list(_initial_pool(scenario, flight_options, scope))
+    if branch_restrictions is not None:
+        pool = [item for item in pool if branch_restrictions.allows(item)]
+    aircraft_by_id = {item.tail_id: item for item in scenario.aircraft}
+    for item in initial_columns:
+        aircraft = aircraft_by_id.get(item.aircraft_id)
+        if aircraft is None:
+            raise AircraftStringColumnGenerationError(
+                f"initial column has unknown aircraft {item.aircraft_id!r}"
+            )
+        audit = validate_generated_aircraft_string(
+            scenario, flight_options, aircraft, item, string_config
+        )
+        if not audit.valid:
+            raise AircraftStringColumnGenerationError(
+                f"illegal initial Aircraft String {item.string_id!r}: {audit.violations}"
+            )
+        if branch_restrictions is None or branch_restrictions.allows(item):
+            pool.append(item)
+    deduplicated: dict[tuple[str, tuple[str, ...]], AircraftString] = {}
+    for item in pool:
+        deduplicated[
+            aircraft_string_semantic_key(item.aircraft_id, item.leg_option_ids)
+        ] = item
+    pool = list(deduplicated.values())
     existing_keys = {
         aircraft_string_semantic_key(item.aircraft_id, item.leg_option_ids)
         for item in pool
@@ -211,6 +277,7 @@ def solve_aircraft_string_column_generation(
         string_config,
         cg_config,
         scope,
+        branch_restrictions,
     )
     records: list[AircraftStringColumnGenerationIteration] = []
     phase_counts = {
@@ -233,6 +300,7 @@ def solve_aircraft_string_column_generation(
             string_config,
             cg_config,
             scope,
+            branch_restrictions,
         )
         if current_fingerprint != fingerprint:
             status = AircraftStringColumnGenerationStatus.ABORTED
@@ -284,7 +352,9 @@ def solve_aircraft_string_column_generation(
                 if master.outcome.status is SolverStatus.INFEASIBLE
                 else AircraftStringColumnGenerationStatus.ABORTED
             )
-            return finish(status, f"restricted_master_{master.outcome.status.value}", master)
+            return finish(
+                status, f"restricted_master_{master.outcome.status.value}", master
+            )
         audit_error = master.maximum_reduced_cost_error or 0.0
         maximum_audit_error = max(maximum_audit_error, audit_error)
         if audit_error > cg_config.reduced_cost_audit_tolerance:
@@ -333,6 +403,7 @@ def solve_aircraft_string_column_generation(
                 existing_keys,
                 pricing_epsilon=cg_config.pricing_epsilon,
                 max_columns=cg_config.max_columns_per_aircraft_per_iteration,
+                branch_restrictions=branch_restrictions,
             )
             for aircraft in priced_aircraft
         )
@@ -341,9 +412,7 @@ def solve_aircraft_string_column_generation(
             for result in pricing_results
             if result.minimum_reduced_cost is not None
         ]
-        priced_columns = [
-            item for result in pricing_results for item in result.columns
-        ]
+        priced_columns = [item for result in pricing_results for item in result.columns]
         added = 0
         for item in sorted(
             priced_columns,

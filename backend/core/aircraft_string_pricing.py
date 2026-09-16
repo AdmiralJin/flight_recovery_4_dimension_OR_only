@@ -15,6 +15,7 @@ from .aircraft_string_master import (
     AircraftStringMasterPhase,
 )
 from .arm import AircraftRecoveryRequest
+from .branch_restrictions import AircraftBranchRestrictions
 from .flight_network import build_aircraft_flight_network
 from .string_generator import (
     aircraft_string_semantic_key,
@@ -90,10 +91,10 @@ def evaluate_aircraft_string_reduced_cost(
     if candidate.aircraft_id in duals.maintenance_by_aircraft:
         coefficient = 1.0 if candidate.maintenance_satisfied else 0.0
         row_coefficients[f"maintenance:{candidate.aircraft_id}"] = coefficient
-        contribution += duals.maintenance_by_aircraft[candidate.aircraft_id] * coefficient
-    true_cost = aircraft_string_cost(
-        scenario, flight_options, candidate, costs
-    ).total
+        contribution += (
+            duals.maintenance_by_aircraft[candidate.aircraft_id] * coefficient
+        )
+    true_cost = aircraft_string_cost(scenario, flight_options, candidate, costs).total
     primal_cost = 0.0 if duals.phase is AircraftStringMasterPhase.PHASE_I else true_cost
     return AircraftStringPricedColumn(
         aircraft_string=candidate,
@@ -116,6 +117,7 @@ def price_aircraft_strings(
     *,
     pricing_epsilon: float,
     max_columns: int = 1,
+    branch_restrictions: AircraftBranchRestrictions | None = None,
 ) -> AircraftStringPricingResult:
     """Solve one aircraft's deterministic DAG pricing problem.
 
@@ -131,17 +133,24 @@ def price_aircraft_strings(
     allowed = tuple(
         item
         for item in flight_options
-        if item.operation_type is FlightOperationType.FERRY
-        or (
-            item.operation_type is FlightOperationType.OPERATE
-            and item.option_id in required
+        if (
+            item.operation_type is FlightOperationType.FERRY
+            or (
+                item.operation_type is FlightOperationType.OPERATE
+                and item.option_id in required
+            )
+        )
+        and (
+            branch_restrictions is None
+            or item.option_id
+            not in branch_restrictions.forbidden_options_by_aircraft.get(
+                aircraft.tail_id, frozenset()
+            )
         )
     )
     option_by_id = {item.option_id: item for item in allowed}
     all_options = {item.option_id: item for item in flight_options}
-    network = build_aircraft_flight_network(
-        scenario, allowed, aircraft, string_config
-    )
+    network = build_aircraft_flight_network(scenario, allowed, aircraft, string_config)
     evaluated: list[AircraftStringPricedColumn] = []
     paths_evaluated = 0
     omitted_paths_evaluated = 0
@@ -149,6 +158,9 @@ def price_aircraft_strings(
 
     def emit(path: tuple[str, ...]) -> None:
         nonlocal paths_evaluated, omitted_paths_evaluated, duplicates
+        key = aircraft_string_semantic_key(aircraft.tail_id, path)
+        if branch_restrictions is not None and not branch_restrictions.allows_key(key):
+            return
         candidate = make_generated_aircraft_string(aircraft, path)
         audit = validate_generated_aircraft_string(
             scenario, flight_options, aircraft, candidate, string_config
@@ -158,7 +170,6 @@ def price_aircraft_strings(
                 f"pricing emitted illegal path {path!r}: {audit.violations}"
             )
         paths_evaluated += 1
-        key = aircraft_string_semantic_key(aircraft.tail_id, path)
         if key in existing_keys:
             duplicates += 1
             return
@@ -216,9 +227,9 @@ def price_aircraft_strings(
             ),
         )
     )
-    negative = tuple(
-        item for item in ordered if item.reduced_cost < -pricing_epsilon
-    )[:max_columns]
+    negative = tuple(item for item in ordered if item.reduced_cost < -pricing_epsilon)[
+        :max_columns
+    ]
     return AircraftStringPricingResult(
         aircraft_id=aircraft.tail_id,
         columns=negative,
