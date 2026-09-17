@@ -12,6 +12,21 @@
 .workbench-status span { overflow-wrap: anywhere; }
 .case-selector { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 800; }
 .case-selector select { width: min(310px, 45vw); min-width: 220px; padding: 9px 10px; }
+.button:disabled { cursor: not-allowed; opacity: .46; transform: none !important; filter: grayscale(.15); }
+.workflow-guide { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 14px; padding: 12px 14px; border: 1px solid #c9d7d1; border-radius: 10px; background: #eef6f2; }
+.workflow-guide > div { display: flex; flex-wrap: wrap; gap: 6px 10px; line-height: 1.45; }
+.workflow-guide strong { color: var(--forest); }
+.workflow-guide span { color: #4e5d57; font-size: 13px; }
+.solve-guidance { margin: -7px 0 16px; padding: 10px 12px; border-left: 3px solid #97a49f; color: var(--muted); background: rgba(255,255,255,.65); font-size: 13px; line-height: 1.45; }
+.solve-guidance.is-ready { border-color: #4f9d7b; color: #1f5a43; background: #edf8f2; }
+.solve-guidance.is-warning { border-color: #d99a2b; color: #70480d; background: #fff8e9; }
+.workflow-dialog { width: min(720px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--line); border-radius: 14px; color: var(--ink); background: var(--surface); box-shadow: 0 24px 70px rgba(23,44,37,.24); }
+.workflow-dialog::backdrop { background: rgba(11,25,21,.46); }
+.workflow-dialog form { margin: 0; }
+.workflow-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 22px 24px; border-bottom: 1px solid var(--line); }
+.workflow-steps { margin: 0; padding: 22px 26px 6px 46px; }
+.workflow-steps li { margin: 0 0 14px; line-height: 1.55; }
+.workflow-note { margin: 10px 24px 24px; padding: 13px 15px; border-left: 3px solid var(--amber); color: #684c1f; background: #fff8e9; line-height: 1.5; }
 #global-toast-region { position: fixed; z-index: 20; right: 22px; bottom: 22px; display: grid; width: min(420px, calc(100vw - 44px)); gap: 10px; pointer-events: none; }
 .global-toast { padding: 13px 15px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--surface); box-shadow: var(--shadow); font-size: 14px; line-height: 1.4; }
 .global-toast.success { border-color: #91c9b0; background: #edf9f2; }
@@ -83,6 +98,7 @@
 @media (max-width: 720px) {
   .status-card--wide { grid-template-columns: 1fr; }
   .workbench-status + .workbench-status { border-top: 1px solid rgba(255,255,255,.14); border-left: 0; }
+  .workflow-guide, .workflow-dialog-head { align-items: flex-start; flex-direction: column; }
   .audit-panel-head, .capacity-profile-head { align-items: flex-start; flex-direction: column; }
   .audit-content, .constraint-groups { padding-right: 14px; padding-left: 14px; }
   .capacity-profile-summary { margin-right: 14px; margin-left: 14px; }
