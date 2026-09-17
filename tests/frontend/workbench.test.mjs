@@ -39,6 +39,24 @@ test("recovery controls wire solve, comparison and export without claiming produ
   assert.match(appSource, /checkSolveReadiness\(bundle\)/);
 });
 
+test("workbench exposes the case selector, explicit readiness, and global error surface", () => {
+  for (const id of ["example-selector", "solve-readiness-summary", "solver-summary", "result-summary", "global-toast-region"]) {
+    assert.match(html, new RegExp(`id=["']${id}["']`));
+  }
+  assert.match(appSource, /function applySolveBundle\(/);
+  assert.match(appSource, /function resetToBaseline\(/);
+  assert.match(appSource, /Solve result discarded because the workbench input changed/);
+  assert.match(appSource, /setSolvingState\(true\)/);
+});
+
+test("case state keeps the active bundle synchronized and preserves its baseline overrides", () => {
+  assert.match(appSource, /recoveryColumns = clone\(bundle\.recovery_columns\)/);
+  assert.match(appSource, /passengerCapacityProfile = clone\(bundle\.capacity_profile\)/);
+  assert.match(appSource, /costOverrides = clone\(bundle\.cost_overrides \|\| \{\}\)/);
+  assert.match(appSource, /baseline\?\.costOverrides \|\| \{\}/);
+  assert.match(appSource, /workbench_snapshot_v1/);
+});
+
 test("cost overrides change only the effective copy and reset to baseline", () => {
   const before = structuredClone(baseline);
   const effective = costsBundle.module.buildEffectiveCostProfile(
@@ -108,12 +126,13 @@ test("constraint renderer distinguishes provenance and navigates to canonical Da
   assert.match(appSource, /const workbenchState = \{[\s\S]*scenario:[\s\S]*costBaseline:[\s\S]*constraintMetadata:/);
 });
 
-test("frontend precheck sends benchmark Scenario, Recovery Columns, and capacity", () => {
+test("frontend precheck sends the current case Scenario, Recovery Columns, and capacity", () => {
   assert.match(appSource, /recoveryColumns: null/);
   assert.match(appSource, /passengerCapacityProfile: null/);
   assert.match(
     appSource,
     /runConstraintPrecheck\([\s\S]*workbenchState\.scenario,[\s\S]*workbenchState\.recoveryColumns,[\s\S]*workbenchState\.passengerCapacityProfile/,
   );
-  assert.match(appSource, /loadBenchmarkPrecheckInputs\(\)/);
+  assert.match(appSource, /currentCapacitySummary\(\)/);
+  assert.doesNotMatch(appSource, /loadBenchmarkPrecheckInputs\(\)/);
 });

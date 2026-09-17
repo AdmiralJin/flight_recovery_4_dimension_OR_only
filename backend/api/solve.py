@@ -52,6 +52,16 @@ def precheck(data: Any = Body(...)) -> dict[str, Any]:
     return solve_readiness(data)
 
 
+@router.get("/examples")
+def solve_examples() -> list[dict[str, Any]]:
+    """List supported demo inputs so the UI does not own this catalog."""
+    return [
+        {"case_id": "phase1_benchmark_001", "label": "Phase 1 Benchmark", "type": "solve_bundle", "solve_ready": True, "description": "Main 4D recovery benchmark"},
+        {"case_id": "toy_case_016_benders_branch_and_price", "label": "Toy 016 — Integrality", "type": "solve_bundle", "solve_ready": True, "description": "Phase 12 Branch-and-Price integrality case"},
+        {"case_id": "toy_case_001", "label": "Toy 001 — Scenario smoke test", "type": "scenario", "solve_ready": False, "description": "Scenario-only validation and visualization example"},
+    ]
+
+
 @router.get("/example-bundle/{case_id}")
 def example_bundle(case_id: str) -> dict[str, Any]:
     try:

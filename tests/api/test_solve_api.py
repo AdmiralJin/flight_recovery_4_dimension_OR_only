@@ -15,6 +15,17 @@ def bundle(case_id: str) -> dict:
     return response.json()
 
 
+def test_solve_example_catalog_matches_supported_bundles():
+    response = client.get("/api/solve/examples")
+    assert response.status_code == 200
+    examples = {item["case_id"]: item for item in response.json()}
+    assert examples["phase1_benchmark_001"]["solve_ready"] is True
+    assert examples["toy_case_016_benders_branch_and_price"]["type"] == "solve_bundle"
+    assert examples["toy_case_001"]["solve_ready"] is False
+    for case_id in ("phase1_benchmark_001", "toy_case_016_benders_branch_and_price"):
+        assert client.post("/api/solve/precheck", json=bundle(case_id)).json()["solve_ready"] is True
+
+
 @pytest.mark.parametrize(
     ("case_id", "objective"),
     [

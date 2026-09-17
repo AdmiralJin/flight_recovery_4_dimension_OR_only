@@ -18,20 +18,25 @@
       <p class="subtitle">Scenario · Solve · Recovery · Audit</p>
     </div>
     <div class="status-card status-card--wide">
-      <div class="workbench-status"><strong>Scenario</strong><span id="record-summary">Loading example…</span></div>
-      <div class="workbench-status"><strong>Costs</strong><span id="cost-summary-status">Loading…</span></div>
-      <div class="workbench-status"><strong>Constraints</strong><span id="constraint-summary-status">Not checked</span></div>
+      <div class="workbench-status"><strong>Case</strong><span id="record-summary">Loading example…</span></div>
+      <div class="workbench-status"><strong>Solve input</strong><span id="solve-readiness-summary">Checking…</span></div>
+      <div class="workbench-status"><strong>Solver</strong><span id="solver-summary">Idle</span></div>
+      <div class="workbench-status"><strong>Result</strong><span id="result-summary">None</span></div>
     </div>
   </header>
 
   <main>
     <section class="command-bar" aria-label="Scenario actions">
-      <button id="load-example" class="button primary">Load Example</button>
-      <button id="import-json" class="button">Import Scenario</button>
+      <label class="case-selector" for="example-selector">Example
+        <select id="example-selector" aria-label="Example selector"></select>
+      </label>
+      <button id="load-example" class="button primary">Load Case</button>
+      <button id="import-json" class="button">Import</button>
       <button id="export-scenario" class="button">Export Scenario</button>
-      <button id="export-workbench" class="button">Export Workbench Config</button>
+      <button id="export-workbench" class="button">Export Snapshot</button>
       <button id="reset-scenario" class="button">Reset Scenario</button>
-      <button id="reset-workbench" class="button">Reset Workbench</button>
+      <button id="reset-workbench" class="button">Reset Changes</button>
+      <button id="reload-example" class="button">Reload Example</button>
       <div class="command-spacer"></div>
       <button id="validate" class="button accent">Validate</button>
       <button id="solve-recovery" class="button primary" disabled>Solve</button>
@@ -160,7 +165,8 @@
     </div>
   </main>
 
-  <footer>AIR research workbench v1 · Synchronous exact solve · Full scope / prepared Flight Options only · Not production-ready</footer>
+  <div id="global-toast-region" aria-live="polite" aria-atomic="true"></div>
+  <footer>AIR research workbench v1.1 · Synchronous exact solve · Full scope / prepared Flight Options only · Not production-ready</footer>
   <script type="module" src="/static/js/app.js"></script>
 </body>
 </html>
