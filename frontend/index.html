@@ -27,6 +27,14 @@
   </header>
 
   <main>
+    <section class="workflow-guide" aria-label="Quick workflow">
+      <div>
+        <strong>Quick flow</strong>
+        <span>1. Load a case or Import JSON → 2. Confirm <b>Solve input = READY</b> → 3. Validate / inspect if needed → 4. Click Solve → 5. Review Recovery.</span>
+      </div>
+      <button id="workflow-help-open" class="button small" type="button">How to use</button>
+    </section>
+
     <section class="command-bar" aria-label="Scenario actions">
       <label class="case-selector" for="example-selector">Example
         <select id="example-selector" aria-label="Example selector"></select>
@@ -44,6 +52,8 @@
       <button id="solve-recovery" class="button primary" disabled>Solve</button>
       <input id="file-input" type="file" accept="application/json,.json" hidden>
     </section>
+
+    <p id="solve-guidance" class="solve-guidance" role="status" aria-live="polite">Loading solve readiness…</p>
 
     <nav class="view-switcher" aria-label="Workbench view">
       <button id="show-data-view" class="view-switch" aria-pressed="true">Data</button>
@@ -168,6 +178,26 @@
       </section>
     </div>
   </main>
+
+  <dialog id="workflow-help" class="workflow-dialog" aria-labelledby="workflow-help-title">
+    <form method="dialog">
+      <div class="workflow-dialog-head">
+        <div>
+          <p class="section-kicker">WORKBENCH FLOW</p>
+          <h2 id="workflow-help-title">How to run a case</h2>
+        </div>
+        <button class="button small" value="close" aria-label="Close help">Close</button>
+      </div>
+      <ol class="workflow-steps">
+        <li><strong>Load or Import.</strong> Select a repository example and click <b>Load Case</b>, or import a Scenario / Solve Bundle / Snapshot JSON.</li>
+        <li><strong>Check Solve input.</strong> <b>READY</b> means the Scenario has usable recovery columns, capacity data, cost/profile configuration and passes input-readiness checks.</li>
+        <li><strong>Inspect if needed.</strong> Use Validate, Visualization, Costs and Constraints before solving. Precheck verifies input consistency; it does not prove MIP feasibility.</li>
+        <li><strong>Solve.</strong> Click Solve only when the readiness indicator is READY. The UI locks mutable inputs while the synchronous exact solve is running.</li>
+        <li><strong>Review Recovery.</strong> Open Recovery to inspect objective components, changed flights, resources, passengers and diagnostics.</li>
+      </ol>
+      <p class="workflow-note"><strong>Scenario-only:</strong> a valid Scenario can still be non-solve-ready. The Workbench will automatically attach matching repository Columns and Capacity when compatible fixtures exist. Otherwise the page will state which solve inputs are missing.</p>
+    </form>
+  </dialog>
 
   <div id="global-toast-region" aria-live="polite" aria-atomic="true"></div>
   <footer>AIR research workbench v1.1 · Synchronous exact solve · Full scope / prepared Flight Options only · Not production-ready</footer>
