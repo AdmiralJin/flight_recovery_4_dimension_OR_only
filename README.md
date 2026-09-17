@@ -94,7 +94,11 @@ python -m uvicorn backend.main:app --reload
 http://127.0.0.1:8000
 ```
 
-默认示例会加载完整 Solve Bundle；点击 `Solve` 调用同步 exact solver，并在 `Recovery` 中查看四种对比及导出结果。`Import Scenario` 支持导入 Scenario JSON 或完整的 `SolveRequest` JSON。仅导入 Scenario 不会自动生成 Flight Options 或使 Solve 按钮就绪。程序化调用可先 `GET /api/solve/example-bundle/phase1_benchmark_001`，再将返回 JSON 送至 `POST /api/solve/precheck` 和 `POST /api/solve`；`toy_case_016_benders_branch_and_price` 也有对应示例 bundle。
+Workbench v1.1 的 Example selector 由后端目录驱动：`phase1_benchmark_001` 与 `toy_case_016_benders_branch_and_price` 作为 solve-ready bundle，其余 `data/examples` 案例自动归类为 scenario-only。Solve-ready case 会作为完整 Solve Bundle 加载；scenario-only case 可以校验和查看，但会明确显示缺少的 Solve 输入。
+
+点击 `Solve` 调用同步 exact solver，并在 `Recovery` 中查看四种对比及导出结果。一次 Solve 会锁定输入操作、显示 elapsed time，并将返回结果绑定到启动时的输入 revision；输入已变化的旧结果会被丢弃。`Reset Changes` 恢复当前 case 的加载基线（包括该 case 自带的成本 override），`Reload Example` 则从服务端重新读取所选示例。
+
+Import 支持 Scenario JSON、完整 Solve Bundle JSON 和 `workbench_snapshot_v1`。Export Snapshot 提供对应可再导入的工作台快照。程序化调用可先 `GET /api/solve/examples` 获取目录，再取 `GET /api/solve/example-bundle/{case_id}` 并送至 `POST /api/solve/precheck` / `POST /api/solve`。
 
 ---
 
@@ -120,9 +124,9 @@ PRECHECK != MIP FEASIBILITY
 
 它不会调用 solver，也不承担 Phase 3 Integrated Oracle 的求解或验收。PRM 页面中的容量为只读的 `TEST / RESIDUAL CAPACITY`，不是 aircraft physical capacity。
 
-`Export Scenario` 仅导出 Scenario；`Export Workbench Config` 另行导出 Scenario、cost overrides 及 profile IDs。
+`Export Scenario`、`Export Solve Bundle` 与 `Export Snapshot` 分别导出对应层级；Snapshot 可再导入，并保留 Scenario / Solve Bundle / cost overrides 工作台状态。
 
-工作台的 `Load Example` 默认加载 `phase1_benchmark_001`，并同时加载其 canonical Recovery Columns 与 Phase 2 test/residual passenger capacity，使 Constraints 能执行完整 benchmark precheck；导入其他 Scenario 时会清空不匹配的 Columns/Capacity，按 Scenario-only 模式明确降级。
+工作台的 `Load Case` 会把当前 case 的 Scenario、Recovery Columns、Passenger Capacity 与成本覆盖一并应用。Constraints 和 Capacity 不会再回退显示 benchmark 数据；导入或加载 Scenario-only case 时会清空不匹配的输入并明确降级。
 
 ---
 
@@ -476,6 +480,7 @@ docs/
 ```text
 GET  /api/health
 GET  /api/examples/toy_case_001
+GET  /api/solve/examples
 POST /api/validate
 POST /api/solve/precheck
 POST /api/solve
@@ -487,6 +492,7 @@ GET  /api/solve/example-bundle/{case_id}
 - `/api/validate`：执行 Scenario 结构与跨实体一致性校验；
 - `/api/solve/precheck`：检查完整 Solve Bundle 的输入就绪状态，不判断数学可行性；
 - `/api/solve`：调用 Phase 12 exact solver，返回版本化、独立审计的 `RecoveredResult`；
+- `/api/solve/examples`：返回前端 case selector 的示例元数据；
 - `/api/solve/example-bundle/{case_id}`：提供显式演示输入。健康检查标明 `solver_enabled=true`、`production_ready=false`、`scope_mode=full_only`、`flight_option_generation=false`。
 
 ---

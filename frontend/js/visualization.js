@@ -5,6 +5,7 @@ let currentModel = null;
 let selectedFlightId = null;
 let networkMode = "disruption";
 let capacityMode = "departures";
+let openRecoveryHandler = null;
 
 function epoch(value) {
   return new Date(value).getTime();
@@ -442,8 +443,12 @@ function renderVisualizationToolbar() {
   modes.append(
     renderModeButton("Original Plan", "original"),
     renderModeButton("Disruption Overlay", "disruption"),
-    renderModeButton("Recovered Plan", "recovered", true),
   );
+  const recoveryButton = document.createElement("button");
+  recoveryButton.className = "viz-mode-button";
+  recoveryButton.textContent = "Open Recovery →";
+  recoveryButton.addEventListener("click", () => openRecoveryHandler?.());
+  modes.append(recoveryButton);
 
   const legend = document.createElement("div");
   legend.className = "viz-legend";
@@ -781,7 +786,8 @@ function renderCapacityHeatmap() {
   container.append(legend);
 }
 
-export function renderVisualization(scenario) {
+export function renderVisualization(scenario, onOpenRecovery = null) {
+  openRecoveryHandler = onOpenRecovery;
   currentModel = deriveVisualizationModel(scenario);
   if (selectedFlightId && !currentModel.indexes.flightsById.has(selectedFlightId)) {
     selectedFlightId = null;

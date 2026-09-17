@@ -1,7 +1,17 @@
 export async function loadExample() {
-  const response = await fetch("/api/examples/phase1_benchmark_001");
-  if (!response.ok) throw new Error(`Example request failed (${response.status})`);
-  return response.json();
+  return loadScenarioExample("phase1_benchmark_001");
+}
+
+export async function loadScenarioExample(caseId) {
+  return requestJson(`/api/examples/${encodeURIComponent(caseId)}`, {}, "Example request");
+}
+
+export async function loadSolveExamples() {
+  return requestJson("/api/solve/examples", {}, "Example list request");
+}
+
+export async function loadHealth() {
+  return requestJson("/api/health", {}, "Health request");
 }
 
 export async function loadBenchmarkPrecheckInputs() {
@@ -30,19 +40,37 @@ export async function solveRecovery(bundle) {
 }
 
 export async function validateScenario(data) {
-  const response = await fetch("/api/validate", {
+  return requestJson("/api/validate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
-  });
-  return response.json();
+  }, "Scenario validation request");
+}
+
+export class ApiError extends Error {
+  constructor({ status, detail, payload }) {
+    super(detail || `HTTP ${status}`);
+    this.name = "ApiError";
+    this.status = status;
+    this.payload = payload;
+  }
+}
+
+export async function requestJson(url, options = {}, label = "Request") {
+  const response = await fetch(url, options);
+  return checkedJson(response, label);
 }
 
 async function checkedJson(response, label) {
-  const payload = await response.json();
+  const text = await response.text();
+  let payload = null;
+  if (text) {
+    try { payload = JSON.parse(text); } catch { payload = { detail: text }; }
+  }
   if (!response.ok) {
-    const detail = typeof payload.detail === "string" ? payload.detail : JSON.stringify(payload.detail);
-    throw new Error(`${label} failed (${response.status}): ${detail}`);
+    const rawDetail = payload?.detail;
+    const detail = typeof rawDetail === "string" ? rawDetail : JSON.stringify(rawDetail || response.statusText);
+    throw new ApiError({ status: response.status, detail: `${label} failed (${response.status}): ${detail}`, payload });
   }
   return payload;
 }
