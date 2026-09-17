@@ -25,6 +25,14 @@ export async function loadSolveExampleBundle(caseId = "phase1_benchmark_001") {
   return checkedJson(await fetch(`/api/solve/example-bundle/${encodeURIComponent(caseId)}`), "Solve bundle request");
 }
 
+export async function hydrateSolveBundle(scenario) {
+  return checkedJson(await fetch("/api/solve/hydrate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(scenario),
+  }), "Solve bundle hydration request");
+}
+
 export async function checkSolveReadiness(bundle) {
   return checkedJson(await fetch("/api/solve/precheck", {
     method: "POST", headers: { "Content-Type": "application/json" },
