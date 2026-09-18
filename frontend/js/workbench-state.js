@@ -14,6 +14,7 @@ export function buildCurrentSolveBundle(state) {
 export function beginSolve(state) {
   if (state.solving) return null;
   state.solving = true;
+  state.solveError = null;
   return {
     revision: state.revision,
     bundle: buildCurrentSolveBundle(state),
