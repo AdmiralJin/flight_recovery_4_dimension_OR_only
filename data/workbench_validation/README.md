@@ -257,3 +257,50 @@ Total objective = 60 schedule delay + 50,000 unserved cost = 50,060.
 - `bundles/wb_v1_006_passenger_connection_bundle.json`
 - `bundles/wb_v1_006_passenger_connection_low_capacity_bundle.json`
 - `expected/wb_v1_006_passenger_connection_expected.json`
+
+
+## Case 007 — `wb_v1_007_capacity_bottleneck`
+
+Purpose: verify that airport departure-capacity constraints in the SRM actually force schedule recovery.
+
+### Structure
+
+Four independent one-leg flights leave hub B inside the same `09:00-10:00` interval:
+
+- F101 09:05, delay alternative 10:05 (+60)
+- F102 09:15, delay alternative 10:05 (+50)
+- F103 09:25, delay alternative 10:05 (+40)
+- F104 09:35, delay alternative 10:05 (+30)
+
+Each flight has a unique equipment/rating type, so Aircraft/Crew Recovery cannot substitute for the airport-capacity decision. There are no passengers.
+
+SRM interval membership is half-open: `start <= departure < end`.
+
+### Baseline-capacity variant
+
+B departure capacity in 09:00-10:00 = 4.
+
+All four original departures fit, so expected objective = 0.
+
+### Bottleneck variant
+
+B departure capacity in 09:00-10:00 = 2 and a matching `departure_capacity_reduction` disruption with `capacity_change=-2` is included for Workbench visualization.
+
+Exactly two flights must move to 10:05. The possible delay penalties are 60, 50, 40 and 30, so the unique minimum is:
+
+- F101 original
+- F102 original
+- F103 +40
+- F104 +30
+
+Expected objective = 70.
+
+### Files
+
+- `scenarios/wb_v1_007_capacity_baseline.json`
+- `scenarios/wb_v1_007_capacity_bottleneck.json`
+- `columns/wb_v1_007_capacity_bottleneck_columns.json`
+- `capacities/wb_v1_007_capacity_bottleneck_capacity.json`
+- `bundles/wb_v1_007_capacity_baseline_bundle.json`
+- `bundles/wb_v1_007_capacity_bottleneck_bundle.json`
+- `expected/wb_v1_007_capacity_bottleneck_expected.json`
