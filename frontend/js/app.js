@@ -274,6 +274,7 @@ function updateSolveButton() {
     status.textContent = `Solve unavailable: ${reasons.map(missingInputLabel).join(", ")}`;
     button.title = status.textContent;
   } else if (workbenchState.recoveredResult) status.textContent = `Solver status: ${workbenchState.recoveredResult.status}`;
+  else if (workbenchState.resultStale) status.textContent = "Inputs changed after the last solve. Run Solve again.";
   else status.textContent = "Ready to solve · input readiness is not optimization feasibility.";
   if (ready) button.removeAttribute("title");
 }
@@ -316,6 +317,7 @@ function openRecovery() {
     workbenchState.recoveredResult,
     document.querySelector("#recovery-mode").value,
     workbenchState.recoverySortDelay,
+    workbenchState.resultStale,
   );
   updateSolveButton();
 }
