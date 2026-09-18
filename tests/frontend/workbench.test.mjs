@@ -120,6 +120,12 @@ test("workbench renders scenario validity separately from case dirty and stale-r
   assert.match(appSource, /invalidateRecovery\(\{ markStale: hadCurrentResult \}\)/);
 });
 
+test("incomplete solve bundles remain inspectable and disable Solve instead of being rejected", () => {
+  assert.match(appSource, /let importedReadiness = null/);
+  assert.match(appSource, /Imported Solve Bundle, but Solve is unavailable/);
+  assert.doesNotMatch(appSource, /if \(!readiness\.solve_ready\) throw new Error\(\`Solve Bundle is not ready/);
+});
+
 test("stale results are surfaced in solve guidance and recovery instead of silently disappearing", () => {
   const recoverySource = readFileSync(resolve(projectRoot, "frontend/js/recovery.js"), "utf8");
   assert.match(appSource, /Inputs changed after the last solve\. Run Solve again\./);
