@@ -118,6 +118,14 @@ test("workbench renders scenario validity separately from case dirty and stale-r
   assert.match(appSource, /invalidateRecovery\(\{ markStale: hadCurrentResult \}\)/);
 });
 
+test("stale results are surfaced in solve guidance and recovery instead of silently disappearing", () => {
+  const recoverySource = readFileSync(resolve(projectRoot, "frontend/js/recovery.js"), "utf8");
+  assert.match(appSource, /Inputs changed after the last solve\. Run Solve again\./);
+  assert.match(appSource, /workbenchState\.resultStale/);
+  assert.match(recoverySource, /Recovered Result is stale/);
+  assert.match(recoverySource, /Run Solve again before reviewing or exporting Recovery/);
+});
+
 test("visualization links to Recovery without a permanently disabled Recovered Plan", () => {
   const visualizationSource = readFileSync(resolve(projectRoot, "frontend/js/visualization.js"), "utf8");
   assert.match(visualizationSource, /Open Recovery →/);
