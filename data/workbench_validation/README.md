@@ -143,7 +143,7 @@ The spare-aircraft recovery is:
 
 Schedule cost = 60.
 
-Under the canonical test profile aircraft reassignment cost is 0, so the intended optimum uses the spare and creates exactly two aircraft reassignments (F102 and F103) without ferry.
+Aircraft reassignment cost remains 0, so the intended optimum uses the spare and creates exactly two aircraft reassignments (F102 and F103) without ferry. Case 004 additionally overrides `crew_reassignment = 100` to remove unrelated zero-cost crew-swap degeneracy while leaving the intended original crew pairings feasible at zero crew cost.
 
 ### Files
 

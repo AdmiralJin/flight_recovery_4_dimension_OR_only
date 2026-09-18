@@ -61,6 +61,13 @@
     "A spare-aircraft substitution is used instead of a symmetric tail swap because current aircraft strings enforce required terminal stations. This isolates Aircraft Recovery without adding ferry or terminal-rebalancing complexity.",
     "Both aircraft have equipment type E1, so the spare is equipment-compatible with F102/F103.",
     "The E1 test profile has zero minimum turn time; the spare still has a clear 10-minute ground gap between F102 arrival 10:30 and F103 departure 10:40.",
-    "The aircraft reassignment coefficient in phase2_test_v1 is 0, so the swap plan is strictly cheaper than propagating F101 delay through F102/F103."
-  ]
+    "The aircraft reassignment coefficient in phase2_test_v1 is 0, so the swap plan is strictly cheaper than propagating F101 delay through F102/F103.",
+    "Case 004 overrides crew_reassignment to 100 solely to remove zero-cost equivalent crew swaps from the canonical test profile. This keeps the test focused on Aircraft Recovery; the intended original crew pairings remain feasible and add zero crew cost."
+  ],
+  "cost_isolation": {
+    "cost_overrides": {
+      "crew_reassignment": 100
+    },
+    "rationale": "Canonical crew reassignment cost is zero and produced equivalent optimal crew swaps during the first real Solve. A positive crew reassignment override removes that degeneracy without changing the aircraft-recovery tradeoff."
+  }
 }

@@ -421,7 +421,9 @@
     ]
   },
   "cost_profile_id": "phase2_test_v1",
-  "cost_overrides": {},
+  "cost_overrides": {
+    "crew_reassignment": 100
+  },
   "algorithm": "benders_branch_and_price_v1",
   "profile_ids": {
     "flight_string_generation": "phase5_test_string_generation_v1",
