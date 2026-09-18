@@ -98,6 +98,13 @@ test("case baseline reset preserves bundle columns, capacity, and overrides", ()
   assert.equal(state.resultStale, false);
 });
 
+test("loading a case validates its Scenario and top-level reset stays baseline-oriented", () => {
+  assert.match(appSource, /const validation = await validateScenario\(workbenchState\.scenario\)/);
+  assert.match(appSource, /showValidation\(validation\)/);
+  assert.doesNotMatch(html, /id=["']reset-scenario["']/);
+  assert.doesNotMatch(appSource, /#reset-scenario/);
+});
+
 test("workbench renders scenario validity separately from case dirty and stale-result state", () => {
   assert.match(appSource, /#scenario-summary/);
   assert.match(appSource, /"MODIFIED" : "CLEAN"/);
