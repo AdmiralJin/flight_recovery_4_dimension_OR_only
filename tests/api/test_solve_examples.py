@@ -42,3 +42,52 @@ def test_unmatched_scenario_is_not_solve_ready():
     readiness = client.post("/api/solve/precheck", json=scenario_response.json())
     assert readiness.status_code == 200
     assert readiness.json()["solve_ready"] is False
+
+
+def test_validation_catalog_preserves_bundle_variants_and_metadata():
+    response = client.get("/api/solve/examples")
+    assert response.status_code == 200
+    examples = {item["case_id"]: item for item in response.json()}
+
+    low_cancel = examples["wb_v1_003_delay_vs_cancel_low_cancel"]
+    assert low_cancel["type"] == "solve_bundle"
+    assert low_cancel["solve_ready"] is True
+    assert low_cancel["source"] == "workbench_validation"
+    assert low_cancel["group"] == "validation"
+    assert low_cancel["expected_status"] == "optimal"
+
+    low_cancel_bundle = client.get(
+        "/api/solve/example-bundle/wb_v1_003_delay_vs_cancel_low_cancel"
+    )
+    assert low_cancel_bundle.status_code == 200
+    assert low_cancel_bundle.json()["cost_overrides"]["flight_cancellation"] == 20
+
+    low_capacity_bundle = client.get(
+        "/api/solve/example-bundle/wb_v1_006_passenger_connection_low_capacity"
+    )
+    assert low_capacity_bundle.status_code == 200
+    capacity = low_capacity_bundle.json()["capacity_profile"]
+    assert capacity["capacity_profile_id"] == "wb_v1_006_passenger_connection_low_f103_capacity"
+    assert capacity["seat_capacity_by_option_id"]["WB6_F103_ORIG"] == 10
+
+
+def test_validation_008g_is_input_ready_but_optimization_infeasible():
+    response = client.get("/api/solve/examples")
+    examples = {item["case_id"]: item for item in response.json()}
+    boundary = examples["wb_v1_008g_valid_but_infeasible"]
+    assert boundary["group"] == "boundary"
+    assert boundary["expected_status"] == "infeasible"
+
+    bundle_response = client.get(
+        "/api/solve/example-bundle/wb_v1_008g_valid_but_infeasible"
+    )
+    assert bundle_response.status_code == 200
+    bundle = bundle_response.json()
+
+    readiness = client.post("/api/solve/precheck", json=bundle)
+    assert readiness.status_code == 200
+    assert readiness.json()["solve_ready"] is True
+
+    solve_response = client.post("/api/solve", json=bundle)
+    assert solve_response.status_code == 200
+    assert solve_response.json()["status"] == "infeasible"
