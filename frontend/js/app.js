@@ -318,6 +318,7 @@ function openRecovery() {
     document.querySelector("#recovery-mode").value,
     workbenchState.recoverySortDelay,
     workbenchState.resultStale,
+    workbenchState.solveError,
   );
   updateSolveButton();
 }
