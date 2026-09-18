@@ -491,6 +491,26 @@ GET  /api/solve/example-bundle/{case_id}
 
 ---
 
+# Workbench v1 系统验收数据集
+
+Workbench v1 的小规模系统验收数据位于：
+
+```text
+data/workbench_validation/
+```
+
+Case 001–008 分别覆盖 Baseline、延误传播、成本决策、Aircraft Recovery、Crew Recovery、Passenger Recovery、Airport Capacity 和 Negative/Infeasible 行为。
+
+除逐 Case 的 pytest 回归外，可以从仓库根目录运行统一验收入口：
+
+```bash
+python scripts/validate_workbench_v1_cases.py
+```
+
+脚本统一输出 `Case ID / Validate / Precheck / Solve Status / Expected Check / PASS/FAIL`，任一验收项不符合预期时返回非零退出码。完整数据说明、人工核验步骤及各变体的 Expected 位于 `data/workbench_validation/README.md`。
+
+---
+
 # 测试
 
 运行：

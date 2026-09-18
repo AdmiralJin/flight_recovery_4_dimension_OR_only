@@ -2,6 +2,69 @@
 
 This directory contains small, auditable system-level acceptance cases for the AIR Recovery Research Workbench v1.
 
+## Acceptance Suite Quick Start
+
+The validation dataset now contains Case 001–008 plus cost/capacity variants. Use the dedicated batch runner from the repository root:
+
+```bash
+python scripts/validate_workbench_v1_cases.py
+```
+
+The runner exercises the same FastAPI application in-process and reports:
+
+```text
+Case ID | Validate | Precheck | Solve Status | Expected Check | PASS/FAIL
+```
+
+It returns a non-zero exit code if any expected behavior fails. Because normal cases and 008G call the formal solver, the environment must satisfy the same Gurobi requirements as `python -m pytest`.
+
+To run only part of the suite:
+
+```bash
+python scripts/validate_workbench_v1_cases.py --case 006
+python scripts/validate_workbench_v1_cases.py --case 003/default
+python scripts/validate_workbench_v1_cases.py --case 008
+```
+
+The detailed case-specific regression tests remain under `tests/regression/test_workbench_v1_case00*.py`. The batch runner is a system-level acceptance summary, not a replacement for those stronger tests.
+
+## Loading Data in Workbench
+
+Run the application from the repository root:
+
+```bash
+python -m pip install -r requirements.txt
+python -m uvicorn backend.main:app --reload
+```
+
+Then open `http://127.0.0.1:8000`.
+
+Use these files according to the task:
+
+- `scenarios/`: Scenario-only input for Data / Validate / Visualization.
+- `bundles/`: complete SolveRequest input for Precheck / Solve / Recovery.
+- `columns/`: explicit Flight Options and Passenger Itineraries used by full bundles.
+- `capacities/`: residual passenger-seat capacity profiles.
+- `expected/`: human Oracle / regression expectations.
+- `negative/`: deliberately invalid or incomplete Case 008 fixtures.
+
+Importing Scenario-only data is intentionally different from importing a complete bundle: Scenario-only data can validate and visualize, but it is not automatically Solve-ready.
+
+## Case Matrix
+
+| Case | Primary mechanism | Main acceptance question |
+|---|---|---|
+| 001 | Baseline | Does a feasible undisrupted plan remain unchanged? |
+| 002 | Delay propagation | Does a forced delay propagate only as far as resource continuity requires? |
+| 003 | Cost override | Does changing cancellation cost change the actual optimum? |
+| 004 | Aircraft recovery | Can a compatible spare aircraft cover downstream flying without impossible movement? |
+| 005 | Crew recovery | Can a qualified spare crew replace a broken crew connection, and can cost reverse that choice? |
+| 006 | Passenger recovery | Is a missed connection reaccommodated subject to residual capacity, with UNSERVED fallback? |
+| 007 | Airport capacity | Does a reduced departure-capacity interval force flights out of the constrained window? |
+| 008 | Negative / infeasible | Are invalid, incomplete and optimization-infeasible inputs rejected at the correct layer without fake recovery output? |
+
+For manual acceptance, use the corresponding `expected/*.json` and the detailed sections below.
+
 ## Case 001 — `wb_v1_001_baseline`
 
 Purpose: verify that an undisrupted, resource-feasible plan is preserved end to end.
