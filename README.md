@@ -94,11 +94,11 @@ python -m uvicorn backend.main:app --reload
 http://127.0.0.1:8000
 ```
 
-Workbench v1.1 的 Example selector 由后端目录驱动：`phase1_benchmark_001` 与 `toy_case_016_benders_branch_and_price` 作为 solve-ready bundle，其余 `data/examples` 案例自动归类为 scenario-only。Solve-ready case 会作为完整 Solve Bundle 加载；scenario-only case 可以校验和查看，但会明确显示缺少的 Solve 输入。
+Workbench v1.1 的 Example selector 由后端目录与可用求解 fixtures 驱动，并按 `Solve-ready examples` / `Scenario-only examples` 分组。`phase1_benchmark_001` 与 `toy_case_016_benders_branch_and_price` 必须保持 solve-ready；其他案例只有在 Scenario、Recovery Columns、Passenger Capacity 和当前算法 profile 能组成通过 precheck 的完整 Solve Bundle 时才进入 solve-ready 组，否则作为 scenario-only 展示。
 
 点击 `Solve` 调用同步 exact solver，并在 `Recovery` 中查看四种对比及导出结果。一次 Solve 会锁定输入操作、显示 elapsed time，并将返回结果绑定到启动时的输入 revision；输入已变化的旧结果会被丢弃。`Reset Changes` 恢复当前 case 的加载基线（包括该 case 自带的成本 override），`Reload Example` 则从服务端重新读取所选示例。
 
-Import 支持 Scenario JSON、完整 Solve Bundle JSON 和 `workbench_snapshot_v1`。Export Snapshot 提供对应可再导入的工作台快照。程序化调用可先 `GET /api/solve/examples` 获取目录，再取 `GET /api/solve/example-bundle/{case_id}` 并送至 `POST /api/solve/precheck` / `POST /api/solve`。
+Import 支持 Scenario JSON、完整 Solve Bundle JSON 和 `workbench_snapshot_v1`。导入 Scenario JSON 时保持 Scenario-only 语义，不会根据同名仓库 fixture 静默补齐为 Solve Bundle；需要求解时应显式选择 solve-ready Example 或导入完整 Solve Bundle。Export Snapshot 提供对应可再导入的工作台快照。程序化调用可先 `GET /api/solve/examples` 获取目录，再取 `GET /api/solve/example-bundle/{case_id}` 并送至 `POST /api/solve/precheck` / `POST /api/solve`。
 
 ---
 
