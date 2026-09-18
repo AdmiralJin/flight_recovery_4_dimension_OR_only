@@ -24,6 +24,7 @@ export function acceptSolveResult(state, request, result) {
   if (!request || request.revision !== state.revision) return false;
   state.recoveredResult = result;
   state.recoveredResultRevision = request.revision;
+  state.resultStale = false;
   return true;
 }
 
@@ -50,5 +51,6 @@ export function restoreCaseBaseline(state) {
   state.dirty = false;
   state.recoveredResult = null;
   state.recoveredResultRevision = null;
+  state.resultStale = false;
   return true;
 }
