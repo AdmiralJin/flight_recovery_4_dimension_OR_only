@@ -41,7 +41,7 @@ test("recovery controls wire solve, comparison and export without claiming produ
 });
 
 test("workbench exposes the case selector, explicit readiness, health, and global error surface", () => {
-  for (const id of ["example-selector", "solve-readiness-summary", "solver-summary", "result-summary", "api-health-summary", "global-toast-region", "case-metadata"]) {
+  for (const id of ["example-selector", "scenario-summary", "solve-readiness-summary", "solver-summary", "result-summary", "api-health-summary", "global-toast-region", "case-metadata"]) {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
   assert.match(appSource, /function applySolveBundle\(/);
@@ -55,7 +55,7 @@ test("solve lifecycle rejects duplicate starts and stale results", () => {
     solving: false, revision: 3, solveBundle: { schema_version: "1.0.0" },
     scenario: { scenario_id: "A" }, recoveryColumns: { flight_options: [] },
     passengerCapacityProfile: { capacity_profile_id: "capacity" }, costOverrides: {},
-    recoveredResult: null, recoveredResultRevision: null,
+    recoveredResult: null, recoveredResultRevision: null, resultStale: false,
   };
   const request = stateBundle.module.beginSolve(state);
   assert.equal(request.revision, 3);
@@ -67,6 +67,7 @@ test("solve lifecycle rejects duplicate starts and stale results", () => {
   const currentRequest = stateBundle.module.beginSolve(state);
   assert.equal(stateBundle.module.acceptSolveResult(state, currentRequest, { status: "optimal" }), true);
   assert.equal(state.recoveredResultRevision, 4);
+  assert.equal(state.resultStale, false);
 });
 
 test("case baseline reset preserves bundle columns, capacity, and overrides", () => {
@@ -76,7 +77,7 @@ test("case baseline reset preserves bundle columns, capacity, and overrides", ()
     recoveryColumns: { scenario_id: "toy016" },
     passengerCapacityProfile: { scenario_id: "toy016" },
     costOverrides: { crew_reassignment: 100 }, recoveredResult: { status: "optimal" },
-    recoveredResultRevision: 1,
+    recoveredResultRevision: 1, resultStale: true,
   };
   state.baseline = stateBundle.module.snapshotCaseBaseline(state);
   state.costOverrides = {};
@@ -87,6 +88,14 @@ test("case baseline reset preserves bundle columns, capacity, and overrides", ()
   assert.equal(state.recoveryColumns.scenario_id, "toy016");
   assert.equal(state.revision, 2);
   assert.equal(state.recoveredResult, null);
+  assert.equal(state.resultStale, false);
+});
+
+test("workbench renders scenario validity separately from case dirty and stale-result state", () => {
+  assert.match(appSource, /#scenario-summary/);
+  assert.match(appSource, /"MODIFIED" : "CLEAN"/);
+  assert.match(appSource, /resultStale \? "STALE RESULT"/);
+  assert.match(appSource, /invalidateRecovery\(\{ markStale: hadCurrentResult \}\)/);
 });
 
 test("visualization links to Recovery without a permanently disabled Recovered Plan", () => {
