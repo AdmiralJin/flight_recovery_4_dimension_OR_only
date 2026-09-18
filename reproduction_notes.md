@@ -864,11 +864,13 @@ Phase 13 完成 AIR 复现/研究工作台 v1。求解链依次包含 Integrated
 
 v1.1 不修改任何核心求解、约束、pricing、Benders 或 Branch-and-Price 逻辑，仅强化 Web / application integration：
 
-- `GET /api/solve/examples` 为 selector 提供 solve-ready 与 scenario-only 元数据；
+- `GET /api/solve/examples` 为 selector 提供 solve-ready 与 scenario-only 元数据，并在 UI 中分组展示；
 - `applySolveBundle()` 将 Scenario、Recovery Columns、Passenger Capacity 与 case cost overrides 作为同一 case 加载，Constraints 不回退到 benchmark；
+- Scenario validity、Solve readiness、Solver lifecycle、Result freshness 分开显示，Case 另行标记 CLEAN / MODIFIED；
 - Solve 在任何异步 readiness 请求前锁定，显示 elapsed time，并以 revision 丢弃过期结果；
+- 输入变化后旧结果进入 `STALE RESULT`，Recovery 明确提示重新 Solve；Solver/API error 在 Recovery 中持续显示；
 - `Reset Changes` 还原当前 case baseline，保留如 toy016 所需的成本覆盖；
-- Import 支持 Scenario、Solve Bundle、`workbench_snapshot_v1`，Export Snapshot 可对应回导；
+- Import 支持 Scenario、Solve Bundle、`workbench_snapshot_v1`；Scenario JSON 保持 Scenario-only，不根据同名 fixture 静默水合为 Solve Bundle；Export Snapshot 可对应回导；
 - HTTP 非 JSON / 非 2xx 错误统一转换为可见 toast 与当前视图错误信息。
 
 该版本仍为同步 exact solve；“Stop Waiting”或后端 Gurobi 取消能力不在本次范围内。
