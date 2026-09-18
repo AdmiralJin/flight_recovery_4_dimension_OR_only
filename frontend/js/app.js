@@ -237,6 +237,12 @@ function renderCaseMetadata() {
     item.append(strong, document.createTextNode(String(value ?? "—")));
     return item;
   }));
+  const notice = document.querySelector("#case-notice");
+  const scenarioOnly = !workbenchState.solveBundle;
+  notice.hidden = !scenarioOnly;
+  notice.textContent = scenarioOnly
+    ? "This case contains Scenario data only. It can be inspected and validated, but cannot be solved until a complete Solve Bundle is loaded or imported."
+    : "";
 }
 
 function markScenarioChanged() {
