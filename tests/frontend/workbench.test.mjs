@@ -50,6 +50,13 @@ test("workbench exposes the case selector, explicit readiness, health, and globa
   assert.match(appSource, /setSolvingState\(true\)/);
 });
 
+test("example selector groups solve-ready and scenario-only cases and validates after load", () => {
+  assert.match(appSource, /solveReadyGroup\.label = "Solve-ready examples"/);
+  assert.match(appSource, /scenarioOnlyGroup\.label = "Scenario-only examples"/);
+  assert.match(appSource, /const validation = await validateScenario\(workbenchState\.scenario\)/);
+  assert.match(appSource, /workbenchState\.scenarioValidation = validation\.valid \? "valid" : "invalid"/);
+});
+
 test("solve lifecycle rejects duplicate starts and stale results", () => {
   const state = {
     solving: false, revision: 3, solveBundle: { schema_version: "1.0.0" },
@@ -94,6 +101,7 @@ test("case baseline reset preserves bundle columns, capacity, and overrides", ()
 test("workbench renders scenario validity separately from case dirty and stale-result state", () => {
   assert.match(appSource, /#scenario-summary/);
   assert.match(appSource, /"MODIFIED" : "CLEAN"/);
+  assert.match(appSource, /solveError \? "ERROR"/);
   assert.match(appSource, /resultStale \? "STALE RESULT"/);
   assert.match(appSource, /invalidateRecovery\(\{ markStale: hadCurrentResult \}\)/);
 });
