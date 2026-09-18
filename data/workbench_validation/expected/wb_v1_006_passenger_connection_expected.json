@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "wb_v1_006_passenger_connection",
+  "purpose": "Verify Passenger Recovery after a missed connection, including itinerary schedule consistency, passenger delay cost, residual seat capacity, reaccommodation, and UNSERVED fallback.",
+  "variants": {
+    "default_capacity": {
+      "bundle": "wb_v1_006_passenger_connection_bundle.json",
+      "expected_status": "optimal",
+      "expected_objective": {
+        "total": 18060,
+        "schedule": 60,
+        "aircraft": 0,
+        "crew": 0,
+        "passenger": 18000
+      },
+      "strong_assertions": {
+        "selected_flight_options": [
+          "WB6_F101_D60",
+          "WB6_F102_ORIG",
+          "WB6_F103_ORIG"
+        ],
+        "selected_passenger_itinerary": "WB6_PI_PG1_RECOVER_F103",
+        "passenger_status": "transported",
+        "recovered_itinerary": [
+          "WB6_F101",
+          "WB6_F103"
+        ],
+        "passenger_count": 20,
+        "passenger_arrival_delay_minutes": 90,
+        "passenger_reaccommodated_groups": 1,
+        "passenger_reaccommodated_count": 20,
+        "passenger_delay_minutes_weighted": 1800,
+        "unserved_passengers": 0,
+        "delayed_flights": 1,
+        "total_departure_delay_minutes": 60,
+        "aircraft_reassignment_count_total": 0,
+        "crew_reassignment_count_total": 0,
+        "recovery_actions_count": 2,
+        "integrated_audit_pass": true
+      }
+    },
+    "low_recovery_capacity": {
+      "bundle": "wb_v1_006_passenger_connection_low_capacity_bundle.json",
+      "expected_status": "optimal",
+      "expected_objective": {
+        "total": 50060,
+        "schedule": 60,
+        "aircraft": 0,
+        "crew": 0,
+        "passenger": 50000
+      },
+      "strong_assertions": {
+        "selected_flight_options": [
+          "WB6_F101_D60",
+          "WB6_F102_ORIG",
+          "WB6_F103_ORIG"
+        ],
+        "selected_passenger_itinerary": "WB6_PI_PG1_UNSERVED",
+        "passenger_status": "unserved",
+        "recovered_itinerary": [],
+        "passenger_count": 20,
+        "passenger_arrival_delay_minutes": null,
+        "passenger_reaccommodated_groups": 0,
+        "passenger_reaccommodated_count": 0,
+        "passenger_delay_minutes_weighted": 0,
+        "unserved_passengers": 20,
+        "delayed_flights": 1,
+        "total_departure_delay_minutes": 60,
+        "aircraft_reassignment_count_total": 0,
+        "crew_reassignment_count_total": 0,
+        "recovery_actions_count": 2,
+        "integrated_audit_pass": true
+      }
+    }
+  },
+  "cost_logic": {
+    "transported_recovery": "20 passengers × 90 arrival-delay minutes × 10 = 18,000 passenger cost.",
+    "unserved": "20 passengers × 2,500 = 50,000 passenger cost.",
+    "default_decision": "F103 has 40 residual seats, so the 18,000 reaccommodation is cheaper than 50,000 UNSERVED.",
+    "low_capacity_decision": "F103 has only 10 residual seats. PRM selects passenger groups as indivisible commodities, so the 20-person recovery itinerary violates capacity and UNSERVED is the only schedule-compatible feasible candidate."
+  },
+  "manual_checks": [
+    "Visualization shows F101 as directly affected by the A departure closure; F102 and F103 remain scheduled normally.",
+    "Both bundles pass Solve Precheck.",
+    "F101 is recovered at +60, arriving B at 10:00; original F102 departed B at 09:30, so the original passenger itinerary is unusable.",
+    "With 40 residual seats on F103, WB6_PG1 is transported via F101_D60 + F103_ORIG and arrives C at 12:00 (+90 minutes).",
+    "Passenger Recovery reports 20 reaccommodated passengers and no unserved passengers in the default-capacity variant.",
+    "With F103 residual capacity reduced to 10, the same 20-person group cannot be split and is selected UNSERVED.",
+    "Aircraft and crew assignments remain original in both variants."
+  ],
+  "design_notes": [
+    "Only the passenger dimension is intended to change between variants; schedule, aircraft and crew data are identical.",
+    "The three flights use E1/E2/E3 and matching crew ratings to make resource reassignment structurally impossible and keep this a passenger-specific test.",
+    "The original itinerary is retained as an explicit candidate so schedule consistency can reject it after F101_D60 is selected.",
+    "No F101_D60 + F102 itinerary is supplied because F102 departs before the delayed F101 arrives at B.",
+    "The low-capacity variant tests the current documented PRM behavior of indivisible passenger-group itinerary selection rather than partial splitting."
+  ]
+}

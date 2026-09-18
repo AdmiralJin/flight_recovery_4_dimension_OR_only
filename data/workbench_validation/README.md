@@ -200,3 +200,60 @@ Schedule objective = 110, with zero crew reassignment.
 - `bundles/wb_v1_005_crew_recovery_bundle.json`
 - `bundles/wb_v1_005_crew_recovery_high_crew_cost_bundle.json`
 - `expected/wb_v1_005_crew_recovery_expected.json`
+
+
+## Case 006 — `wb_v1_006_passenger_connection`
+
+Purpose: verify Passenger Recovery after a missed connection, including residual seat capacity.
+
+### Structure
+
+- PG1 = 20 passengers travelling A -> C
+- original itinerary: F101 A-B -> F102 B-C
+- scheduled arrival: 10:30
+- A departure closure forces F101 from 08:00 to 09:00 (+60)
+- delayed F101 arrives B at 10:00, after F102 has departed at 09:30
+- later F103 departs B at 11:00 and arrives C at 12:00
+- aircraft and crew use distinct E1/E2/E3 types/ratings, so no resource recovery is needed or possible
+
+Custom Solve bundles explicitly include three passenger itinerary candidates:
+
+1. original F101_ORIG + F102_ORIG
+2. recovered F101_D60 + F103_ORIG
+3. UNSERVED
+
+### Default residual capacity
+
+F103 residual capacity = 40.
+
+Recovered passenger arrival delay = 90 minutes.
+
+Passenger recovery cost:
+
+`20 × 90 × 10 = 18,000`
+
+UNSERVED cost:
+
+`20 × 2,500 = 50,000`
+
+Therefore the expected optimum reaccommodates all 20 passengers on F103.
+
+Total objective = 60 schedule delay + 18,000 passenger delay = 18,060.
+
+### Low-capacity variant
+
+F103 residual capacity is reduced to 10 while the passenger group remains 20.
+
+Current PRM treats the passenger group as an indivisible itinerary-selection commodity, so the 20-person recovery itinerary cannot use a 10-seat residual capacity. The expected selection becomes UNSERVED.
+
+Total objective = 60 schedule delay + 50,000 unserved cost = 50,060.
+
+### Files
+
+- `scenarios/wb_v1_006_passenger_connection.json`
+- `columns/wb_v1_006_passenger_connection_columns.json`
+- `capacities/wb_v1_006_passenger_connection_capacity.json`
+- `capacities/wb_v1_006_passenger_connection_low_capacity.json`
+- `bundles/wb_v1_006_passenger_connection_bundle.json`
+- `bundles/wb_v1_006_passenger_connection_low_capacity_bundle.json`
+- `expected/wb_v1_006_passenger_connection_expected.json`
