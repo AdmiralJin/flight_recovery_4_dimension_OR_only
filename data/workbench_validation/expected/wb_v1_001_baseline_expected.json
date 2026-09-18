@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "wb_v1_001_baseline",
+  "purpose": "Control case: verify that a fully feasible, undisrupted plan is preserved by Workbench v1.",
+  "expected_status": "optimal",
+  "expected_objective": {
+    "total": 0,
+    "schedule": 0,
+    "aircraft": 0,
+    "crew": 0,
+    "passenger": 0
+  },
+  "strong_assertions": {
+    "selected_flight_options": [
+      "WB1_F101_ORIG",
+      "WB1_F102_ORIG",
+      "WB1_F103_ORIG",
+      "WB1_F201_ORIG",
+      "WB1_F202_ORIG",
+      "WB1_F203_ORIG"
+    ],
+    "cancelled_base_flights": [],
+    "total_departure_delay_minutes": 0,
+    "max_departure_delay_minutes": 0,
+    "aircraft_reassignment_count_total": 0,
+    "aircraft_ferry_legs_total": 0,
+    "crew_reassignment_count_total": 0,
+    "crew_deadhead_legs_total": 0,
+    "passenger_outcomes_count": 0,
+    "recovery_actions_count": 0,
+    "integrated_audit_pass": true
+  },
+  "manual_checks": [
+    "Validate reports the Scenario as valid.",
+    "Solve precheck reports solve_ready=true.",
+    "Visualization shows two independent, station-continuous rotations with no disruption overlay.",
+    "Recovery matches Original for all six flights.",
+    "No aircraft or crew changes are shown.",
+    "Exported RecoveredResult contains no fake or unexplained recovery action."
+  ],
+  "design_notes": [
+    "The two rotations intentionally use different equipment/rating types (E1 and E2). This removes zero-cost equivalent aircraft/crew swap optima under the canonical test cost profile.",
+    "There are no passengers and airport capacities are deliberately slack, so the baseline isolates end-to-end system correctness rather than disruption recovery.",
+    "If the exact objective is not zero, inspect cost ownership, generated resource columns, linking constraints, and result recomputation before weakening this expectation."
+  ]
+}

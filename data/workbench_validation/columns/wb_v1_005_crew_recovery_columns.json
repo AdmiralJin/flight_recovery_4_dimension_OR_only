@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "wb_v1_005_crew_recovery",
+  "time_unit": "minute",
+  "notes": [
+    "Workbench v1 validation Case 005: Crew Recovery with one spare qualified crew positioned at B.",
+    "WB5_C1 originally operates F101/F102/F103/F104 across two aircraft. Forced delay on F101 makes C1 miss F102. WB5_C2 can cover F102/F103 and return to B, while C1 resumes on F104.",
+    "Aircraft rotations are deliberately independent of the crew disruption so the primary mechanism is crew reassignment rather than aircraft recovery.",
+    "Aircraft Strings and Crew Pairings are intentionally empty; formal Solve generates them dynamically."
+  ],
+  "flight_options": [
+    {
+      "option_id": "WB5_F101_ORIG",
+      "base_flight_id": "WB5_F101",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "A",
+      "destination": "B",
+      "dep_time": "2026-01-15T08:00:00Z",
+      "arr_time": "2026-01-15T09:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Original departure lies inside the A closure and is infeasible."
+    },
+    {
+      "option_id": "WB5_F101_D60",
+      "base_flight_id": "WB5_F101",
+      "operation_type": "operate",
+      "change_types": [
+        "delay"
+      ],
+      "origin": "A",
+      "destination": "B",
+      "dep_time": "2026-01-15T09:00:00Z",
+      "arr_time": "2026-01-15T10:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 60,
+      "arrival_delay_minutes": 60,
+      "notes": "First feasible departure after the A closure."
+    },
+    {
+      "option_id": "WB5_F101_CANCEL",
+      "base_flight_id": "WB5_F101",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Fallback cancel option."
+    },
+    {
+      "option_id": "WB5_F102_ORIG",
+      "base_flight_id": "WB5_F102",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "B",
+      "destination": "C",
+      "dep_time": "2026-01-15T09:30:00Z",
+      "arr_time": "2026-01-15T10:30:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Original aircraft WB5_AC2 is available; original crew WB5_C1 misses this departure after delayed F101."
+    },
+    {
+      "option_id": "WB5_F102_D30",
+      "base_flight_id": "WB5_F102",
+      "operation_type": "operate",
+      "change_types": [
+        "delay"
+      ],
+      "origin": "B",
+      "destination": "C",
+      "dep_time": "2026-01-15T10:00:00Z",
+      "arr_time": "2026-01-15T11:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 30,
+      "arrival_delay_minutes": 30,
+      "notes": "Fallback delay that lets WB5_C1 reconnect at B at 10:00."
+    },
+    {
+      "option_id": "WB5_F102_CANCEL",
+      "base_flight_id": "WB5_F102",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Fallback cancel option."
+    },
+    {
+      "option_id": "WB5_F103_ORIG",
+      "base_flight_id": "WB5_F103",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "C",
+      "destination": "B",
+      "dep_time": "2026-01-15T10:40:00Z",
+      "arr_time": "2026-01-15T11:40:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "On-time return leg for the spare-crew recovery path."
+    },
+    {
+      "option_id": "WB5_F103_D20",
+      "base_flight_id": "WB5_F103",
+      "operation_type": "operate",
+      "change_types": [
+        "delay"
+      ],
+      "origin": "C",
+      "destination": "B",
+      "dep_time": "2026-01-15T11:00:00Z",
+      "arr_time": "2026-01-15T12:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 20,
+      "arrival_delay_minutes": 20,
+      "notes": "Fallback continuation if WB5_C1 operates delayed F102."
+    },
+    {
+      "option_id": "WB5_F103_CANCEL",
+      "base_flight_id": "WB5_F103",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Fallback cancel option."
+    },
+    {
+      "option_id": "WB5_F104_ORIG",
+      "base_flight_id": "WB5_F104",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "B",
+      "destination": "A",
+      "dep_time": "2026-01-15T12:00:00Z",
+      "arr_time": "2026-01-15T13:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "WB5_C1 can wait at B after delayed F101 and still operate this final leg to required terminal A."
+    },
+    {
+      "option_id": "WB5_F104_CANCEL",
+      "base_flight_id": "WB5_F104",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Fallback cancel option."
+    }
+  ],
+  "aircraft_strings": [],
+  "crew_pairings": [],
+  "passenger_itineraries": []
+}

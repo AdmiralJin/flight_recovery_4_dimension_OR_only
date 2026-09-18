@@ -1,0 +1,393 @@
+{
+  "schema_version": "1.0.0",
+  "scenario": {
+    "scenario_id": "wb_v1_006_passenger_connection",
+    "recovery_window": {
+      "start_time": "2026-01-15T07:30:00Z",
+      "end_time": "2026-01-15T13:00:00Z"
+    },
+    "airports": [
+      {
+        "airport_id": "A",
+        "name": "Alpha Origin"
+      },
+      {
+        "airport_id": "B",
+        "name": "Bravo Hub"
+      },
+      {
+        "airport_id": "C",
+        "name": "Charlie Destination"
+      }
+    ],
+    "flights": [
+      {
+        "flight_id": "WB6_F101",
+        "origin": "A",
+        "destination": "B",
+        "sched_dep": "2026-01-15T08:00:00Z",
+        "sched_arr": "2026-01-15T09:00:00Z",
+        "duration": 60,
+        "original_aircraft": "WB6_AC1",
+        "original_equipment": "E1",
+        "original_crew": "WB6_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 60
+      },
+      {
+        "flight_id": "WB6_F102",
+        "origin": "B",
+        "destination": "C",
+        "sched_dep": "2026-01-15T09:30:00Z",
+        "sched_arr": "2026-01-15T10:30:00Z",
+        "duration": 60,
+        "original_aircraft": "WB6_AC2",
+        "original_equipment": "E2",
+        "original_crew": "WB6_C2",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      },
+      {
+        "flight_id": "WB6_F103",
+        "origin": "B",
+        "destination": "C",
+        "sched_dep": "2026-01-15T11:00:00Z",
+        "sched_arr": "2026-01-15T12:00:00Z",
+        "duration": 60,
+        "original_aircraft": "WB6_AC3",
+        "original_equipment": "E3",
+        "original_crew": "WB6_C3",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      }
+    ],
+    "aircraft": [
+      {
+        "tail_id": "WB6_AC1",
+        "equipment_type": "E1",
+        "initial_station_at_t": "A",
+        "required_station_at_T_end": "B",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB6_F101"
+        ]
+      },
+      {
+        "tail_id": "WB6_AC2",
+        "equipment_type": "E2",
+        "initial_station_at_t": "B",
+        "required_station_at_T_end": "C",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB6_F102"
+        ]
+      },
+      {
+        "tail_id": "WB6_AC3",
+        "equipment_type": "E3",
+        "initial_station_at_t": "B",
+        "required_station_at_T_end": "C",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB6_F103"
+        ]
+      }
+    ],
+    "crew": [
+      {
+        "crew_id": "WB6_C1",
+        "rating": "E1",
+        "start_station_at_t": "A",
+        "required_station_at_T_end": "B",
+        "original_duties": [
+          [
+            "WB6_F101"
+          ]
+        ],
+        "original_pairing": [
+          "WB6_F101"
+        ]
+      },
+      {
+        "crew_id": "WB6_C2",
+        "rating": "E2",
+        "start_station_at_t": "B",
+        "required_station_at_T_end": "C",
+        "original_duties": [
+          [
+            "WB6_F102"
+          ]
+        ],
+        "original_pairing": [
+          "WB6_F102"
+        ]
+      },
+      {
+        "crew_id": "WB6_C3",
+        "rating": "E3",
+        "start_station_at_t": "B",
+        "required_station_at_T_end": "C",
+        "original_duties": [
+          [
+            "WB6_F103"
+          ]
+        ],
+        "original_pairing": [
+          "WB6_F103"
+        ]
+      }
+    ],
+    "passengers": [
+      {
+        "pax_group_id": "WB6_PG1",
+        "count": 20,
+        "origin": "A",
+        "destination": "C",
+        "original_departure": "2026-01-15T08:00:00Z",
+        "scheduled_arrival": "2026-01-15T10:30:00Z",
+        "original_itinerary": [
+          "WB6_F101",
+          "WB6_F102"
+        ]
+      }
+    ],
+    "airport_intervals": [
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T09:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 0,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": [
+          "departure_closed"
+        ]
+      },
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T09:00:00Z",
+        "end_time": "2026-01-15T13:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T13:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "C",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T13:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      }
+    ],
+    "disruptions": [
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T09:00:00Z",
+        "capacity_change": -20,
+        "restriction_type": "departure_capacity_reduction"
+      }
+    ]
+  },
+  "recovery_columns": {
+    "schema_version": "1.0.0",
+    "scenario_id": "wb_v1_006_passenger_connection",
+    "time_unit": "minute",
+    "notes": [
+      "Workbench v1 validation Case 006: passenger missed connection and reaccommodation.",
+      "F101 is forced +60, so the 20-passenger group misses original F102. F103 is the only later transported recovery candidate.",
+      "Passenger itineraries are explicit because custom Solve bundles with passengers must provide passenger_itineraries; Aircraft Strings and Crew Pairings remain empty for formal dynamic generation.",
+      "Distinct equipment/rating types E1/E2/E3 intentionally eliminate aircraft/crew reassignment alternatives."
+    ],
+    "flight_options": [
+      {
+        "option_id": "WB6_F101_ORIG",
+        "base_flight_id": "WB6_F101",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "A",
+        "destination": "B",
+        "dep_time": "2026-01-15T08:00:00Z",
+        "arr_time": "2026-01-15T09:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Original first leg; departure lies inside the A closure and is not selectable by the recovered schedule."
+      },
+      {
+        "option_id": "WB6_F101_D60",
+        "base_flight_id": "WB6_F101",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "A",
+        "destination": "B",
+        "dep_time": "2026-01-15T09:00:00Z",
+        "arr_time": "2026-01-15T10:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 60,
+        "arrival_delay_minutes": 60,
+        "notes": "Forced recovery option; arrival at B at 10:00 misses F102 at 09:30."
+      },
+      {
+        "option_id": "WB6_F102_ORIG",
+        "base_flight_id": "WB6_F102",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "C",
+        "dep_time": "2026-01-15T09:30:00Z",
+        "arr_time": "2026-01-15T10:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Original connection flight; remains operational but departs before delayed F101 reaches B."
+      },
+      {
+        "option_id": "WB6_F103_ORIG",
+        "base_flight_id": "WB6_F103",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "C",
+        "dep_time": "2026-01-15T11:00:00Z",
+        "arr_time": "2026-01-15T12:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Later recovery flight from B to C."
+      }
+    ],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": [
+      {
+        "itinerary_id": "WB6_PI_PG1_ORIGINAL",
+        "pax_group_id": "WB6_PG1",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "WB6_F101_ORIG",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "WB6_F102_ORIG",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "C",
+        "arrival_time": "2026-01-15T10:30:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Original passenger itinerary; becomes schedule-ineligible because F101_ORIG is not selected."
+      },
+      {
+        "itinerary_id": "WB6_PI_PG1_RECOVER_F103",
+        "pax_group_id": "WB6_PG1",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "WB6_F101_D60",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "WB6_F103_ORIG",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "C",
+        "arrival_time": "2026-01-15T12:00:00Z",
+        "arrival_delay_minutes": 90,
+        "cost_components": {},
+        "notes": "Recovered itinerary after missed connection: delayed F101 followed by later F103."
+      },
+      {
+        "itinerary_id": "WB6_PI_PG1_UNSERVED",
+        "pax_group_id": "WB6_PG1",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved alternative for PRM comparison."
+      }
+    ]
+  },
+  "capacity_profile": {
+    "schema_version": "1.0.0",
+    "capacity_profile_id": "wb_v1_006_passenger_connection_capacity",
+    "scenario_id": "wb_v1_006_passenger_connection",
+    "source": "test_fixture",
+    "units": "seats",
+    "seat_capacity_by_option_id": {
+      "WB6_F101_ORIG": 40,
+      "WB6_F101_D60": 40,
+      "WB6_F102_ORIG": 40,
+      "WB6_F103_ORIG": 40
+    },
+    "notes": [
+      "TEST / RESIDUAL CAPACITY; these are remaining seats available to the PRM, not physical aircraft capacities.",
+      "WB6_F103_ORIG residual capacity = 40. Passenger group WB6_PG1 has 20 indivisible passengers."
+    ]
+  },
+  "cost_profile_id": "phase2_test_v1",
+  "cost_overrides": {},
+  "algorithm": "benders_branch_and_price_v1",
+  "profile_ids": {
+    "flight_string_generation": "phase5_test_string_generation_v1",
+    "crew_pairing_generation": "phase6_test_crew_pairing_generation_v1",
+    "aircraft_string_cg": "phase9-test-aircraft-string-cg-v1",
+    "crew_pairing_cg": "phase10-test-crew-pairing-cg-v1",
+    "benders_cg": "phase11-test-benders-cg-v1",
+    "branch_and_price": "phase12-test-branch-and-price-v1"
+  }
+}

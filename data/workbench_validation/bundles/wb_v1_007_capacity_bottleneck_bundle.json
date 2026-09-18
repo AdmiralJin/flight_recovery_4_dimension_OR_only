@@ -1,0 +1,444 @@
+{
+  "schema_version": "1.0.0",
+  "scenario": {
+    "scenario_id": "wb_v1_007_capacity_bottleneck",
+    "recovery_window": {
+      "start_time": "2026-01-15T08:30:00Z",
+      "end_time": "2026-01-15T12:30:00Z"
+    },
+    "airports": [
+      {
+        "airport_id": "A",
+        "name": "Alpha Outstation"
+      },
+      {
+        "airport_id": "B",
+        "name": "Bravo Hub"
+      },
+      {
+        "airport_id": "C",
+        "name": "Charlie Outstation"
+      },
+      {
+        "airport_id": "D",
+        "name": "Delta Outstation"
+      }
+    ],
+    "flights": [
+      {
+        "flight_id": "WB7_F101",
+        "origin": "B",
+        "destination": "A",
+        "sched_dep": "2026-01-15T09:05:00Z",
+        "sched_arr": "2026-01-15T10:05:00Z",
+        "duration": 60,
+        "original_aircraft": "WB7_AC1",
+        "original_equipment": "E1",
+        "original_crew": "WB7_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 60
+      },
+      {
+        "flight_id": "WB7_F102",
+        "origin": "B",
+        "destination": "C",
+        "sched_dep": "2026-01-15T09:15:00Z",
+        "sched_arr": "2026-01-15T10:15:00Z",
+        "duration": 60,
+        "original_aircraft": "WB7_AC2",
+        "original_equipment": "E2",
+        "original_crew": "WB7_C2",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 50
+      },
+      {
+        "flight_id": "WB7_F103",
+        "origin": "B",
+        "destination": "D",
+        "sched_dep": "2026-01-15T09:25:00Z",
+        "sched_arr": "2026-01-15T10:25:00Z",
+        "duration": 60,
+        "original_aircraft": "WB7_AC3",
+        "original_equipment": "E3",
+        "original_crew": "WB7_C3",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 40
+      },
+      {
+        "flight_id": "WB7_F104",
+        "origin": "B",
+        "destination": "A",
+        "sched_dep": "2026-01-15T09:35:00Z",
+        "sched_arr": "2026-01-15T10:35:00Z",
+        "duration": 60,
+        "original_aircraft": "WB7_AC4",
+        "original_equipment": "E4",
+        "original_crew": "WB7_C4",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      }
+    ],
+    "aircraft": [
+      {
+        "tail_id": "WB7_AC1",
+        "equipment_type": "E1",
+        "initial_station_at_t": "B",
+        "required_station_at_T_end": "A",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB7_F101"
+        ]
+      },
+      {
+        "tail_id": "WB7_AC2",
+        "equipment_type": "E2",
+        "initial_station_at_t": "B",
+        "required_station_at_T_end": "C",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB7_F102"
+        ]
+      },
+      {
+        "tail_id": "WB7_AC3",
+        "equipment_type": "E3",
+        "initial_station_at_t": "B",
+        "required_station_at_T_end": "D",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB7_F103"
+        ]
+      },
+      {
+        "tail_id": "WB7_AC4",
+        "equipment_type": "E4",
+        "initial_station_at_t": "B",
+        "required_station_at_T_end": "A",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB7_F104"
+        ]
+      }
+    ],
+    "crew": [
+      {
+        "crew_id": "WB7_C1",
+        "rating": "E1",
+        "start_station_at_t": "B",
+        "required_station_at_T_end": "A",
+        "original_duties": [
+          [
+            "WB7_F101"
+          ]
+        ],
+        "original_pairing": [
+          "WB7_F101"
+        ]
+      },
+      {
+        "crew_id": "WB7_C2",
+        "rating": "E2",
+        "start_station_at_t": "B",
+        "required_station_at_T_end": "C",
+        "original_duties": [
+          [
+            "WB7_F102"
+          ]
+        ],
+        "original_pairing": [
+          "WB7_F102"
+        ]
+      },
+      {
+        "crew_id": "WB7_C3",
+        "rating": "E3",
+        "start_station_at_t": "B",
+        "required_station_at_T_end": "D",
+        "original_duties": [
+          [
+            "WB7_F103"
+          ]
+        ],
+        "original_pairing": [
+          "WB7_F103"
+        ]
+      },
+      {
+        "crew_id": "WB7_C4",
+        "rating": "E4",
+        "start_station_at_t": "B",
+        "required_station_at_T_end": "A",
+        "original_duties": [
+          [
+            "WB7_F104"
+          ]
+        ],
+        "original_pairing": [
+          "WB7_F104"
+        ]
+      }
+    ],
+    "passengers": [],
+    "airport_intervals": [
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T08:30:00Z",
+        "end_time": "2026-01-15T09:00:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 10,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T09:00:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 2,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": [
+          "departure_capacity_reduced"
+        ]
+      },
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T10:00:00Z",
+        "end_time": "2026-01-15T12:30:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 4,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T08:30:00Z",
+        "end_time": "2026-01-15T12:30:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 10,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "C",
+        "start_time": "2026-01-15T08:30:00Z",
+        "end_time": "2026-01-15T12:30:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 10,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "D",
+        "start_time": "2026-01-15T08:30:00Z",
+        "end_time": "2026-01-15T12:30:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 10,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      }
+    ],
+    "disruptions": [
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T09:00:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "capacity_change": -2,
+        "restriction_type": "departure_capacity_reduction"
+      }
+    ]
+  },
+  "recovery_columns": {
+    "schema_version": "1.0.0",
+    "scenario_id": "wb_v1_007_capacity_bottleneck",
+    "time_unit": "minute",
+    "notes": [
+      "Workbench v1 validation Case 007: airport departure-capacity bottleneck at hub B.",
+      "Four independent flights depart B inside 09:00-10:00. Each has exactly one delayed alternative at 10:05, outside the constrained half-open interval.",
+      "Distinct equipment/rating types E1-E4 eliminate aircraft and crew reassignment alternatives, isolating the SRM airport-capacity decision.",
+      "Aircraft Strings and Crew Pairings are intentionally empty; formal Solve generates them dynamically."
+    ],
+    "flight_options": [
+      {
+        "option_id": "WB7_F101_ORIG",
+        "base_flight_id": "WB7_F101",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "A",
+        "dep_time": "2026-01-15T09:05:00Z",
+        "arr_time": "2026-01-15T10:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Original departure in the constrained 09:00-10:00 B window."
+      },
+      {
+        "option_id": "WB7_F101_D60",
+        "base_flight_id": "WB7_F101",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "B",
+        "destination": "A",
+        "dep_time": "2026-01-15T10:05:00Z",
+        "arr_time": "2026-01-15T11:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 60,
+        "arrival_delay_minutes": 60,
+        "notes": "Moves F101 to the next B capacity interval."
+      },
+      {
+        "option_id": "WB7_F102_ORIG",
+        "base_flight_id": "WB7_F102",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "C",
+        "dep_time": "2026-01-15T09:15:00Z",
+        "arr_time": "2026-01-15T10:15:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Original departure in the constrained 09:00-10:00 B window."
+      },
+      {
+        "option_id": "WB7_F102_D50",
+        "base_flight_id": "WB7_F102",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "B",
+        "destination": "C",
+        "dep_time": "2026-01-15T10:05:00Z",
+        "arr_time": "2026-01-15T11:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 50,
+        "arrival_delay_minutes": 50,
+        "notes": "Moves F102 to the next B capacity interval."
+      },
+      {
+        "option_id": "WB7_F103_ORIG",
+        "base_flight_id": "WB7_F103",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "D",
+        "dep_time": "2026-01-15T09:25:00Z",
+        "arr_time": "2026-01-15T10:25:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Original departure in the constrained 09:00-10:00 B window."
+      },
+      {
+        "option_id": "WB7_F103_D40",
+        "base_flight_id": "WB7_F103",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "B",
+        "destination": "D",
+        "dep_time": "2026-01-15T10:05:00Z",
+        "arr_time": "2026-01-15T11:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 40,
+        "arrival_delay_minutes": 40,
+        "notes": "Moves F103 to the next B capacity interval."
+      },
+      {
+        "option_id": "WB7_F104_ORIG",
+        "base_flight_id": "WB7_F104",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "A",
+        "dep_time": "2026-01-15T09:35:00Z",
+        "arr_time": "2026-01-15T10:35:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Original departure in the constrained 09:00-10:00 B window."
+      },
+      {
+        "option_id": "WB7_F104_D30",
+        "base_flight_id": "WB7_F104",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "B",
+        "destination": "A",
+        "dep_time": "2026-01-15T10:05:00Z",
+        "arr_time": "2026-01-15T11:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Moves F104 to the next B capacity interval."
+      }
+    ],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": []
+  },
+  "capacity_profile": {
+    "schema_version": "1.0.0",
+    "capacity_profile_id": "wb_v1_007_capacity_bottleneck_capacity",
+    "scenario_id": "wb_v1_007_capacity_bottleneck",
+    "source": "test_fixture",
+    "units": "seats",
+    "seat_capacity_by_option_id": {
+      "WB7_F101_ORIG": 200,
+      "WB7_F101_D60": 200,
+      "WB7_F102_ORIG": 200,
+      "WB7_F102_D50": 200,
+      "WB7_F103_ORIG": 200,
+      "WB7_F103_D40": 200,
+      "WB7_F104_ORIG": 200,
+      "WB7_F104_D30": 200
+    },
+    "notes": [
+      "TEST / RESIDUAL PASSENGER CAPACITY; no passenger groups are present.",
+      "This profile is non-binding. Case 007 tests airport departure capacity stored in Scenario.airport_intervals, not passenger seat capacity."
+    ]
+  },
+  "cost_profile_id": "phase2_test_v1",
+  "cost_overrides": {},
+  "algorithm": "benders_branch_and_price_v1",
+  "profile_ids": {
+    "flight_string_generation": "phase5_test_string_generation_v1",
+    "crew_pairing_generation": "phase6_test_crew_pairing_generation_v1",
+    "aircraft_string_cg": "phase9-test-aircraft-string-cg-v1",
+    "crew_pairing_cg": "phase10-test-crew-pairing-cg-v1",
+    "benders_cg": "phase11-test-benders-cg-v1",
+    "branch_and_price": "phase12-test-branch-and-price-v1"
+  }
+}

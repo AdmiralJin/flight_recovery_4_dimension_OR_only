@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "wb_v1_008g_valid_but_infeasible_capacity",
+  "scenario_id": "wb_v1_008g_valid_but_infeasible",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "WB8G_F101_FROM_C": 100
+  },
+  "notes": [
+    "Non-binding residual passenger capacity; no passengers are present."
+  ]
+}

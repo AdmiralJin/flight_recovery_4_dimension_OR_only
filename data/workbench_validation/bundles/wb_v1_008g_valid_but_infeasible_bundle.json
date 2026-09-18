@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.0.0",
+  "scenario": {
+    "scenario_id": "wb_v1_008g_valid_but_infeasible",
+    "recovery_window": {
+      "start_time": "2026-01-15T07:30:00Z",
+      "end_time": "2026-01-15T11:00:00Z"
+    },
+    "airports": [
+      {
+        "airport_id": "A",
+        "name": "Alpha Base"
+      },
+      {
+        "airport_id": "B",
+        "name": "Bravo Destination"
+      },
+      {
+        "airport_id": "C",
+        "name": "Charlie Unreachable Origin"
+      }
+    ],
+    "flights": [
+      {
+        "flight_id": "WB8G_F101",
+        "origin": "A",
+        "destination": "B",
+        "sched_dep": "2026-01-15T08:00:00Z",
+        "sched_arr": "2026-01-15T09:00:00Z",
+        "duration": 60,
+        "original_aircraft": "WB8G_AC1",
+        "original_equipment": "E1",
+        "original_crew": "WB8G_C1",
+        "strategic_flag": true,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      }
+    ],
+    "aircraft": [
+      {
+        "tail_id": "WB8G_AC1",
+        "equipment_type": "E1",
+        "initial_station_at_t": "A",
+        "required_station_at_T_end": "B",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB8G_F101"
+        ]
+      }
+    ],
+    "crew": [
+      {
+        "crew_id": "WB8G_C1",
+        "rating": "E1",
+        "start_station_at_t": "A",
+        "required_station_at_T_end": "B",
+        "original_duties": [
+          [
+            "WB8G_F101"
+          ]
+        ],
+        "original_pairing": [
+          "WB8G_F101"
+        ]
+      }
+    ],
+    "passengers": [],
+    "airport_intervals": [
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T11:00:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 10,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T11:00:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 10,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "C",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T11:00:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 10,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      }
+    ],
+    "disruptions": []
+  },
+  "recovery_columns": {
+    "schema_version": "1.0.0",
+    "scenario_id": "wb_v1_008g_valid_but_infeasible",
+    "time_unit": "minute",
+    "notes": [
+      "Case 008G is intentionally schema-valid and Solve-ready but optimization-infeasible.",
+      "The only schedule option operates WB8G_F101 from C to B via a declared origin_change. The only aircraft and crew both start at A, and there is no ferry, deadhead, or ground-transfer candidate to reach C.",
+      "Aircraft Strings and Crew Pairings remain empty so the formal dynamic generators and integrated linking must establish infeasibility."
+    ],
+    "flight_options": [
+      {
+        "option_id": "WB8G_F101_FROM_C",
+        "base_flight_id": "WB8G_F101",
+        "operation_type": "operate",
+        "change_types": [
+          "origin_change"
+        ],
+        "origin": "C",
+        "destination": "B",
+        "dep_time": "2026-01-15T08:00:00Z",
+        "arr_time": "2026-01-15T09:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Only schedule option; valid as an origin-change option but unreachable by the available aircraft and crew."
+      }
+    ],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": []
+  },
+  "capacity_profile": {
+    "schema_version": "1.0.0",
+    "capacity_profile_id": "wb_v1_008g_valid_but_infeasible_capacity",
+    "scenario_id": "wb_v1_008g_valid_but_infeasible",
+    "source": "test_fixture",
+    "units": "seats",
+    "seat_capacity_by_option_id": {
+      "WB8G_F101_FROM_C": 100
+    },
+    "notes": [
+      "Non-binding residual passenger capacity; no passengers are present."
+    ]
+  },
+  "cost_profile_id": "phase2_test_v1",
+  "cost_overrides": {},
+  "algorithm": "benders_branch_and_price_v1",
+  "profile_ids": {
+    "flight_string_generation": "phase5_test_string_generation_v1",
+    "crew_pairing_generation": "phase6_test_crew_pairing_generation_v1",
+    "aircraft_string_cg": "phase9-test-aircraft-string-cg-v1",
+    "crew_pairing_cg": "phase10-test-crew-pairing-cg-v1",
+    "benders_cg": "phase11-test-benders-cg-v1",
+    "branch_and_price": "phase12-test-branch-and-price-v1"
+  }
+}

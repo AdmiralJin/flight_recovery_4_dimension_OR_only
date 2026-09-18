@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "wb_v1_007_capacity_bottleneck",
+  "purpose": "Verify that SRM airport departure-capacity constraints actually change the recovered schedule and that the Workbench capacity/disruption representation is consistent with the formal solver.",
+  "interval_semantics": "SRM counts an operated departure in interval [start_time,end_time) when start_time <= dep_time < end_time.",
+  "variants": {
+    "baseline_capacity": {
+      "bundle": "wb_v1_007_capacity_baseline_bundle.json",
+      "expected_status": "optimal",
+      "expected_objective": {
+        "total": 0,
+        "schedule": 0,
+        "aircraft": 0,
+        "crew": 0,
+        "passenger": 0
+      },
+      "strong_assertions": {
+        "selected_flight_options": [
+          "WB7_F101_ORIG",
+          "WB7_F102_ORIG",
+          "WB7_F103_ORIG",
+          "WB7_F104_ORIG"
+        ],
+        "per_flight_departure_delay_minutes": {
+          "WB7_F101": 0,
+          "WB7_F102": 0,
+          "WB7_F103": 0,
+          "WB7_F104": 0
+        },
+        "constrained_interval_departure_capacity": 4,
+        "constrained_interval_selected_departure_count": 4,
+        "next_interval_selected_departure_count": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "aircraft_reassignment_count_total": 0,
+        "crew_reassignment_count_total": 0,
+        "recovery_actions_count": 0,
+        "integrated_audit_pass": true
+      }
+    },
+    "bottleneck_capacity": {
+      "bundle": "wb_v1_007_capacity_bottleneck_bundle.json",
+      "expected_status": "optimal",
+      "expected_objective": {
+        "total": 70,
+        "schedule": 70,
+        "aircraft": 0,
+        "crew": 0,
+        "passenger": 0
+      },
+      "strong_assertions": {
+        "selected_flight_options": [
+          "WB7_F101_ORIG",
+          "WB7_F102_ORIG",
+          "WB7_F103_D40",
+          "WB7_F104_D30"
+        ],
+        "per_flight_departure_delay_minutes": {
+          "WB7_F101": 0,
+          "WB7_F102": 0,
+          "WB7_F103": 40,
+          "WB7_F104": 30
+        },
+        "constrained_interval_departure_capacity": 2,
+        "constrained_interval_selected_departure_count": 2,
+        "next_interval_selected_departure_count": 2,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 70,
+        "aircraft_reassignment_count_total": 0,
+        "crew_reassignment_count_total": 0,
+        "recovery_actions_count": 2,
+        "integrated_audit_pass": true
+      }
+    }
+  },
+  "optimization_logic": {
+    "explanation": "In the bottleneck variant exactly two of four 09:00-10:00 departures must move out of the interval. Moving F101/F102/F103/F104 costs 60/50/40/30 respectively, so the unique minimum is to delay F103 and F104 for total schedule cost 70.",
+    "all_candidate_two_delay_costs": {
+      "F101+F102": 110,
+      "F101+F103": 100,
+      "F101+F104": 90,
+      "F102+F103": 90,
+      "F102+F104": 80,
+      "F103+F104": 70
+    }
+  },
+  "manual_checks": [
+    "The baseline bundle has B departure capacity 4 in 09:00-10:00 and no disruption; all four original departures remain selected.",
+    "The bottleneck bundle changes B departure capacity in 09:00-10:00 from 4 to 2 and adds a matching departure_capacity_reduction disruption with capacity_change=-2.",
+    "Capacity Heatmap / Constraints should show the reduced B departure capacity in the bottleneck variant.",
+    "Solve Precheck is input readiness only and should report both complete bundles solve-ready.",
+    "The bottleneck recovered schedule has exactly two B departures in 09:00-10:00 and two at 10:05.",
+    "F103 and F104 are the delayed flights because their 40- and 30-minute shifts are the least expensive pair.",
+    "No passenger, aircraft-reassignment, crew-reassignment, ferry, or deadhead mechanism is needed."
+  ],
+  "design_notes": [
+    "Four one-leg flights with four equipment/rating types are used despite exceeding the preferred 2-3 resource count because this gives the clearest 4-departures-versus-capacity-2 acceptance test without resource coupling.",
+    "No Cancel options are provided: the test is intentionally a pure capacity-driven retiming problem, and each flight has a feasible delayed operate option.",
+    "The matching disruption is included for Workbench visualization; the binding solver restriction is the airport interval dep_capacity in the bottleneck Scenario.",
+    "All delayed alternatives depart exactly at 10:05, safely outside the half-open [09:00,10:00) constrained interval and inside the next interval with capacity 4."
+  ]
+}

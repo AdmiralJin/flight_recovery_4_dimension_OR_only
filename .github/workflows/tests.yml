@@ -22,3 +22,6 @@ jobs:
 
       - name: Run tests
         run: python -m pytest
+
+      - name: Run Workbench v1 acceptance suite
+        run: python scripts/validate_workbench_v1_cases.py

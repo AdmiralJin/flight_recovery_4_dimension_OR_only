@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "wb_v1_002_single_delay_capacity",
+  "scenario_id": "wb_v1_002_single_delay",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "WB2_F101_ORIG": 200,
+    "WB2_F101_D40": 200,
+    "WB2_F101_D60": 200,
+    "WB2_F102_ORIG": 200,
+    "WB2_F102_D20": 200,
+    "WB2_F102_D40": 200,
+    "WB2_F103_ORIG": 200,
+    "WB2_F103_D20": 200,
+    "WB2_F201_ORIG": 200,
+    "WB2_F202_ORIG": 200,
+    "WB2_F203_ORIG": 200
+  },
+  "notes": [
+    "TEST / RESIDUAL CAPACITY; no passenger groups are present.",
+    "Capacity entries cover every OPERATE option although passenger seat capacity is non-binding in Case 002."
+  ]
+}
