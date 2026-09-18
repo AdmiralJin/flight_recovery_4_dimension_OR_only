@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "wb_v1_002_single_delay",
+  "purpose": "Verify that one direct departure closure forces a 60-minute delay and that aircraft/crew continuity propagates the minimum necessary 20-minute delay to the next flight.",
+  "expected_status": "optimal",
+  "expected_objective": {
+    "total": 80,
+    "schedule": 80,
+    "aircraft": 0,
+    "crew": 0,
+    "passenger": 0
+  },
+  "strong_assertions": {
+    "selected_flight_options": [
+      "WB2_F101_D60",
+      "WB2_F102_D20",
+      "WB2_F103_ORIG",
+      "WB2_F201_ORIG",
+      "WB2_F202_ORIG",
+      "WB2_F203_ORIG"
+    ],
+    "per_flight_departure_delay_minutes": {
+      "WB2_F101": 60,
+      "WB2_F102": 20,
+      "WB2_F103": 0,
+      "WB2_F201": 0,
+      "WB2_F202": 0,
+      "WB2_F203": 0
+    },
+    "cancelled_base_flights": [],
+    "delayed_flights": 2,
+    "total_departure_delay_minutes": 80,
+    "max_departure_delay_minutes": 60,
+    "aircraft_reassignment_count_total": 0,
+    "aircraft_ferry_legs_total": 0,
+    "crew_reassignment_count_total": 0,
+    "crew_deadhead_legs_total": 0,
+    "passenger_outcomes_count": 0,
+    "recovery_actions_count": 2,
+    "integrated_audit_pass": true
+  },
+  "manual_checks": [
+    "Validate reports the Scenario as valid.",
+    "Visualization shows one direct disruption exposure at A affecting WB2_F101.",
+    "The A 07:30-09:00 interval shows departure capacity 0 / departure closure.",
+    "Solve precheck reports solve_ready=true.",
+    "Recovered WB2_F101 departs at 09:00 (+60 min).",
+    "Recovered WB2_F102 departs at 10:00 (+20 min) because AC1/C1 arrive B at 10:00.",
+    "WB2_F103 and the complete WB2_AC2/WB2_C2 rotation remain at original times.",
+    "No impossible aircraft or crew space-time jump appears.",
+    "Recovery contains exactly two DELAY actions."
+  ],
+  "design_notes": [
+    "The disruption record and airport-interval closure are deliberately both present: disruption drives Workbench direct-exposure visualization, while the interval capacity/closure makes the restriction binding in the formal full-scope solver.",
+    "The closure is half-open [07:30,09:00), so WB2_F101_D60 departing exactly at 09:00 is the first feasible F101 option.",
+    "The canonical E1 aircraft minimum turn and crew minimum connection are both zero in the current test profiles. Therefore F101_D60 arriving B at 10:00 connects exactly to F102_D20 departing at 10:00.",
+    "Default flight delay cost is 1 per minute and cancellation is much more expensive, so the intended schedule cost is 60 + 20 = 80."
+  ]
+}
