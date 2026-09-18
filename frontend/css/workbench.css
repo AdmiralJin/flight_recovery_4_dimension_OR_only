@@ -34,6 +34,7 @@
 .global-toast.error { border-color: #df9c96; background: #fff1ef; }
 .case-metadata { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 14px; padding: 12px 15px; border: 1px solid var(--line); border-radius: 10px; color: var(--muted); background: rgba(255,255,255,.65); font-size: 12px; }
 .case-metadata strong { color: var(--ink); }
+.case-notice { margin: -4px 0 14px; padding: 11px 13px; border-left: 3px solid #d99a2b; color: #70480d; background: #fff8e9; font-size: 13px; line-height: 1.45; }
 .audit-panel { border: 1px solid var(--line); border-radius: 15px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
 .audit-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 24px; border-bottom: 1px solid var(--line); }
 .audit-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
