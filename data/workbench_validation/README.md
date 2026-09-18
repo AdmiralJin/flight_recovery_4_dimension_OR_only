@@ -113,3 +113,42 @@ The E2 control rotation stays original in both variants.
 - `bundles/wb_v1_003_delay_vs_cancel_bundle.json`: canonical costs
 - `bundles/wb_v1_003_delay_vs_cancel_low_cancel_bundle.json`: low cancellation-cost override
 - `expected/wb_v1_003_delay_vs_cancel_expected.json`
+
+
+## Case 004 — `wb_v1_004_aircraft_swap`
+
+Purpose: verify Aircraft Recovery with a compatible spare aircraft, while keeping crew and passenger logic simple.
+
+### Structure
+
+- one disrupted E1 aircraft WB4_AC1 with original closed rotation `A-B-C-B-A`
+- one compatible E1 spare WB4_AC2 positioned at B, with required terminal B
+- three deliberately simple crew pairings so crew availability does not force the aircraft decision
+- no passengers
+- no ferry required
+- A departure closure forces WB4_F101 to depart +60 minutes
+
+### Intended aircraft recovery
+
+If WB4_AC1 alone keeps its original downstream flying, the minimum feasible recovery is:
+
+`F101 +60 -> F102 +30 -> F103 +20 -> F104 original`
+
+Schedule cost = 110.
+
+The spare-aircraft recovery is:
+
+- WB4_AC1: `F101 +60 -> F104 original`, A -> B -> A
+- WB4_AC2: `F102 original -> F103 original`, B -> C -> B
+
+Schedule cost = 60.
+
+Under the canonical test profile aircraft reassignment cost is 0, so the intended optimum uses the spare and creates exactly two aircraft reassignments (F102 and F103) without ferry.
+
+### Files
+
+- `scenarios/wb_v1_004_aircraft_swap.json`
+- `columns/wb_v1_004_aircraft_swap_columns.json`
+- `capacities/wb_v1_004_aircraft_swap_capacity.json`
+- `bundles/wb_v1_004_aircraft_swap_bundle.json`
+- `expected/wb_v1_004_aircraft_swap_expected.json`
