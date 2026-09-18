@@ -50,11 +50,16 @@ test("workbench exposes the case selector, explicit readiness, health, and globa
   assert.match(appSource, /setSolvingState\(true\)/);
 });
 
-test("example selector groups solve-ready and scenario-only cases and validates after load", () => {
-  assert.match(appSource, /solveReadyGroup\.label = "Solve-ready examples"/);
-  assert.match(appSource, /scenarioOnlyGroup\.label = "Scenario-only examples"/);
+test("example selector groups core, validation, boundary, and scenario-only cases", () => {
+  for (const label of ["Core examples", "Validation cases", "Boundary cases", "Scenario-only examples"]) {
+    assert.ok(appSource.includes(label));
+  }
+  assert.match(appSource, /option\.dataset\.type = example\.type/);
+  assert.match(appSource, /option\.dataset\.source = example\.source/);
+  assert.match(appSource, /option\.dataset\.expectedStatus = example\.expected_status/);
+  assert.match(appSource, /option\?\.dataset\.type === "solve_bundle"/);
+  assert.match(appSource, /applySolveBundle\(await loadSolveExampleBundle\(caseId\)/);
   assert.match(appSource, /const validation = await validateScenario\(workbenchState\.scenario\)/);
-  assert.match(appSource, /workbenchState\.scenarioValidation = validation\.valid \? "valid" : "invalid"/);
 });
 
 test("solve lifecycle rejects duplicate starts and stale results", () => {
