@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "wb_v1_008_negative_cases",
+  "purpose": "Verify that invalid, incomplete, and optimization-infeasible inputs fail at the correct system layer and never produce fake recovery results.",
+  "subcases": {
+    "008A": {
+      "id": "wb_v1_008a_duplicate_flight_id",
+      "layer": "scenario_semantic_validation",
+      "endpoint": "POST /api/validate",
+      "expected_http_status": 422,
+      "expected_valid": false,
+      "expected_error_code": "duplicate_id",
+      "explanation": "Two flights use the same flight_id."
+    },
+    "008B": {
+      "id": "wb_v1_008b_invalid_flight_time",
+      "layer": "scenario_schema_validation",
+      "endpoint": "POST /api/validate",
+      "expected_http_status": 422,
+      "expected_valid": false,
+      "expected_message_contains": "sched_dep must be before sched_arr",
+      "explanation": "Scheduled arrival equals scheduled departure."
+    },
+    "008C": {
+      "id": "wb_v1_008c_invalid_duration",
+      "layer": "scenario_schema_validation",
+      "endpoint": "POST /api/validate",
+      "expected_http_status": 422,
+      "expected_valid": false,
+      "expected_message_contains": "duration must equal sched_arr - sched_dep in whole minutes",
+      "explanation": "Declared duration is 55 while the schedule spans 60 minutes."
+    },
+    "008D": {
+      "id": "wb_v1_008d_invalid_market_min_seats",
+      "layer": "scenario_schema_validation",
+      "endpoint": "POST /api/validate",
+      "expected_http_status": 422,
+      "expected_valid": false,
+      "expected_message_contains": "min_seats must be 0 when market_flag is false",
+      "explanation": "Non-market flight illegally declares min_seats=10."
+    },
+    "008E": {
+      "id": "wb_v1_008e_invalid_disruption_interval",
+      "layer": "scenario_schema_validation",
+      "endpoint": "POST /api/validate",
+      "expected_http_status": 422,
+      "expected_valid": false,
+      "expected_message_contains": "start_time must be before end_time",
+      "explanation": "Disruption start and end times are identical."
+    },
+    "008F": {
+      "id": "wb_v1_008f_scenario_only_missing_solve_inputs",
+      "layer": "solve_readiness",
+      "validate_expected_http_status": 200,
+      "validate_expected_valid": true,
+      "precheck_expected_solve_ready": false,
+      "expected_missing_inputs": [
+        "missing_flight_options",
+        "missing_capacity_profile",
+        "missing_algorithm_profiles"
+      ],
+      "solve_expected_http_status": 422,
+      "solve_expected_status": "not_solve_ready",
+      "explanation": "Scenario is valid and usable for Data/Visualization, but the Solve envelope intentionally omits Recovery Columns, Capacity Profile and Algorithm Profiles."
+    },
+    "008G": {
+      "id": "wb_v1_008g_valid_but_infeasible",
+      "layer": "optimization_feasibility",
+      "validate_expected_http_status": 200,
+      "validate_expected_valid": true,
+      "precheck_expected_solve_ready": true,
+      "solve_expected_http_status": 200,
+      "expected_status": "infeasible",
+      "expected_objective": null,
+      "require_empty_selected": true,
+      "require_empty_recovered_outputs": true,
+      "explanation": "The only strategic operate option starts at C, while the only aircraft and crew start at A and no repositioning candidates exist. The bundle is complete and semantically valid, but no integrated feasible resource path can cover the selected flight."
+    }
+  },
+  "acceptance_principles": [
+    "Invalid Scenario data must be rejected before Solve.",
+    "A valid Scenario does not imply a complete SolveRequest.",
+    "Solve Precheck reports input readiness only, not optimization feasibility.",
+    "An infeasible optimization result must not contain objective values, selected decisions, resolved flights, resource outcomes, passenger outcomes, or recovery actions."
+  ]
+}

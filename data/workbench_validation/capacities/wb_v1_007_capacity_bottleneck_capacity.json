@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "wb_v1_007_capacity_bottleneck_capacity",
+  "scenario_id": "wb_v1_007_capacity_bottleneck",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "WB7_F101_ORIG": 200,
+    "WB7_F101_D60": 200,
+    "WB7_F102_ORIG": 200,
+    "WB7_F102_D50": 200,
+    "WB7_F103_ORIG": 200,
+    "WB7_F103_D40": 200,
+    "WB7_F104_ORIG": 200,
+    "WB7_F104_D30": 200
+  },
+  "notes": [
+    "TEST / RESIDUAL PASSENGER CAPACITY; no passenger groups are present.",
+    "This profile is non-binding. Case 007 tests airport departure capacity stored in Scenario.airport_intervals, not passenger seat capacity."
+  ]
+}

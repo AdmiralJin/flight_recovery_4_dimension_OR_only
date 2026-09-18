@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "wb_v1_003_delay_vs_cancel",
+  "purpose": "Verify that Cost Override changes the actual optimal recovery decision, not only the UI value: default costs favor delay recovery, while a deliberately low cancellation penalty favors cancelling the complete disrupted E1 rotation.",
+  "variants": {
+    "default_costs": {
+      "bundle": "wb_v1_003_delay_vs_cancel_bundle.json",
+      "cost_overrides": {},
+      "expected_status": "optimal",
+      "expected_objective": {
+        "total": 80,
+        "schedule": 80,
+        "aircraft": 0,
+        "crew": 0,
+        "passenger": 0
+      },
+      "strong_assertions": {
+        "selected_flight_options": [
+          "WB3_F101_D60",
+          "WB3_F102_D20",
+          "WB3_F103_ORIG",
+          "WB3_F201_ORIG",
+          "WB3_F202_ORIG",
+          "WB3_F203_ORIG"
+        ],
+        "cancelled_base_flights": [],
+        "delayed_flights": 2,
+        "cancelled_flights": 0,
+        "total_departure_delay_minutes": 80,
+        "max_departure_delay_minutes": 60,
+        "recovery_actions_count": 2,
+        "integrated_audit_pass": true
+      }
+    },
+    "low_cancellation_cost": {
+      "bundle": "wb_v1_003_delay_vs_cancel_low_cancel_bundle.json",
+      "cost_overrides": {
+        "flight_cancellation": 20
+      },
+      "expected_status": "optimal",
+      "expected_objective": {
+        "total": 60,
+        "schedule": 60,
+        "aircraft": 0,
+        "crew": 0,
+        "passenger": 0
+      },
+      "strong_assertions": {
+        "selected_flight_options": [
+          "WB3_F101_CANCEL",
+          "WB3_F102_CANCEL",
+          "WB3_F103_CANCEL",
+          "WB3_F201_ORIG",
+          "WB3_F202_ORIG",
+          "WB3_F203_ORIG"
+        ],
+        "cancelled_base_flights": [
+          "WB3_F101",
+          "WB3_F102",
+          "WB3_F103"
+        ],
+        "delayed_flights": 0,
+        "cancelled_flights": 3,
+        "total_departure_delay_minutes": 0,
+        "max_departure_delay_minutes": 0,
+        "recovery_actions_count": 3,
+        "integrated_audit_pass": true
+      }
+    }
+  },
+  "manual_checks": [
+    "Both bundles pass Solve Precheck.",
+    "With canonical phase2_test_v1 costs, the disrupted E1 rotation is recovered by F101 +60 and F102 +20; the schedule cost is 80.",
+    "With only flight_cancellation overridden from 25000 to 20, the E1 rotation flips to three cancellations; the schedule cost is 60.",
+    "The unaffected E2 control rotation remains original in both variants.",
+    "No aircraft/crew reassignment, ferry, deadhead, or passenger effect is needed in either variant.",
+    "The decision flip is therefore attributable to the cost override rather than a different scenario, capacity profile, or algorithm profile."
+  ],
+  "design_notes": [
+    "This Case intentionally tests an integrated rotation-level delay-versus-cancel tradeoff instead of pretending a cancelled first leg is independent of aircraft/crew terminal continuity.",
+    "The two bundles are identical except for cost_overrides.flight_cancellation, making the causal test explicit.",
+    "The override value 20 is deliberately synthetic and exists only to force a deterministic regression decision flip; it is not a business-calibrated cancellation cost.",
+    "Default comparison: delay recovery costs 60 + 20 = 80, while cancelling the three-leg E1 cycle costs 3 x 25000 = 75000.",
+    "Override comparison: cancelling the three-leg E1 cycle costs 3 x 20 = 60, lower than the unchanged 80 delay-recovery cost."
+  ]
+}

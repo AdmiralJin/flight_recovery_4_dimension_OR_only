@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "wb_v1_006_passenger_connection_low_f103_capacity",
+  "scenario_id": "wb_v1_006_passenger_connection",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "WB6_F101_ORIG": 40,
+    "WB6_F101_D60": 40,
+    "WB6_F102_ORIG": 40,
+    "WB6_F103_ORIG": 10
+  },
+  "notes": [
+    "TEST / RESIDUAL CAPACITY; these are remaining seats available to the PRM, not physical aircraft capacities.",
+    "WB6_F103_ORIG residual capacity = 10. Passenger group WB6_PG1 has 20 indivisible passengers."
+  ]
+}

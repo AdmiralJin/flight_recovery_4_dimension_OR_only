@@ -14,6 +14,7 @@ async function importSource(relativePath) {
 
 const costsBundle = await importSource("frontend/js/costs.js");
 const constraintsBundle = await importSource("frontend/js/constraints.js");
+const stateBundle = await importSource("frontend/js/workbench-state.js");
 const baseline = JSON.parse(readFileSync(
   resolve(projectRoot, "data/costs/phase2_test_costs_v1.json"),
   "utf8",
@@ -29,14 +30,135 @@ test("workbench exposes Data, Visualization, Costs, and Constraints views", () =
 });
 
 test("recovery controls wire solve, comparison and export without claiming production readiness", () => {
-  for (const id of ["solve-recovery", "recovery-view", "recovery-mode", "export-recovered-result"]) {
+  for (const id of ["solve-recovery", "recovery-view", "recovery-mode", "export-recovered-result", "export-solve-bundle"]) {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
   for (const mode of ["original", "disrupted", "recovered", "difference"]) {
     assert.match(html, new RegExp(`<option value=["']${mode}["']`));
   }
-  assert.match(appSource, /solveRecovery\(currentSolveBundle\(\)\)/);
+  assert.match(appSource, /solveRecovery\(request\.bundle\)/);
   assert.match(appSource, /checkSolveReadiness\(bundle\)/);
+});
+
+test("workbench exposes the case selector, explicit readiness, health, and global error surface", () => {
+  for (const id of ["example-selector", "scenario-summary", "solve-readiness-summary", "solver-summary", "result-summary", "api-health-summary", "global-toast-region", "case-metadata", "case-notice"]) {
+    assert.match(html, new RegExp(`id=["']${id}["']`));
+  }
+  assert.match(appSource, /function applySolveBundle\(/);
+  assert.match(appSource, /function resetToBaseline\(/);
+  assert.match(appSource, /Solve result discarded because the workbench input changed/);
+  assert.match(appSource, /setSolvingState\(true\)/);
+});
+
+test("example selector groups core, validation, boundary, and scenario-only cases", () => {
+  for (const label of ["Core examples", "Validation cases", "Boundary cases", "Scenario-only examples"]) {
+    assert.ok(appSource.includes(label));
+  }
+  assert.match(appSource, /option\.dataset\.type = example\.type/);
+  assert.match(appSource, /option\.dataset\.source = example\.source/);
+  assert.match(appSource, /option\.dataset\.expectedStatus = example\.expected_status/);
+  assert.match(appSource, /option\?\.dataset\.type === "solve_bundle"/);
+  assert.match(appSource, /applySolveBundle\(await loadSolveExampleBundle\(caseId\)/);
+  assert.match(appSource, /const validation = await validateScenario\(workbenchState\.scenario\)/);
+});
+
+test("solve lifecycle rejects duplicate starts and stale results", () => {
+  const state = {
+    solving: false, revision: 3, solveBundle: { schema_version: "1.0.0" },
+    scenario: { scenario_id: "A" }, recoveryColumns: { flight_options: [] },
+    passengerCapacityProfile: { capacity_profile_id: "capacity" }, costOverrides: {},
+    recoveredResult: null, recoveredResultRevision: null, resultStale: false,
+    solveError: "previous failure",
+  };
+  const request = stateBundle.module.beginSolve(state);
+  assert.equal(request.revision, 3);
+  assert.equal(state.solveError, null);
+  assert.equal(stateBundle.module.beginSolve(state), null);
+  state.revision = 4;
+  assert.equal(stateBundle.module.acceptSolveResult(state, request, { status: "optimal" }), false);
+  assert.equal(state.recoveredResult, null);
+  stateBundle.module.finishSolve(state);
+  const currentRequest = stateBundle.module.beginSolve(state);
+  assert.equal(stateBundle.module.acceptSolveResult(state, currentRequest, { status: "optimal" }), true);
+  assert.equal(state.recoveredResultRevision, 4);
+  assert.equal(state.resultStale, false);
+});
+
+test("case baseline reset preserves bundle columns, capacity, and overrides", () => {
+  const state = {
+    revision: 1, dirty: false, caseId: "toy016", source: "example",
+    scenario: { scenario_id: "toy016" }, solveBundle: { schema_version: "1.0.0" },
+    recoveryColumns: { scenario_id: "toy016" },
+    passengerCapacityProfile: { scenario_id: "toy016" },
+    costOverrides: { crew_reassignment: 100 }, recoveredResult: { status: "optimal" },
+    recoveredResultRevision: 1, resultStale: true,
+  };
+  state.baseline = stateBundle.module.snapshotCaseBaseline(state);
+  state.costOverrides = {};
+  state.recoveryColumns = null;
+  state.dirty = true;
+  assert.equal(stateBundle.module.restoreCaseBaseline(state), true);
+  assert.deepEqual(state.costOverrides, { crew_reassignment: 100 });
+  assert.equal(state.recoveryColumns.scenario_id, "toy016");
+  assert.equal(state.revision, 2);
+  assert.equal(state.recoveredResult, null);
+  assert.equal(state.resultStale, false);
+});
+
+test("loading a case validates its Scenario and top-level reset stays baseline-oriented", () => {
+  assert.match(appSource, /const validation = await validateScenario\(workbenchState\.scenario\)/);
+  assert.match(appSource, /showValidation\(validation\)/);
+  assert.doesNotMatch(html, /id=["']reset-scenario["']/);
+  assert.doesNotMatch(appSource, /#reset-scenario/);
+});
+
+test("scenario-only cases render persistent Data-view guidance", () => {
+  assert.match(appSource, /This case contains Scenario data only/);
+  assert.match(appSource, /cannot be solved until a complete Solve Bundle/);
+});
+
+test("workbench renders scenario validity separately from case dirty and stale-result state", () => {
+  assert.match(appSource, /#scenario-summary/);
+  assert.match(appSource, /"MODIFIED" : "CLEAN"/);
+  assert.match(appSource, /solveError \? "ERROR"/);
+  assert.match(appSource, /resultStale \? "STALE RESULT"/);
+  assert.match(appSource, /invalidateRecovery\(\{ markStale: hadCurrentResult \}\)/);
+});
+
+test("incomplete solve bundles remain inspectable and disable Solve instead of being rejected", () => {
+  assert.match(appSource, /let importedReadiness = null/);
+  assert.match(appSource, /Imported Solve Bundle, but Solve is unavailable/);
+  assert.doesNotMatch(appSource, /if \(!readiness\.solve_ready\) throw new Error\(\`Solve Bundle is not ready/);
+});
+
+test("stale results are surfaced in solve guidance and recovery instead of silently disappearing", () => {
+  const recoverySource = readFileSync(resolve(projectRoot, "frontend/js/recovery.js"), "utf8");
+  assert.match(appSource, /Inputs changed after the last solve\. Run Solve again\./);
+  assert.match(appSource, /workbenchState\.resultStale/);
+  assert.match(recoverySource, /Recovered Result is stale/);
+  assert.match(recoverySource, /Run Solve again before reviewing or exporting Recovery/);
+  assert.match(recoverySource, /<h2>Solver error<\/h2>/);
+  assert.match(appSource, /workbenchState\.solveError/);
+});
+
+test("visualization links to Recovery without a permanently disabled Recovered Plan", () => {
+  const visualizationSource = readFileSync(resolve(projectRoot, "frontend/js/visualization.js"), "utf8");
+  assert.match(visualizationSource, /Open Recovery →/);
+  assert.doesNotMatch(visualizationSource, /renderModeButton\("Recovered Plan"/);
+});
+
+test("case state keeps the active bundle synchronized and preserves its baseline overrides", () => {
+  assert.match(appSource, /recoveryColumns = clone\(bundle\.recovery_columns\)/);
+  assert.match(appSource, /passengerCapacityProfile = clone\(bundle\.capacity_profile\)/);
+  assert.match(appSource, /costOverrides = clone\(bundle\.cost_overrides \|\| \{\}\)/);
+  assert.match(appSource, /baseline\?\.costOverrides \|\| \{\}/);
+  assert.match(appSource, /workbench_snapshot_v1/);
+});
+
+test("case cost overrides are compared against the loaded baseline, not emptiness", () => {
+  assert.match(appSource, /function costOverridesMatchBaseline\(\)/);
+  assert.match(appSource, /costOverridesMatchBaseline\(\) \? "baseline" : "modified"/);
+  assert.match(appSource, /setCostStatus\("baseline", "Overrides restored to the current case baseline\."/);
 });
 
 test("cost overrides change only the effective copy and reset to baseline", () => {
@@ -108,12 +230,13 @@ test("constraint renderer distinguishes provenance and navigates to canonical Da
   assert.match(appSource, /const workbenchState = \{[\s\S]*scenario:[\s\S]*costBaseline:[\s\S]*constraintMetadata:/);
 });
 
-test("frontend precheck sends benchmark Scenario, Recovery Columns, and capacity", () => {
+test("frontend precheck sends the current case Scenario, Recovery Columns, and capacity", () => {
   assert.match(appSource, /recoveryColumns: null/);
   assert.match(appSource, /passengerCapacityProfile: null/);
   assert.match(
     appSource,
     /runConstraintPrecheck\([\s\S]*workbenchState\.scenario,[\s\S]*workbenchState\.recoveryColumns,[\s\S]*workbenchState\.passengerCapacityProfile/,
   );
-  assert.match(appSource, /loadBenchmarkPrecheckInputs\(\)/);
+  assert.match(appSource, /currentCapacitySummary\(\)/);
+  assert.doesNotMatch(appSource, /loadBenchmarkPrecheckInputs\(\)/);
 });

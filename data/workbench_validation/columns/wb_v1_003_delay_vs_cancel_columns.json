@@ -1,0 +1,239 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "wb_v1_003_delay_vs_cancel",
+  "time_unit": "minute",
+  "notes": [
+    "Workbench v1 validation Case 003: cost-sensitive choice between recovering a disrupted closed rotation by delay or cancelling that complete affected rotation.",
+    "The E1 rotation is a closed A-B-C-A cycle. Because aircraft and crew both start and must finish at A, cancelling only the first disrupted leg cannot leave the later B-C/C-A legs independently operable.",
+    "Aircraft Strings and Crew Pairings are intentionally empty; formal Solve must generate them dynamically."
+  ],
+  "flight_options": [
+    {
+      "option_id": "WB3_F101_ORIG",
+      "base_flight_id": "WB3_F101",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "A",
+      "destination": "B",
+      "dep_time": "2026-01-15T08:00:00Z",
+      "arr_time": "2026-01-15T09:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Original departure is inside the A departure closure and is infeasible."
+    },
+    {
+      "option_id": "WB3_F101_D60",
+      "base_flight_id": "WB3_F101",
+      "operation_type": "operate",
+      "change_types": [
+        "delay"
+      ],
+      "origin": "A",
+      "destination": "B",
+      "dep_time": "2026-01-15T09:00:00Z",
+      "arr_time": "2026-01-15T10:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 60,
+      "arrival_delay_minutes": 60,
+      "notes": "First feasible delayed departure after the A closure."
+    },
+    {
+      "option_id": "WB3_F101_CANCEL",
+      "base_flight_id": "WB3_F101",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Cancellation starts the alternative of dropping the complete affected E1 closed rotation."
+    },
+    {
+      "option_id": "WB3_F102_ORIG",
+      "base_flight_id": "WB3_F102",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "B",
+      "destination": "C",
+      "dep_time": "2026-01-15T09:40:00Z",
+      "arr_time": "2026-01-15T10:40:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Original option becomes resource-infeasible when F101 is delayed."
+    },
+    {
+      "option_id": "WB3_F102_D20",
+      "base_flight_id": "WB3_F102",
+      "operation_type": "operate",
+      "change_types": [
+        "delay"
+      ],
+      "origin": "B",
+      "destination": "C",
+      "dep_time": "2026-01-15T10:00:00Z",
+      "arr_time": "2026-01-15T11:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 20,
+      "arrival_delay_minutes": 20,
+      "notes": "Minimum delay that reconnects the E1 aircraft and C1 crew after F101 +60."
+    },
+    {
+      "option_id": "WB3_F102_CANCEL",
+      "base_flight_id": "WB3_F102",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "If F101 is cancelled, the E1 aircraft/crew remain at A so F102 cannot be operated from B; cancelling the closed rotation is structurally consistent."
+    },
+    {
+      "option_id": "WB3_F103_ORIG",
+      "base_flight_id": "WB3_F103",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "C",
+      "destination": "A",
+      "dep_time": "2026-01-15T11:20:00Z",
+      "arr_time": "2026-01-15T12:20:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Original option remains feasible after F102 +20."
+    },
+    {
+      "option_id": "WB3_F103_CANCEL",
+      "base_flight_id": "WB3_F103",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "If F101/F102 are cancelled, cancelling F103 keeps the E1 aircraft and C1 crew idle at their required terminal A."
+    },
+    {
+      "option_id": "WB3_F201_ORIG",
+      "base_flight_id": "WB3_F201",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "C",
+      "destination": "B",
+      "dep_time": "2026-01-15T08:10:00Z",
+      "arr_time": "2026-01-15T09:10:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Unaffected zero-cost control rotation."
+    },
+    {
+      "option_id": "WB3_F201_CANCEL",
+      "base_flight_id": "WB3_F201",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Fallback cancel option."
+    },
+    {
+      "option_id": "WB3_F202_ORIG",
+      "base_flight_id": "WB3_F202",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "B",
+      "destination": "A",
+      "dep_time": "2026-01-15T09:50:00Z",
+      "arr_time": "2026-01-15T10:50:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Unaffected zero-cost control rotation."
+    },
+    {
+      "option_id": "WB3_F202_CANCEL",
+      "base_flight_id": "WB3_F202",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Fallback cancel option."
+    },
+    {
+      "option_id": "WB3_F203_ORIG",
+      "base_flight_id": "WB3_F203",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "A",
+      "destination": "C",
+      "dep_time": "2026-01-15T11:30:00Z",
+      "arr_time": "2026-01-15T12:30:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Unaffected zero-cost control rotation."
+    },
+    {
+      "option_id": "WB3_F203_CANCEL",
+      "base_flight_id": "WB3_F203",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Fallback cancel option."
+    }
+  ],
+  "aircraft_strings": [],
+  "crew_pairings": [],
+  "passenger_itineraries": []
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "wb_v1_004_aircraft_swap_capacity",
+  "scenario_id": "wb_v1_004_aircraft_swap",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "WB4_F101_ORIG": 200,
+    "WB4_F101_D60": 200,
+    "WB4_F102_ORIG": 200,
+    "WB4_F102_D30": 200,
+    "WB4_F103_ORIG": 200,
+    "WB4_F103_D20": 200,
+    "WB4_F104_ORIG": 200
+  },
+  "notes": [
+    "TEST / RESIDUAL CAPACITY; no passenger groups are present.",
+    "Seat capacity is non-binding in this aircraft-recovery case."
+  ]
+}

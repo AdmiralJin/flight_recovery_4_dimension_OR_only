@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "wb_v1_005_crew_recovery",
+  "purpose": "Verify Crew Recovery independently from aircraft recovery: delayed WB5_C1 misses F102, so qualified spare WB5_C2 should cover F102/F103 under canonical zero crew-reassignment cost; a high crew-reassignment override should flip the solution back to delay propagation with WB5_C1.",
+  "variants": {
+    "default_crew_cost": {
+      "bundle": "wb_v1_005_crew_recovery_bundle.json",
+      "cost_overrides": {
+        "aircraft_reassignment": 100
+      },
+      "expected_status": "optimal",
+      "expected_objective": {
+        "total": 60,
+        "schedule": 60,
+        "aircraft": 0,
+        "crew": 0,
+        "passenger": 0
+      },
+      "strong_assertions": {
+        "selected_flight_options": [
+          "WB5_F101_D60",
+          "WB5_F102_ORIG",
+          "WB5_F103_ORIG",
+          "WB5_F104_ORIG"
+        ],
+        "per_flight_crew": {
+          "WB5_F101": "WB5_C1",
+          "WB5_F102": "WB5_C2",
+          "WB5_F103": "WB5_C2",
+          "WB5_F104": "WB5_C1"
+        },
+        "per_flight_aircraft": {
+          "WB5_F101": "WB5_AC1",
+          "WB5_F102": "WB5_AC2",
+          "WB5_F103": "WB5_AC2",
+          "WB5_F104": "WB5_AC1"
+        },
+        "per_flight_departure_delay_minutes": {
+          "WB5_F101": 60,
+          "WB5_F102": 0,
+          "WB5_F103": 0,
+          "WB5_F104": 0
+        },
+        "cancelled_base_flights": [],
+        "delayed_flights": 1,
+        "cancelled_flights": 0,
+        "total_departure_delay_minutes": 60,
+        "max_departure_delay_minutes": 60,
+        "aircraft_reassignment_count_total": 0,
+        "aircraft_ferry_legs_total": 0,
+        "crew_reassignment_count_total": 2,
+        "crew_deadhead_legs_total": 0,
+        "passenger_outcomes_count": 0,
+        "recovery_actions_count": 3,
+        "integrated_audit_pass": true
+      }
+    },
+    "high_crew_reassignment_cost": {
+      "bundle": "wb_v1_005_crew_recovery_high_crew_cost_bundle.json",
+      "cost_overrides": {
+        "aircraft_reassignment": 100,
+        "crew_reassignment": 100
+      },
+      "expected_status": "optimal",
+      "expected_objective": {
+        "total": 110,
+        "schedule": 110,
+        "aircraft": 0,
+        "crew": 0,
+        "passenger": 0
+      },
+      "strong_assertions": {
+        "selected_flight_options": [
+          "WB5_F101_D60",
+          "WB5_F102_D30",
+          "WB5_F103_D20",
+          "WB5_F104_ORIG"
+        ],
+        "per_flight_crew": {
+          "WB5_F101": "WB5_C1",
+          "WB5_F102": "WB5_C1",
+          "WB5_F103": "WB5_C1",
+          "WB5_F104": "WB5_C1"
+        },
+        "per_flight_aircraft": {
+          "WB5_F101": "WB5_AC1",
+          "WB5_F102": "WB5_AC2",
+          "WB5_F103": "WB5_AC2",
+          "WB5_F104": "WB5_AC1"
+        },
+        "per_flight_departure_delay_minutes": {
+          "WB5_F101": 60,
+          "WB5_F102": 30,
+          "WB5_F103": 20,
+          "WB5_F104": 0
+        },
+        "cancelled_base_flights": [],
+        "delayed_flights": 3,
+        "cancelled_flights": 0,
+        "total_departure_delay_minutes": 110,
+        "max_departure_delay_minutes": 60,
+        "aircraft_reassignment_count_total": 0,
+        "aircraft_ferry_legs_total": 0,
+        "crew_reassignment_count_total": 0,
+        "crew_deadhead_legs_total": 0,
+        "passenger_outcomes_count": 0,
+        "recovery_actions_count": 3,
+        "integrated_audit_pass": true
+      }
+    }
+  },
+  "comparison_logic": {
+    "spare_crew_plan": "F101 +60 by C1; F102/F103 on time by C2; F104 on time by C1.",
+    "spare_crew_schedule_cost": 60,
+    "original_crew_delay_plan": "F101 +60, F102 +30, F103 +20, F104 original, all by C1.",
+    "original_crew_delay_schedule_cost": 110,
+    "default_reason": "Canonical crew_reassignment cost is 0, so the spare-crew plan costs only the forced 60-minute delay.",
+    "high_cost_reason": "With crew_reassignment=100, the two reassigned operating legs would add 200 crew cost, so keeping C1 and accepting 50 extra minutes of downstream delay is cheaper."
+  },
+  "manual_checks": [
+    "Visualization shows WB5_F101 as the direct disruption exposure while WB5_AC2 remains available at B for F102/F103.",
+    "Both bundles pass Solve Precheck.",
+    "Default-cost recovery keeps both aircraft on their original rotations and reassigns only crew on F102/F103.",
+    "WB5_C2 starts at B, operates B-C-B, and finishes at required terminal B without deadhead.",
+    "WB5_C1 operates delayed F101, waits at B, then operates F104 and finishes at required terminal A.",
+    "With crew_reassignment=100, F102/F103 delay instead and WB5_C1 retains all four operated legs.",
+    "No passenger effects, ferry legs, or cancellations appear in either variant."
+  ],
+  "design_notes": [
+    "The case deliberately separates aircraft and crew rotations: WB5_AC1 operates F101/F104 while WB5_AC2 operates F102/F103. This makes F101 delay a crew-connection problem without making the aircraft for F102 unavailable.",
+    "Both crews are E1-qualified; rating therefore permits the intended substitution.",
+    "No deadhead is required in the intended solution, keeping Case 005 focused on operating-crew reassignment.",
+    "aircraft_reassignment is overridden to 100 in both variants to remove canonical zero-cost aircraft-swap degeneracy and keep the test crew-specific.",
+    "The high crew-cost variant is secondary to the main Crew Recovery test and provides an additional deterministic decision-flip check."
+  ]
+}

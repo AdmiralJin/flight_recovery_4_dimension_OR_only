@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "wb_v1_004_aircraft_swap",
+  "purpose": "Verify Aircraft Recovery with a compatible spare aircraft: keep downstream flights on time by reassigning F102/F103 to WB4_AC2 while delayed WB4_AC1 rejoins at B and later returns to A on F104.",
+  "expected_status": "optimal",
+  "expected_objective": {
+    "total": 60,
+    "schedule": 60,
+    "aircraft": 0,
+    "crew": 0,
+    "passenger": 0
+  },
+  "strong_assertions": {
+    "selected_flight_options": [
+      "WB4_F101_D60",
+      "WB4_F102_ORIG",
+      "WB4_F103_ORIG",
+      "WB4_F104_ORIG"
+    ],
+    "per_flight_aircraft": {
+      "WB4_F101": "WB4_AC1",
+      "WB4_F102": "WB4_AC2",
+      "WB4_F103": "WB4_AC2",
+      "WB4_F104": "WB4_AC1"
+    },
+    "per_flight_departure_delay_minutes": {
+      "WB4_F101": 60,
+      "WB4_F102": 0,
+      "WB4_F103": 0,
+      "WB4_F104": 0
+    },
+    "cancelled_base_flights": [],
+    "delayed_flights": 1,
+    "cancelled_flights": 0,
+    "total_departure_delay_minutes": 60,
+    "max_departure_delay_minutes": 60,
+    "aircraft_reassignment_count_total": 2,
+    "aircraft_ferry_legs_total": 0,
+    "crew_reassignment_count_total": 0,
+    "crew_deadhead_legs_total": 0,
+    "passenger_outcomes_count": 0,
+    "recovery_actions_count": 3,
+    "integrated_audit_pass": true
+  },
+  "comparison_logic": {
+    "intended_swap_plan_cost": 60,
+    "all_original_aircraft_delay_plan_cost": 110,
+    "explanation": "Without using the spare, WB4_AC1 can recover with F101 +60, F102 +30, F103 +20, F104 original, for 110 schedule cost. The spare-aircraft solution keeps F102/F103 on time, so only the forced 60-minute F101 delay remains. Canonical aircraft reassignment cost is zero."
+  },
+  "manual_checks": [
+    "Visualization shows WB4_F101 as the direct disruption exposure.",
+    "Solve Precheck reports solve_ready=true.",
+    "Recovered F101 uses WB4_AC1 at +60 minutes.",
+    "Recovered F102 and F103 remain on original schedule but are assigned to spare WB4_AC2.",
+    "WB4_AC2 starts and ends at B with path B-C-B; no ferry is needed.",
+    "WB4_AC1 starts and ends at A with recovered path A-B then B-A.",
+    "Crew assignments remain WB4_C1 / WB4_C2 / WB4_C2 / WB4_C3 with no crew reassignment or deadhead.",
+    "Recovery shows one DELAY action and two AIRCRAFT_REASSIGNMENT actions."
+  ],
+  "design_notes": [
+    "A spare-aircraft substitution is used instead of a symmetric tail swap because current aircraft strings enforce required terminal stations. This isolates Aircraft Recovery without adding ferry or terminal-rebalancing complexity.",
+    "Both aircraft have equipment type E1, so the spare is equipment-compatible with F102/F103.",
+    "The E1 test profile has zero minimum turn time; the spare still has a clear 10-minute ground gap between F102 arrival 10:30 and F103 departure 10:40.",
+    "The aircraft reassignment coefficient in phase2_test_v1 is 0, so the swap plan is strictly cheaper than propagating F101 delay through F102/F103.",
+    "Case 004 overrides crew_reassignment to 100 solely to remove zero-cost equivalent crew swaps from the canonical test profile. This keeps the test focused on Aircraft Recovery; the intended original crew pairings remain feasible and add zero crew cost."
+  ],
+  "cost_isolation": {
+    "cost_overrides": {
+      "crew_reassignment": 100
+    },
+    "rationale": "Canonical crew reassignment cost is zero and produced equivalent optimal crew swaps during the first real Solve. A positive crew reassignment override removes that degeneracy without changing the aircraft-recovery tradeoff."
+  }
+}

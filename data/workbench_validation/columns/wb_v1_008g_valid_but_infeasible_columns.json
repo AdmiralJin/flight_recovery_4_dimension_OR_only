@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "wb_v1_008g_valid_but_infeasible",
+  "time_unit": "minute",
+  "notes": [
+    "Case 008G is intentionally schema-valid and Solve-ready but optimization-infeasible.",
+    "The only schedule option operates WB8G_F101 from C to B via a declared origin_change. The only aircraft and crew both start at A, and there is no ferry, deadhead, or ground-transfer candidate to reach C.",
+    "Aircraft Strings and Crew Pairings remain empty so the formal dynamic generators and integrated linking must establish infeasibility."
+  ],
+  "flight_options": [
+    {
+      "option_id": "WB8G_F101_FROM_C",
+      "base_flight_id": "WB8G_F101",
+      "operation_type": "operate",
+      "change_types": [
+        "origin_change"
+      ],
+      "origin": "C",
+      "destination": "B",
+      "dep_time": "2026-01-15T08:00:00Z",
+      "arr_time": "2026-01-15T09:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Only schedule option; valid as an origin-change option but unreachable by the available aircraft and crew."
+    }
+  ],
+  "aircraft_strings": [],
+  "crew_pairings": [],
+  "passenger_itineraries": []
+}

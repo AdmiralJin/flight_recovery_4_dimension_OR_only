@@ -94,7 +94,11 @@ python -m uvicorn backend.main:app --reload
 http://127.0.0.1:8000
 ```
 
-默认示例会加载完整 Solve Bundle；点击 `Solve` 调用同步 exact solver，并在 `Recovery` 中查看四种对比及导出结果。`Import Scenario` 支持导入 Scenario JSON 或完整的 `SolveRequest` JSON。仅导入 Scenario 不会自动生成 Flight Options 或使 Solve 按钮就绪。程序化调用可先 `GET /api/solve/example-bundle/phase1_benchmark_001`，再将返回 JSON 送至 `POST /api/solve/precheck` 和 `POST /api/solve`；`toy_case_016_benders_branch_and_price` 也有对应示例 bundle。
+Workbench v1.1 的 Example selector 由后端目录与可用求解 fixtures 驱动，并按 `Solve-ready examples` / `Scenario-only examples` 分组。`phase1_benchmark_001` 与 `toy_case_016_benders_branch_and_price` 必须保持 solve-ready；其他案例只有在 Scenario、Recovery Columns、Passenger Capacity 和当前算法 profile 能组成通过 precheck 的完整 Solve Bundle 时才进入 solve-ready 组，否则作为 scenario-only 展示。
+
+点击 `Solve` 调用同步 exact solver，并在 `Recovery` 中查看四种对比及导出结果。一次 Solve 会锁定输入操作、显示 elapsed time，并将返回结果绑定到启动时的输入 revision；输入已变化的旧结果会被丢弃。`Reset Changes` 恢复当前 case 的加载基线（包括该 case 自带的成本 override），`Reload Example` 则从服务端重新读取所选示例。
+
+Import 支持 Scenario JSON、Solve Bundle JSON 和 `workbench_snapshot_v1`。导入 Scenario JSON 时保持 Scenario-only 语义，不会根据同名仓库 fixture 静默补齐为 Solve Bundle；结构可识别但尚未 solve-ready 的 Solve Bundle 允许进入工作台检查，并明确显示缺失/无效项，但 Solve 保持 disabled。需要执行求解时应显式选择 solve-ready Example 或补齐完整 Solve Bundle。Export Snapshot 提供对应可再导入的工作台快照。程序化调用可先 `GET /api/solve/examples` 获取目录，再取 `GET /api/solve/example-bundle/{case_id}` 并送至 `POST /api/solve/precheck` / `POST /api/solve`。
 
 ---
 
@@ -120,9 +124,9 @@ PRECHECK != MIP FEASIBILITY
 
 它不会调用 solver，也不承担 Phase 3 Integrated Oracle 的求解或验收。PRM 页面中的容量为只读的 `TEST / RESIDUAL CAPACITY`，不是 aircraft physical capacity。
 
-`Export Scenario` 仅导出 Scenario；`Export Workbench Config` 另行导出 Scenario、cost overrides 及 profile IDs。
+`Export Scenario`、`Export Solve Bundle` 与 `Export Snapshot` 分别导出对应层级；Snapshot 可再导入，并保留 Scenario / Solve Bundle / cost overrides 工作台状态。
 
-工作台的 `Load Example` 默认加载 `phase1_benchmark_001`，并同时加载其 canonical Recovery Columns 与 Phase 2 test/residual passenger capacity，使 Constraints 能执行完整 benchmark precheck；导入其他 Scenario 时会清空不匹配的 Columns/Capacity，按 Scenario-only 模式明确降级。
+工作台的 `Load Case` 会把当前 case 的 Scenario、Recovery Columns、Passenger Capacity 与成本覆盖一并应用。Constraints 和 Capacity 不会再回退显示 benchmark 数据；导入或加载 Scenario-only case 时会清空不匹配的输入并明确降级。
 
 ---
 
@@ -476,6 +480,7 @@ docs/
 ```text
 GET  /api/health
 GET  /api/examples/toy_case_001
+GET  /api/solve/examples
 POST /api/validate
 POST /api/solve/precheck
 POST /api/solve
@@ -487,7 +492,30 @@ GET  /api/solve/example-bundle/{case_id}
 - `/api/validate`：执行 Scenario 结构与跨实体一致性校验；
 - `/api/solve/precheck`：检查完整 Solve Bundle 的输入就绪状态，不判断数学可行性；
 - `/api/solve`：调用 Phase 12 exact solver，返回版本化、独立审计的 `RecoveredResult`；
+- `/api/solve/examples`：返回前端 case selector 的示例元数据；
 - `/api/solve/example-bundle/{case_id}`：提供显式演示输入。健康检查标明 `solver_enabled=true`、`production_ready=false`、`scope_mode=full_only`、`flight_option_generation=false`。
+
+---
+
+# Workbench v1 系统验收数据集
+
+Workbench v1 的小规模系统验收数据位于：
+
+```text
+data/workbench_validation/
+```
+
+Case 001–008 分别覆盖 Baseline、延误传播、成本决策、Aircraft Recovery、Crew Recovery、Passenger Recovery、Airport Capacity 和 Negative/Infeasible 行为。
+
+Workbench v1.1 已将可求解的 Validation bundles 纳入 `GET /api/solve/examples` 和页面 Example selector，并按 `Validation cases` / `Boundary cases` 分组。Validation bundle 直接从 `data/workbench_validation/bundles/` 加载，不复制到 `data/examples/`，因此 Cost Override、Passenger Capacity 和算法 profile 始终保持与验收数据同一事实源。Case 008G 在页面中的预期语义是 `Scenario Valid = YES`、`Solve Input = READY`、求解结果 `infeasible`，用于持续验证 `INPUT READINESS != OPTIMIZATION FEASIBILITY`。
+
+除逐 Case 的 pytest 回归外，可以从仓库根目录运行统一验收入口：
+
+```bash
+python scripts/validate_workbench_v1_cases.py
+```
+
+脚本统一输出 `Case ID / Validate / Precheck / Solve Status / Expected Check / PASS/FAIL`，任一验收项不符合预期时返回非零退出码。完整数据说明、Case 001–008 的设计历史、人工核验步骤及各变体的 Expected 说明位于 `docs/validation_data/WORKBENCH_V1_VALIDATION_DATA_GUIDE.md`；`data/workbench_validation/README.md` 仅保留数据目录索引。
 
 ---
 
@@ -497,6 +525,8 @@ GET  /api/solve/example-bundle/{case_id}
 
 ```bash
 python -m pytest
+python scripts/validate_workbench_v1_cases.py
+node --test tests/frontend/*.test.mjs
 ```
 
 Phase 0/0.5 的既有测试应长期保持通过。
