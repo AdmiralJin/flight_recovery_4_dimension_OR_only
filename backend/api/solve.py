@@ -25,6 +25,8 @@ router = APIRouter(prefix="/api/solve", tags=["solver"])
 EXAMPLES_DIR = Path(__file__).resolve().parents[2] / "data" / "examples"
 COLUMNS_DIR = ROOT / "data" / "columns"
 CAPACITIES_DIR = ROOT / "data" / "capacities"
+VALIDATION_ROOT = ROOT / "data" / "workbench_validation"
+VALIDATION_BUNDLES_DIR = VALIDATION_ROOT / "bundles"
 
 
 def _label(case_id: str) -> str:
@@ -33,6 +35,44 @@ def _label(case_id: str) -> str:
         "toy_case_016_benders_branch_and_price": "Toy 016 — Integrality",
     }
     return labels.get(case_id, case_id.replace("_", " ").title())
+
+
+def _validation_label(case_id: str) -> str:
+    labels = {
+        "wb_v1_001_baseline": "Validation 001 — Baseline",
+        "wb_v1_002_single_delay": "Validation 002 — Single Delay",
+        "wb_v1_003_delay_vs_cancel": "Validation 003 — Delay vs Cancellation",
+        "wb_v1_003_delay_vs_cancel_low_cancel": "Validation 003 — Low Cancellation Cost",
+        "wb_v1_004_aircraft_swap": "Validation 004 — Aircraft Recovery",
+        "wb_v1_005_crew_recovery": "Validation 005 — Crew Recovery",
+        "wb_v1_005_crew_recovery_high_crew_cost": "Validation 005 — High Crew Cost",
+        "wb_v1_006_passenger_connection": "Validation 006 — Passenger Connection",
+        "wb_v1_006_passenger_connection_low_capacity": "Validation 006 — Low Capacity",
+        "wb_v1_007_capacity_baseline": "Validation 007 — Capacity Baseline",
+        "wb_v1_007_capacity_bottleneck": "Validation 007 — Capacity Bottleneck",
+        "wb_v1_008g_valid_but_infeasible": "Validation 008G — Expected Infeasible",
+    }
+    return labels.get(case_id, case_id.replace("_", " ").title())
+
+
+def _validation_bundle_path(case_id: str) -> Path | None:
+    path = VALIDATION_BUNDLES_DIR / f"{case_id}_bundle.json"
+    return path if path.exists() else None
+
+
+def _load_validation_bundle(case_id: str) -> dict[str, Any] | None:
+    path = _validation_bundle_path(case_id)
+    if path is None:
+        return None
+    request = SolveRequest.model_validate_json(path.read_text(encoding="utf-8"))
+    bundle = request.model_dump(mode="json")
+    readiness = solve_readiness(bundle)
+    if not readiness["solve_ready"]:
+        raise SolveReadinessError(
+            readiness["missing_inputs"] + readiness["invalid_profiles"],
+            readiness["warnings"],
+        )
+    return bundle
 
 
 def _generic_bundle_paths(case_id: str) -> tuple[Path, Path] | None:
@@ -50,6 +90,10 @@ def _build_example_bundle(case_id: str) -> dict[str, Any]:
     except SolveReadinessError as exc:
         if "unknown_example_bundle" not in exc.codes:
             raise
+
+    validation_bundle = _load_validation_bundle(case_id)
+    if validation_bundle is not None:
+        return validation_bundle
 
     paths = _generic_bundle_paths(case_id)
     scenario_path = EXAMPLES_DIR / f"{case_id}.json"
@@ -122,7 +166,7 @@ def precheck(data: Any = Body(...)) -> dict[str, Any]:
 
 @router.get("/examples")
 def solve_examples() -> list[dict[str, Any]]:
-    """List examples and mark solve-ready cases from their actual repository fixtures."""
+    """List core examples and Workbench validation bundles for the UI catalog."""
     result: list[dict[str, Any]] = []
     for path in sorted(EXAMPLES_DIR.glob("*.json")):
         case_id = path.stem
@@ -141,6 +185,34 @@ def solve_examples() -> list[dict[str, Any]]:
                 "type": "solve_bundle" if solve_ready else "scenario",
                 "solve_ready": solve_ready,
                 "description": description,
+                "source": "core_example",
+                "group": "core" if solve_ready else "scenario",
+                "expected_status": None,
+            }
+        )
+
+    for path in sorted(VALIDATION_BUNDLES_DIR.glob("*_bundle.json")):
+        case_id = path.name.removesuffix("_bundle.json")
+        expected_status = "infeasible" if case_id == "wb_v1_008g_valid_but_infeasible" else "optimal"
+        group = "boundary" if case_id.startswith("wb_v1_008") else "validation"
+        try:
+            _load_validation_bundle(case_id)
+        except (SolveReadinessError, ValidationError, ValueError, OSError):
+            continue
+        result.append(
+            {
+                "case_id": case_id,
+                "label": _validation_label(case_id),
+                "type": "solve_bundle",
+                "solve_ready": True,
+                "description": (
+                    "Validation boundary case; input-ready but expected optimization infeasible"
+                    if expected_status == "infeasible"
+                    else "Workbench v1 system validation Solve Bundle"
+                ),
+                "source": "workbench_validation",
+                "group": group,
+                "expected_status": expected_status,
             }
         )
     return result
