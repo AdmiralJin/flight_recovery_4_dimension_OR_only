@@ -2,7 +2,7 @@
   min-width: min(780px, 62vw);
   align-items: stretch;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 0;
   padding: 0;
   overflow: hidden;
