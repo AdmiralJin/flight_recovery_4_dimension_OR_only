@@ -18,11 +18,12 @@ test("workbench exposes an explicit quick flow and modal help", () => {
   assert.match(html, /workbench-flow\.js/);
 });
 
-test("flow helper hydrates plain scenario imports before app import handling", () => {
-  assert.match(flowSource, /\/api\/solve\/hydrate/);
-  assert.match(flowSource, /stopImmediatePropagation\(\)/);
-  assert.match(flowSource, /DataTransfer\(\)/);
-  assert.match(flowSource, /Matched .* repository solve fixtures/);
+test("flow helper preserves explicit scenario-only import semantics", () => {
+  assert.doesNotMatch(flowSource, /\/api\/solve\/hydrate/);
+  assert.doesNotMatch(flowSource, /stopImmediatePropagation\(\)/);
+  assert.doesNotMatch(flowSource, /DataTransfer\(\)/);
+  assert.match(flowSource, /import a complete Solve Bundle/);
+  assert.match(html, /Importing Scenario JSON keeps it as Scenario-only/);
 });
 
 test("solve-disabled state is visibly different and guidance has ready/warning states", () => {
