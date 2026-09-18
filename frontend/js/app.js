@@ -620,6 +620,7 @@ async function setExample() {
     }
     const validation = await validateScenario(workbenchState.scenario);
     workbenchState.scenarioValidation = validation.valid ? "valid" : "invalid";
+    showValidation(validation);
     await refreshSolveReadiness();
     setCostStatus("baseline", "Costs match the loaded case baseline.");
     activeSection = "scenario";
