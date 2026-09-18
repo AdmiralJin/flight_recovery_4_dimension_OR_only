@@ -27,7 +27,7 @@
 
 4. 增强案例选择和 API
    - 新增 `GET /api/solve/examples`。
-   - 两个正式 solve-ready bundle 明确标记；其余 `data/examples/*.json` 自动归类为 scenario-only。
+   - `phase1_benchmark_001` 与 `toy_case_016_benders_branch_and_price` 保持 solve-ready；其他案例按实际 repository fixtures + solve precheck 动态归类为 solve-ready 或 scenario-only。
    - 支持 `?case=<case_id>` URL 复现。
    - 页面显示 API / Solver 健康状态。
 
@@ -69,3 +69,12 @@
 - 未修改 SRM / ARM / CRM / PRM 数学约束、Benders、Column Generation、pricing、branching 或 Integrated Oracle。
 - 保持同步 exact solve 与 research workbench / not production-ready 定位。
 - 工作区原有 `AGENTS.md/.AGENTS.md` 大小写相关未提交状态未作处理。
+
+
+## 2026-09-18 Follow-up correction
+
+- Scenario JSON 导入保持 Scenario-only，不再根据同名 repository fixtures 静默水合为 Solve Bundle。
+- Example selector 按 Solve-ready / Scenario-only 分组；分组由当前可用 fixtures 与 precheck 决定。
+- 顶部状态进一步拆分为 Case、Scenario、Solve input、Solver、Result、API；输入变化后的旧结果显示 STALE RESULT。
+- Recovery 对 stale result 与 Solver/API error 提供持续可见状态。
+- 本次 follow-up 仍未修改 `backend/core/` 或任何数学约束、Benders、CG、pricing、branching、Integrated Oracle 逻辑。
