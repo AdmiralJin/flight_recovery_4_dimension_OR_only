@@ -106,6 +106,11 @@ function scenarioIsModified() {
     && JSON.stringify(workbenchState.scenario) !== JSON.stringify(workbenchState.scenarioBaseline));
 }
 
+function costOverridesMatchBaseline() {
+  return JSON.stringify(workbenchState.costOverrides)
+    === JSON.stringify(workbenchState.baseline?.costOverrides || {});
+}
+
 function showGlobalNotice(message, kind = "info") {
   const region = document.querySelector("#global-toast-region");
   const toast = document.createElement("div");
@@ -500,8 +505,10 @@ function handleCostOverride(key, rawValue, input) {
     refreshSolveReadiness();
     input.setCustomValidity("");
     setCostStatus(
-      Object.keys(workbenchState.costOverrides).length ? "modified" : "baseline",
-      "Validate to confirm the current browser overrides against the backend contract.",
+      costOverridesMatchBaseline() ? "baseline" : "modified",
+      costOverridesMatchBaseline()
+        ? "Current costs match the loaded case baseline."
+        : "Validate to confirm the current browser overrides against the backend contract.",
     );
     renderCostView();
   } catch (error) {
@@ -614,6 +621,7 @@ async function setExample() {
     const validation = await validateScenario(workbenchState.scenario);
     workbenchState.scenarioValidation = validation.valid ? "valid" : "invalid";
     await refreshSolveReadiness();
+    setCostStatus("baseline", "Costs match the loaded case baseline.");
     activeSection = "scenario";
     if (activeView === "visualization") await openVisualization();
     else if (activeView === "constraints") await openConstraints();
@@ -702,7 +710,7 @@ document.querySelector("#reset-workbench").addEventListener("click", () => {
   if (workbenchState.solving) return;
   resetToBaseline();
   refreshSolveReadiness();
-  setCostStatus(Object.keys(workbenchState.costOverrides).length ? "modified" : "baseline", "Scenario and cost overrides restored to the current case baseline.");
+  setCostStatus("baseline", "Scenario and cost overrides restored to the current case baseline.");
   if (activeView === "data") renderDataView();
   else if (activeView === "visualization") openVisualization();
   else if (activeView === "constraints") openConstraints();
@@ -792,7 +800,7 @@ document.querySelector("#reset-cost-overrides").addEventListener("click", () => 
   workbenchState.costEffective = buildEffectiveCostProfile(workbenchState.costBaseline, workbenchState.costOverrides);
   bumpRevision();
   refreshSolveReadiness();
-  setCostStatus(Object.keys(workbenchState.costOverrides).length ? "modified" : "baseline", "Overrides restored to the current case baseline.");
+  setCostStatus("baseline", "Overrides restored to the current case baseline.");
   renderCostView();
 });
 document.querySelector("#run-precheck").addEventListener("click", runPrecheck);
