@@ -204,8 +204,8 @@ function updateSummary() {
   document.querySelector("#solver-summary").textContent = workbenchState.solving ? `SOLVING ${elapsedLabel()}` : "IDLE";
   const resultText = workbenchState.recoveredResult
     ? (workbenchState.recoveredResultRevision === workbenchState.revision ? `SOLVED · ${workbenchState.recoveredResult.status}` : "STALE RESULT")
-    : workbenchState.resultStale ? "STALE RESULT"
-      : workbenchState.solveError ? "ERROR" : "NONE";
+    : workbenchState.solveError ? "ERROR"
+      : workbenchState.resultStale ? "STALE RESULT" : "NONE";
   document.querySelector("#result-summary").textContent = resultText;
   const health = workbenchState.apiHealth;
   document.querySelector("#api-health-summary").textContent = health
@@ -611,6 +611,8 @@ async function setExample() {
     } else {
       applyScenario(await loadScenarioExample(caseId), caseId, "example");
     }
+    const validation = await validateScenario(workbenchState.scenario);
+    workbenchState.scenarioValidation = validation.valid ? "valid" : "invalid";
     await refreshSolveReadiness();
     activeSection = "scenario";
     if (activeView === "visualization") await openVisualization();
@@ -643,13 +645,19 @@ async function initializeWorkbench() {
     workbenchState.apiHealth = health;
     const selector = document.querySelector("#example-selector");
     selector.replaceChildren();
+    const solveReadyGroup = document.createElement("optgroup");
+    solveReadyGroup.label = "Solve-ready examples";
+    const scenarioOnlyGroup = document.createElement("optgroup");
+    scenarioOnlyGroup.label = "Scenario-only examples";
     for (const example of examples) {
       const option = document.createElement("option");
       option.value = example.case_id;
       option.dataset.type = example.type;
       option.textContent = `${example.label}${example.solve_ready ? "" : " — Scenario only"}`;
-      selector.append(option);
+      (example.solve_ready ? solveReadyGroup : scenarioOnlyGroup).append(option);
     }
+    if (solveReadyGroup.children.length) selector.append(solveReadyGroup);
+    if (scenarioOnlyGroup.children.length) selector.append(scenarioOnlyGroup);
     const requestedCase = new URLSearchParams(window.location.search).get("case");
     if (requestedCase && [...selector.options].some((item) => item.value === requestedCase)) selector.value = requestedCase;
     await setExample();
