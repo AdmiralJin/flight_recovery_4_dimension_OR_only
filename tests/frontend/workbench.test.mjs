@@ -41,7 +41,7 @@ test("recovery controls wire solve, comparison and export without claiming produ
 });
 
 test("workbench exposes the case selector, explicit readiness, health, and global error surface", () => {
-  for (const id of ["example-selector", "scenario-summary", "solve-readiness-summary", "solver-summary", "result-summary", "api-health-summary", "global-toast-region", "case-metadata"]) {
+  for (const id of ["example-selector", "scenario-summary", "solve-readiness-summary", "solver-summary", "result-summary", "api-health-summary", "global-toast-region", "case-metadata", "case-notice"]) {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
   assert.match(appSource, /function applySolveBundle\(/);
@@ -103,6 +103,11 @@ test("loading a case validates its Scenario and top-level reset stays baseline-o
   assert.match(appSource, /showValidation\(validation\)/);
   assert.doesNotMatch(html, /id=["']reset-scenario["']/);
   assert.doesNotMatch(appSource, /#reset-scenario/);
+});
+
+test("scenario-only cases render persistent Data-view guidance", () => {
+  assert.match(appSource, /This case contains Scenario data only/);
+  assert.match(appSource, /cannot be solved until a complete Solve Bundle/);
 });
 
 test("workbench renders scenario validity separately from case dirty and stale-result state", () => {
