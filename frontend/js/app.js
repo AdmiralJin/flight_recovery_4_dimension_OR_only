@@ -663,19 +663,31 @@ async function initializeWorkbench() {
     workbenchState.apiHealth = health;
     const selector = document.querySelector("#example-selector");
     selector.replaceChildren();
-    const solveReadyGroup = document.createElement("optgroup");
-    solveReadyGroup.label = "Solve-ready examples";
-    const scenarioOnlyGroup = document.createElement("optgroup");
-    scenarioOnlyGroup.label = "Scenario-only examples";
+    const groupDefinitions = [
+      ["core", "Core examples"],
+      ["validation", "Validation cases"],
+      ["boundary", "Boundary cases"],
+      ["scenario", "Scenario-only examples"],
+    ];
+    const groups = new Map(groupDefinitions.map(([key, label]) => {
+      const group = document.createElement("optgroup");
+      group.label = label;
+      return [key, group];
+    }));
     for (const example of examples) {
       const option = document.createElement("option");
       option.value = example.case_id;
       option.dataset.type = example.type;
+      option.dataset.source = example.source || "repository";
+      option.dataset.expectedStatus = example.expected_status || "";
       option.textContent = `${example.label}${example.solve_ready ? "" : " — Scenario only"}`;
-      (example.solve_ready ? solveReadyGroup : scenarioOnlyGroup).append(option);
+      const groupKey = example.group || (example.solve_ready ? "core" : "scenario");
+      (groups.get(groupKey) || groups.get("scenario")).append(option);
     }
-    if (solveReadyGroup.children.length) selector.append(solveReadyGroup);
-    if (scenarioOnlyGroup.children.length) selector.append(scenarioOnlyGroup);
+    for (const [key] of groupDefinitions) {
+      const group = groups.get(key);
+      if (group.children.length) selector.append(group);
+    }
     const requestedCase = new URLSearchParams(window.location.search).get("case");
     if (requestedCase && [...selector.options].some((item) => item.value === requestedCase)) selector.value = requestedCase;
     await setExample();
