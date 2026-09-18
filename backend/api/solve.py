@@ -154,33 +154,3 @@ def example_bundle(case_id: str) -> dict[str, Any]:
         raise HTTPException(status_code=404, detail=exc.codes) from exc
     except (ValidationError, ValueError, OSError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-
-
-@router.post("/hydrate")
-def hydrate_scenario(data: Any = Body(...)) -> dict[str, Any]:
-    """Attach matching repository solve fixtures to an imported Scenario when available."""
-    try:
-        scenario = Scenario.model_validate(data)
-        bundle = _build_example_bundle(scenario.scenario_id)
-        bundle["scenario"] = scenario.model_dump(mode="json")
-        readiness = solve_readiness(bundle)
-        if not readiness["solve_ready"]:
-            raise SolveReadinessError(
-                readiness["missing_inputs"] + readiness["invalid_profiles"],
-                readiness["warnings"],
-            )
-        return bundle
-    except SolveReadinessError as exc:
-        raise HTTPException(
-            status_code=422,
-            detail={
-                "status": "not_solve_ready",
-                "codes": exc.codes,
-                "details": exc.details,
-            },
-        ) from exc
-    except ValidationError as exc:
-        raise HTTPException(
-            status_code=422,
-            detail={"status": "invalid_scenario", "errors": exc.errors(include_context=False)},
-        ) from exc
