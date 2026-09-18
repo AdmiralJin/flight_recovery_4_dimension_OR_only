@@ -507,6 +507,8 @@ data/workbench_validation/
 
 Case 001–008 分别覆盖 Baseline、延误传播、成本决策、Aircraft Recovery、Crew Recovery、Passenger Recovery、Airport Capacity 和 Negative/Infeasible 行为。
 
+Workbench v1.1 已将可求解的 Validation bundles 纳入 `GET /api/solve/examples` 和页面 Example selector，并按 `Validation cases` / `Boundary cases` 分组。Validation bundle 直接从 `data/workbench_validation/bundles/` 加载，不复制到 `data/examples/`，因此 Cost Override、Passenger Capacity 和算法 profile 始终保持与验收数据同一事实源。Case 008G 在页面中的预期语义是 `Scenario Valid = YES`、`Solve Input = READY`、求解结果 `infeasible`，用于持续验证 `INPUT READINESS != OPTIMIZATION FEASIBILITY`。
+
 除逐 Case 的 pytest 回归外，可以从仓库根目录运行统一验收入口：
 
 ```bash
@@ -523,6 +525,8 @@ python scripts/validate_workbench_v1_cases.py
 
 ```bash
 python -m pytest
+python scripts/validate_workbench_v1_cases.py
+node --test tests/frontend/*.test.mjs
 ```
 
 Phase 0/0.5 的既有测试应长期保持通过。
