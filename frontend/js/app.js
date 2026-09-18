@@ -67,6 +67,7 @@ const workbenchState = {
   solveStartedAt: null,
   solveTimer: null,
   recoveredResultRevision: null,
+  resultStale: false,
   recoverySortDelay: false,
   apiHealth: null,
 };
@@ -136,7 +137,8 @@ function captureBaseline() {
   workbenchState.scenarioBaseline = clone(workbenchState.scenario);
 }
 
-function invalidateRecovery() {
+function invalidateRecovery({ markStale = false } = {}) {
+  workbenchState.resultStale = Boolean(markStale);
   workbenchState.recoveredResult = null;
   workbenchState.recoveredResultRevision = null;
   workbenchState.solveError = null;
@@ -144,9 +146,11 @@ function invalidateRecovery() {
 }
 
 function bumpRevision() {
+  const hadCurrentResult = Boolean(workbenchState.recoveredResult)
+    && workbenchState.recoveredResultRevision === workbenchState.revision;
   workbenchState.revision += 1;
   workbenchState.dirty = true;
-  invalidateRecovery();
+  invalidateRecovery({ markStale: hadCurrentResult });
 }
 
 function setSolvingState(solving) {
@@ -188,8 +192,11 @@ function updateSummary() {
   if (!state) return;
   const total = ["airports", "flights", "aircraft", "crew", "passengers", "airport_intervals", "disruptions"]
     .reduce((sum, key) => sum + state[key].length, 0);
-  const scenarioStatus = workbenchState.scenarioValidation === "valid" ? "VALID" : "UNVALIDATED";
-  document.querySelector("#record-summary").textContent = `${workbenchState.caseId || state.scenario_id} · ${scenarioIsModified() ? "MODIFIED" : scenarioStatus} · rev ${workbenchState.revision}`;
+  const scenarioStatus = workbenchState.scenarioValidation === "valid"
+    ? "VALID"
+    : workbenchState.scenarioValidation === "invalid" ? "INVALID" : "UNVALIDATED";
+  document.querySelector("#record-summary").textContent = `${workbenchState.caseId || state.scenario_id} · ${scenarioIsModified() ? "MODIFIED" : "CLEAN"} · rev ${workbenchState.revision}`;
+  document.querySelector("#scenario-summary").textContent = scenarioStatus;
   const readiness = workbenchState.solveReadiness;
   const readinessReasons = readiness ? [...(readiness.missing_inputs || []), ...(readiness.invalid_profiles || [])] : [];
   const readinessText = readiness?.solve_ready ? "READY" : `NOT READY${readinessReasons.length ? `: ${readinessReasons.map(missingInputLabel).join(", ")}` : ""}`;
@@ -197,7 +204,8 @@ function updateSummary() {
   document.querySelector("#solver-summary").textContent = workbenchState.solving ? `SOLVING ${elapsedLabel()}` : "IDLE";
   const resultText = workbenchState.recoveredResult
     ? (workbenchState.recoveredResultRevision === workbenchState.revision ? `SOLVED · ${workbenchState.recoveredResult.status}` : "STALE RESULT")
-    : workbenchState.solveError ? "ERROR" : "NONE";
+    : workbenchState.resultStale ? "STALE RESULT"
+      : workbenchState.solveError ? "ERROR" : "NONE";
   document.querySelector("#result-summary").textContent = resultText;
   const health = workbenchState.apiHealth;
   document.querySelector("#api-health-summary").textContent = health
@@ -349,7 +357,7 @@ function applyScenario(scenario, caseId = scenario.scenario_id, source = "import
   workbenchState.solveReadiness = null;
   workbenchState.revision += 1;
   workbenchState.dirty = false;
-  invalidateRecovery();
+  invalidateRecovery({ markStale: false });
   captureBaseline();
 }
 
@@ -368,7 +376,7 @@ function applySolveBundle(bundle, caseId = bundle.scenario?.scenario_id, source 
   workbenchState.solveReadiness = null;
   workbenchState.revision += 1;
   workbenchState.dirty = false;
-  invalidateRecovery();
+  invalidateRecovery({ markStale: false });
   captureBaseline();
 }
 
@@ -378,7 +386,7 @@ function resetToBaseline() {
   workbenchState.scenarioValidation = null;
   workbenchState.constraintPrecheck = null;
   workbenchState.solveReadiness = null;
-  invalidateRecovery();
+  invalidateRecovery({ markStale: false });
 }
 
 function renderTabs() {
@@ -774,7 +782,6 @@ document.querySelector("#validate-costs").addEventListener("click", async () => 
       overrides: workbenchState.costOverrides,
     });
     workbenchState.costEffective = result.effective_profile;
-    invalidateRecovery();
     refreshSolveReadiness();
     setCostStatus("valid", `Validated ${Object.keys(result.overrides).length} override(s); canonical metadata is unchanged.`);
     renderCostView();
