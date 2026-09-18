@@ -63,9 +63,11 @@ test("solve lifecycle rejects duplicate starts and stale results", () => {
     scenario: { scenario_id: "A" }, recoveryColumns: { flight_options: [] },
     passengerCapacityProfile: { capacity_profile_id: "capacity" }, costOverrides: {},
     recoveredResult: null, recoveredResultRevision: null, resultStale: false,
+    solveError: "previous failure",
   };
   const request = stateBundle.module.beginSolve(state);
   assert.equal(request.revision, 3);
+  assert.equal(state.solveError, null);
   assert.equal(stateBundle.module.beginSolve(state), null);
   state.revision = 4;
   assert.equal(stateBundle.module.acceptSolveResult(state, request, { status: "optimal" }), false);
@@ -124,6 +126,8 @@ test("stale results are surfaced in solve guidance and recovery instead of silen
   assert.match(appSource, /workbenchState\.resultStale/);
   assert.match(recoverySource, /Recovered Result is stale/);
   assert.match(recoverySource, /Run Solve again before reviewing or exporting Recovery/);
+  assert.match(recoverySource, /<h2>Solver error<\/h2>/);
+  assert.match(appSource, /workbenchState\.solveError/);
 });
 
 test("visualization links to Recovery without a permanently disabled Recovered Plan", () => {
