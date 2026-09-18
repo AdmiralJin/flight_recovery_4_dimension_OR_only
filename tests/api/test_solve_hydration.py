@@ -23,25 +23,22 @@ def test_catalog_promotes_repository_fixture_case_to_solve_ready():
     assert readiness.json()["solve_ready"] is True
 
 
-def test_imported_known_scenario_can_be_hydrated_without_replacing_scenario():
+def test_raw_scenario_remains_scenario_only_for_solve_precheck():
     scenario_response = client.get("/api/examples/toy_case_003")
     assert scenario_response.status_code == 200
     scenario = scenario_response.json()
-    scenario["scenario_id"] = "toy_case_003"
 
-    response = client.post("/api/solve/hydrate", json=scenario)
-    assert response.status_code == 200
-    bundle = response.json()
-    assert bundle["scenario"] == scenario
-    assert bundle["recovery_columns"]["flight_options"]
-    assert bundle["capacity_profile"]["seat_capacity_by_option_id"]
-    assert bundle["profile_ids"]
-    assert client.post("/api/solve/precheck", json=bundle).json()["solve_ready"] is True
+    readiness = client.post("/api/solve/precheck", json=scenario)
+    assert readiness.status_code == 200
+    payload = readiness.json()
+    assert payload["solve_ready"] is False
+    assert "missing_flight_options" in payload["missing_inputs"]
+    assert "missing_capacity_profile" in payload["missing_inputs"]
 
 
-def test_unmatched_scenario_stays_scenario_only():
+def test_unmatched_scenario_is_not_solve_ready():
     scenario_response = client.get("/api/examples/toy_case_001")
     assert scenario_response.status_code == 200
-    response = client.post("/api/solve/hydrate", json=scenario_response.json())
-    assert response.status_code == 422
-    assert response.json()["detail"]["status"] == "not_solve_ready"
+    readiness = client.post("/api/solve/precheck", json=scenario_response.json())
+    assert readiness.status_code == 200
+    assert readiness.json()["solve_ready"] is False
