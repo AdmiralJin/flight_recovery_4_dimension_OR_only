@@ -72,3 +72,44 @@ Expected schedule:
 The E2 control rotation remains unchanged.
 
 Expected objective: 80 under `phase2_test_v1` (60 + 20 minutes of flight-delay cost, with no aircraft/crew/passenger cost).
+
+
+## Case 003 — `wb_v1_003_delay_vs_cancel`
+
+Purpose: verify that a Cost Override changes the actual recovery optimum.
+
+### Why this case is rotation-level
+
+The affected E1 resource is a closed `A -> B -> C -> A` rotation. Aircraft WB3_AC1 and crew WB3_C1 both start at A and are required to finish at A. If the first disrupted A-B leg is cancelled, the later B-C and C-A legs are not independently reachable by those resources. Therefore Case 003 compares two physically consistent integrated alternatives rather than treating one cancellation as an isolated schedule choice.
+
+### Variant A — canonical costs
+
+Uses `phase2_test_v1` unchanged.
+
+- delay cost = 1 per flight-minute
+- cancellation cost = 25,000 per flight
+- intended E1 recovery: `F101 +60 -> F102 +20 -> F103 original`
+- intended schedule objective = 80
+
+### Variant B — low cancellation override
+
+Uses the identical Scenario / Columns / Capacity / algorithm profiles, with only:
+
+`flight_cancellation = 20`
+
+Now the affected three-leg E1 cycle costs 60 to cancel, which is lower than the 80-minute delay recovery.
+
+Expected E1 decision:
+
+`F101 cancel -> F102 cancel -> F103 cancel`
+
+The E2 control rotation stays original in both variants.
+
+### Files
+
+- `scenarios/wb_v1_003_delay_vs_cancel.json`
+- `columns/wb_v1_003_delay_vs_cancel_columns.json`
+- `capacities/wb_v1_003_delay_vs_cancel_capacity.json`
+- `bundles/wb_v1_003_delay_vs_cancel_bundle.json`: canonical costs
+- `bundles/wb_v1_003_delay_vs_cancel_low_cancel_bundle.json`: low cancellation-cost override
+- `expected/wb_v1_003_delay_vs_cancel_expected.json`
