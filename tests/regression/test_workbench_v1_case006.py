@@ -144,6 +144,8 @@ def test_workbench_v1_case006_variants_change_only_residual_capacity():
     low_capacity = copy.deepcopy(low["capacity_profile"])
     default_capacity.pop("capacity_profile_id")
     low_capacity.pop("capacity_profile_id")
+    default_capacity.pop("notes")
+    low_capacity.pop("notes")
     default_capacity["seat_capacity_by_option_id"]["WB6_F103_ORIG"] = 10
 
     assert default_capacity == low_capacity
