@@ -845,10 +845,8 @@ fileInput.addEventListener("change", async () => {
     const candidate = snapshot ? imported.solve_bundle : imported;
     const isSolveBundle = candidate?.schema_version === "1.0.0" && "recovery_columns" in candidate;
     if (!isSolveBundle && ("scenario" in imported || "cost_overrides" in imported) && !snapshot) throw new Error("Detected an incomplete workbench config. Import Scenario, Solve Bundle, or Workbench Snapshot.");
-    if (isSolveBundle) {
-      const readiness = await checkSolveReadiness(candidate);
-      if (!readiness.solve_ready) throw new Error(`Solve Bundle is not ready: ${[...readiness.missing_inputs, ...readiness.invalid_profiles].join(", ")}`);
-    }
+    let importedReadiness = null;
+    if (isSolveBundle) importedReadiness = await checkSolveReadiness(candidate);
     const scenario = isSolveBundle ? candidate.scenario : snapshot ? imported.scenario : imported;
     if (!scenario) throw new Error("Workbench Snapshot is missing Scenario data.");
     const result = await validateScenario(scenario);
@@ -872,7 +870,16 @@ fileInput.addEventListener("change", async () => {
     workbenchState.scenarioValidation = "valid";
     activeSection = "scenario";
     showValidation(result);
-    showGlobalNotice(`Imported ${isSolveBundle ? "Solve Bundle" : "Scenario"}: ${workbenchState.caseId}`, "success");
+    if (isSolveBundle && importedReadiness && !importedReadiness.solve_ready) {
+      const reasons = [...(importedReadiness.missing_inputs || []), ...(importedReadiness.invalid_profiles || [])]
+        .map(missingInputLabel);
+      showGlobalNotice(
+        `Imported Solve Bundle, but Solve is unavailable: ${reasons.join(", ") || "input is incomplete"}`,
+        "warning",
+      );
+    } else {
+      showGlobalNotice(`Imported ${isSolveBundle ? "Solve Bundle" : "Scenario"}: ${workbenchState.caseId}`, "success");
+    }
     showDataView();
   } catch (error) {
     showClientError(`Import failed: ${error.message}`);
