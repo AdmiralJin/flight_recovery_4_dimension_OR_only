@@ -6,9 +6,11 @@ const stamp = (value) => value ? new Date(value).toLocaleString("zh-CN", { timeZ
 const number = (value) => value === null || value === undefined ? "—" : Number(value).toLocaleString("zh-CN", { maximumFractionDigits: 2 });
 const cell = (value) => `<td>${escapeHtml(value)}</td>`;
 
-export function renderRecovery(container, scenario, result, mode = "recovered", sortDelay = false) {
+export function renderRecovery(container, scenario, result, mode = "recovered", sortDelay = false, resultStale = false) {
   if (!result) {
-    container.innerHTML = '<p class="muted">加载完整 Solve Bundle 后点击 Solve。Scenario-only 不会生成优化结果。</p>';
+    container.innerHTML = resultStale
+      ? '<section class="recovery-card recovery-stale"><h2>Recovered Result is stale</h2><p>Inputs changed after the last solve. Run Solve again before reviewing or exporting Recovery.</p></section>'
+      : '<p class="muted">加载完整 Solve Bundle 后点击 Solve。Scenario-only 不会生成优化结果。</p>';
     return;
   }
   const metadata = result.run_metadata;
