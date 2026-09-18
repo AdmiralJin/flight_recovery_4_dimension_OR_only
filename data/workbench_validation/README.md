@@ -304,3 +304,46 @@ Expected objective = 70.
 - `bundles/wb_v1_007_capacity_baseline_bundle.json`
 - `bundles/wb_v1_007_capacity_bottleneck_bundle.json`
 - `expected/wb_v1_007_capacity_bottleneck_expected.json`
+
+
+## Case 008 — `wb_v1_008_negative_cases`
+
+Purpose: verify failure behavior, not successful recovery.
+
+Case 008 is a group of seven small negative subcases:
+
+- **008A duplicate flight ID** — semantic validation must reject duplicate `flight_id`.
+- **008B invalid flight time** — Schema validation must reject `sched_arr <= sched_dep`.
+- **008C invalid duration** — Schema validation must reject a declared duration different from scheduled block time.
+- **008D invalid market/min_seats** — Schema validation must reject `market_flag=false` with `min_seats>0`.
+- **008E invalid disruption interval** — Schema validation must reject `start_time >= end_time`.
+- **008F Scenario-only** — Scenario validation succeeds, but Solve Precheck must report missing Flight Options, Capacity Profile and Algorithm Profiles.
+- **008G valid but infeasible** — full Bundle passes Validate/Precheck, but formal Solve must return `infeasible` and no fake recovered decisions.
+
+### 008G design
+
+The original Scenario is a legal one-flight A-B plan. The only supplied Flight Option is a legal `origin_change` option C-B. The only aircraft and crew start at A, while there is no ferry, deadhead or other repositioning candidate to C.
+
+Therefore:
+
+`Precheck = solve_ready`
+
+does **not** imply:
+
+`Optimization = feasible`.
+
+This directly exercises the Workbench v1 contract that Precheck is input readiness only.
+
+### Files
+
+Invalid/incomplete Scenario fixtures are stored under:
+
+`data/workbench_validation/negative/`
+
+The 008G full infeasible bundle is stored under:
+
+`data/workbench_validation/bundles/wb_v1_008g_valid_but_infeasible_bundle.json`
+
+Expected behavior for all subcases is documented in:
+
+`data/workbench_validation/expected/wb_v1_008_negative_cases_expected.json`
