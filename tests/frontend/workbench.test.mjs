@@ -112,6 +112,12 @@ test("case state keeps the active bundle synchronized and preserves its baseline
   assert.match(appSource, /workbench_snapshot_v1/);
 });
 
+test("case cost overrides are compared against the loaded baseline, not emptiness", () => {
+  assert.match(appSource, /function costOverridesMatchBaseline\(\)/);
+  assert.match(appSource, /costOverridesMatchBaseline\(\) \? "baseline" : "modified"/);
+  assert.match(appSource, /setCostStatus\("baseline", "Overrides restored to the current case baseline\."/);
+});
+
 test("cost overrides change only the effective copy and reset to baseline", () => {
   const before = structuredClone(baseline);
   const effective = costsBundle.module.buildEffectiveCostProfile(
