@@ -156,7 +156,7 @@ function bumpRevision() {
 function setSolvingState(solving) {
   workbenchState.solving = solving;
   const mutableSelectors = [
-    "#load-example", "#reload-example", "#import-json", "#reset-scenario", "#reset-workbench",
+    "#load-example", "#reload-example", "#import-json", "#reset-workbench",
     "#reset-section", "#add-row", "#duplicate-row", "#delete-row", "#reset-cost-overrides",
     "#validate-costs", "#run-precheck", "#example-selector",
   ];
@@ -689,19 +689,6 @@ document.querySelector("#export-recovered-result").addEventListener("click", () 
     workbenchState.recoveredResult,
     `${workbenchState.scenario.scenario_id}_recovered_result.json`,
   );
-});
-document.querySelector("#reset-scenario").addEventListener("click", () => {
-  if (workbenchState.solving) return;
-  workbenchState.scenario = clone(workbenchState.scenarioBaseline);
-  workbenchState.scenarioValidation = null;
-  workbenchState.constraintPrecheck = null;
-  bumpRevision();
-  refreshSolveReadiness();
-  if (activeView === "data") renderDataView();
-  else if (activeView === "visualization") openVisualization();
-  else if (activeView === "constraints") openConstraints();
-  else if (activeView === "recovery") openRecovery();
-  updateSummary();
 });
 document.querySelector("#reset-workbench").addEventListener("click", () => {
   if (workbenchState.solving) return;
