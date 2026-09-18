@@ -152,3 +152,51 @@ Aircraft reassignment cost remains 0, so the intended optimum uses the spare and
 - `capacities/wb_v1_004_aircraft_swap_capacity.json`
 - `bundles/wb_v1_004_aircraft_swap_bundle.json`
 - `expected/wb_v1_004_aircraft_swap_expected.json`
+
+
+## Case 005 — `wb_v1_005_crew_recovery`
+
+Purpose: verify Crew Recovery while keeping aircraft assignments stable and easy to audit.
+
+### Structure
+
+- WB5_AC1 operates `F101 A-B` and `F104 B-A`
+- WB5_AC2 independently operates `F102 B-C` and `F103 C-B`
+- WB5_C1 is the original crew for all four flights
+- WB5_C2 is an E1-qualified spare crew positioned at B and required to finish at B
+- A departure closure forces F101 to +60 minutes
+- no passengers
+- no ferry or deadhead is required
+- both bundles set `aircraft_reassignment = 100` only to remove unrelated zero-cost aircraft-swap degeneracy
+
+### Default crew-cost recovery
+
+After F101 +60, C1 reaches B at 10:00 and misses original F102 at 09:30.
+
+The intended Crew Recovery is:
+
+- C1: `F101 +60 -> F104 original`, A-B-A
+- C2: `F102 original -> F103 original`, B-C-B
+
+Only F101 is delayed, so schedule objective = 60. Canonical crew reassignment cost is 0, producing exactly two crew reassignments.
+
+### High crew-reassignment-cost variant
+
+The identical data are solved with:
+
+`crew_reassignment = 100`
+
+Now the alternative of keeping C1 is cheaper:
+
+`F101 +60 -> F102 +30 -> F103 +20 -> F104 original`
+
+Schedule objective = 110, with zero crew reassignment.
+
+### Files
+
+- `scenarios/wb_v1_005_crew_recovery.json`
+- `columns/wb_v1_005_crew_recovery_columns.json`
+- `capacities/wb_v1_005_crew_recovery_capacity.json`
+- `bundles/wb_v1_005_crew_recovery_bundle.json`
+- `bundles/wb_v1_005_crew_recovery_high_crew_cost_bundle.json`
+- `expected/wb_v1_005_crew_recovery_expected.json`

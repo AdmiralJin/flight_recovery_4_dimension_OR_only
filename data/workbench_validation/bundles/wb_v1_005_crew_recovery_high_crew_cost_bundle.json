@@ -1,0 +1,422 @@
+{
+  "schema_version": "1.0.0",
+  "scenario": {
+    "scenario_id": "wb_v1_005_crew_recovery",
+    "recovery_window": {
+      "start_time": "2026-01-15T07:30:00Z",
+      "end_time": "2026-01-15T14:00:00Z"
+    },
+    "airports": [
+      {
+        "airport_id": "A",
+        "name": "Alpha Base"
+      },
+      {
+        "airport_id": "B",
+        "name": "Bravo Hub"
+      },
+      {
+        "airport_id": "C",
+        "name": "Charlie Outstation"
+      }
+    ],
+    "flights": [
+      {
+        "flight_id": "WB5_F101",
+        "origin": "A",
+        "destination": "B",
+        "sched_dep": "2026-01-15T08:00:00Z",
+        "sched_arr": "2026-01-15T09:00:00Z",
+        "duration": 60,
+        "original_aircraft": "WB5_AC1",
+        "original_equipment": "E1",
+        "original_crew": "WB5_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 60
+      },
+      {
+        "flight_id": "WB5_F102",
+        "origin": "B",
+        "destination": "C",
+        "sched_dep": "2026-01-15T09:30:00Z",
+        "sched_arr": "2026-01-15T10:30:00Z",
+        "duration": 60,
+        "original_aircraft": "WB5_AC2",
+        "original_equipment": "E1",
+        "original_crew": "WB5_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 60
+      },
+      {
+        "flight_id": "WB5_F103",
+        "origin": "C",
+        "destination": "B",
+        "sched_dep": "2026-01-15T10:40:00Z",
+        "sched_arr": "2026-01-15T11:40:00Z",
+        "duration": 60,
+        "original_aircraft": "WB5_AC2",
+        "original_equipment": "E1",
+        "original_crew": "WB5_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 60
+      },
+      {
+        "flight_id": "WB5_F104",
+        "origin": "B",
+        "destination": "A",
+        "sched_dep": "2026-01-15T12:00:00Z",
+        "sched_arr": "2026-01-15T13:00:00Z",
+        "duration": 60,
+        "original_aircraft": "WB5_AC1",
+        "original_equipment": "E1",
+        "original_crew": "WB5_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 60
+      }
+    ],
+    "aircraft": [
+      {
+        "tail_id": "WB5_AC1",
+        "equipment_type": "E1",
+        "initial_station_at_t": "A",
+        "required_station_at_T_end": "A",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB5_F101",
+          "WB5_F104"
+        ]
+      },
+      {
+        "tail_id": "WB5_AC2",
+        "equipment_type": "E1",
+        "initial_station_at_t": "B",
+        "required_station_at_T_end": "B",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "WB5_F102",
+          "WB5_F103"
+        ]
+      }
+    ],
+    "crew": [
+      {
+        "crew_id": "WB5_C1",
+        "rating": "E1",
+        "start_station_at_t": "A",
+        "required_station_at_T_end": "A",
+        "original_duties": [
+          [
+            "WB5_F101",
+            "WB5_F102",
+            "WB5_F103",
+            "WB5_F104"
+          ]
+        ],
+        "original_pairing": [
+          "WB5_F101",
+          "WB5_F102",
+          "WB5_F103",
+          "WB5_F104"
+        ]
+      },
+      {
+        "crew_id": "WB5_C2",
+        "rating": "E1",
+        "start_station_at_t": "B",
+        "required_station_at_T_end": "B",
+        "original_duties": [],
+        "original_pairing": []
+      }
+    ],
+    "passengers": [],
+    "airport_intervals": [
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T09:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 0,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": [
+          "departure_closed"
+        ]
+      },
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T09:00:00Z",
+        "end_time": "2026-01-15T14:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T14:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "C",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T14:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      }
+    ],
+    "disruptions": [
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T09:00:00Z",
+        "capacity_change": -20,
+        "restriction_type": "departure_capacity_reduction"
+      }
+    ]
+  },
+  "recovery_columns": {
+    "schema_version": "1.0.0",
+    "scenario_id": "wb_v1_005_crew_recovery",
+    "time_unit": "minute",
+    "notes": [
+      "Workbench v1 validation Case 005: Crew Recovery with one spare qualified crew positioned at B.",
+      "WB5_C1 originally operates F101/F102/F103/F104 across two aircraft. Forced delay on F101 makes C1 miss F102. WB5_C2 can cover F102/F103 and return to B, while C1 resumes on F104.",
+      "Aircraft rotations are deliberately independent of the crew disruption so the primary mechanism is crew reassignment rather than aircraft recovery.",
+      "Aircraft Strings and Crew Pairings are intentionally empty; formal Solve generates them dynamically."
+    ],
+    "flight_options": [
+      {
+        "option_id": "WB5_F101_ORIG",
+        "base_flight_id": "WB5_F101",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "A",
+        "destination": "B",
+        "dep_time": "2026-01-15T08:00:00Z",
+        "arr_time": "2026-01-15T09:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Original departure lies inside the A closure and is infeasible."
+      },
+      {
+        "option_id": "WB5_F101_D60",
+        "base_flight_id": "WB5_F101",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "A",
+        "destination": "B",
+        "dep_time": "2026-01-15T09:00:00Z",
+        "arr_time": "2026-01-15T10:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 60,
+        "arrival_delay_minutes": 60,
+        "notes": "First feasible departure after the A closure."
+      },
+      {
+        "option_id": "WB5_F101_CANCEL",
+        "base_flight_id": "WB5_F101",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Fallback cancel option."
+      },
+      {
+        "option_id": "WB5_F102_ORIG",
+        "base_flight_id": "WB5_F102",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "C",
+        "dep_time": "2026-01-15T09:30:00Z",
+        "arr_time": "2026-01-15T10:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Original aircraft WB5_AC2 is available; original crew WB5_C1 misses this departure after delayed F101."
+      },
+      {
+        "option_id": "WB5_F102_D30",
+        "base_flight_id": "WB5_F102",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "B",
+        "destination": "C",
+        "dep_time": "2026-01-15T10:00:00Z",
+        "arr_time": "2026-01-15T11:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Fallback delay that lets WB5_C1 reconnect at B at 10:00."
+      },
+      {
+        "option_id": "WB5_F102_CANCEL",
+        "base_flight_id": "WB5_F102",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Fallback cancel option."
+      },
+      {
+        "option_id": "WB5_F103_ORIG",
+        "base_flight_id": "WB5_F103",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "C",
+        "destination": "B",
+        "dep_time": "2026-01-15T10:40:00Z",
+        "arr_time": "2026-01-15T11:40:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "On-time return leg for the spare-crew recovery path."
+      },
+      {
+        "option_id": "WB5_F103_D20",
+        "base_flight_id": "WB5_F103",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "C",
+        "destination": "B",
+        "dep_time": "2026-01-15T11:00:00Z",
+        "arr_time": "2026-01-15T12:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 20,
+        "arrival_delay_minutes": 20,
+        "notes": "Fallback continuation if WB5_C1 operates delayed F102."
+      },
+      {
+        "option_id": "WB5_F103_CANCEL",
+        "base_flight_id": "WB5_F103",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Fallback cancel option."
+      },
+      {
+        "option_id": "WB5_F104_ORIG",
+        "base_flight_id": "WB5_F104",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "A",
+        "dep_time": "2026-01-15T12:00:00Z",
+        "arr_time": "2026-01-15T13:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "WB5_C1 can wait at B after delayed F101 and still operate this final leg to required terminal A."
+      },
+      {
+        "option_id": "WB5_F104_CANCEL",
+        "base_flight_id": "WB5_F104",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Fallback cancel option."
+      }
+    ],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": []
+  },
+  "capacity_profile": {
+    "schema_version": "1.0.0",
+    "capacity_profile_id": "wb_v1_005_crew_recovery_capacity",
+    "scenario_id": "wb_v1_005_crew_recovery",
+    "source": "test_fixture",
+    "units": "seats",
+    "seat_capacity_by_option_id": {
+      "WB5_F101_ORIG": 200,
+      "WB5_F101_D60": 200,
+      "WB5_F102_ORIG": 200,
+      "WB5_F102_D30": 200,
+      "WB5_F103_ORIG": 200,
+      "WB5_F103_D20": 200,
+      "WB5_F104_ORIG": 200
+    },
+    "notes": [
+      "TEST / RESIDUAL CAPACITY; no passenger groups are present.",
+      "Seat capacity is non-binding in this crew-recovery case."
+    ]
+  },
+  "cost_profile_id": "phase2_test_v1",
+  "cost_overrides": {
+    "aircraft_reassignment": 100,
+    "crew_reassignment": 100
+  },
+  "algorithm": "benders_branch_and_price_v1",
+  "profile_ids": {
+    "flight_string_generation": "phase5_test_string_generation_v1",
+    "crew_pairing_generation": "phase6_test_crew_pairing_generation_v1",
+    "aircraft_string_cg": "phase9-test-aircraft-string-cg-v1",
+    "crew_pairing_cg": "phase10-test-crew-pairing-cg-v1",
+    "benders_cg": "phase11-test-benders-cg-v1",
+    "branch_and_price": "phase12-test-branch-and-price-v1"
+  }
+}
