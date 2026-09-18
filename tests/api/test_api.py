@@ -21,8 +21,9 @@ def test_health_and_frontend_are_served():
         "production_ready": False,
     }
     assert page.status_code == 200
-    assert "Load Example" in page.text
-    assert "Import Scenario" in page.text
+    assert "Load Case" in page.text
+    assert "example-selector" in page.text
+    assert ">Import<" in page.text
     assert "Costs" in page.text
     assert "Constraints" in page.text
     assert table_script.status_code == 200

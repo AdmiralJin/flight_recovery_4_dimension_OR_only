@@ -6,9 +6,18 @@ const stamp = (value) => value ? new Date(value).toLocaleString("zh-CN", { timeZ
 const number = (value) => value === null || value === undefined ? "—" : Number(value).toLocaleString("zh-CN", { maximumFractionDigits: 2 });
 const cell = (value) => `<td>${escapeHtml(value)}</td>`;
 
-export function renderRecovery(container, scenario, result, mode = "recovered", sortDelay = false) {
+export function renderRecovery(
+  container, scenario, result, mode = "recovered", sortDelay = false,
+  resultStale = false, solveError = null,
+) {
   if (!result) {
-    container.innerHTML = '<p class="muted">加载完整 Solve Bundle 后点击 Solve。Scenario-only 不会生成优化结果。</p>';
+    if (solveError) {
+      container.innerHTML = `<section class="recovery-card recovery-error"><h2>Solver error</h2><p>${escapeHtml(solveError)}</p><p>Review the error, correct the environment or input, then run Solve again.</p></section>`;
+      return;
+    }
+    container.innerHTML = resultStale
+      ? '<section class="recovery-card recovery-stale"><h2>Recovered Result is stale</h2><p>Inputs changed after the last solve. Run Solve again before reviewing or exporting Recovery.</p></section>'
+      : '<p class="muted">加载完整 Solve Bundle 后点击 Solve。Scenario-only 不会生成优化结果。</p>';
     return;
   }
   const metadata = result.run_metadata;
@@ -19,14 +28,24 @@ export function renderRecovery(container, scenario, result, mode = "recovered", 
   }
   const metrics = result.metrics.recovery;
   const totals = [
-    ["Total Cost", result.objective.total], ["Cancelled", metrics.cancelled_flights],
+    ["Status", result.status], ["Total Cost", result.objective.total],
+    ["Schedule Cost", result.objective.schedule], ["Aircraft Cost", result.objective.aircraft],
+    ["Crew Cost", result.objective.crew], ["Passenger Cost", result.objective.passenger],
+    ["Changed Flights", result.resolved_flights.filter((item) => item.resolved.status === "cancelled"
+      || item.resolved.recovered_origin !== item.original.origin
+      || item.resolved.recovered_destination !== item.original.destination
+      || (item.resolved.departure_delay_minutes || 0) > 0
+      || item.resolved.aircraft_id !== scenario.flights.find((flight) => flight.flight_id === item.resolved.flight_id)?.original_aircraft
+      || item.resolved.crew_id !== scenario.flights.find((flight) => flight.flight_id === item.resolved.flight_id)?.original_crew).length],
+    ["Cancelled", metrics.cancelled_flights],
     ["Delayed", metrics.delayed_flights], ["Mean Dep Delay", result.metrics.mean_departure_delay_minutes],
     ["Max Dep Delay", result.metrics.max_departure_delay_minutes],
     ["Aircraft Reassignments", metrics.aircraft_reassignments],
     ["Crew Reassignments", metrics.crew_reassignments],
     ["Passenger Delay (weighted)", metrics.passenger_delay_minutes_weighted],
     ["Unserved Passengers", metrics.unserved_passengers],
-    ["Runtime (s)", metadata.runtime_seconds], ["Final Gap", diag.gap],
+    ["Runtime (s)", metadata.runtime_seconds], ["Lower Bound", diag.lower_bound],
+    ["Upper Bound", diag.upper_bound], ["Final Gap", diag.gap],
   ];
   const flights = [...result.resolved_flights];
   const impacts = deriveFlightImpacts(scenario);
@@ -73,7 +92,7 @@ export function renderRecovery(container, scenario, result, mode = "recovered", 
     item.recovered_itinerary.join(" → ") || "—", item.outcome.status,
     item.outcome.arrival_delay_minutes, item.outcome.unserved_count,
   ].map(cell).join("")}</tr>`).join("");
-  const cards = totals.map(([label, value]) => `<div class="recovery-stat"><span>${escapeHtml(label)}</span><strong>${number(value)}</strong></div>`).join("");
+  const cards = totals.map(([label, value]) => `<div class="recovery-stat"><span>${escapeHtml(label)}</span><strong>${typeof value === "number" ? number(value) : escapeHtml(value)}</strong></div>`).join("");
   const table = (headers, rows) => `<div class="recovery-scroll"><table><thead><tr>${headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
   container.innerHTML = `
     <section class="recovery-card"><p class="section-kicker">EXACT SOLVER · ${escapeHtml(result.status.toUpperCase())}</p><h2>Recovery summary</h2><div class="recovery-stats">${cards}</div></section>

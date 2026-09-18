@@ -858,4 +858,21 @@ Phase 13 将版本化 `SolveRequest` 经输入就绪检查交给 Phase 12 exact 
 
 Phase 13 完成 AIR 复现/研究工作台 v1。求解链依次包含 Integrated Oracle → Benders → Aircraft/Crew Column Generation → Benders + CG → Branch-and-Price → 稳定 Solve API → Recovered Result → Recovery UI。该里程碑可审计、属于研究级工作台，不是生产航空公司恢复系统。
 
+---
+
+# 29. Workbench v1.1 应用层热修复
+
+v1.1 不修改任何核心求解、约束、pricing、Benders 或 Branch-and-Price 逻辑，仅强化 Web / application integration：
+
+- `GET /api/solve/examples` 为 selector 提供 solve-ready 与 scenario-only 元数据，并在 UI 中分组展示；
+- `applySolveBundle()` 将 Scenario、Recovery Columns、Passenger Capacity 与 case cost overrides 作为同一 case 加载，Constraints 不回退到 benchmark；
+- Scenario validity、Solve readiness、Solver lifecycle、Result freshness 分开显示，Case 另行标记 CLEAN / MODIFIED；
+- Solve 在任何异步 readiness 请求前锁定，显示 elapsed time，并以 revision 丢弃过期结果；
+- 输入变化后旧结果进入 `STALE RESULT`，Recovery 明确提示重新 Solve；Solver/API error 在 Recovery 中持续显示；
+- `Reset Changes` 还原当前 case baseline，保留如 toy016 所需的成本覆盖；
+- Import 支持 Scenario、Solve Bundle、`workbench_snapshot_v1`；Scenario JSON 保持 Scenario-only，不根据同名 fixture 静默水合为 Solve Bundle；Export Snapshot 可对应回导；
+- HTTP 非 JSON / 非 2xx 错误统一转换为可见 toast 与当前视图错误信息。
+
+该版本仍为同步 exact solve；“Stop Waiting”或后端 Gurobi 取消能力不在本次范围内。
+
 核心算法路线图至 Phase 13 冻结。后续开发独立转入航司特定 Business Migration：真实数据映射、Flight Option 生成与筛选、成本标定、业务规则、大规模运行时与稳定性、运行验证。
