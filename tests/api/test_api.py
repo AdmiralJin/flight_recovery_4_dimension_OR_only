@@ -8,6 +8,7 @@ client = TestClient(app)
 
 def test_health_and_frontend_are_served():
     health = client.get("/api/health")
+    root_redirect = client.get("/", follow_redirects=False)
     page = client.get("/")
     table_script = client.get("/static/js/tables.js")
 
@@ -21,6 +22,8 @@ def test_health_and_frontend_are_served():
         "flight_option_generation": False,
         "production_ready": False,
     }
+    assert root_redirect.status_code == 307
+    assert root_redirect.headers["location"] == "/workbench-v2/data"
     assert page.status_code == 200
     if 'id="root"' in page.text:
         assert "AIR Recovery Workbench" in page.text

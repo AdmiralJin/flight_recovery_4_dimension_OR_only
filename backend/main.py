@@ -3,7 +3,7 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.exception_handlers import request_validation_exception_handler
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.api.examples import router as examples_router
@@ -86,9 +86,14 @@ async def disable_workbench_asset_cache(request, call_next):
 
 
 @app.get("/", include_in_schema=False)
-def index() -> FileResponse:
+def index():
     v2_index = V2_DIST_ROOT / "index.html"
-    return FileResponse(v2_index if v2_index.is_file() else FRONTEND_ROOT / "index.html")
+    if v2_index.is_file():
+        # The React router is built with basename="/workbench-v2". Serving its
+        # document at "/" leaves the router outside that basename and renders
+        # an empty root node (a dark screen). Redirect to the canonical route.
+        return RedirectResponse(url="/workbench-v2/data", status_code=307)
+    return FileResponse(FRONTEND_ROOT / "index.html")
 
 
 @app.get("/legacy", include_in_schema=False)

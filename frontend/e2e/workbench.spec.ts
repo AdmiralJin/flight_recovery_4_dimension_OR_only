@@ -17,6 +17,17 @@ test.beforeAll(async ({ request }) => {
   await mkdir(shots, { recursive: true });
 });
 
+test("root URL redirects into the v2 router instead of rendering a blank shell", async ({ page }) => {
+  const messages: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" || message.type() === "warning") messages.push(message.text());
+  });
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/workbench-v2\/data$/);
+  await expect(page.getByRole("heading", { name: "数据设计" })).toBeVisible({ timeout: 15_000 });
+  expect(messages.filter((message) => message.includes("basename"))).toEqual([]);
+});
+
 test("desktop task flow is compact, navigable and accessible", async ({ page }) => {
   const errors: string[] = [];
   page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
