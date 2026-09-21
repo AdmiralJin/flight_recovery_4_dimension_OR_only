@@ -1,0 +1,140 @@
+[
+  {
+    "profile_id": "P1-seconds",
+    "label": "几秒级 / 紧凑演示",
+    "target_runtime": "2-8 seconds",
+    "airport_count": 4,
+    "operating_aircraft": 3,
+    "reserve_aircraft": 0,
+    "reserve_crew": 0,
+    "passenger_groups": 12,
+    "delay_minutes": [
+      30
+    ],
+    "disrupted_fraction": 0.34,
+    "seed": 101,
+    "calibration_status": "calibrated_local_1.3_to_1.7_seconds",
+    "expected_counts": {
+      "airports": 4,
+      "flights": 12,
+      "aircraft": 4,
+      "crew": 5,
+      "passenger_groups": 8,
+      "airport_intervals": 4,
+      "disruptions": 1,
+      "flight_options": 22,
+      "passenger_itineraries": 55
+    }
+  },
+  {
+    "profile_id": "P2-tens-seconds",
+    "label": "几十秒级 / 标准演示",
+    "target_runtime": "30-90 seconds",
+    "airport_count": 4,
+    "operating_aircraft": 3,
+    "reserve_aircraft": 0,
+    "reserve_crew": 0,
+    "passenger_groups": 12,
+    "delay_minutes": [
+      30
+    ],
+    "disrupted_fraction": 0.34,
+    "seed": 202,
+    "calibration_status": "calibrated_local_70s_budget_aborted",
+    "expected_counts": {
+      "airports": 4,
+      "flights": 12,
+      "aircraft": 3,
+      "crew": 3,
+      "passenger_groups": 12,
+      "airport_intervals": 88,
+      "disruptions": 1,
+      "flight_options": 36,
+      "passenger_itineraries": 42
+    }
+  },
+  {
+    "profile_id": "P3-minutes",
+    "label": "几分钟级 / 丰富演示",
+    "target_runtime": "2-8 minutes",
+    "airport_count": 6,
+    "operating_aircraft": 5,
+    "reserve_aircraft": 1,
+    "reserve_crew": 1,
+    "passenger_groups": 30,
+    "delay_minutes": [
+      30
+    ],
+    "disrupted_fraction": 0.4,
+    "seed": 303,
+    "calibration_status": "uncalibrated",
+    "expected_counts": {
+      "airports": 6,
+      "flights": 20,
+      "aircraft": 6,
+      "crew": 6,
+      "passenger_groups": 30,
+      "airport_intervals": 132,
+      "disruptions": 1,
+      "flight_options": 60,
+      "passenger_itineraries": 102
+    }
+  },
+  {
+    "profile_id": "P4-tens-minutes",
+    "label": "几十分钟级压力",
+    "target_runtime": "15-45 minutes",
+    "airport_count": 8,
+    "operating_aircraft": 10,
+    "reserve_aircraft": 2,
+    "reserve_crew": 3,
+    "passenger_groups": 80,
+    "delay_minutes": [
+      30,
+      60
+    ],
+    "disrupted_fraction": 0.45,
+    "seed": 404,
+    "calibration_status": "uncalibrated",
+    "expected_counts": {
+      "airports": 8,
+      "flights": 40,
+      "aircraft": 12,
+      "crew": 13,
+      "passenger_groups": 80,
+      "airport_intervals": 176,
+      "disruptions": 1,
+      "flight_options": 160,
+      "passenger_itineraries": 412
+    }
+  },
+  {
+    "profile_id": "P5-hours",
+    "label": "小时级压力",
+    "target_runtime": "1-3 hours",
+    "airport_count": 12,
+    "operating_aircraft": 18,
+    "reserve_aircraft": 3,
+    "reserve_crew": 6,
+    "passenger_groups": 250,
+    "delay_minutes": [
+      30,
+      60,
+      90
+    ],
+    "disrupted_fraction": 0.5,
+    "seed": 505,
+    "calibration_status": "uncalibrated",
+    "expected_counts": {
+      "airports": 12,
+      "flights": 72,
+      "aircraft": 21,
+      "crew": 24,
+      "passenger_groups": 250,
+      "airport_intervals": 264,
+      "disruptions": 1,
+      "flight_options": 360,
+      "passenger_itineraries": 1764
+    }
+  }
+]

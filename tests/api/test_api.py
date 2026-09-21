@@ -15,18 +15,26 @@ def test_health_and_frontend_are_served():
     assert health.json() == {
         "status": "ok",
         "solver_enabled": True,
+        "solver_reason": None,
         "algorithm": "benders_branch_and_price_v1",
         "scope_mode": "full_only",
         "flight_option_generation": False,
         "production_ready": False,
     }
     assert page.status_code == 200
-    assert "Load Example" in page.text
-    assert "Import Scenario" in page.text
-    assert "Costs" in page.text
-    assert "Constraints" in page.text
+    if 'id="root"' in page.text:
+        assert "AIR Recovery Workbench" in page.text
+        assert 'src="/workbench-v2/assets/' in page.text
+    else:
+        assert "加载 Case" in page.text
+        assert "当前 Case" in page.text
+    assert page.headers["cache-control"] == "no-store, max-age=0"
+    legacy = client.get("/legacy")
+    assert legacy.status_code == 200
+    assert "recovery-network-ui-20260920-1" in legacy.text
     assert table_script.status_code == 200
-    assert "Airport Capacity" in table_script.text
+    assert table_script.headers["cache-control"] == "no-store, max-age=0"
+    assert "机场容量" in table_script.text
 
 
 def test_example_endpoint_is_stable(toy_case):

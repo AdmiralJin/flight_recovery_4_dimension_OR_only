@@ -1,0 +1,172 @@
+{
+  "schema_version": "1.0.0",
+  "default_case_id": "benchmark-disruption-recovery",
+  "cases": [
+    {
+      "case_id": "benchmark-disruption-recovery",
+      "label": "Benchmark 扰动恢复",
+      "category": "核心示例",
+      "description": "包含 12 个航班的扰动恢复 Case，覆盖机场容量、飞机互换与旅客改签。",
+      "tags": ["基线", "机场容量", "飞机互换", "旅客改签"],
+      "mode": "solve_bundle",
+      "scenario_file": "examples/phase1_benchmark_001.json",
+      "columns_file": "columns/phase1_benchmark_001_columns.json",
+      "capacity_file": "capacities/phase2_test_seat_capacity_v1.json",
+      "generate_passenger_itineraries": true,
+      "cost_overrides": {},
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": true,
+        "optimization_status": "optimal",
+        "objective_total": 18080.0,
+        "required_flight_options": {
+          "F2": "FO_F2_D50",
+          "F10": "FO_F10_D20",
+          "F11": "FO_F11_D10"
+        },
+        "required_metrics": {
+          "cancelled_flights": 0,
+          "delayed_flights": 3,
+          "aircraft_reassignments": 2,
+          "passenger_reaccommodated_groups": 1,
+          "unserved_passengers": 0
+        }
+      }
+    },
+    {
+      "case_id": "crew-recovery-integrality",
+      "label": "机组恢复整数性",
+      "category": "核心示例",
+      "description": "需要对机组整数性进行精确处理的 Branch-and-Price Case。",
+      "tags": ["机组恢复", "Branch-and-Price"],
+      "mode": "solve_bundle",
+      "scenario_file": "examples/toy_case_016_benders_branch_and_price.json",
+      "columns_file": "columns/toy_case_016_benders_branch_and_price_columns.json",
+      "capacity_file": "capacities/toy_case_016_benders_branch_and_price_capacity.json",
+      "cost_overrides": {
+        "crew_reassignment": 100.0,
+        "deadhead_per_minute": 1.0
+      },
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": true,
+        "optimization_status": "optimal",
+        "objective_total": 95200.0
+      }
+    },
+    {
+      "case_id": "passenger-capacity-constrained",
+      "label": "旅客容量受限",
+      "category": "可检验 Case",
+      "description": "由于原始 Flight Option 没有剩余旅客容量，单个航班必须延误。",
+      "tags": ["旅客容量", "延误"],
+      "mode": "solve_bundle",
+      "scenario_file": "examples/toy_case_005.json",
+      "columns_file": "columns/toy_case_005_columns.json",
+      "capacity_file": "capacities/toy_case_005_capacity.json",
+      "cost_overrides": {},
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": true,
+        "optimization_status": "optimal",
+        "objective_total": 1010.0,
+        "required_flight_options": {"T5_F1": "FO_T5_F1_D10"},
+        "required_metrics": {"delayed_flights": 1, "unserved_passengers": 0}
+      }
+    },
+    {
+      "case_id": "passenger-capacity-relaxed",
+      "label": "旅客容量放宽",
+      "category": "可检验 Case",
+      "description": "单变量容量敏感性实验：将原始 Flight Option 的剩余座位恢复为 10 个。",
+      "tags": ["容量敏感性", "单变量"],
+      "mode": "solve_bundle",
+      "scenario_file": "examples/toy_case_005.json",
+      "columns_file": "columns/toy_case_005_columns.json",
+      "capacity_file": "capacities/toy_case_005_capacity.json",
+      "capacity_profile_id": "toy_case_005_capacity_relaxed",
+      "capacity_overrides": {"FO_T5_F1_ORIG": 10},
+      "cost_overrides": {},
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": true,
+        "optimization_status": "optimal",
+        "objective_total": 0.0,
+        "required_flight_options": {"T5_F1": "FO_T5_F1_ORIG"},
+        "required_metrics": {"delayed_flights": 0, "unserved_passengers": 0}
+      }
+    },
+    {
+      "case_id": "delay-cost-cancellation-tradeoff",
+      "label": "延误成本权衡",
+      "category": "可检验 Case",
+      "description": "单变量成本敏感性实验：使采用延误 Flight Option 的成本高于不承运旅客。",
+      "tags": ["成本敏感性", "延误与未承运权衡", "单变量"],
+      "mode": "solve_bundle",
+      "scenario_file": "examples/toy_case_005.json",
+      "columns_file": "columns/toy_case_005_columns.json",
+      "capacity_file": "capacities/toy_case_005_capacity.json",
+      "cost_overrides": {"flight_delay_per_minute": 3000.0},
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": true,
+        "optimization_status": "optimal",
+        "objective_total": 25000.0,
+        "required_flight_options": {"T5_F1": "FO_T5_F1_ORIG"},
+        "required_metrics": {"delayed_flights": 0, "unserved_passengers": 10}
+      }
+    },
+    {
+      "case_id": "solve-ready-infeasible",
+      "label": "求解已就绪但不可行",
+      "category": "边界 Case",
+      "description": "结构完整的 Solve Bundle，但其受限的 Flight Option 集合不存在可行的集成恢复方案。",
+      "tags": ["不可行", "就绪性边界"],
+      "mode": "solve_bundle",
+      "scenario_file": "examples/toy_case_016_benders_branch_and_price.json",
+      "columns_file": "columns/toy_case_016_benders_branch_and_price_columns.json",
+      "capacity_file": "capacities/toy_case_016_benders_branch_and_price_capacity.json",
+      "allowed_flight_option_ids": ["T16_O1", "T16_F2_ORIG", "T16_F3_ORIG", "T16_D1_ORIG", "T16_D2_ORIG", "T16_D3_ORIG"],
+      "cost_overrides": {
+        "crew_reassignment": 100.0,
+        "deadhead_per_minute": 1.0
+      },
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": true,
+        "optimization_status": "infeasible",
+        "objective_total": null
+      }
+    },
+    {
+      "case_id": "scenario-only-minimal",
+      "label": "最小 Scenario-only",
+      "category": "Scenario-only Case",
+      "description": "一个有效的 Scenario，但不含 Flight Options、容量配置或求解配置；其状态必须明确保持为“未满足求解条件”。",
+      "tags": ["Scenario-only", "输入不完整"],
+      "mode": "scenario_only",
+      "scenario_file": "examples/toy_case_001.json",
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": false,
+        "optimization_status": null,
+        "objective_total": null
+      }
+    },
+    {
+      "case_id": "invalid-missing-airport",
+      "label": "无效：缺失机场",
+      "category": "边界 Case",
+      "description": "负向校验样例：某航班引用了未声明的机场。",
+      "tags": ["无效", "负向边界"],
+      "mode": "scenario_only",
+      "scenario_file": "cases/invalid_missing_airport.json",
+      "expected": {
+        "scenario_valid": false,
+        "solve_ready": false,
+        "optimization_status": null,
+        "objective_total": null
+      }
+    }
+  ]
+}

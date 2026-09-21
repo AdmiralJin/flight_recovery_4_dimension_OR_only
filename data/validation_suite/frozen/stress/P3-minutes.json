@@ -1,0 +1,5204 @@
+{
+  "schema_version": "1.0.0",
+  "scenario": {
+    "scenario_id": "p3_minutes",
+    "recovery_window": {
+      "start_time": "2026-10-15T07:00:00Z",
+      "end_time": "2026-10-15T18:00:00Z"
+    },
+    "airports": [
+      {
+        "airport_id": "H00",
+        "name": "Synthetic Hub"
+      },
+      {
+        "airport_id": "S01",
+        "name": "Synthetic Spoke 01"
+      },
+      {
+        "airport_id": "S02",
+        "name": "Synthetic Spoke 02"
+      },
+      {
+        "airport_id": "S03",
+        "name": "Synthetic Spoke 03"
+      },
+      {
+        "airport_id": "S04",
+        "name": "Synthetic Spoke 04"
+      },
+      {
+        "airport_id": "S05",
+        "name": "Synthetic Spoke 05"
+      }
+    ],
+    "flights": [
+      {
+        "flight_id": "P3-minutes_F0001",
+        "origin": "H00",
+        "destination": "S01",
+        "sched_dep": "2026-10-15T08:00:00Z",
+        "sched_arr": "2026-10-15T09:00:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC001",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR001",
+        "strategic_flag": false,
+        "market_flag": true,
+        "min_seats": 5,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0002",
+        "origin": "S01",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T10:00:00Z",
+        "sched_arr": "2026-10-15T11:00:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC001",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR001",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0003",
+        "origin": "H00",
+        "destination": "S02",
+        "sched_dep": "2026-10-15T12:00:00Z",
+        "sched_arr": "2026-10-15T13:00:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC001",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR001",
+        "strategic_flag": true,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0004",
+        "origin": "S02",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T14:00:00Z",
+        "sched_arr": "2026-10-15T15:00:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC001",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR001",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0005",
+        "origin": "H00",
+        "destination": "S02",
+        "sched_dep": "2026-10-15T08:05:00Z",
+        "sched_arr": "2026-10-15T09:05:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC002",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR002",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0006",
+        "origin": "S02",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T10:05:00Z",
+        "sched_arr": "2026-10-15T11:05:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC002",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR002",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0007",
+        "origin": "H00",
+        "destination": "S05",
+        "sched_dep": "2026-10-15T12:05:00Z",
+        "sched_arr": "2026-10-15T13:05:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC002",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR002",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0008",
+        "origin": "S05",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T14:05:00Z",
+        "sched_arr": "2026-10-15T15:05:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC002",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR002",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0009",
+        "origin": "H00",
+        "destination": "S03",
+        "sched_dep": "2026-10-15T08:10:00Z",
+        "sched_arr": "2026-10-15T09:10:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC003",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR003",
+        "strategic_flag": false,
+        "market_flag": true,
+        "min_seats": 5,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0010",
+        "origin": "S03",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T10:10:00Z",
+        "sched_arr": "2026-10-15T11:10:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC003",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR003",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0011",
+        "origin": "H00",
+        "destination": "S04",
+        "sched_dep": "2026-10-15T12:10:00Z",
+        "sched_arr": "2026-10-15T13:10:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC003",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR003",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0012",
+        "origin": "S04",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T14:10:00Z",
+        "sched_arr": "2026-10-15T15:10:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC003",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR003",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0013",
+        "origin": "H00",
+        "destination": "S04",
+        "sched_dep": "2026-10-15T08:00:00Z",
+        "sched_arr": "2026-10-15T09:00:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC004",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR004",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0014",
+        "origin": "S04",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T10:00:00Z",
+        "sched_arr": "2026-10-15T11:00:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC004",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR004",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0015",
+        "origin": "H00",
+        "destination": "S01",
+        "sched_dep": "2026-10-15T12:00:00Z",
+        "sched_arr": "2026-10-15T13:00:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC004",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR004",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0016",
+        "origin": "S01",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T14:00:00Z",
+        "sched_arr": "2026-10-15T15:00:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC004",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR004",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0017",
+        "origin": "H00",
+        "destination": "S05",
+        "sched_dep": "2026-10-15T08:05:00Z",
+        "sched_arr": "2026-10-15T09:05:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC005",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR005",
+        "strategic_flag": false,
+        "market_flag": true,
+        "min_seats": 5,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0018",
+        "origin": "S05",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T10:05:00Z",
+        "sched_arr": "2026-10-15T11:05:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC005",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR005",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0019",
+        "origin": "H00",
+        "destination": "S04",
+        "sched_dep": "2026-10-15T12:05:00Z",
+        "sched_arr": "2026-10-15T13:05:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC005",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR005",
+        "strategic_flag": true,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      },
+      {
+        "flight_id": "P3-minutes_F0020",
+        "origin": "S04",
+        "destination": "H00",
+        "sched_dep": "2026-10-15T14:05:00Z",
+        "sched_arr": "2026-10-15T15:05:00Z",
+        "duration": 60,
+        "original_aircraft": "P3-minutes_AC005",
+        "original_equipment": "E1",
+        "original_crew": "P3-minutes_CR005",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 30
+      }
+    ],
+    "aircraft": [
+      {
+        "tail_id": "P3-minutes_AC001",
+        "equipment_type": "E1",
+        "initial_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "P3-minutes_F0001",
+          "P3-minutes_F0002",
+          "P3-minutes_F0003",
+          "P3-minutes_F0004"
+        ]
+      },
+      {
+        "tail_id": "P3-minutes_AC002",
+        "equipment_type": "E1",
+        "initial_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "P3-minutes_F0005",
+          "P3-minutes_F0006",
+          "P3-minutes_F0007",
+          "P3-minutes_F0008"
+        ]
+      },
+      {
+        "tail_id": "P3-minutes_AC003",
+        "equipment_type": "E1",
+        "initial_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "P3-minutes_F0009",
+          "P3-minutes_F0010",
+          "P3-minutes_F0011",
+          "P3-minutes_F0012"
+        ]
+      },
+      {
+        "tail_id": "P3-minutes_AC004",
+        "equipment_type": "E1",
+        "initial_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "P3-minutes_F0013",
+          "P3-minutes_F0014",
+          "P3-minutes_F0015",
+          "P3-minutes_F0016"
+        ]
+      },
+      {
+        "tail_id": "P3-minutes_AC005",
+        "equipment_type": "E1",
+        "initial_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "maintenance_required": true,
+        "maintenance_stations": [
+          "H00"
+        ],
+        "original_rotation": [
+          "P3-minutes_F0017",
+          "P3-minutes_F0018",
+          "P3-minutes_F0019",
+          "P3-minutes_F0020"
+        ]
+      },
+      {
+        "tail_id": "P3-minutes_RAC001",
+        "equipment_type": "E1",
+        "initial_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": []
+      }
+    ],
+    "crew": [
+      {
+        "crew_id": "P3-minutes_CR001",
+        "rating": "E1",
+        "start_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "original_duties": [
+          [
+            "P3-minutes_F0001",
+            "P3-minutes_F0002",
+            "P3-minutes_F0003",
+            "P3-minutes_F0004"
+          ]
+        ],
+        "original_pairing": [
+          "P3-minutes_F0001",
+          "P3-minutes_F0002",
+          "P3-minutes_F0003",
+          "P3-minutes_F0004"
+        ]
+      },
+      {
+        "crew_id": "P3-minutes_CR002",
+        "rating": "E1",
+        "start_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "original_duties": [
+          [
+            "P3-minutes_F0005",
+            "P3-minutes_F0006",
+            "P3-minutes_F0007",
+            "P3-minutes_F0008"
+          ]
+        ],
+        "original_pairing": [
+          "P3-minutes_F0005",
+          "P3-minutes_F0006",
+          "P3-minutes_F0007",
+          "P3-minutes_F0008"
+        ]
+      },
+      {
+        "crew_id": "P3-minutes_CR003",
+        "rating": "E1",
+        "start_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "original_duties": [
+          [
+            "P3-minutes_F0009",
+            "P3-minutes_F0010",
+            "P3-minutes_F0011",
+            "P3-minutes_F0012"
+          ]
+        ],
+        "original_pairing": [
+          "P3-minutes_F0009",
+          "P3-minutes_F0010",
+          "P3-minutes_F0011",
+          "P3-minutes_F0012"
+        ]
+      },
+      {
+        "crew_id": "P3-minutes_CR004",
+        "rating": "E1",
+        "start_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "original_duties": [
+          [
+            "P3-minutes_F0013",
+            "P3-minutes_F0014",
+            "P3-minutes_F0015",
+            "P3-minutes_F0016"
+          ]
+        ],
+        "original_pairing": [
+          "P3-minutes_F0013",
+          "P3-minutes_F0014",
+          "P3-minutes_F0015",
+          "P3-minutes_F0016"
+        ]
+      },
+      {
+        "crew_id": "P3-minutes_CR005",
+        "rating": "E1",
+        "start_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "original_duties": [
+          [
+            "P3-minutes_F0017",
+            "P3-minutes_F0018",
+            "P3-minutes_F0019",
+            "P3-minutes_F0020"
+          ]
+        ],
+        "original_pairing": [
+          "P3-minutes_F0017",
+          "P3-minutes_F0018",
+          "P3-minutes_F0019",
+          "P3-minutes_F0020"
+        ]
+      },
+      {
+        "crew_id": "P3-minutes_RCR001",
+        "rating": "E1",
+        "start_station_at_t": "H00",
+        "required_station_at_T_end": "H00",
+        "original_duties": [],
+        "original_pairing": []
+      }
+    ],
+    "passengers": [
+      {
+        "pax_group_id": "P3-minutes_P00001",
+        "count": 6,
+        "origin": "S01",
+        "destination": "S05",
+        "original_departure": "2026-10-15T10:00:00Z",
+        "scheduled_arrival": "2026-10-15T13:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0002",
+          "P3-minutes_F0007"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00002",
+        "count": 12,
+        "origin": "S01",
+        "destination": "H00",
+        "original_departure": "2026-10-15T10:00:00Z",
+        "scheduled_arrival": "2026-10-15T11:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0002"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00003",
+        "count": 11,
+        "origin": "H00",
+        "destination": "S02",
+        "original_departure": "2026-10-15T12:00:00Z",
+        "scheduled_arrival": "2026-10-15T13:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0003"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00004",
+        "count": 7,
+        "origin": "S02",
+        "destination": "H00",
+        "original_departure": "2026-10-15T14:00:00Z",
+        "scheduled_arrival": "2026-10-15T15:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0004"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00005",
+        "count": 13,
+        "origin": "H00",
+        "destination": "S02",
+        "original_departure": "2026-10-15T08:05:00Z",
+        "scheduled_arrival": "2026-10-15T09:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0005"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00006",
+        "count": 17,
+        "origin": "S02",
+        "destination": "S04",
+        "original_departure": "2026-10-15T10:05:00Z",
+        "scheduled_arrival": "2026-10-15T13:10:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0006",
+          "P3-minutes_F0011"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00007",
+        "count": 10,
+        "origin": "H00",
+        "destination": "S05",
+        "original_departure": "2026-10-15T12:05:00Z",
+        "scheduled_arrival": "2026-10-15T13:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0007"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00008",
+        "count": 18,
+        "origin": "S05",
+        "destination": "H00",
+        "original_departure": "2026-10-15T14:05:00Z",
+        "scheduled_arrival": "2026-10-15T15:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0008"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00009",
+        "count": 20,
+        "origin": "H00",
+        "destination": "S03",
+        "original_departure": "2026-10-15T08:10:00Z",
+        "scheduled_arrival": "2026-10-15T09:10:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0009"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00010",
+        "count": 7,
+        "origin": "S03",
+        "destination": "H00",
+        "original_departure": "2026-10-15T10:10:00Z",
+        "scheduled_arrival": "2026-10-15T11:10:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0010"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00011",
+        "count": 13,
+        "origin": "S03",
+        "destination": "S01",
+        "original_departure": "2026-10-15T10:10:00Z",
+        "scheduled_arrival": "2026-10-15T13:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0010",
+          "P3-minutes_F0015"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00012",
+        "count": 6,
+        "origin": "S04",
+        "destination": "H00",
+        "original_departure": "2026-10-15T14:10:00Z",
+        "scheduled_arrival": "2026-10-15T15:10:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0012"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00013",
+        "count": 8,
+        "origin": "H00",
+        "destination": "S04",
+        "original_departure": "2026-10-15T08:00:00Z",
+        "scheduled_arrival": "2026-10-15T09:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0013"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00014",
+        "count": 17,
+        "origin": "S04",
+        "destination": "H00",
+        "original_departure": "2026-10-15T10:00:00Z",
+        "scheduled_arrival": "2026-10-15T11:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0014"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00015",
+        "count": 9,
+        "origin": "H00",
+        "destination": "S01",
+        "original_departure": "2026-10-15T12:00:00Z",
+        "scheduled_arrival": "2026-10-15T13:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0015"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00016",
+        "count": 20,
+        "origin": "S05",
+        "destination": "S02",
+        "original_departure": "2026-10-15T10:05:00Z",
+        "scheduled_arrival": "2026-10-15T13:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0018",
+          "P3-minutes_F0003"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00017",
+        "count": 14,
+        "origin": "H00",
+        "destination": "S05",
+        "original_departure": "2026-10-15T08:05:00Z",
+        "scheduled_arrival": "2026-10-15T09:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0017"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00018",
+        "count": 5,
+        "origin": "S05",
+        "destination": "H00",
+        "original_departure": "2026-10-15T10:05:00Z",
+        "scheduled_arrival": "2026-10-15T11:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0018"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00019",
+        "count": 18,
+        "origin": "H00",
+        "destination": "S04",
+        "original_departure": "2026-10-15T12:05:00Z",
+        "scheduled_arrival": "2026-10-15T13:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0019"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00020",
+        "count": 13,
+        "origin": "S04",
+        "destination": "H00",
+        "original_departure": "2026-10-15T14:05:00Z",
+        "scheduled_arrival": "2026-10-15T15:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0020"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00021",
+        "count": 6,
+        "origin": "S01",
+        "destination": "S05",
+        "original_departure": "2026-10-15T10:00:00Z",
+        "scheduled_arrival": "2026-10-15T13:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0002",
+          "P3-minutes_F0007"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00022",
+        "count": 12,
+        "origin": "S01",
+        "destination": "H00",
+        "original_departure": "2026-10-15T10:00:00Z",
+        "scheduled_arrival": "2026-10-15T11:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0002"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00023",
+        "count": 11,
+        "origin": "H00",
+        "destination": "S02",
+        "original_departure": "2026-10-15T12:00:00Z",
+        "scheduled_arrival": "2026-10-15T13:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0003"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00024",
+        "count": 15,
+        "origin": "S02",
+        "destination": "H00",
+        "original_departure": "2026-10-15T14:00:00Z",
+        "scheduled_arrival": "2026-10-15T15:00:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0004"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00025",
+        "count": 9,
+        "origin": "H00",
+        "destination": "S02",
+        "original_departure": "2026-10-15T08:05:00Z",
+        "scheduled_arrival": "2026-10-15T09:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0005"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00026",
+        "count": 10,
+        "origin": "S02",
+        "destination": "S04",
+        "original_departure": "2026-10-15T10:05:00Z",
+        "scheduled_arrival": "2026-10-15T13:10:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0006",
+          "P3-minutes_F0011"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00027",
+        "count": 11,
+        "origin": "H00",
+        "destination": "S05",
+        "original_departure": "2026-10-15T12:05:00Z",
+        "scheduled_arrival": "2026-10-15T13:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0007"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00028",
+        "count": 14,
+        "origin": "S05",
+        "destination": "H00",
+        "original_departure": "2026-10-15T14:05:00Z",
+        "scheduled_arrival": "2026-10-15T15:05:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0008"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00029",
+        "count": 8,
+        "origin": "H00",
+        "destination": "S03",
+        "original_departure": "2026-10-15T08:10:00Z",
+        "scheduled_arrival": "2026-10-15T09:10:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0009"
+        ]
+      },
+      {
+        "pax_group_id": "P3-minutes_P00030",
+        "count": 12,
+        "origin": "S03",
+        "destination": "H00",
+        "original_departure": "2026-10-15T10:10:00Z",
+        "scheduled_arrival": "2026-10-15T11:10:00Z",
+        "original_itinerary": [
+          "P3-minutes_F0010"
+        ]
+      }
+    ],
+    "airport_intervals": [
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T07:00:00Z",
+        "end_time": "2026-10-15T07:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T07:00:00Z",
+        "end_time": "2026-10-15T07:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T07:00:00Z",
+        "end_time": "2026-10-15T07:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T07:00:00Z",
+        "end_time": "2026-10-15T07:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T07:00:00Z",
+        "end_time": "2026-10-15T07:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T07:00:00Z",
+        "end_time": "2026-10-15T07:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T07:30:00Z",
+        "end_time": "2026-10-15T08:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T07:30:00Z",
+        "end_time": "2026-10-15T08:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T07:30:00Z",
+        "end_time": "2026-10-15T08:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T07:30:00Z",
+        "end_time": "2026-10-15T08:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T07:30:00Z",
+        "end_time": "2026-10-15T08:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T07:30:00Z",
+        "end_time": "2026-10-15T08:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T08:00:00Z",
+        "end_time": "2026-10-15T08:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 3,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": [
+          "synthetic_capacity_reduction"
+        ]
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T08:00:00Z",
+        "end_time": "2026-10-15T08:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T08:00:00Z",
+        "end_time": "2026-10-15T08:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T08:00:00Z",
+        "end_time": "2026-10-15T08:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T08:00:00Z",
+        "end_time": "2026-10-15T08:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T08:00:00Z",
+        "end_time": "2026-10-15T08:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T08:30:00Z",
+        "end_time": "2026-10-15T09:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T08:30:00Z",
+        "end_time": "2026-10-15T09:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T08:30:00Z",
+        "end_time": "2026-10-15T09:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T08:30:00Z",
+        "end_time": "2026-10-15T09:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T08:30:00Z",
+        "end_time": "2026-10-15T09:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T08:30:00Z",
+        "end_time": "2026-10-15T09:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T09:00:00Z",
+        "end_time": "2026-10-15T09:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T09:00:00Z",
+        "end_time": "2026-10-15T09:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T09:00:00Z",
+        "end_time": "2026-10-15T09:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T09:00:00Z",
+        "end_time": "2026-10-15T09:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T09:00:00Z",
+        "end_time": "2026-10-15T09:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T09:00:00Z",
+        "end_time": "2026-10-15T09:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T09:30:00Z",
+        "end_time": "2026-10-15T10:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T09:30:00Z",
+        "end_time": "2026-10-15T10:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T09:30:00Z",
+        "end_time": "2026-10-15T10:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T09:30:00Z",
+        "end_time": "2026-10-15T10:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T09:30:00Z",
+        "end_time": "2026-10-15T10:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T09:30:00Z",
+        "end_time": "2026-10-15T10:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T10:00:00Z",
+        "end_time": "2026-10-15T10:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T10:00:00Z",
+        "end_time": "2026-10-15T10:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T10:00:00Z",
+        "end_time": "2026-10-15T10:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T10:00:00Z",
+        "end_time": "2026-10-15T10:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T10:00:00Z",
+        "end_time": "2026-10-15T10:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T10:00:00Z",
+        "end_time": "2026-10-15T10:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T10:30:00Z",
+        "end_time": "2026-10-15T11:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T10:30:00Z",
+        "end_time": "2026-10-15T11:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T10:30:00Z",
+        "end_time": "2026-10-15T11:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T10:30:00Z",
+        "end_time": "2026-10-15T11:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T10:30:00Z",
+        "end_time": "2026-10-15T11:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T10:30:00Z",
+        "end_time": "2026-10-15T11:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T11:00:00Z",
+        "end_time": "2026-10-15T11:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T11:00:00Z",
+        "end_time": "2026-10-15T11:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T11:00:00Z",
+        "end_time": "2026-10-15T11:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T11:00:00Z",
+        "end_time": "2026-10-15T11:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T11:00:00Z",
+        "end_time": "2026-10-15T11:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T11:00:00Z",
+        "end_time": "2026-10-15T11:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T11:30:00Z",
+        "end_time": "2026-10-15T12:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T11:30:00Z",
+        "end_time": "2026-10-15T12:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T11:30:00Z",
+        "end_time": "2026-10-15T12:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T11:30:00Z",
+        "end_time": "2026-10-15T12:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T11:30:00Z",
+        "end_time": "2026-10-15T12:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T11:30:00Z",
+        "end_time": "2026-10-15T12:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T12:00:00Z",
+        "end_time": "2026-10-15T12:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T12:00:00Z",
+        "end_time": "2026-10-15T12:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T12:00:00Z",
+        "end_time": "2026-10-15T12:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T12:00:00Z",
+        "end_time": "2026-10-15T12:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T12:00:00Z",
+        "end_time": "2026-10-15T12:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T12:00:00Z",
+        "end_time": "2026-10-15T12:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T12:30:00Z",
+        "end_time": "2026-10-15T13:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T12:30:00Z",
+        "end_time": "2026-10-15T13:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T12:30:00Z",
+        "end_time": "2026-10-15T13:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T12:30:00Z",
+        "end_time": "2026-10-15T13:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T12:30:00Z",
+        "end_time": "2026-10-15T13:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T12:30:00Z",
+        "end_time": "2026-10-15T13:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T13:00:00Z",
+        "end_time": "2026-10-15T13:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T13:00:00Z",
+        "end_time": "2026-10-15T13:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T13:00:00Z",
+        "end_time": "2026-10-15T13:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T13:00:00Z",
+        "end_time": "2026-10-15T13:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T13:00:00Z",
+        "end_time": "2026-10-15T13:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T13:00:00Z",
+        "end_time": "2026-10-15T13:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T13:30:00Z",
+        "end_time": "2026-10-15T14:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T13:30:00Z",
+        "end_time": "2026-10-15T14:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T13:30:00Z",
+        "end_time": "2026-10-15T14:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T13:30:00Z",
+        "end_time": "2026-10-15T14:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T13:30:00Z",
+        "end_time": "2026-10-15T14:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T13:30:00Z",
+        "end_time": "2026-10-15T14:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T14:00:00Z",
+        "end_time": "2026-10-15T14:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T14:00:00Z",
+        "end_time": "2026-10-15T14:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T14:00:00Z",
+        "end_time": "2026-10-15T14:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T14:00:00Z",
+        "end_time": "2026-10-15T14:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T14:00:00Z",
+        "end_time": "2026-10-15T14:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T14:00:00Z",
+        "end_time": "2026-10-15T14:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T14:30:00Z",
+        "end_time": "2026-10-15T15:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T14:30:00Z",
+        "end_time": "2026-10-15T15:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T14:30:00Z",
+        "end_time": "2026-10-15T15:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T14:30:00Z",
+        "end_time": "2026-10-15T15:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T14:30:00Z",
+        "end_time": "2026-10-15T15:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T14:30:00Z",
+        "end_time": "2026-10-15T15:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T15:00:00Z",
+        "end_time": "2026-10-15T15:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T15:00:00Z",
+        "end_time": "2026-10-15T15:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T15:00:00Z",
+        "end_time": "2026-10-15T15:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T15:00:00Z",
+        "end_time": "2026-10-15T15:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T15:00:00Z",
+        "end_time": "2026-10-15T15:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T15:00:00Z",
+        "end_time": "2026-10-15T15:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T15:30:00Z",
+        "end_time": "2026-10-15T16:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T15:30:00Z",
+        "end_time": "2026-10-15T16:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T15:30:00Z",
+        "end_time": "2026-10-15T16:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T15:30:00Z",
+        "end_time": "2026-10-15T16:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T15:30:00Z",
+        "end_time": "2026-10-15T16:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T15:30:00Z",
+        "end_time": "2026-10-15T16:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T16:00:00Z",
+        "end_time": "2026-10-15T16:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T16:00:00Z",
+        "end_time": "2026-10-15T16:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T16:00:00Z",
+        "end_time": "2026-10-15T16:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T16:00:00Z",
+        "end_time": "2026-10-15T16:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T16:00:00Z",
+        "end_time": "2026-10-15T16:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T16:00:00Z",
+        "end_time": "2026-10-15T16:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T16:30:00Z",
+        "end_time": "2026-10-15T17:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T16:30:00Z",
+        "end_time": "2026-10-15T17:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T16:30:00Z",
+        "end_time": "2026-10-15T17:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T16:30:00Z",
+        "end_time": "2026-10-15T17:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T16:30:00Z",
+        "end_time": "2026-10-15T17:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T16:30:00Z",
+        "end_time": "2026-10-15T17:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T17:00:00Z",
+        "end_time": "2026-10-15T17:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T17:00:00Z",
+        "end_time": "2026-10-15T17:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T17:00:00Z",
+        "end_time": "2026-10-15T17:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T17:00:00Z",
+        "end_time": "2026-10-15T17:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T17:00:00Z",
+        "end_time": "2026-10-15T17:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T17:00:00Z",
+        "end_time": "2026-10-15T17:30:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T17:30:00Z",
+        "end_time": "2026-10-15T18:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S01",
+        "start_time": "2026-10-15T17:30:00Z",
+        "end_time": "2026-10-15T18:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S02",
+        "start_time": "2026-10-15T17:30:00Z",
+        "end_time": "2026-10-15T18:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S03",
+        "start_time": "2026-10-15T17:30:00Z",
+        "end_time": "2026-10-15T18:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S04",
+        "start_time": "2026-10-15T17:30:00Z",
+        "end_time": "2026-10-15T18:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "S05",
+        "start_time": "2026-10-15T17:30:00Z",
+        "end_time": "2026-10-15T18:00:00Z",
+        "arr_capacity": 40,
+        "dep_capacity": 40,
+        "gate_capacity": 26,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      }
+    ],
+    "disruptions": [
+      {
+        "airport": "H00",
+        "start_time": "2026-10-15T08:00:00Z",
+        "end_time": "2026-10-15T08:30:00Z",
+        "capacity_change": -2,
+        "restriction_type": "synthetic_departure_capacity_reduction"
+      }
+    ]
+  },
+  "recovery_columns": {
+    "schema_version": "1.0.0",
+    "scenario_id": "p3_minutes",
+    "time_unit": "minute",
+    "notes": [
+      "Generated deterministically from validation scale profile P3-minutes.",
+      "Aircraft strings and crew pairings are intentionally generated by the solver."
+    ],
+    "flight_options": [
+      {
+        "option_id": "P3-minutes_F0001_O",
+        "base_flight_id": "P3-minutes_F0001",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S01",
+        "dep_time": "2026-10-15T08:00:00Z",
+        "arr_time": "2026-10-15T09:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0001_D30",
+        "base_flight_id": "P3-minutes_F0001",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S01",
+        "dep_time": "2026-10-15T08:30:00Z",
+        "arr_time": "2026-10-15T09:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0001_C",
+        "base_flight_id": "P3-minutes_F0001",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0002_O",
+        "base_flight_id": "P3-minutes_F0002",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S01",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:00:00Z",
+        "arr_time": "2026-10-15T11:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0002_D30",
+        "base_flight_id": "P3-minutes_F0002",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S01",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:30:00Z",
+        "arr_time": "2026-10-15T11:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0002_C",
+        "base_flight_id": "P3-minutes_F0002",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0003_O",
+        "base_flight_id": "P3-minutes_F0003",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S02",
+        "dep_time": "2026-10-15T12:00:00Z",
+        "arr_time": "2026-10-15T13:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0003_D30",
+        "base_flight_id": "P3-minutes_F0003",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S02",
+        "dep_time": "2026-10-15T12:30:00Z",
+        "arr_time": "2026-10-15T13:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0003_C",
+        "base_flight_id": "P3-minutes_F0003",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0004_O",
+        "base_flight_id": "P3-minutes_F0004",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S02",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:00:00Z",
+        "arr_time": "2026-10-15T15:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0004_D30",
+        "base_flight_id": "P3-minutes_F0004",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S02",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:30:00Z",
+        "arr_time": "2026-10-15T15:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0004_C",
+        "base_flight_id": "P3-minutes_F0004",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0005_O",
+        "base_flight_id": "P3-minutes_F0005",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S02",
+        "dep_time": "2026-10-15T08:05:00Z",
+        "arr_time": "2026-10-15T09:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0005_D30",
+        "base_flight_id": "P3-minutes_F0005",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S02",
+        "dep_time": "2026-10-15T08:35:00Z",
+        "arr_time": "2026-10-15T09:35:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0005_C",
+        "base_flight_id": "P3-minutes_F0005",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0006_O",
+        "base_flight_id": "P3-minutes_F0006",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S02",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:05:00Z",
+        "arr_time": "2026-10-15T11:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0006_D30",
+        "base_flight_id": "P3-minutes_F0006",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S02",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:35:00Z",
+        "arr_time": "2026-10-15T11:35:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0006_C",
+        "base_flight_id": "P3-minutes_F0006",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0007_O",
+        "base_flight_id": "P3-minutes_F0007",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S05",
+        "dep_time": "2026-10-15T12:05:00Z",
+        "arr_time": "2026-10-15T13:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0007_D30",
+        "base_flight_id": "P3-minutes_F0007",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S05",
+        "dep_time": "2026-10-15T12:35:00Z",
+        "arr_time": "2026-10-15T13:35:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0007_C",
+        "base_flight_id": "P3-minutes_F0007",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0008_O",
+        "base_flight_id": "P3-minutes_F0008",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S05",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:05:00Z",
+        "arr_time": "2026-10-15T15:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0008_D30",
+        "base_flight_id": "P3-minutes_F0008",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S05",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:35:00Z",
+        "arr_time": "2026-10-15T15:35:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0008_C",
+        "base_flight_id": "P3-minutes_F0008",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0009_O",
+        "base_flight_id": "P3-minutes_F0009",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S03",
+        "dep_time": "2026-10-15T08:10:00Z",
+        "arr_time": "2026-10-15T09:10:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0009_D30",
+        "base_flight_id": "P3-minutes_F0009",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S03",
+        "dep_time": "2026-10-15T08:40:00Z",
+        "arr_time": "2026-10-15T09:40:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0009_C",
+        "base_flight_id": "P3-minutes_F0009",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0010_O",
+        "base_flight_id": "P3-minutes_F0010",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S03",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:10:00Z",
+        "arr_time": "2026-10-15T11:10:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0010_D30",
+        "base_flight_id": "P3-minutes_F0010",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S03",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:40:00Z",
+        "arr_time": "2026-10-15T11:40:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0010_C",
+        "base_flight_id": "P3-minutes_F0010",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0011_O",
+        "base_flight_id": "P3-minutes_F0011",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S04",
+        "dep_time": "2026-10-15T12:10:00Z",
+        "arr_time": "2026-10-15T13:10:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0011_D30",
+        "base_flight_id": "P3-minutes_F0011",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S04",
+        "dep_time": "2026-10-15T12:40:00Z",
+        "arr_time": "2026-10-15T13:40:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0011_C",
+        "base_flight_id": "P3-minutes_F0011",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0012_O",
+        "base_flight_id": "P3-minutes_F0012",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S04",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:10:00Z",
+        "arr_time": "2026-10-15T15:10:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0012_D30",
+        "base_flight_id": "P3-minutes_F0012",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S04",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:40:00Z",
+        "arr_time": "2026-10-15T15:40:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0012_C",
+        "base_flight_id": "P3-minutes_F0012",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0013_O",
+        "base_flight_id": "P3-minutes_F0013",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S04",
+        "dep_time": "2026-10-15T08:00:00Z",
+        "arr_time": "2026-10-15T09:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0013_D30",
+        "base_flight_id": "P3-minutes_F0013",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S04",
+        "dep_time": "2026-10-15T08:30:00Z",
+        "arr_time": "2026-10-15T09:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0013_C",
+        "base_flight_id": "P3-minutes_F0013",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0014_O",
+        "base_flight_id": "P3-minutes_F0014",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S04",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:00:00Z",
+        "arr_time": "2026-10-15T11:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0014_D30",
+        "base_flight_id": "P3-minutes_F0014",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S04",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:30:00Z",
+        "arr_time": "2026-10-15T11:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0014_C",
+        "base_flight_id": "P3-minutes_F0014",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0015_O",
+        "base_flight_id": "P3-minutes_F0015",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S01",
+        "dep_time": "2026-10-15T12:00:00Z",
+        "arr_time": "2026-10-15T13:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0015_D30",
+        "base_flight_id": "P3-minutes_F0015",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S01",
+        "dep_time": "2026-10-15T12:30:00Z",
+        "arr_time": "2026-10-15T13:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0015_C",
+        "base_flight_id": "P3-minutes_F0015",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0016_O",
+        "base_flight_id": "P3-minutes_F0016",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S01",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:00:00Z",
+        "arr_time": "2026-10-15T15:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0016_D30",
+        "base_flight_id": "P3-minutes_F0016",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S01",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:30:00Z",
+        "arr_time": "2026-10-15T15:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0016_C",
+        "base_flight_id": "P3-minutes_F0016",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0017_O",
+        "base_flight_id": "P3-minutes_F0017",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S05",
+        "dep_time": "2026-10-15T08:05:00Z",
+        "arr_time": "2026-10-15T09:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0017_D30",
+        "base_flight_id": "P3-minutes_F0017",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S05",
+        "dep_time": "2026-10-15T08:35:00Z",
+        "arr_time": "2026-10-15T09:35:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0017_C",
+        "base_flight_id": "P3-minutes_F0017",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0018_O",
+        "base_flight_id": "P3-minutes_F0018",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S05",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:05:00Z",
+        "arr_time": "2026-10-15T11:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0018_D30",
+        "base_flight_id": "P3-minutes_F0018",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S05",
+        "destination": "H00",
+        "dep_time": "2026-10-15T10:35:00Z",
+        "arr_time": "2026-10-15T11:35:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0018_C",
+        "base_flight_id": "P3-minutes_F0018",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0019_O",
+        "base_flight_id": "P3-minutes_F0019",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "H00",
+        "destination": "S04",
+        "dep_time": "2026-10-15T12:05:00Z",
+        "arr_time": "2026-10-15T13:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0019_D30",
+        "base_flight_id": "P3-minutes_F0019",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "H00",
+        "destination": "S04",
+        "dep_time": "2026-10-15T12:35:00Z",
+        "arr_time": "2026-10-15T13:35:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0019_C",
+        "base_flight_id": "P3-minutes_F0019",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0020_O",
+        "base_flight_id": "P3-minutes_F0020",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "S04",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:05:00Z",
+        "arr_time": "2026-10-15T15:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Synthetic unchanged candidate."
+      },
+      {
+        "option_id": "P3-minutes_F0020_D30",
+        "base_flight_id": "P3-minutes_F0020",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "S04",
+        "destination": "H00",
+        "dep_time": "2026-10-15T14:35:00Z",
+        "arr_time": "2026-10-15T15:35:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 30,
+        "arrival_delay_minutes": 30,
+        "notes": "Synthetic delay candidate: 30 minutes."
+      },
+      {
+        "option_id": "P3-minutes_F0020_C",
+        "base_flight_id": "P3-minutes_F0020",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Synthetic cancellation candidate."
+      }
+    ],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": [
+      {
+        "itinerary_id": "P3-minutes_P00001_I001",
+        "pax_group_id": "P3-minutes_P00001",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00001_I002",
+        "pax_group_id": "P3-minutes_P00001",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00001_I003",
+        "pax_group_id": "P3-minutes_P00001",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00001_I004",
+        "pax_group_id": "P3-minutes_P00001",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00001_UNSERVED",
+        "pax_group_id": "P3-minutes_P00001",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00002_I001",
+        "pax_group_id": "P3-minutes_P00002",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00002_I002",
+        "pax_group_id": "P3-minutes_P00002",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00002_UNSERVED",
+        "pax_group_id": "P3-minutes_P00002",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00003_I001",
+        "pax_group_id": "P3-minutes_P00003",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0003_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T13:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00003_I002",
+        "pax_group_id": "P3-minutes_P00003",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0003_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T13:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00003_UNSERVED",
+        "pax_group_id": "P3-minutes_P00003",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00004_I001",
+        "pax_group_id": "P3-minutes_P00004",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0004_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00004_I002",
+        "pax_group_id": "P3-minutes_P00004",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0004_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00004_UNSERVED",
+        "pax_group_id": "P3-minutes_P00004",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00005_I001",
+        "pax_group_id": "P3-minutes_P00005",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0005_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T09:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00005_I002",
+        "pax_group_id": "P3-minutes_P00005",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0005_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T09:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00005_UNSERVED",
+        "pax_group_id": "P3-minutes_P00005",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00006_I001",
+        "pax_group_id": "P3-minutes_P00006",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0006_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0011_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:10:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00006_I002",
+        "pax_group_id": "P3-minutes_P00006",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0006_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0011_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:40:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00006_I003",
+        "pax_group_id": "P3-minutes_P00006",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0006_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0011_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:10:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00006_I004",
+        "pax_group_id": "P3-minutes_P00006",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0006_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0011_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:40:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00006_UNSERVED",
+        "pax_group_id": "P3-minutes_P00006",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00007_I001",
+        "pax_group_id": "P3-minutes_P00007",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00007_I002",
+        "pax_group_id": "P3-minutes_P00007",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00007_UNSERVED",
+        "pax_group_id": "P3-minutes_P00007",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00008_I001",
+        "pax_group_id": "P3-minutes_P00008",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0008_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00008_I002",
+        "pax_group_id": "P3-minutes_P00008",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0008_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00008_UNSERVED",
+        "pax_group_id": "P3-minutes_P00008",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00009_I001",
+        "pax_group_id": "P3-minutes_P00009",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0009_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S03",
+        "arrival_time": "2026-10-15T09:10:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00009_I002",
+        "pax_group_id": "P3-minutes_P00009",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0009_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S03",
+        "arrival_time": "2026-10-15T09:40:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00009_UNSERVED",
+        "pax_group_id": "P3-minutes_P00009",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00010_I001",
+        "pax_group_id": "P3-minutes_P00010",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0010_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:10:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00010_I002",
+        "pax_group_id": "P3-minutes_P00010",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0010_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:40:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00010_UNSERVED",
+        "pax_group_id": "P3-minutes_P00010",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00011_I001",
+        "pax_group_id": "P3-minutes_P00011",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0010_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0015_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S01",
+        "arrival_time": "2026-10-15T13:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00011_I002",
+        "pax_group_id": "P3-minutes_P00011",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0010_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0015_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S01",
+        "arrival_time": "2026-10-15T13:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00011_I003",
+        "pax_group_id": "P3-minutes_P00011",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0010_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0015_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S01",
+        "arrival_time": "2026-10-15T13:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00011_I004",
+        "pax_group_id": "P3-minutes_P00011",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0010_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0015_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S01",
+        "arrival_time": "2026-10-15T13:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00011_UNSERVED",
+        "pax_group_id": "P3-minutes_P00011",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00012_I001",
+        "pax_group_id": "P3-minutes_P00012",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0012_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:10:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00012_I002",
+        "pax_group_id": "P3-minutes_P00012",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0012_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:40:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00012_UNSERVED",
+        "pax_group_id": "P3-minutes_P00012",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00013_I001",
+        "pax_group_id": "P3-minutes_P00013",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0013_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T09:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00013_I002",
+        "pax_group_id": "P3-minutes_P00013",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0013_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T09:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00013_UNSERVED",
+        "pax_group_id": "P3-minutes_P00013",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00014_I001",
+        "pax_group_id": "P3-minutes_P00014",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0014_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00014_I002",
+        "pax_group_id": "P3-minutes_P00014",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0014_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00014_UNSERVED",
+        "pax_group_id": "P3-minutes_P00014",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00015_I001",
+        "pax_group_id": "P3-minutes_P00015",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0015_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S01",
+        "arrival_time": "2026-10-15T13:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00015_I002",
+        "pax_group_id": "P3-minutes_P00015",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0015_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S01",
+        "arrival_time": "2026-10-15T13:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00015_UNSERVED",
+        "pax_group_id": "P3-minutes_P00015",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00016_I001",
+        "pax_group_id": "P3-minutes_P00016",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0018_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0003_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T13:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00016_I002",
+        "pax_group_id": "P3-minutes_P00016",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0018_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0003_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T13:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00016_I003",
+        "pax_group_id": "P3-minutes_P00016",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0018_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0003_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T13:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00016_I004",
+        "pax_group_id": "P3-minutes_P00016",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0018_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0003_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T13:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00016_UNSERVED",
+        "pax_group_id": "P3-minutes_P00016",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00017_I001",
+        "pax_group_id": "P3-minutes_P00017",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0017_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T09:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00017_I002",
+        "pax_group_id": "P3-minutes_P00017",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0017_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T09:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00017_UNSERVED",
+        "pax_group_id": "P3-minutes_P00017",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00018_I001",
+        "pax_group_id": "P3-minutes_P00018",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0018_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00018_I002",
+        "pax_group_id": "P3-minutes_P00018",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0018_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00018_UNSERVED",
+        "pax_group_id": "P3-minutes_P00018",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00019_I001",
+        "pax_group_id": "P3-minutes_P00019",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0019_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00019_I002",
+        "pax_group_id": "P3-minutes_P00019",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0019_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00019_UNSERVED",
+        "pax_group_id": "P3-minutes_P00019",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00020_I001",
+        "pax_group_id": "P3-minutes_P00020",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0020_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00020_I002",
+        "pax_group_id": "P3-minutes_P00020",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0020_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00020_UNSERVED",
+        "pax_group_id": "P3-minutes_P00020",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00021_I001",
+        "pax_group_id": "P3-minutes_P00021",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00021_I002",
+        "pax_group_id": "P3-minutes_P00021",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00021_I003",
+        "pax_group_id": "P3-minutes_P00021",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00021_I004",
+        "pax_group_id": "P3-minutes_P00021",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00021_UNSERVED",
+        "pax_group_id": "P3-minutes_P00021",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00022_I001",
+        "pax_group_id": "P3-minutes_P00022",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00022_I002",
+        "pax_group_id": "P3-minutes_P00022",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0002_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00022_UNSERVED",
+        "pax_group_id": "P3-minutes_P00022",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00023_I001",
+        "pax_group_id": "P3-minutes_P00023",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0003_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T13:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00023_I002",
+        "pax_group_id": "P3-minutes_P00023",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0003_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T13:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00023_UNSERVED",
+        "pax_group_id": "P3-minutes_P00023",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00024_I001",
+        "pax_group_id": "P3-minutes_P00024",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0004_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00024_I002",
+        "pax_group_id": "P3-minutes_P00024",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0004_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:30:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00024_UNSERVED",
+        "pax_group_id": "P3-minutes_P00024",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00025_I001",
+        "pax_group_id": "P3-minutes_P00025",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0005_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T09:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00025_I002",
+        "pax_group_id": "P3-minutes_P00025",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0005_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S02",
+        "arrival_time": "2026-10-15T09:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00025_UNSERVED",
+        "pax_group_id": "P3-minutes_P00025",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00026_I001",
+        "pax_group_id": "P3-minutes_P00026",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0006_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0011_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:10:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00026_I002",
+        "pax_group_id": "P3-minutes_P00026",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0006_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0011_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:40:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00026_I003",
+        "pax_group_id": "P3-minutes_P00026",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0006_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0011_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:10:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00026_I004",
+        "pax_group_id": "P3-minutes_P00026",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0006_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0011_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S04",
+        "arrival_time": "2026-10-15T13:40:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00026_UNSERVED",
+        "pax_group_id": "P3-minutes_P00026",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00027_I001",
+        "pax_group_id": "P3-minutes_P00027",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00027_I002",
+        "pax_group_id": "P3-minutes_P00027",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0007_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S05",
+        "arrival_time": "2026-10-15T13:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00027_UNSERVED",
+        "pax_group_id": "P3-minutes_P00027",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00028_I001",
+        "pax_group_id": "P3-minutes_P00028",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0008_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:05:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00028_I002",
+        "pax_group_id": "P3-minutes_P00028",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0008_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T15:35:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00028_UNSERVED",
+        "pax_group_id": "P3-minutes_P00028",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00029_I001",
+        "pax_group_id": "P3-minutes_P00029",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0009_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S03",
+        "arrival_time": "2026-10-15T09:10:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00029_I002",
+        "pax_group_id": "P3-minutes_P00029",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0009_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "S03",
+        "arrival_time": "2026-10-15T09:40:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00029_UNSERVED",
+        "pax_group_id": "P3-minutes_P00029",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00030_I001",
+        "pax_group_id": "P3-minutes_P00030",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0010_O",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:10:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00030_I002",
+        "pax_group_id": "P3-minutes_P00030",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "P3-minutes_F0010_D30",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "H00",
+        "arrival_time": "2026-10-15T11:40:00Z",
+        "arrival_delay_minutes": 30,
+        "cost_components": {},
+        "notes": "Deterministically generated direct or connecting itinerary."
+      },
+      {
+        "itinerary_id": "P3-minutes_P00030_UNSERVED",
+        "pax_group_id": "P3-minutes_P00030",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": "Explicit unserved fallback."
+      }
+    ]
+  },
+  "capacity_profile": {
+    "schema_version": "1.0.0",
+    "capacity_profile_id": "p3_minutes_capacity",
+    "scenario_id": "p3_minutes",
+    "source": "test_fixture",
+    "units": "seats",
+    "seat_capacity_by_option_id": {
+      "P3-minutes_F0001_O": 20,
+      "P3-minutes_F0001_D30": 20,
+      "P3-minutes_F0002_O": 56,
+      "P3-minutes_F0002_D30": 56,
+      "P3-minutes_F0003_O": 62,
+      "P3-minutes_F0003_D30": 62,
+      "P3-minutes_F0004_O": 42,
+      "P3-minutes_F0004_D30": 42,
+      "P3-minutes_F0005_O": 42,
+      "P3-minutes_F0005_D30": 42,
+      "P3-minutes_F0006_O": 47,
+      "P3-minutes_F0006_D30": 47,
+      "P3-minutes_F0007_O": 53,
+      "P3-minutes_F0007_D30": 53,
+      "P3-minutes_F0008_O": 31,
+      "P3-minutes_F0008_D30": 52,
+      "P3-minutes_F0009_O": 48,
+      "P3-minutes_F0009_D30": 48,
+      "P3-minutes_F0010_O": 52,
+      "P3-minutes_F0010_D30": 52,
+      "P3-minutes_F0011_O": 47,
+      "P3-minutes_F0011_D30": 47,
+      "P3-minutes_F0012_O": 26,
+      "P3-minutes_F0012_D30": 26,
+      "P3-minutes_F0013_O": 28,
+      "P3-minutes_F0013_D30": 28,
+      "P3-minutes_F0014_O": 37,
+      "P3-minutes_F0014_D30": 37,
+      "P3-minutes_F0015_O": 21,
+      "P3-minutes_F0015_D30": 42,
+      "P3-minutes_F0016_O": 20,
+      "P3-minutes_F0016_D30": 20,
+      "P3-minutes_F0017_O": 34,
+      "P3-minutes_F0017_D30": 34,
+      "P3-minutes_F0018_O": 45,
+      "P3-minutes_F0018_D30": 45,
+      "P3-minutes_F0019_O": 38,
+      "P3-minutes_F0019_D30": 38,
+      "P3-minutes_F0020_O": 33,
+      "P3-minutes_F0020_D30": 33
+    },
+    "notes": [
+      "Synthetic residual capacity; every seventh original option is one seat short to activate PRM-C03."
+    ]
+  },
+  "cost_profile_id": "phase2_test_v1",
+  "cost_overrides": {
+    "passenger_delay_per_pax_minute": 1.0
+  },
+  "algorithm": "benders_branch_and_price_v1",
+  "profile_ids": {
+    "flight_string_generation": "phase5_test_string_generation_v1",
+    "crew_pairing_generation": "phase6_test_crew_pairing_generation_v1",
+    "aircraft_string_cg": "phase9-test-aircraft-string-cg-v1",
+    "crew_pairing_cg": "phase10-test-crew-pairing-cg-v1",
+    "benders_cg": "phase11-test-benders-cg-v1",
+    "branch_and_price": "phase12-test-branch-and-price-v1"
+  }
+}

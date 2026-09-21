@@ -146,3 +146,71 @@ test("phase1 validation case has the intended deterministic impacts", () => {
     { load: 2, capacity: 1, status: "over" },
   );
 });
+
+test("maps solved flights into recovered network states without losing resource changes", () => {
+  const resolvedFlights = toyCase.flights.map((flight) => ({
+    resolved: {
+      flight_id: flight.flight_id,
+      selected_option_id: `OPTION_${flight.flight_id}`,
+      status: "operated",
+      change_types: ["unchanged"],
+      recovered_origin: flight.origin,
+      recovered_destination: flight.destination,
+      recovered_dep: flight.sched_dep,
+      recovered_arr: flight.sched_arr,
+      departure_delay_minutes: 0,
+      arrival_delay_minutes: 0,
+      aircraft_id: flight.original_aircraft,
+      crew_id: flight.original_crew,
+    },
+  }));
+  resolvedFlights[0].resolved.recovered_dep = "2026-01-15T08:10:00Z";
+  resolvedFlights[0].resolved.recovered_arr = "2026-01-15T09:10:00Z";
+  resolvedFlights[0].resolved.departure_delay_minutes = 10;
+  resolvedFlights[0].resolved.arrival_delay_minutes = 10;
+  resolvedFlights[0].resolved.aircraft_id = "AC2";
+  resolvedFlights[0].resolved.crew_id = "C2";
+  resolvedFlights[1].resolved = {
+    ...resolvedFlights[1].resolved,
+    status: "cancelled",
+    change_types: ["cancel"],
+    recovered_origin: null,
+    recovered_destination: null,
+    recovered_dep: null,
+    recovered_arr: null,
+    departure_delay_minutes: null,
+    arrival_delay_minutes: null,
+    aircraft_id: null,
+    crew_id: null,
+  };
+  resolvedFlights[2].resolved.recovered_origin = "A";
+  resolvedFlights[2].resolved.recovered_destination = "C";
+
+  const result = { status: "optimal", resolved_flights: resolvedFlights };
+  const views = visualization.deriveRecoveredFlightViews(toyCase, result);
+  const byId = new Map(views.map((item) => [item.flight.flight_id, item]));
+
+  assert.equal(byId.get("F1").visualStatus, "delayed");
+  assert.equal(byId.get("F1").aircraftReassigned, true);
+  assert.equal(byId.get("F1").crewReassigned, true);
+  assert.equal(byId.get("F2").visualStatus, "cancelled");
+  assert.equal(byId.get("F3").visualStatus, "rerouted");
+  assert.equal(visualization.deriveVisualizationModel(toyCase, result).recoveredAvailable, true);
+});
+
+test("does not enable a recovered network for incomplete or non-optimal results", () => {
+  assert.equal(
+    visualization.deriveVisualizationModel(toyCase, {
+      status: "infeasible",
+      resolved_flights: [],
+    }).recoveredAvailable,
+    false,
+  );
+  assert.equal(
+    visualization.deriveVisualizationModel(toyCase, {
+      status: "optimal",
+      resolved_flights: [],
+    }).recoveredAvailable,
+    false,
+  );
+});

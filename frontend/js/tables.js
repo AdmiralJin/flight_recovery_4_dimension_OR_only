@@ -1,45 +1,45 @@
 export const sections = [
-  { key: "scenario", label: "Scenario", title: "Recovery window" },
-  { key: "airports", label: "Airports", title: "Airport master data" },
-  { key: "flights", label: "Flights", title: "Scheduled flight legs" },
-  { key: "aircraft", label: "Aircraft", title: "Tail rotations" },
-  { key: "crew", label: "Crew", title: "Cockpit crew pairings" },
-  { key: "passengers", label: "Passengers", title: "Passenger commodities" },
-  { key: "airport_intervals", label: "Airport Capacity", title: "Time-dependent airport capacity" },
-  { key: "disruptions", label: "Disruptions", title: "Disruption events" },
+  { key: "scenario", label: "场景 Scenario", title: "恢复时间窗" },
+  { key: "airports", label: "机场", title: "机场主数据" },
+  { key: "flights", label: "航班", title: "计划航段" },
+  { key: "aircraft", label: "飞机", title: "飞机轮转" },
+  { key: "crew", label: "机组", title: "驾驶舱机组配对" },
+  { key: "passengers", label: "旅客", title: "旅客流（Passenger Commodities）" },
+  { key: "airport_intervals", label: "机场容量", title: "时变机场容量" },
+  { key: "disruptions", label: "扰动", title: "扰动事件" },
 ];
 
 export const columns = {
   airports: [
-    ["airport_id", "Airport ID", "text"], ["name", "Name", "text"],
+    ["airport_id", "机场 ID", "text"], ["name", "名称", "text"],
   ],
   flights: [
-    ["flight_id", "Flight", "text"], ["origin", "Origin", "text"], ["destination", "Destination", "text"],
-    ["sched_dep", "Scheduled dep", "text"], ["sched_arr", "Scheduled arr", "text"], ["duration", "Duration min", "number"],
-    ["original_aircraft", "Aircraft", "text"], ["original_equipment", "Equipment", "text"], ["original_crew", "Crew", "text"],
-    ["strategic_flag", "Strategic", "boolean"], ["market_flag", "Market", "boolean"], ["min_seats", "Min seats", "number"], ["max_delay", "Max delay", "number"],
+    ["flight_id", "航班", "text"], ["origin", "始发站", "text"], ["destination", "目的站", "text"],
+    ["sched_dep", "计划起飞", "text"], ["sched_arr", "计划到达", "text"], ["duration", "航程时长（分钟）", "number"],
+    ["original_aircraft", "原计划飞机", "text"], ["original_equipment", "机型", "text"], ["original_crew", "原计划机组", "text"],
+    ["strategic_flag", "战略航班", "boolean"], ["market_flag", "市场航班", "boolean"], ["min_seats", "最少座位数", "number"], ["max_delay", "最大延误（分钟）", "number"],
   ],
   aircraft: [
-    ["tail_id", "Tail", "text"], ["equipment_type", "Equipment", "text"], ["initial_station_at_t", "Start station", "text"],
-    ["required_station_at_T_end", "End station", "text"], ["maintenance_required", "Maintenance", "boolean"],
-    ["maintenance_stations", "Maintenance stations", "json"], ["original_rotation", "Original rotation", "json"],
+    ["tail_id", "机尾号", "text"], ["equipment_type", "机型", "text"], ["initial_station_at_t", "初始机场", "text"],
+    ["required_station_at_T_end", "期末要求机场", "text"], ["maintenance_required", "需要维修", "boolean"],
+    ["maintenance_stations", "维修机场", "json"], ["original_rotation", "原始轮转", "json"],
   ],
   crew: [
-    ["crew_id", "Crew", "text"], ["rating", "Rating", "text"], ["start_station_at_t", "Start station", "text"],
-    ["required_station_at_T_end", "End station", "text"], ["original_duties", "Original duties", "json"], ["original_pairing", "Original pairing", "json"],
+    ["crew_id", "机组", "text"], ["rating", "资质等级", "text"], ["start_station_at_t", "初始机场", "text"],
+    ["required_station_at_T_end", "期末要求机场", "text"], ["original_duties", "原执勤任务", "json"], ["original_pairing", "原始配对", "json"],
   ],
   passengers: [
-    ["pax_group_id", "Group", "text"], ["count", "Count", "number"], ["origin", "Origin", "text"], ["destination", "Destination", "text"],
-    ["original_departure", "Original departure", "text"], ["scheduled_arrival", "Scheduled arrival", "text"], ["original_itinerary", "Original itinerary", "json"],
+    ["pax_group_id", "旅客组", "text"], ["count", "人数", "number"], ["origin", "始发站", "text"], ["destination", "目的站", "text"],
+    ["original_departure", "原计划出发", "text"], ["scheduled_arrival", "计划到达", "text"], ["original_itinerary", "原始行程", "json"],
   ],
   airport_intervals: [
-    ["airport", "Airport", "text"], ["start_time", "Start", "text"], ["end_time", "End", "text"],
-    ["arr_capacity", "Arr cap", "number"], ["dep_capacity", "Dep cap", "number"], ["gate_capacity", "Gate cap", "number"],
-    ["curfew_flag", "Curfew", "boolean"], ["weather_restrictions", "Weather restrictions", "json"],
+    ["airport", "机场", "text"], ["start_time", "开始时间", "text"], ["end_time", "结束时间", "text"],
+    ["arr_capacity", "到达容量", "number"], ["dep_capacity", "起飞容量", "number"], ["gate_capacity", "机位容量", "number"],
+    ["curfew_flag", "宵禁", "boolean"], ["weather_restrictions", "天气限制", "json"],
   ],
   disruptions: [
-    ["airport", "Airport", "text"], ["start_time", "Start", "text"], ["end_time", "End", "text"],
-    ["capacity_change", "Capacity change", "number"], ["restriction_type", "Restriction type", "text"],
+    ["airport", "机场", "text"], ["start_time", "开始时间", "text"], ["end_time", "结束时间", "text"],
+    ["capacity_change", "容量变化", "number"], ["restriction_type", "限制类型", "text"],
   ],
 };
 
@@ -65,8 +65,8 @@ export function renderEditor(container, section, data, onChange) {
     form.className = "scenario-form";
     const fields = [
       ["scenario_id", "Scenario ID", data.scenario_id],
-      ["start_time", "Recovery start", data.recovery_window.start_time],
-      ["end_time", "Recovery end", data.recovery_window.end_time],
+      ["start_time", "恢复开始时间", data.recovery_window.start_time],
+      ["end_time", "恢复结束时间", data.recovery_window.end_time],
     ];
     for (const [key, label, value] of fields) {
       const wrapper = document.createElement("div");
@@ -87,7 +87,7 @@ export function renderEditor(container, section, data, onChange) {
     }
     const note = document.createElement("p");
     note.className = "field-note";
-    note.textContent = "Use ISO 8601 timestamps. The bundled example uses UTC (Z), so imports and exports remain unambiguous.";
+    note.textContent = "请使用 ISO 8601 时间戳。内置示例采用 UTC（Z）时间，以确保导入和导出的时间语义明确。";
     form.append(note);
     container.append(form);
     return;
@@ -97,7 +97,7 @@ export function renderEditor(container, section, data, onChange) {
   if (!rows.length) {
     const empty = document.createElement("div");
     empty.className = "empty-state";
-    empty.textContent = "No records yet. Choose Add Row to begin.";
+    empty.textContent = "当前没有记录。请选择“新增行”开始录入。";
     container.append(empty);
     return;
   }
@@ -122,7 +122,7 @@ export function renderEditor(container, section, data, onChange) {
     selector.type = "radio";
     selector.name = "selected-row";
     selector.value = String(rowIndex);
-    selector.setAttribute("aria-label", `Select row ${rowIndex + 1}`);
+    selector.setAttribute("aria-label", `选择第 ${rowIndex + 1} 行`);
     selectorCell.append(selector);
     tr.append(selectorCell);
 
@@ -135,7 +135,7 @@ export function renderEditor(container, section, data, onChange) {
         for (const value of [false, true]) {
           const option = document.createElement("option");
           option.value = String(value);
-          option.textContent = String(value);
+          option.textContent = value ? "是（true）" : "否（false）";
           option.selected = row[key] === value;
           input.append(option);
         }
@@ -155,7 +155,7 @@ export function renderEditor(container, section, data, onChange) {
           input.setCustomValidity("");
           onChange();
         } catch {
-          input.setCustomValidity("Enter valid JSON, for example [\"F1\",\"F2\"]");
+          input.setCustomValidity("请输入有效的 JSON，例如 [\"F1\",\"F2\"]");
           input.reportValidity();
         }
       });
@@ -167,4 +167,3 @@ export function renderEditor(container, section, data, onChange) {
   table.append(thead, tbody);
   container.append(table);
 }
-

@@ -1,0 +1,24 @@
+{
+  "scenario_id": "invalid_missing_airport",
+  "recovery_window": {
+    "start_time": "2026-01-15T07:00:00Z",
+    "end_time": "2026-01-15T10:00:00Z"
+  },
+  "airports": [
+    {"airport_id": "A", "name": "Alpha"}
+  ],
+  "flights": [
+    {"flight_id": "INV_F1", "origin": "A", "destination": "MISSING", "sched_dep": "2026-01-15T08:00:00Z", "sched_arr": "2026-01-15T09:00:00Z", "duration": 60, "original_aircraft": "INV_AC1", "original_equipment": "E1", "original_crew": "INV_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 30}
+  ],
+  "aircraft": [
+    {"tail_id": "INV_AC1", "equipment_type": "E1", "initial_station_at_t": "A", "required_station_at_T_end": "A", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["INV_F1"]}
+  ],
+  "crew": [
+    {"crew_id": "INV_C1", "rating": "E1", "start_station_at_t": "A", "required_station_at_T_end": "A", "original_duties": [["INV_F1"]], "original_pairing": ["INV_F1"]}
+  ],
+  "passengers": [],
+  "airport_intervals": [
+    {"airport": "A", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T10:00:00Z", "arr_capacity": 10, "dep_capacity": 10, "gate_capacity": 10, "curfew_flag": false, "weather_restrictions": []}
+  ],
+  "disruptions": []
+}

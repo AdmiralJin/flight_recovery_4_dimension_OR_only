@@ -670,6 +670,7 @@ def solve_benders_with_column_generation(
     solver_factory: Callable[[], SolverAdapter],
     scope: RecoveryScope | None = None,
     solver_parameters: Mapping[str, bool | int | float | str] | None = None,
+    event_sink: Callable[[dict[str, Any]], None] | None = None,
 ) -> BendersCgResult:
     """Solve Schedule Benders with certified Aircraft/Crew LP pricing."""
 
@@ -698,6 +699,42 @@ def solve_benders_with_column_generation(
     certificates: list[BendersCgRecourseCertificate] = []
     certificate_by_schedule: dict[tuple[str, ...], BendersCgRecourseCertificate] = {}
     iterations: list[BendersCgIteration] = []
+
+    def record_iteration(item: BendersCgIteration) -> None:
+        iterations.append(item)
+        if event_sink is not None:
+            event_sink(
+                {
+                    "stage": "phase11",
+                    "type": "benders_iteration",
+                    "iteration": item.iteration,
+                    "schedule": list(item.schedule_signature),
+                    "lower_bound": item.lower_bound,
+                    "upper_bound": item.incumbent_upper_bound,
+                    "absolute_gap": item.absolute_gap,
+                    "relative_gap": item.relative_gap,
+                    "metrics": {
+                        "master_objective": item.master_objective,
+                        "candidate_upper_bound": item.candidate_upper_bound,
+                        "aircraft_columns": item.aircraft_column_count,
+                        "aircraft_cg_status": item.aircraft_cg_status,
+                        "aircraft_lp_objective": item.aircraft_lp_objective,
+                        "aircraft_binary_objective": item.aircraft_binary_objective,
+                        "crew_columns": item.crew_column_count,
+                        "crew_cg_status": item.crew_cg_status,
+                        "crew_lp_objective": item.crew_lp_objective,
+                        "crew_binary_objective": item.crew_binary_objective,
+                        "passenger_status": item.prm_status,
+                        "passenger_objective": item.prm_objective,
+                        "cuts": item.total_unique_cuts,
+                        "feasibility_cuts_added": item.feasibility_cuts_added,
+                        "aircraft_cuts_added": item.aircraft_cuts_added,
+                        "crew_cuts_added": item.crew_cuts_added,
+                        "passenger_cuts_added": item.passenger_cuts_added,
+                        "runtime_seconds": item.runtime_seconds,
+                    },
+                }
+            )
     incumbent: _Incumbent | None = None
     lower_bound = -math.inf
     visited: set[tuple[str, ...]] = set()
@@ -838,7 +875,7 @@ def solve_benders_with_column_generation(
         )
         if _gap_closed(absolute_gap, relative_gap, config):
             previous = certificate_by_schedule.get(signature)
-            iterations.append(
+            record_iteration(
                 BendersCgIteration(
                     iteration=iteration,
                     schedule_signature=signature,
@@ -888,7 +925,7 @@ def solve_benders_with_column_generation(
             return finish(BendersCgStatus.OPTIMAL)
         if signature in certificate_by_schedule:
             previous = certificate_by_schedule[signature]
-            iterations.append(
+            record_iteration(
                 BendersCgIteration(
                     iteration=iteration,
                     schedule_signature=signature,
@@ -1242,7 +1279,7 @@ def solve_benders_with_column_generation(
         absolute_gap, relative_gap = _gaps(
             lower_bound, incumbent.objective if incumbent else None
         )
-        iterations.append(
+        record_iteration(
             BendersCgIteration(
                 iteration=iteration,
                 schedule_signature=signature,

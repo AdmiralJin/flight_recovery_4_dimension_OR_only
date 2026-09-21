@@ -5,12 +5,14 @@
 当前项目采用：
 
 ```text
-HTML / Vanilla JavaScript
-        ↓ JSON / HTTP
-FastAPI + Pydantic
+React 19 + TypeScript + Vite
+        ↓ JSON / SSE
+FastAPI + Pydantic + SQLite/WAL + gzip artifacts
         ↓
 Integrated Oracle / Benders / Column Generation / Branch-and-Price + Gurobi
 ```
+
+新版浏览器工作台定位为单机研究与审计工具：内置 Case 只读，编辑先克隆为本地草稿；编译、求解和结果均由规范化 JSON 的 SHA-256 绑定。同步 `/api/solve` 与 v1 Case 合同继续保留，React 前端使用 `/api/v2` 的草稿、不可变快照、单并发子进程运行、SSE Trace、canonical comparison 和审计导出。
 
 贯穿 Phase 0–13 的研发原则是：
 
@@ -43,6 +45,7 @@ Integrated Oracle / Benders / Column Generation / Branch-and-Price + Gurobi
 | Phase 11 | ✅ 完成 | Schedule Benders + Aircraft/Crew CG、certified LP cuts、binary incumbent、Integrated audit |
 | Phase 12 | ✅ 完成 | Aircraft/Crew exact Branch-and-Price、typed branching、Schedule exact-recourse cuts |
 | Phase 13 | ✅ 完成 | 稳定 Solve API、独立复算的 RecoveredResult、Recovery 对比视图与 JSON 导出 |
+| Workbench v2 | ✅ 可用 | React/TypeScript 任务流、本地草稿与快照、类型化扰动编译、异步运行/SSE/取消、全实体对比与审计包 |
 | Business Migration | 📌 后续 | 真实航司数据映射、业务规则扩展、规模与性能工程；不属于新增核心算法 Phase |
 
 Phase 1 证明数据、候选列和人工 Oracle 在当前规则下语义一致；它不证明 AIR 恢复目标的数学全局最优性。
@@ -71,12 +74,15 @@ Phase 13 将 Phase 12 exact solver 接入版本化 `POST /api/solve`。输入必
 
 ---
 
-# 数据编辑入口
+# 浏览器工作台入口
 
-前端入口：
+首次运行先构建 React 前端：
 
-```text
-frontend/index.html
+```powershell
+cd frontend
+npm install
+npm run build
+cd ..
 ```
 
 不要直接双击 HTML 文件。
@@ -94,21 +100,30 @@ python -m uvicorn backend.main:app --reload
 http://127.0.0.1:8000
 ```
 
-默认示例会加载完整 Solve Bundle；点击 `Solve` 调用同步 exact solver，并在 `Recovery` 中查看四种对比及导出结果。`Import Scenario` 支持导入 Scenario JSON 或完整的 `SolveRequest` JSON。仅导入 Scenario 不会自动生成 Flight Options 或使 Solve 按钮就绪。程序化调用可先 `GET /api/solve/example-bundle/phase1_benchmark_001`，再将返回 JSON 送至 `POST /api/solve/precheck` 和 `POST /api/solve`；`toy_case_016_benders_branch_and_price` 也有对应示例 bundle。
+构建产物存在时，根路径进入 React 工作台；也可显式访问 `http://127.0.0.1:8000/workbench-v2`。旧界面保留在 `/legacy` 作为兼容层。
+
+推荐流程：
+
+```text
+只读内置 Case → 克隆草稿 → 编译扰动/候选 → 创建不可变快照
+→ 子进程实时求解 → Original/Impact/Recovered/Delta 对比 → 审计包导出
+```
+
+本地状态写入 gitignored 的 `.workbench/`：SQLite/WAL 保存索引，内容寻址的 gzip JSON 保存工作副本、快照和结果。工作台重启后可以继续查看完成的历史运行；重启时仍在运行的任务会标记为 `interrupted`，不会伪装为自动恢复。
 
 ---
 
 # Workbench 视图与边界
 
-页面提供五个一级视图：
+React 工作台提供五个任务视图：
 
 ```text
-Data
-Visualization
-Recovery
-Costs
-Constraints
+数据设计 → 扰动影响 → 求解 → 方案对比 → 审计
 ```
+
+数据设计覆盖 Scenario、Flight Options、Passenger Itineraries、剩余容量、成本和 Profile。扰动影响页只表达有效容量、直接暴露和资源链传播风险，不表达恢复决策。求解页绘制真实 LB/UB/Gap 事件；方案对比由服务端 canonical model 统一定义，明确 changed/unchanged 和 arrival-only delay。审计页使用当次不可变快照，不把 stale 结果与当前草稿混合解释。
+
+以下 v1 Costs/Constraints/Current Case 说明仅适用于 `/legacy`。
 
 Costs 读取后端提供的 canonical `phase2_test_costs_v1`，可在浏览器内设置非负有限数值 override，并分别显示 Baseline 与 Effective。Override 只覆盖 coefficient 的 `value`，不修改 owner、unit、source 或 source reference，也不会写回 canonical JSON。
 
@@ -120,9 +135,27 @@ PRECHECK != MIP FEASIBILITY
 
 它不会调用 solver，也不承担 Phase 3 Integrated Oracle 的求解或验收。PRM 页面中的容量为只读的 `TEST / RESIDUAL CAPACITY`，不是 aircraft physical capacity。
 
-`Export Scenario` 仅导出 Scenario；`Export Workbench Config` 另行导出 Scenario、cost overrides 及 profile IDs。
+`Export Scenario` 仅导出 Scenario；`Export Current Case` 按 `current_case / scenario / solve_input / result` 分层导出，并携带 input revision 与 result revision。
 
-工作台的 `Load Example` 默认加载 `phase1_benchmark_001`，并同时加载其 canonical Recovery Columns 与 Phase 2 test/residual passenger capacity，使 Constraints 能执行完整 benchmark precheck；导入其他 Scenario 时会清空不匹配的 Columns/Capacity，按 Scenario-only 模式明确降级。
+Case selector 按 Core Examples、Validation Cases、Boundary Cases 和 Scenario-only Cases 分组。选择 Case 后会原子性替换 Scenario、Recovery Columns、Passenger Capacity、Cost Overrides 和 Algorithm Profiles，五个视图始终读取同一个 Current Case，不再从 benchmark API 隐式补数据。
+
+Current Case 使用 revision 管理结果生命周期：Solve 成功后记录 result revision；任何 Scenario、Cost 或其他求解输入变化都会递增 input revision，并将旧结果标为 `STALE`、禁止导出。`Reset Current Case` 恢复该 Case 的完整加载基线，包括 Case 自带的 Cost Overrides，而不是恢复为全局空 override。
+
+验证数据定义在 `data/cases/catalog.json`，当前覆盖 benchmark baseline、crew recovery、passenger capacity sensitivity、cost sensitivity、Scenario-only、invalid input，以及 `Solve Ready + Infeasible`。正式 solve-ready Case 均显式携带 Flight Options、Passenger Itineraries、capacity、cost/profile IDs 与 Expected；Aircraft Strings / Crew Pairings 会在 Case 装载时清空，不作为正式 Solve 输入。
+
+另有一套面向人工核验、HTML 导入和压力测试的数据资产位于：
+
+```text
+data/validation_suite/
+```
+
+该套件包含 20 个微型案例和 P1–P5 五档压力数据。`manifest.json` 说明每个文件应使用 Scenario 还是 Solve Bundle 入口导入；`MICRO_CASE_CARDS.md`、`CONSTRAINT_COVERAGE.md` 和 `STRESS_PROFILES.md` 分别提供人工验算、20 项约束覆盖和性能校准边界。冻结 JSON 由固定种子生成器产生：
+
+```bash
+python scripts/generate_validation_suite.py
+```
+
+P1 已在参考机器上验证为秒级最优求解；P2 是带真实上下界的受控终止压力样例；P3–P5 仅完成输入生成与就绪性验证，必须在匹配的正式许可证和参考环境中另行校准，不能把目标时间带当作性能承诺。
 
 ---
 

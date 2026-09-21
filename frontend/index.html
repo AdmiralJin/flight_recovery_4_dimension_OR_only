@@ -4,62 +4,84 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:,">
-  <title>AIR Recovery Workbench</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
-  <link rel="stylesheet" href="/static/css/visualization.css">
-  <link rel="stylesheet" href="/static/css/workbench.css">
-  <link rel="stylesheet" href="/static/css/recovery.css">
+  <title>AIR 航班恢复工作台</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=recovery-network-ui-20260920-1">
+  <link rel="stylesheet" href="/static/css/visualization.css?v=recovery-network-ui-20260920-1">
+  <link rel="stylesheet" href="/static/css/workbench.css?v=recovery-network-ui-20260920-1">
+  <link rel="stylesheet" href="/static/css/recovery.css?v=recovery-network-ui-20260920-1">
 </head>
 <body>
   <header class="hero">
     <div>
-      <p class="eyebrow">PETERSEN AIR REPRODUCTION · AUDIT WORKBENCH</p>
-      <h1>AIR Recovery Workbench</h1>
-      <p class="subtitle">Scenario · Solve · Recovery · Audit</p>
+      <p class="eyebrow">PETERSEN AIR 复现实验 · 审计工作台</p>
+      <h1>AIR 航班恢复工作台</h1>
+      <p class="subtitle">场景 Scenario · 求解 Solve · 恢复 Recovery · 审计 Audit</p>
     </div>
-    <div class="status-card status-card--wide">
-      <div class="workbench-status"><strong>Scenario</strong><span id="record-summary">Loading example…</span></div>
-      <div class="workbench-status"><strong>Costs</strong><span id="cost-summary-status">Loading…</span></div>
-      <div class="workbench-status"><strong>Constraints</strong><span id="constraint-summary-status">Not checked</span></div>
+    <div class="status-card status-card--wide" aria-label="当前 Case 状态">
+      <div class="workbench-status"><strong>Case</strong><span id="case-summary">正在加载目录…</span></div>
+      <div class="workbench-status"><strong>场景</strong><span id="record-summary">尚未加载</span></div>
+      <div class="workbench-status"><strong>求解输入</strong><span id="solve-input-summary">尚未检查</span></div>
+      <div class="workbench-status"><strong>求解器</strong><span id="solver-summary-status">空闲</span></div>
+      <div class="workbench-status"><strong>结果</strong><span id="result-summary-status">无</span></div>
     </div>
   </header>
 
   <main>
-    <section class="command-bar" aria-label="Scenario actions">
-      <button id="load-example" class="button primary">Load Example</button>
-      <button id="import-json" class="button">Import Scenario</button>
-      <button id="export-scenario" class="button">Export Scenario</button>
-      <button id="export-workbench" class="button">Export Workbench Config</button>
-      <button id="reset-scenario" class="button">Reset Scenario</button>
-      <button id="reset-workbench" class="button">Reset Workbench</button>
+    <section class="case-loader" aria-labelledby="case-loader-title">
+      <div>
+        <p class="section-kicker">当前 CASE</p>
+        <h2 id="case-loader-title">选择一个可复现的 Case</h2>
+        <p id="case-description" class="case-description">正在加载 Case 目录…</p>
+      </div>
+      <div class="case-loader-controls">
+        <label for="case-selector">Case 目录</label>
+        <select id="case-selector" aria-label="Case 目录"></select>
+        <button id="load-case" class="button primary">加载 Case</button>
+      </div>
+    </section>
+
+    <section class="workflow-rail" aria-label="恢复工作流">
+      <span data-stage="case">1 · 加载 Case</span>
+      <span data-stage="validate">2 · 校验场景</span>
+      <span data-stage="readiness">3 · 检查求解就绪性</span>
+      <span data-stage="solve">4 · 求解</span>
+      <span data-stage="audit">5 · 恢复 / 审计</span>
+    </section>
+
+    <section class="command-bar" aria-label="当前 Case 操作">
+      <button id="import-scenario" class="button">导入 Scenario</button>
+      <button id="import-bundle" class="button">导入 Solve Bundle</button>
+      <button id="export-scenario" class="button">导出 Scenario</button>
+      <button id="export-current-case" class="button">导出当前 Case</button>
+      <button id="reset-current-case" class="button">重置当前 Case</button>
       <div class="command-spacer"></div>
-      <button id="validate" class="button accent">Validate</button>
-      <button id="solve-recovery" class="button primary" disabled>Solve</button>
+      <button id="validate" class="button accent">校验</button>
+      <button id="solve-recovery" class="button primary" disabled>求解</button>
       <input id="file-input" type="file" accept="application/json,.json" hidden>
     </section>
 
-    <nav class="view-switcher" aria-label="Workbench view">
-      <button id="show-data-view" class="view-switch" aria-pressed="true">Data</button>
-      <button id="show-visualization-view" class="view-switch" aria-pressed="false">Visualization</button>
-      <button id="show-recovery-view" class="view-switch" aria-pressed="false">Recovery</button>
-      <button id="show-costs-view" class="view-switch" aria-pressed="false">Costs</button>
-      <button id="show-constraints-view" class="view-switch" aria-pressed="false">Constraints</button>
+    <nav class="view-switcher" aria-label="工作台视图">
+      <button id="show-data-view" class="view-switch" aria-pressed="true">数据 Data</button>
+      <button id="show-visualization-view" class="view-switch" aria-pressed="false">可视化 Visualization</button>
+      <button id="show-recovery-view" class="view-switch" aria-pressed="false">恢复方案 Recovery</button>
+      <button id="show-costs-view" class="view-switch" aria-pressed="false">成本 Costs</button>
+      <button id="show-constraints-view" class="view-switch" aria-pressed="false">约束 Constraints</button>
     </nav>
 
     <div id="data-view">
-      <nav id="tabs" class="tabs" aria-label="Scenario data sections"></nav>
+      <nav id="tabs" class="tabs" aria-label="Scenario 数据分区"></nav>
 
       <section class="workspace">
         <div class="workspace-head">
           <div>
-            <p class="section-kicker" id="section-kicker">SCENARIO</p>
-            <h2 id="section-title">Recovery window</h2>
+            <p class="section-kicker" id="section-kicker">场景 SCENARIO</p>
+            <h2 id="section-title">恢复时间窗</h2>
           </div>
           <div id="table-actions" class="table-actions">
-            <button id="add-row" class="button small">Add Row</button>
-            <button id="duplicate-row" class="button small">Duplicate Row</button>
-            <button id="delete-row" class="button small danger">Delete Row</button>
-            <button id="reset-section" class="button small">Reset</button>
+            <button id="add-row" class="button small">新增行</button>
+            <button id="duplicate-row" class="button small">复制行</button>
+            <button id="delete-row" class="button small danger">删除行</button>
+            <button id="reset-section" class="button small">重置本区</button>
           </div>
         </div>
         <div id="editor" class="editor"></div>
@@ -68,27 +90,27 @@
       <section id="validation-panel" class="validation-panel" aria-live="polite">
         <div class="validation-heading">
           <div>
-            <p class="section-kicker">VALIDATION</p>
-            <h2 id="validation-title">Not checked</h2>
+            <p class="section-kicker">数据校验 VALIDATION</p>
+            <h2 id="validation-title">尚未检查</h2>
           </div>
-          <span id="validation-badge" class="badge neutral">Idle</span>
+          <span id="validation-badge" class="badge neutral">空闲</span>
         </div>
-        <p id="validation-message" class="muted">Edit the scenario, then run Validate.</p>
+        <p id="validation-message" class="muted">编辑 Scenario 后，请运行“校验”。</p>
         <ol id="validation-errors" class="error-list"></ol>
       </section>
     </div>
 
     <div id="visualization-view" hidden>
-      <section id="viz-toolbar" class="viz-toolbar" aria-label="Visualization controls"></section>
+      <section id="viz-toolbar" class="viz-toolbar" aria-label="可视化控制项"></section>
 
       <div class="viz-main-grid">
         <section class="viz-card viz-network-card" aria-labelledby="network-title">
           <div class="viz-card-head">
             <div>
-              <p class="section-kicker">TIME-SPACE NETWORK</p>
-              <h2 id="network-title">Original schedule and exposure</h2>
+              <p class="section-kicker">时空网络 TIME-SPACE NETWORK</p>
+              <h2 id="network-title">原始计划与扰动暴露</h2>
             </div>
-            <span class="viz-time-label">Time axis: UTC</span>
+            <span class="viz-time-label">时间轴：UTC</span>
           </div>
           <div id="time-space-network" class="viz-scroll-region"></div>
         </section>
@@ -99,8 +121,8 @@
       <section class="viz-card viz-capacity-card" aria-labelledby="capacity-title">
         <div class="viz-card-head">
           <div>
-            <p class="section-kicker">AIRPORT CAPACITY</p>
-            <h2 id="capacity-title">Scheduled load by input time bucket</h2>
+            <p class="section-kicker">机场容量 AIRPORT CAPACITY</p>
+            <h2 id="capacity-title">按输入时间区间统计的计划负荷</h2>
           </div>
         </div>
         <div id="capacity-heatmap" class="viz-scroll-region"></div>
@@ -109,15 +131,15 @@
 
     <div id="recovery-view" hidden>
       <div class="recovery-toolbar">
-        <label for="recovery-mode">Compare</label>
+        <label for="recovery-mode">对比视图</label>
         <select id="recovery-mode">
-          <option value="original">Original</option>
-          <option value="disrupted">Disrupted / Risk</option>
-          <option value="recovered" selected>Recovered</option>
-          <option value="difference">Difference</option>
+          <option value="original">原始计划</option>
+          <option value="disrupted">扰动 / 风险</option>
+          <option value="recovered" selected>恢复方案</option>
+          <option value="difference">仅显示差异</option>
         </select>
-        <button id="export-recovered-result" class="button" disabled>Export Recovered Result</button>
-        <span id="solve-status" role="status" aria-live="polite">Load a complete Solve Bundle to begin.</span>
+        <button id="export-recovered-result" class="button" disabled>导出恢复结果</button>
+        <span id="solve-status" role="status" aria-live="polite">请先加载完整的 Solve Bundle。</span>
       </div>
       <div id="recovery-container"></div>
     </div>
@@ -126,16 +148,16 @@
       <section class="audit-panel" aria-labelledby="costs-title">
         <div class="audit-panel-head">
           <div>
-            <p class="section-kicker">CANONICAL COST PROFILE</p>
-            <h2 id="costs-title">Phase 2 costs and experiment overrides</h2>
+            <p class="section-kicker">规范成本配置 CANONICAL COST PROFILE</p>
+            <h2 id="costs-title">Phase 2 成本与实验覆盖值</h2>
           </div>
           <div class="audit-actions">
-            <span id="cost-status-badge" class="badge neutral">Baseline</span>
-            <button id="validate-costs" class="button accent">Validate Costs</button>
-            <button id="reset-cost-overrides" class="button">Reset Cost Overrides</button>
+            <span id="cost-status-badge" class="badge neutral">基线</span>
+            <button id="validate-costs" class="button accent">校验成本</button>
+            <button id="reset-cost-overrides" class="button">重置成本覆盖值</button>
           </div>
         </div>
-        <p class="audit-boundary">Overrides change only the browser experiment state. Owner, unit, canonical source and source reference remain unchanged.</p>
+        <p class="audit-boundary">覆盖值仅改变浏览器内的实验状态；归属模型、单位、规范来源及来源引用均保持不变。</p>
         <div id="cost-validation-message" class="audit-message" aria-live="polite"></div>
         <div id="costs-container" class="audit-content"></div>
       </section>
@@ -145,22 +167,22 @@
       <section class="audit-panel" aria-labelledby="constraints-title">
         <div class="audit-panel-head">
           <div>
-            <p class="section-kicker">PHASE 2 MODEL REGISTRY</p>
-            <h2 id="constraints-title">Constraint inspector</h2>
+            <p class="section-kicker">PHASE 2 模型注册表</p>
+            <h2 id="constraints-title">约束检查器</h2>
           </div>
           <div class="audit-actions">
-            <span id="precheck-status-badge" class="badge neutral">Not checked</span>
-            <button id="run-precheck" class="button accent">Run Precheck</button>
+            <span id="precheck-status-badge" class="badge neutral">尚未检查</span>
+            <button id="run-precheck" class="button accent">运行预检查</button>
           </div>
         </div>
-        <p class="audit-boundary"><strong>PRECHECK ≠ MIP FEASIBILITY.</strong> These are deterministic input checks only; they never run SRM, ARM, CRM or PRM.</p>
+        <p class="audit-boundary"><strong>预检查（Precheck）≠ MIP 可行性判定。</strong>此处仅执行确定性的输入检查，不会运行 SRM、ARM、CRM 或 PRM。</p>
         <div id="capacity-profile-summary" class="capacity-profile-summary"></div>
         <div id="constraints-container" class="constraint-groups"></div>
       </section>
     </div>
   </main>
 
-  <footer>AIR research workbench v1 · Synchronous exact solve · Full scope / prepared Flight Options only · Not production-ready</footer>
-  <script type="module" src="/static/js/app.js"></script>
+  <footer>AIR Case 工作台 · 同步精确求解 · 仅支持完整范围 / 预生成 Flight Options · 尚未达到生产就绪状态</footer>
+  <script type="module" src="/static/js/app.js?v=recovery-network-ui-20260920-1"></script>
 </body>
 </html>

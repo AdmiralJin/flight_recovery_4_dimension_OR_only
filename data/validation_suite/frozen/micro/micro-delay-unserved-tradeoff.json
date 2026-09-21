@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.0.0",
+  "scenario": {
+    "scenario_id": "toy_case_005",
+    "recovery_window": {
+      "start_time": "2026-01-15T07:30:00Z",
+      "end_time": "2026-01-15T10:00:00Z"
+    },
+    "airports": [
+      {
+        "airport_id": "A",
+        "name": "Alpha"
+      },
+      {
+        "airport_id": "B",
+        "name": "Bravo"
+      }
+    ],
+    "flights": [
+      {
+        "flight_id": "T5_F1",
+        "origin": "A",
+        "destination": "B",
+        "sched_dep": "2026-01-15T08:00:00Z",
+        "sched_arr": "2026-01-15T09:00:00Z",
+        "duration": 60,
+        "original_aircraft": "T5_AC1",
+        "original_equipment": "E1",
+        "original_crew": "T5_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 20
+      }
+    ],
+    "aircraft": [
+      {
+        "tail_id": "T5_AC1",
+        "equipment_type": "E1",
+        "initial_station_at_t": "A",
+        "required_station_at_T_end": "B",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "T5_F1"
+        ]
+      }
+    ],
+    "crew": [
+      {
+        "crew_id": "T5_C1",
+        "rating": "E1",
+        "start_station_at_t": "A",
+        "required_station_at_T_end": "B",
+        "original_duties": [
+          [
+            "T5_F1"
+          ]
+        ],
+        "original_pairing": [
+          "T5_F1"
+        ]
+      }
+    ],
+    "passengers": [
+      {
+        "pax_group_id": "T5_P1",
+        "count": 10,
+        "origin": "A",
+        "destination": "B",
+        "original_departure": "2026-01-15T08:00:00Z",
+        "scheduled_arrival": "2026-01-15T09:00:00Z",
+        "original_itinerary": [
+          "T5_F1"
+        ]
+      }
+    ],
+    "airport_intervals": [
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 10,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T07:30:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "arr_capacity": 10,
+        "dep_capacity": 10,
+        "gate_capacity": 10,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      }
+    ],
+    "disruptions": []
+  },
+  "recovery_columns": {
+    "schema_version": "1.0.0",
+    "scenario_id": "toy_case_005",
+    "time_unit": "minute",
+    "notes": [
+      "Phase 3 toy oracle: passenger residual capacity changes the joint schedule choice."
+    ],
+    "flight_options": [
+      {
+        "option_id": "FO_T5_F1_ORIG",
+        "base_flight_id": "T5_F1",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "A",
+        "destination": "B",
+        "dep_time": "2026-01-15T08:00:00Z",
+        "arr_time": "2026-01-15T09:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Lower flight cost but no residual passenger seats."
+      },
+      {
+        "option_id": "FO_T5_F1_D10",
+        "base_flight_id": "T5_F1",
+        "operation_type": "operate",
+        "change_types": [
+          "delay"
+        ],
+        "origin": "A",
+        "destination": "B",
+        "dep_time": "2026-01-15T08:10:00Z",
+        "arr_time": "2026-01-15T09:10:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 10,
+        "arrival_delay_minutes": 10,
+        "notes": "Higher flight cost but sufficient residual seats."
+      }
+    ],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": [
+      {
+        "itinerary_id": "PI_T5_P1_ORIG",
+        "pax_group_id": "T5_P1",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "FO_T5_F1_ORIG",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "B",
+        "arrival_time": "2026-01-15T09:00:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": ""
+      },
+      {
+        "itinerary_id": "PI_T5_P1_D10",
+        "pax_group_id": "T5_P1",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "FO_T5_F1_D10",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "B",
+        "arrival_time": "2026-01-15T09:10:00Z",
+        "arrival_delay_minutes": 10,
+        "cost_components": {},
+        "notes": ""
+      },
+      {
+        "itinerary_id": "PI_T5_P1_UNSERVED",
+        "pax_group_id": "T5_P1",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": ""
+      }
+    ]
+  },
+  "capacity_profile": {
+    "schema_version": "1.0.0",
+    "capacity_profile_id": "toy_case_005_capacity",
+    "scenario_id": "toy_case_005",
+    "source": "test_fixture",
+    "units": "seats",
+    "seat_capacity_by_option_id": {
+      "FO_T5_F1_ORIG": 0,
+      "FO_T5_F1_D10": 10
+    },
+    "notes": [
+      "TEST / RESIDUAL CAPACITY; original option has no residual seats."
+    ]
+  },
+  "cost_profile_id": "phase2_test_v1",
+  "cost_overrides": {
+    "flight_delay_per_minute": 3000.0
+  },
+  "algorithm": "benders_branch_and_price_v1",
+  "profile_ids": {
+    "flight_string_generation": "phase5_test_string_generation_v1",
+    "crew_pairing_generation": "phase6_test_crew_pairing_generation_v1",
+    "aircraft_string_cg": "phase9-test-aircraft-string-cg-v1",
+    "crew_pairing_cg": "phase10-test-crew-pairing-cg-v1",
+    "benders_cg": "phase11-test-benders-cg-v1",
+    "branch_and_price": "phase12-test-branch-and-price-v1"
+  }
+}

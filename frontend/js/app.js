@@ -1,18 +1,24 @@
 import {
   loadCanonicalCosts,
-  loadBenchmarkPrecheckInputs,
-  loadSolveExampleBundle,
+  loadCase,
+  loadCaseCatalog,
   checkSolveReadiness,
   solveRecovery,
   loadConstraintRegistry,
-  loadExample,
   runConstraintPrecheck,
   validateCostOverrides,
   validateScenario,
 } from "./api.js";
 import {
+  advanceInputRevision,
+  buildCurrentSolveBundle,
+  capacityProfileSummary,
+  createCurrentCase,
+  recordSolvedRevision,
+  resetCurrentCaseInputs,
+} from "./case-state.js";
+import {
   buildEffectiveCostProfile,
-  buildWorkbenchConfig,
   parseCostOverride,
   renderCosts,
 } from "./costs.js";
@@ -32,24 +38,35 @@ import {
 const clone = (value) => structuredClone(value);
 
 const workbenchState = {
+  caseCatalog: null,
+  currentCase: null,
   scenario: null,
   scenarioBaseline: null,
   scenarioValidation: null,
   costBaseline: null,
   costOverrides: {},
+  costOverridesBaseline: {},
   costEffective: null,
   costValidation: "baseline",
   constraintMetadata: [],
   constraintPrecheck: null,
   recoveryColumns: null,
+  recoveryColumnsBaseline: null,
   passengerCapacityProfile: null,
+  passengerCapacityProfileBaseline: null,
   capacityProfileSummary: null,
   modelProfile: "phase2_fixed_column",
   solveBundle: null,
   solveReadiness: null,
   recoveredResult: null,
+  resultScenario: null,
+  resultInputSnapshot: null,
+  resultCase: null,
   solveError: null,
   solving: false,
+  inputRevision: 0,
+  resultRevision: null,
+  resultState: "none",
   recoverySortDelay: false,
 };
 
@@ -58,6 +75,10 @@ let activeView = "data";
 let visualizationRequestId = 0;
 let precheckRequestId = 0;
 let solveReadinessRequestId = 0;
+let solveRequestId = 0;
+let validationRequestId = 0;
+let costValidationRequestId = 0;
+let initializingWorkbench = false;
 
 const editor = document.querySelector("#editor");
 const tabs = document.querySelector("#tabs");
@@ -87,63 +108,136 @@ function scenarioIsModified() {
     && JSON.stringify(workbenchState.scenario) !== JSON.stringify(workbenchState.scenarioBaseline);
 }
 
+function currentCaseState() {
+  return {
+    metadata: workbenchState.currentCase,
+    scenario: workbenchState.scenario,
+    scenarioBaseline: workbenchState.scenarioBaseline,
+    solveBundle: workbenchState.solveBundle,
+    recoveryColumns: workbenchState.recoveryColumns,
+    recoveryColumnsBaseline: workbenchState.recoveryColumnsBaseline,
+    capacityProfile: workbenchState.passengerCapacityProfile,
+    capacityProfileBaseline: workbenchState.passengerCapacityProfileBaseline,
+    costOverrides: workbenchState.costOverrides,
+    costOverridesBaseline: workbenchState.costOverridesBaseline,
+    inputRevision: workbenchState.inputRevision,
+    resultRevision: workbenchState.resultRevision,
+    resultState: workbenchState.resultState,
+  };
+}
+
+function syncCaseState(state) {
+  workbenchState.scenario = state.scenario;
+  workbenchState.scenarioBaseline = state.scenarioBaseline;
+  workbenchState.solveBundle = state.solveBundle;
+  workbenchState.recoveryColumns = state.recoveryColumns;
+  workbenchState.recoveryColumnsBaseline = state.recoveryColumnsBaseline;
+  workbenchState.passengerCapacityProfile = state.capacityProfile;
+  workbenchState.passengerCapacityProfileBaseline = state.capacityProfileBaseline;
+  workbenchState.costOverrides = state.costOverrides;
+  workbenchState.costOverridesBaseline = state.costOverridesBaseline;
+  workbenchState.inputRevision = state.inputRevision;
+  workbenchState.resultRevision = state.resultRevision;
+  workbenchState.resultState = state.resultState;
+}
+
 function updateSummary() {
   const state = workbenchState.scenario;
   if (!state) return;
   const total = ["airports", "flights", "aircraft", "crew", "passengers", "airport_intervals", "disruptions"]
     .reduce((sum, key) => sum + state[key].length, 0);
   const scenarioStatus = workbenchState.scenarioValidation === "valid"
-    ? "Valid"
-    : scenarioIsModified() ? "Modified" : "Not checked";
-  document.querySelector("#record-summary").textContent = `${scenarioStatus} · ${state.scenario_id} · ${total} records`;
-  const overrideCount = Object.keys(workbenchState.costOverrides).length;
-  document.querySelector("#cost-summary-status").textContent = overrideCount
-    ? `Modified · ${overrideCount} override${overrideCount === 1 ? "" : "s"}`
-    : "Baseline";
-  const precheck = workbenchState.constraintPrecheck;
-  document.querySelector("#constraint-summary-status").textContent = precheck
-    ? `Precheck ${precheck.overall_status}`
-    : "Not checked";
+    ? "有效"
+    : workbenchState.scenarioValidation === "invalid" ? "无效"
+    : scenarioIsModified() ? "已修改" : "尚未检查";
+  document.querySelector("#record-summary").textContent = `${scenarioStatus} · ${state.scenario_id} · ${total} 条记录`;
+  document.querySelector("#case-summary").textContent = `${workbenchState.currentCase?.label || "已导入"} · 修订版 r${workbenchState.inputRevision}`;
+  const readiness = workbenchState.solveReadiness;
+  document.querySelector("#solve-input-summary").textContent = readiness
+    ? readiness.solve_ready ? "已就绪 · 可行性未知" : "未就绪"
+    : "尚未检查";
+  document.querySelector("#solver-summary-status").textContent = workbenchState.solving
+    ? "正在精确求解"
+    : workbenchState.solveError ? "错误" : "空闲";
+  const resultLabels = {
+    none: "无",
+    current: `${workbenchState.recoveredResult?.status || "当前结果"} · 修订版 r${workbenchState.resultRevision}`,
+    stale: `已过期 · 基于修订版 r${workbenchState.resultRevision} 求解`,
+  };
+  document.querySelector("#result-summary-status").textContent = resultLabels[workbenchState.resultState];
+  updateWorkflow();
+}
+
+function updateWorkflow() {
+  const stages = [...document.querySelectorAll(".workflow-rail span")];
+  stages.forEach((stage) => { stage.className = ""; });
+  if (!workbenchState.scenario) return;
+  stages[0]?.classList.add("is-complete");
+  if (workbenchState.scenarioValidation === "valid") stages[1]?.classList.add("is-complete");
+  else if (workbenchState.scenarioValidation === "invalid") stages[1]?.classList.add("is-warning");
+  else stages[1]?.classList.add("is-current");
+  if (workbenchState.solveReadiness?.solve_ready) stages[2]?.classList.add("is-complete");
+  else if (workbenchState.solveReadiness) stages[2]?.classList.add("is-warning");
+  if (workbenchState.solving) stages[3]?.classList.add("is-current");
+  else if (workbenchState.resultState !== "none") stages[3]?.classList.add("is-complete");
+  if (workbenchState.resultState === "current") stages[4]?.classList.add("is-complete");
+  else if (workbenchState.resultState === "stale") stages[4]?.classList.add("is-warning");
 }
 
 function markScenarioChanged() {
   workbenchState.scenarioValidation = null;
   workbenchState.constraintPrecheck = null;
-  invalidateRecovery();
+  markInputsChanged();
   refreshSolveReadiness();
   updateSummary();
   renderTabs();
 }
 
 function currentSolveBundle() {
-  if (!workbenchState.solveBundle) return null;
-  return {
-    ...clone(workbenchState.solveBundle),
-    scenario: clone(workbenchState.scenario),
-    recovery_columns: clone(workbenchState.solveBundle.recovery_columns),
-    capacity_profile: clone(workbenchState.solveBundle.capacity_profile),
-    cost_overrides: clone(workbenchState.costOverrides),
-  };
+  return buildCurrentSolveBundle(currentCaseState());
 }
 
 function updateSolveButton() {
   const button = document.querySelector("#solve-recovery");
   const ready = workbenchState.solveReadiness?.solve_ready && !workbenchState.solving;
   button.disabled = !ready;
-  button.textContent = workbenchState.solving ? "Solving…" : "Solve";
+  button.textContent = workbenchState.solving ? "正在求解…" : "求解";
   const status = document.querySelector("#solve-status");
   if (!status) return;
-  if (workbenchState.solving) status.textContent = "Solving exact recovery…";
-  else if (workbenchState.solveError) status.textContent = `Solve failed: ${workbenchState.solveError}`;
+  if (workbenchState.solving) status.textContent = "正在精确求解恢复方案…";
+  else if (workbenchState.solveError) status.textContent = `求解失败：${workbenchState.solveError}`;
   else if (!workbenchState.solveReadiness?.solve_ready) {
-    const missing = workbenchState.solveReadiness?.missing_inputs || ["Load a complete Solve Bundle"];
-    status.textContent = `Not solve ready: ${missing.join(", ")}`;
-  } else if (workbenchState.recoveredResult) status.textContent = `Solver status: ${workbenchState.recoveredResult.status}`;
-  else status.textContent = "Ready to solve · input readiness is not optimization feasibility.";
+    const missing = [
+      ...(workbenchState.solveReadiness?.missing_inputs || ["请加载完整的 Solve Bundle"]),
+      ...(workbenchState.solveReadiness?.invalid_profiles || []),
+    ];
+    status.textContent = `尚未满足求解条件：${missing.join("；")}`;
+  } else if (workbenchState.resultState === "stale") status.textContent = `结果已过期：结果来自修订版 ${workbenchState.resultRevision}；请对修订版 ${workbenchState.inputRevision} 重新求解。`;
+  else if (workbenchState.recoveredResult) status.textContent = `求解器状态：${workbenchState.recoveredResult.status}`;
+  else status.textContent = "已满足求解输入条件 · 输入就绪不等同于优化模型可行。";
 }
 
-function invalidateRecovery() {
+function clearRecovery() {
+  solveRequestId += 1;
   workbenchState.recoveredResult = null;
+  workbenchState.resultScenario = null;
+  workbenchState.resultInputSnapshot = null;
+  workbenchState.resultCase = null;
+  workbenchState.solveError = null;
+  workbenchState.solveReadiness = null;
+  workbenchState.resultRevision = null;
+  workbenchState.resultState = "none";
+  document.querySelector("#export-recovered-result").disabled = true;
+  updateSolveButton();
+}
+
+function markInputsChanged() {
+  solveRequestId += 1;
+  validationRequestId += 1;
+  costValidationRequestId += 1;
+  const state = currentCaseState();
+  advanceInputRevision(state);
+  syncCaseState(state);
   workbenchState.solveError = null;
   workbenchState.solveReadiness = null;
   document.querySelector("#export-recovered-result").disabled = true;
@@ -153,13 +247,8 @@ function invalidateRecovery() {
 async function refreshSolveReadiness() {
   const requestId = ++solveReadinessRequestId;
   const bundle = currentSolveBundle();
-  if (!bundle) {
-    workbenchState.solveReadiness = { solve_ready: false, missing_inputs: ["missing_flight_options", "missing_capacity_profile"] };
-    updateSolveButton();
-    return;
-  }
   try {
-    const readiness = await checkSolveReadiness(bundle);
+    const readiness = await checkSolveReadiness(bundle || { scenario: clone(workbenchState.scenario) });
     if (requestId !== solveReadinessRequestId) return;
     workbenchState.solveReadiness = readiness;
   } catch (error) {
@@ -167,38 +256,76 @@ async function refreshSolveReadiness() {
     workbenchState.solveReadiness = { solve_ready: false, missing_inputs: [error.message] };
   }
   updateSolveButton();
+  updateSummary();
 }
 
 function openRecovery() {
   activeView = "recovery";
   renderShell();
+  const container = document.querySelector("#recovery-container");
   renderRecovery(
-    document.querySelector("#recovery-container"), workbenchState.scenario,
+    container, workbenchState.resultScenario || workbenchState.scenario,
     workbenchState.recoveredResult,
     document.querySelector("#recovery-mode").value,
     workbenchState.recoverySortDelay,
   );
+  if (workbenchState.resultState === "stale") {
+    const warning = document.createElement("p");
+    warning.className = "stale-result-banner";
+    warning.textContent = `结果已过期——当前输入为修订版 ${workbenchState.inputRevision}，但该结果基于修订版 ${workbenchState.resultRevision} 求解。请在审计或导出前重新求解。`;
+    container.prepend(warning);
+  }
   updateSolveButton();
 }
 
 async function runSolve() {
   if (workbenchState.solving) return;
-  await refreshSolveReadiness();
-  if (!workbenchState.solveReadiness?.solve_ready) return openRecovery();
+  const requestId = ++solveRequestId;
   workbenchState.solving = true;
   updateSolveButton();
+  updateSummary();
   try {
-    workbenchState.recoveredResult = await solveRecovery(currentSolveBundle());
+    await refreshSolveReadiness();
+    if (requestId !== solveRequestId) return;
+    if (!workbenchState.solveReadiness?.solve_ready) {
+      openRecovery();
+      return;
+    }
+    const submission = {
+      caseId: workbenchState.currentCase?.case_id || null,
+      inputRevision: workbenchState.inputRevision,
+      scenario: clone(workbenchState.scenario),
+      bundle: currentSolveBundle(),
+    };
+    const result = await solveRecovery(submission.bundle);
+    const currentStillMatches = requestId === solveRequestId
+      && submission.caseId === (workbenchState.currentCase?.case_id || null)
+      && submission.inputRevision === workbenchState.inputRevision
+      && JSON.stringify(submission.bundle) === JSON.stringify(currentSolveBundle());
+    if (!currentStillMatches) {
+      showClientError("求解已完成，但当前 Case 或输入已改变；旧响应未写入当前结果。请从当前输入重新求解。");
+      return;
+    }
+    workbenchState.recoveredResult = result;
+    workbenchState.resultScenario = submission.scenario;
+    workbenchState.resultInputSnapshot = submission.bundle;
+    workbenchState.resultCase = clone(workbenchState.currentCase);
+    const state = currentCaseState();
+    recordSolvedRevision(state);
+    syncCaseState(state);
     document.querySelector("#export-recovered-result").disabled = false;
     openRecovery();
   } catch (error) {
     workbenchState.recoveredResult = null;
     workbenchState.solveError = error.message;
+    workbenchState.resultRevision = null;
+    workbenchState.resultState = "none";
     openRecovery();
     showClientError(error.message);
   } finally {
     workbenchState.solving = false;
     updateSolveButton();
+    updateSummary();
   }
 }
 
@@ -272,7 +399,10 @@ async function openVisualization() {
       renderVisualizationBlocked(result, showDataView);
       return;
     }
-    renderVisualization(result.normalized_data);
+    renderVisualization(
+      result.normalized_data,
+      workbenchState.resultState === "current" ? workbenchState.recoveredResult : null,
+    );
   } catch (error) {
     if (requestId !== visualizationRequestId || activeView !== "visualization") return;
     const result = { valid: false, errors: [{ location: "$", message: error.message }] };
@@ -284,7 +414,7 @@ async function openVisualization() {
 function setCostStatus(status, message = "") {
   workbenchState.costValidation = status;
   const badge = document.querySelector("#cost-status-badge");
-  const labels = { baseline: "Baseline", modified: "Modified", valid: "Valid", invalid: "Invalid" };
+  const labels = { baseline: "基线", modified: "已修改", valid: "有效", invalid: "无效" };
   badge.textContent = labels[status];
   badge.className = `badge ${status === "valid" ? "success" : status === "invalid" ? "error" : "neutral"}`;
   document.querySelector("#cost-validation-message").textContent = message;
@@ -300,12 +430,12 @@ function handleCostOverride(key, rawValue, input) {
       workbenchState.costBaseline,
       workbenchState.costOverrides,
     );
-    invalidateRecovery();
+    markInputsChanged();
     refreshSolveReadiness();
     input.setCustomValidity("");
     setCostStatus(
       Object.keys(workbenchState.costOverrides).length ? "modified" : "baseline",
-      "Validate to confirm the current browser overrides against the backend contract.",
+      "请运行成本校验，以确认当前浏览器覆盖值符合后端数据约定。",
     );
     renderCostView();
   } catch (error) {
@@ -336,11 +466,11 @@ function openCosts() {
 function setPrecheckStatus(precheck) {
   const badge = document.querySelector("#precheck-status-badge");
   if (!precheck) {
-    badge.textContent = "Not checked";
+    badge.textContent = "尚未检查";
     badge.className = "badge neutral";
     return;
   }
-  const labels = { passed: "Precheck Passed", warning: "Precheck Warning", failed: "Precheck Failed" };
+  const labels = { passed: "预检查通过", warning: "预检查警告", failed: "预检查失败" };
   badge.textContent = labels[precheck.overall_status];
   badge.className = `badge ${precheck.overall_status === "passed" ? "success" : precheck.overall_status === "failed" ? "error" : "warning"}`;
 }
@@ -364,7 +494,7 @@ async function runPrecheck() {
   const requestId = ++precheckRequestId;
   const button = document.querySelector("#run-precheck");
   button.disabled = true;
-  button.textContent = "Checking…";
+  button.textContent = "正在检查…";
   try {
     const result = await runConstraintPrecheck(
       workbenchState.scenario,
@@ -382,7 +512,7 @@ async function runPrecheck() {
   } finally {
     if (requestId === precheckRequestId) {
       button.disabled = false;
-      button.textContent = "Run Precheck";
+      button.textContent = "运行预检查";
     }
   }
 }
@@ -395,62 +525,124 @@ async function openConstraints() {
   await runPrecheck();
 }
 
-async function setExample() {
-  try {
-    const [scenario, precheckInputs, solveBundle] = await Promise.all([
-      loadExample(),
-      loadBenchmarkPrecheckInputs(),
-      loadSolveExampleBundle(),
-    ]);
-    workbenchState.scenario = scenario;
-    workbenchState.scenarioBaseline = clone(scenario);
-    workbenchState.recoveryColumns = precheckInputs.recovery_columns;
-    workbenchState.passengerCapacityProfile = precheckInputs.passenger_capacity_profile;
-    workbenchState.solveBundle = solveBundle;
-    workbenchState.costOverrides = clone(solveBundle.cost_overrides || {});
-    workbenchState.costEffective = buildEffectiveCostProfile(workbenchState.costBaseline, workbenchState.costOverrides);
-    invalidateRecovery();
-    await refreshSolveReadiness();
-    workbenchState.scenarioValidation = null;
-    workbenchState.constraintPrecheck = null;
-    activeSection = "scenario";
-    if (activeView === "visualization") await openVisualization();
-    else if (activeView === "constraints") await openConstraints();
-    else {
-      renderShell();
-      if (activeView === "data") renderDataView();
-      else if (activeView === "recovery") openRecovery();
-      else renderCostView();
+function caseMetadata(caseId) {
+  return workbenchState.caseCatalog?.cases.find((item) => item.case_id === caseId) || null;
+}
+
+function updateCaseDescription(metadata) {
+  document.querySelector("#case-description").textContent = metadata
+    ? `${metadata.description} · ${metadata.tags.join(" · ")}`
+    : "导入的数据不属于内置 Case 目录。";
+}
+
+function renderCaseCatalog(catalog) {
+  const selector = document.querySelector("#case-selector");
+  selector.replaceChildren();
+  const groups = new Map();
+  for (const item of catalog.cases) {
+    if (!groups.has(item.category)) groups.set(item.category, []);
+    groups.get(item.category).push(item);
+  }
+  for (const [label, items] of groups) {
+    const group = document.createElement("optgroup");
+    group.label = label;
+    for (const item of items) {
+      const option = document.createElement("option");
+      option.value = item.case_id;
+      option.textContent = item.label;
+      group.append(option);
     }
+    selector.append(group);
+  }
+  selector.value = catalog.default_case_id;
+  updateCaseDescription(caseMetadata(catalog.default_case_id));
+}
+
+async function applyCasePayload(payload) {
+  const state = createCurrentCase(payload);
+  const validation = await validateScenario(state.scenario);
+  const readiness = await checkSolveReadiness(
+    buildCurrentSolveBundle(state) || { scenario: clone(state.scenario) },
+  );
+  workbenchState.currentCase = state.metadata;
+  syncCaseState(state);
+  workbenchState.costEffective = buildEffectiveCostProfile(workbenchState.costBaseline, workbenchState.costOverrides);
+  workbenchState.capacityProfileSummary = capacityProfileSummary(workbenchState.passengerCapacityProfile);
+  workbenchState.scenarioValidation = validation.valid ? "valid" : "invalid";
+  workbenchState.solveReadiness = readiness;
+  showValidation(validation);
+  workbenchState.constraintPrecheck = null;
+  setCostStatus(
+    Object.keys(workbenchState.costOverrides).length ? "modified" : "baseline",
+    "已从当前 Case 的基线载入。",
+  );
+  clearRecovery();
+  activeSection = "scenario";
+  updateCaseDescription(workbenchState.currentCase);
+  updateSolveButton();
+  updateSummary();
+  if (activeView === "visualization") await openVisualization();
+  else if (activeView === "constraints") await openConstraints();
+  else if (activeView === "recovery") openRecovery();
+  else {
+    renderShell();
+    if (activeView === "data") renderDataView();
+    else renderCostView();
+  }
+}
+
+async function loadCatalogCase(caseId) {
+  const button = document.querySelector("#load-case");
+  button.disabled = true;
+  button.textContent = "正在加载…";
+  try {
+    await applyCasePayload(await loadCase(caseId));
   } catch (error) {
-    showClientError(error.message);
+    document.querySelector("#case-summary").textContent = "Case 加载失败";
+    document.querySelector("#case-description").textContent = `无法加载所选 Case。${error.message}`;
+    showClientError(`Case 加载失败：${error.message}`);
+  } finally {
+    button.disabled = false;
+    button.textContent = "加载 Case";
   }
 }
 
 async function initializeWorkbench() {
+  if (initializingWorkbench) return;
+  initializingWorkbench = true;
+  const button = document.querySelector("#load-case");
+  const selector = document.querySelector("#case-selector");
+  button.disabled = true;
+  button.textContent = "正在加载…";
+  selector.disabled = true;
+  document.querySelector("#case-summary").textContent = "正在加载目录…";
   try {
-    const [scenario, costs, registry, precheckInputs, solveBundle] = await Promise.all([
-      loadExample(),
+    const [catalog, costs, registry] = await Promise.all([
+      loadCaseCatalog(),
       loadCanonicalCosts(),
       loadConstraintRegistry(),
-      loadBenchmarkPrecheckInputs(),
-      loadSolveExampleBundle(),
     ]);
-    workbenchState.scenario = scenario;
-    workbenchState.scenarioBaseline = clone(scenario);
+    workbenchState.caseCatalog = catalog;
     workbenchState.costBaseline = costs;
     workbenchState.costEffective = clone(costs);
     workbenchState.constraintMetadata = registry.constraints;
-    workbenchState.recoveryColumns = precheckInputs.recovery_columns;
-    workbenchState.passengerCapacityProfile = precheckInputs.passenger_capacity_profile;
-    workbenchState.solveBundle = solveBundle;
-    workbenchState.capacityProfileSummary = registry.capacity_profile_summary;
     workbenchState.modelProfile = registry.model_profile;
-    renderShell();
-    renderDataView();
-    await refreshSolveReadiness();
+    renderCaseCatalog(catalog);
+    selector.disabled = false;
+    await loadCatalogCase(catalog.default_case_id);
   } catch (error) {
-    showClientError(`Workbench initialization failed: ${error.message}`);
+    workbenchState.caseCatalog = null;
+    document.querySelector("#case-summary").textContent = "目录不可用";
+    document.querySelector("#case-description").textContent = `初始化失败。请点击“重试初始化”。${error.message}`;
+    button.disabled = false;
+    button.textContent = "重试初始化";
+    showClientError(`工作台初始化失败：${error.message}`);
+  } finally {
+    initializingWorkbench = false;
+    if (workbenchState.caseCatalog) {
+      button.disabled = false;
+      button.textContent = "加载 Case";
+    }
   }
 }
 
@@ -468,7 +660,13 @@ viewButtons.visualization.addEventListener("click", openVisualization);
 viewButtons.recovery.addEventListener("click", openRecovery);
 viewButtons.costs.addEventListener("click", openCosts);
 viewButtons.constraints.addEventListener("click", openConstraints);
-document.querySelector("#load-example").addEventListener("click", setExample);
+document.querySelector("#case-selector").addEventListener("change", (event) => {
+  updateCaseDescription(caseMetadata(event.target.value));
+});
+document.querySelector("#load-case").addEventListener("click", () => {
+  if (!workbenchState.caseCatalog) initializeWorkbench();
+  else loadCatalogCase(document.querySelector("#case-selector").value);
+});
 document.querySelector("#solve-recovery").addEventListener("click", runSolve);
 document.querySelector("#recovery-mode").addEventListener("change", openRecovery);
 document.querySelector("#recovery-container").addEventListener("click", (event) => {
@@ -482,27 +680,16 @@ document.querySelector("#export-recovered-result").addEventListener("click", () 
     `${workbenchState.scenario.scenario_id}_recovered_result.json`,
   );
 });
-document.querySelector("#reset-scenario").addEventListener("click", () => {
-  workbenchState.scenario = clone(workbenchState.scenarioBaseline);
+document.querySelector("#reset-current-case").addEventListener("click", () => {
+  const state = currentCaseState();
+  resetCurrentCaseInputs(state);
+  syncCaseState(state);
   workbenchState.scenarioValidation = null;
   workbenchState.constraintPrecheck = null;
-  invalidateRecovery();
+  workbenchState.costEffective = buildEffectiveCostProfile(workbenchState.costBaseline, workbenchState.costOverrides);
+  workbenchState.capacityProfileSummary = capacityProfileSummary(workbenchState.passengerCapacityProfile);
   refreshSolveReadiness();
-  if (activeView === "data") renderDataView();
-  else if (activeView === "visualization") openVisualization();
-  else if (activeView === "constraints") openConstraints();
-  else if (activeView === "recovery") openRecovery();
-  updateSummary();
-});
-document.querySelector("#reset-workbench").addEventListener("click", () => {
-  workbenchState.scenario = clone(workbenchState.scenarioBaseline);
-  workbenchState.scenarioValidation = null;
-  workbenchState.costOverrides = {};
-  workbenchState.costEffective = clone(workbenchState.costBaseline);
-  workbenchState.constraintPrecheck = null;
-  invalidateRecovery();
-  refreshSolveReadiness();
-  setCostStatus("baseline", "Scenario and cost overrides restored to their loaded baselines.");
+  setCostStatus("baseline", "Scenario、求解列、容量、配置及成本覆盖值均已恢复至此 Case 的基线。");
   if (activeView === "data") renderDataView();
   else if (activeView === "visualization") openVisualization();
   else if (activeView === "constraints") openConstraints();
@@ -527,14 +714,14 @@ document.querySelector("#add-row").addEventListener("click", () => {
 });
 document.querySelector("#duplicate-row").addEventListener("click", () => {
   const index = selectedRowIndex();
-  if (index < 0) return showClientError("Select a row to duplicate.");
+  if (index < 0) return showClientError("请先选择要复制的行。");
   workbenchState.scenario[activeSection].splice(index + 1, 0, clone(workbenchState.scenario[activeSection][index]));
   markScenarioChanged();
   renderDataView();
 });
 document.querySelector("#delete-row").addEventListener("click", () => {
   const index = selectedRowIndex();
-  if (index < 0) return showClientError("Select a row to delete.");
+  if (index < 0) return showClientError("请先选择要删除的行。");
   workbenchState.scenario[activeSection].splice(index, 1);
   markScenarioChanged();
   renderDataView();
@@ -543,8 +730,11 @@ document.querySelector("#validate").addEventListener("click", async () => {
   if (activeView === "visualization") return openVisualization();
   if (activeView === "constraints") return runPrecheck();
   if (activeView === "costs") return document.querySelector("#validate-costs").click();
+  const requestId = ++validationRequestId;
+  const revision = workbenchState.inputRevision;
   try {
     const result = await validateScenario(workbenchState.scenario);
+    if (requestId !== validationRequestId || revision !== workbenchState.inputRevision) return;
     workbenchState.scenarioValidation = result.valid ? "valid" : "invalid";
     showValidation(result);
     updateSummary();
@@ -553,84 +743,112 @@ document.querySelector("#validate").addEventListener("click", async () => {
   }
 });
 document.querySelector("#validate-costs").addEventListener("click", async () => {
+  const requestId = ++costValidationRequestId;
+  const revision = workbenchState.inputRevision;
   try {
     const result = await validateCostOverrides({
       base_cost_profile_id: workbenchState.costBaseline.cost_profile_id,
       overrides: workbenchState.costOverrides,
     });
+    if (requestId !== costValidationRequestId || revision !== workbenchState.inputRevision) return;
     workbenchState.costEffective = result.effective_profile;
-    invalidateRecovery();
     refreshSolveReadiness();
-    setCostStatus("valid", `Validated ${Object.keys(result.overrides).length} override(s); canonical metadata is unchanged.`);
+    setCostStatus("valid", `已校验 ${Object.keys(result.overrides).length} 个覆盖值；规范元数据保持不变。`);
     renderCostView();
   } catch (error) {
     setCostStatus("invalid", error.message);
   }
 });
 document.querySelector("#reset-cost-overrides").addEventListener("click", () => {
-  workbenchState.costOverrides = {};
-  workbenchState.costEffective = clone(workbenchState.costBaseline);
-  invalidateRecovery();
+  workbenchState.costOverrides = clone(workbenchState.costOverridesBaseline);
+  workbenchState.costEffective = buildEffectiveCostProfile(workbenchState.costBaseline, workbenchState.costOverrides);
+  markInputsChanged();
   refreshSolveReadiness();
-  setCostStatus("baseline", "Overrides cleared; effective values equal the canonical baseline.");
+  setCostStatus("baseline", "成本覆盖值已恢复至当前 Case 的基线。");
   renderCostView();
 });
 document.querySelector("#run-precheck").addEventListener("click", runPrecheck);
 document.querySelector("#export-scenario").addEventListener("click", () => {
   downloadJson(workbenchState.scenario, `${workbenchState.scenario.scenario_id || "scenario"}.json`);
 });
-document.querySelector("#export-workbench").addEventListener("click", () => {
-  const config = buildWorkbenchConfig(
-    workbenchState.scenario,
-    workbenchState.costBaseline,
-    workbenchState.costOverrides,
-    workbenchState.capacityProfileSummary,
-    workbenchState.modelProfile,
-  );
-  downloadJson(config, `${workbenchState.scenario.scenario_id || "scenario"}_workbench.json`);
+document.querySelector("#export-current-case").addEventListener("click", () => {
+  downloadJson({
+    schema_version: "1.0.0",
+    current_case: {
+      metadata: clone(workbenchState.currentCase),
+      input_revision: workbenchState.inputRevision,
+    },
+    scenario: clone(workbenchState.scenario),
+    solve_input: currentSolveBundle(),
+    result: {
+      state: workbenchState.resultState,
+      solved_revision: workbenchState.resultRevision,
+      case: clone(workbenchState.resultCase),
+      input_snapshot: clone(workbenchState.resultInputSnapshot),
+      recovered_result: clone(workbenchState.recoveredResult),
+    },
+  }, `${workbenchState.currentCase?.case_id || workbenchState.scenario.scenario_id}_current_case.json`);
 });
 
 const fileInput = document.querySelector("#file-input");
-document.querySelector("#import-json").addEventListener("click", () => fileInput.click());
+let pendingImportKind = null;
+document.querySelector("#import-scenario").addEventListener("click", () => {
+  pendingImportKind = "scenario";
+  fileInput.click();
+});
+document.querySelector("#import-bundle").addEventListener("click", () => {
+  pendingImportKind = "bundle";
+  fileInput.click();
+});
 fileInput.addEventListener("change", async () => {
   const [file] = fileInput.files;
   if (!file) return;
   try {
     const imported = JSON.parse(await file.text());
     const isSolveBundle = imported.schema_version === "1.0.0" && "recovery_columns" in imported;
-    if (!isSolveBundle && ("scenario" in imported || "cost_overrides" in imported)) {
-      throw new Error("Select a Scenario or complete Solve Bundle JSON file.");
+    if (pendingImportKind === "bundle" && !isSolveBundle) {
+      throw new Error("导入 Solve Bundle 时必须使用带版本号的 SolveRequest 结构。");
     }
-    if (isSolveBundle) {
+    if (pendingImportKind === "scenario" && isSolveBundle) {
+      throw new Error("该文件是 Solve Bundle。请使用“导入 Solve Bundle”，以保留其中显式定义的输入。");
+    }
+    if (pendingImportKind === "scenario" && ("scenario" in imported || "cost_overrides" in imported)) {
+      throw new Error("导入 Scenario 时必须提供原始 Scenario JSON 文档。");
+    }
+    if (pendingImportKind === "bundle") {
       const readiness = await checkSolveReadiness(imported);
-      if (!readiness.solve_ready) throw new Error(`Solve Bundle is not ready: ${[...readiness.missing_inputs, ...readiness.invalid_profiles].join(", ")}`);
+      if (!readiness.solve_ready) throw new Error(`Solve Bundle 尚未满足求解条件：${[...readiness.missing_inputs, ...readiness.invalid_profiles].join("；")}`);
     }
-    const result = await validateScenario(isSolveBundle ? imported.scenario : imported);
+    const result = await validateScenario(pendingImportKind === "bundle" ? imported.scenario : imported);
     if (!result.valid) {
       showValidation(result);
       if (activeView === "visualization") renderVisualizationBlocked(result, showDataView);
       return;
     }
-    workbenchState.scenario = result.normalized_data;
-    workbenchState.scenarioBaseline = clone(result.normalized_data);
-    if (workbenchState.recoveryColumns?.scenario_id !== result.normalized_data.scenario_id) {
-      workbenchState.recoveryColumns = null;
-      workbenchState.passengerCapacityProfile = null;
-    }
-    workbenchState.solveBundle = isSolveBundle ? imported : null;
-    workbenchState.costOverrides = isSolveBundle ? clone(imported.cost_overrides || {}) : {};
-    workbenchState.costEffective = buildEffectiveCostProfile(workbenchState.costBaseline, workbenchState.costOverrides);
-    invalidateRecovery();
-    await refreshSolveReadiness();
+    const label = pendingImportKind === "bundle" ? "已导入的 Solve Bundle" : "已导入的 Scenario";
+    await applyCasePayload({
+      case: {
+        case_id: `imported-${result.normalized_data.scenario_id}`,
+        label,
+        category: "已导入",
+        description: pendingImportKind === "bundle"
+          ? "用户导入的显式 Solve Bundle。"
+          : "用户导入的 Scenario-only 数据；系统未推断任何求解输入。",
+        tags: ["已导入", pendingImportKind === "bundle" ? "Solve Bundle" : "Scenario-only"],
+        mode: pendingImportKind === "bundle" ? "solve_bundle" : "scenario_only",
+        expected: null,
+      },
+      scenario: result.normalized_data,
+      solve_bundle: pendingImportKind === "bundle" ? { ...imported, scenario: result.normalized_data } : null,
+    });
     workbenchState.scenarioValidation = "valid";
-    workbenchState.constraintPrecheck = null;
-    activeSection = "scenario";
     showValidation(result);
     showDataView();
   } catch (error) {
-    showClientError(`Import failed: ${error.message}`);
+    showClientError(`导入失败：${error.message}`);
   } finally {
     fileInput.value = "";
+    pendingImportKind = null;
   }
 });
 

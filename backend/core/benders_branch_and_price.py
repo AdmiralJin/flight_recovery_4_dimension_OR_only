@@ -323,6 +323,7 @@ def solve_benders_with_branch_and_price(
     solver_factory: Callable[[], SolverAdapter],
     scope: RecoveryScope | None = None,
     solver_parameters: Mapping[str, bool | int | float | str] | None = None,
+    event_sink: Callable[[dict[str, Any]], None] | None = None,
 ) -> BendersBranchAndPriceResult:
     """Close Phase 11 integer gaps with exact implicit-column B&P recourse."""
 
@@ -356,6 +357,7 @@ def solve_benders_with_branch_and_price(
         benders_config,
         solver_factory=solver_factory,
         solver_parameters=solver_parameters,
+        event_sink=event_sink,
     )
     empty: Mapping[str, float] = MappingProxyType({})
     phase11_metrics = phase11.diagnostics.get("metrics", {})
@@ -469,6 +471,43 @@ def solve_benders_with_branch_and_price(
     exact_cut_keys: set[tuple[str, tuple[str, ...], str]] = set()
     certificates: list[IntegerRecourseCertificate] = []
     iterations: list[BendersBranchAndPriceIteration] = []
+
+    def record_iteration(item: BendersBranchAndPriceIteration) -> None:
+        iterations.append(item)
+        if event_sink is not None:
+            upper = item.incumbent_upper_bound
+            lower = item.lower_bound
+            absolute_gap = (
+                max(0.0, upper - lower)
+                if upper is not None and lower is not None
+                else None
+            )
+            relative_gap = (
+                absolute_gap / max(abs(upper), 1.0)
+                if absolute_gap is not None and upper is not None
+                else None
+            )
+            event_sink(
+                {
+                    "stage": "phase12",
+                    "type": "benders_iteration",
+                    "iteration": item.iteration,
+                    "schedule": list(item.schedule_signature),
+                    "lower_bound": lower,
+                    "upper_bound": upper,
+                    "absolute_gap": absolute_gap,
+                    "relative_gap": relative_gap,
+                    "metrics": {
+                        "candidate_upper_bound": item.candidate_upper_bound,
+                        "aircraft_bp_nodes": item.aircraft_branch_nodes,
+                        "crew_bp_nodes": item.crew_branch_nodes,
+                        "lp_cuts_added": item.lp_cuts_added,
+                        "exact_cuts_added": item.exact_cuts_added,
+                        "feasibility_cuts_added": item.feasibility_cuts_added,
+                        "runtime_seconds": item.runtime_seconds,
+                    },
+                }
+            )
     visited_exact: set[tuple[str, ...]] = set()
     incumbent: _ExactIncumbent | None = None
     current_schedule = phase11.selected_flight_options
@@ -653,10 +692,15 @@ def solve_benders_with_branch_and_price(
         elif prm.status is SolverStatus.INFEASIBLE:
             infeasible_source = BendersCgCutSource.PASSENGER_MIP_INFEASIBILITY
         if infeasible_source is not None:
+            certificate_owner = {
+                BendersCgCutSource.AIRCRAFT_LP_INFEASIBILITY: BendersSubproblem.ARM,
+                BendersCgCutSource.CREW_LP_INFEASIBILITY: BendersSubproblem.CRM,
+                BendersCgCutSource.PASSENGER_MIP_INFEASIBILITY: BendersSubproblem.PRM,
+            }[infeasible_source]
             cert_id = _certificate_id(
                 fingerprint,
                 current_schedule,
-                BendersSubproblem.ARM,
+                certificate_owner,
                 0.0,
                 0.0,
             )
@@ -670,7 +714,7 @@ def solve_benders_with_branch_and_price(
                 lp_cuts.append(cut)
                 lp_cut_keys.add(cut.key)
                 metrics["feasibility_cuts"] += 1
-            iterations.append(
+            record_iteration(
                 BendersBranchAndPriceIteration(
                     exact_iteration,
                     current_schedule,
@@ -991,7 +1035,7 @@ def solve_benders_with_branch_and_price(
             if aircraft_exact_at_root and crew_exact_at_root:
                 metrics["schedules_closed_by_lp_exactness"] += 1
 
-            iterations.append(
+            record_iteration(
                 BendersBranchAndPriceIteration(
                     exact_iteration,
                     current_schedule,

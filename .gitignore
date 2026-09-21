@@ -2,3 +2,11 @@ tmp/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.workbench/
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+test-results/
+playwright-report/

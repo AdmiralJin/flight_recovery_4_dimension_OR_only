@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from types import MappingProxyType
 from uuid import uuid4
 
@@ -99,8 +99,14 @@ class GurobiAdapter(SolverAdapter):
         supports_objective_bound=True,
     )
 
-    def __init__(self, *, output_flag: bool = False) -> None:
+    def __init__(
+        self,
+        *,
+        output_flag: bool = False,
+        cancel_check: Callable[[], bool] | None = None,
+    ) -> None:
         self._output_flag = output_flag
+        self._cancel_check = cancel_check
         self._environment = None
         self._model = None
         self._model_token = ""
@@ -248,7 +254,14 @@ class GurobiAdapter(SolverAdapter):
         try:
             for name, value in (parameters or {}).items():
                 model.setParam(name, value)
-            model.optimize()
+            if self._cancel_check is None:
+                model.optimize()
+            else:
+                def cancel_callback(active_model, _where):
+                    if self._cancel_check and self._cancel_check():
+                        active_model.terminate()
+
+                model.optimize(cancel_callback)
             raw_status = int(model.Status)
             solution_count = int(model.SolCount)
             status = normalize_gurobi_status(raw_status, solution_count)
