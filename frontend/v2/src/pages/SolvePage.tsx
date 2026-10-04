@@ -5,7 +5,7 @@ import type { EChartsOption } from "echarts";
 import { api } from "../api";
 import { Chart } from "../components/Chart";
 import { useWorkbench } from "../store";
-import type { RunEvent, RunRecord } from "../types";
+import type { RunEvent } from "../types";
 import { PageHead } from "./DataStudio";
 
 const terminal = new Set(["completed", "failed", "cancelled", "interrupted"]);

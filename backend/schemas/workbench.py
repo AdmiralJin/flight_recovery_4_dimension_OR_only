@@ -242,8 +242,44 @@ class RunRecord(SchemaModel):
     created_at: AwareDatetime
     started_at: AwareDatetime | None = None
     finished_at: AwareDatetime | None = None
+    solution_artifact_hash: str | None = None
     result: dict[str, Any] | None = None
     error: dict[str, Any] | None = None
+
+
+class VisualizationAvailability(SchemaModel):
+    available: bool
+    reason: str | None = None
+
+
+class VisualizationModel(SchemaModel):
+    """Canonical, read-only model consumed by every operational visualization."""
+
+    schema_version: Literal["1.0.0"] = "1.0.0"
+    source_type: Literal["draft", "run"]
+    source_id: str
+    draft_id: str
+    snapshot_id: str | None = None
+    run_id: str | None = None
+    working_hash: str | None = None
+    compiled_hash: str | None = None
+    input_hash: str | None = None
+    optimization_status: str | None = None
+    time_range: dict[str, str | None] = Field(default_factory=dict)
+    mode_availability: dict[str, VisualizationAvailability]
+    layer_availability: dict[str, VisualizationAvailability]
+    issues: list[WorkbenchIssue] = Field(default_factory=list)
+    disruptions: list[dict[str, Any]] = Field(default_factory=list)
+    flights: list[dict[str, Any]] = Field(default_factory=list)
+    propagation_edges: list[dict[str, Any]] = Field(default_factory=list)
+    aircraft: list[dict[str, Any]] = Field(default_factory=list)
+    crew: list[dict[str, Any]] = Field(default_factory=list)
+    passengers: list[dict[str, Any]] = Field(default_factory=list)
+    capacity: dict[str, list[dict[str, Any]]] = Field(default_factory=dict)
+    objective: dict[str, Any] | None = None
+    cost_items: list[dict[str, Any]] = Field(default_factory=list)
+    delay_distribution: list[dict[str, Any]] = Field(default_factory=list)
+    recovery_actions: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class ProblemIssue(SchemaModel):

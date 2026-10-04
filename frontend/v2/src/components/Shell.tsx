@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Activity, BarChart3, Database, FileCheck2, GitCompareArrows, History, Menu, ShieldCheck } from "lucide-react";
+import { Activity, BarChart3, Database, FileCheck2, GitCompareArrows, History, LineChart, ShieldCheck } from "lucide-react";
 import { api } from "../api";
 import { useWorkbench } from "../store";
 
@@ -9,6 +9,7 @@ const nav = [
   { to: "/data", label: "数据设计", short: "数据", icon: Database },
   { to: "/impact", label: "扰动影响", short: "影响", icon: Activity },
   { to: "/solve", label: "求解", short: "求解", icon: BarChart3 },
+  { to: "/visualization", label: "可视化", short: "视图", icon: LineChart },
   { to: "/compare", label: "方案对比", short: "对比", icon: GitCompareArrows },
   { to: "/audit", label: "审计", short: "审计", icon: FileCheck2 },
 ];

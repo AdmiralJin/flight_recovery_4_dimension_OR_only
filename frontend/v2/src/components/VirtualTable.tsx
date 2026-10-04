@@ -36,7 +36,6 @@ export function VirtualTable({
   const helper = createColumnHelper<JsonObject>();
   const columns = useMemo(
     () => keys.map((key) => helper.accessor((row) => row[key], { id: key, header: key, cell: (info) => display(info.getValue()) })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [keys.join("|")],
   );
   const table = useReactTable({ data: filtered, columns, getCoreRowModel: getCoreRowModel() });

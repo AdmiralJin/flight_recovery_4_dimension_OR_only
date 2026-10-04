@@ -98,8 +98,58 @@ export interface RunRecord {
   created_at: string;
   started_at?: string | null;
   finished_at?: string | null;
+  solution_artifact_hash?: string | null;
   result?: JsonObject | null;
   error?: JsonObject | null;
+}
+
+export interface Availability {
+  available: boolean;
+  reason?: string | null;
+}
+
+export type VisualizationMode = "original" | "impact" | "recovered" | "delta";
+export type VisualizationView = "flights" | "aircraft" | "crew" | "passengers" | "capacity" | "propagation" | "cost" | "delay";
+
+export interface VisualizationFlight {
+  flight_id: string;
+  original: JsonObject;
+  effective: JsonObject;
+  impact: FlightImpact;
+  recovered?: JsonObject | null;
+  changed: boolean;
+  change_flags: string[];
+  primary_change: string;
+  resources: JsonObject;
+  passenger_group_ids: string[];
+}
+
+export interface VisualizationModel {
+  schema_version: "1.0.0";
+  source_type: "draft" | "run";
+  source_id: string;
+  draft_id: string;
+  snapshot_id?: string | null;
+  run_id?: string | null;
+  working_hash?: string | null;
+  compiled_hash?: string | null;
+  input_hash?: string | null;
+  optimization_status?: string | null;
+  time_range: { start?: string | null; end?: string | null; timezone?: string | null };
+  mode_availability: Record<VisualizationMode, Availability>;
+  layer_availability: Record<string, Availability>;
+  issues: Issue[];
+  disruptions: JsonObject[];
+  flights: VisualizationFlight[];
+  propagation_edges: JsonObject[];
+  aircraft: JsonObject[];
+  crew: JsonObject[];
+  passengers: JsonObject[];
+  capacity: Record<string, JsonObject[]>;
+  objective?: JsonObject | null;
+  cost_items: JsonObject[];
+  delay_distribution: JsonObject[];
+  recovery_actions: JsonObject[];
 }
 
 export interface RunEvent {

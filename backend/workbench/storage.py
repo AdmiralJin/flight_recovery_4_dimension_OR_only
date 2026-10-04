@@ -179,6 +179,7 @@ class WorkbenchStore:
                     created_at TEXT NOT NULL,
                     started_at TEXT,
                     finished_at TEXT,
+                    solution_artifact_hash TEXT REFERENCES artifacts(artifact_hash),
                     result_artifact_hash TEXT REFERENCES artifacts(artifact_hash),
                     error_json TEXT
                 );
@@ -221,6 +222,10 @@ class WorkbenchStore:
             if "runtime_profile_id" not in run_columns:
                 connection.execute(
                     "ALTER TABLE runs ADD COLUMN runtime_profile_id TEXT NOT NULL DEFAULT 'default-exact'"
+                )
+            if "solution_artifact_hash" not in run_columns:
+                connection.execute(
+                    "ALTER TABLE runs ADD COLUMN solution_artifact_hash TEXT REFERENCES artifacts(artifact_hash)"
                 )
             now = _now()
             connection.execute(
@@ -560,6 +565,28 @@ class WorkbenchStore:
                 raise WorkbenchNotFoundError(f"unknown run: {run_id}")
         return self.get_run(run_id)
 
+    def attach_solution_artifact(self, run_id: str, payload: dict[str, Any]) -> str:
+        """Persist the selected generated columns without changing the v1 result."""
+        digest = self.put_artifact("selected_solution_columns", payload)
+        with self.connection() as connection:
+            cursor = connection.execute(
+                "UPDATE runs SET solution_artifact_hash = ? WHERE run_id = ?",
+                (digest, run_id),
+            )
+            if cursor.rowcount != 1:
+                raise WorkbenchNotFoundError(f"unknown run: {run_id}")
+        return digest
+
+    def get_run_solution_artifact(self, run_id: str) -> dict[str, Any] | None:
+        with self.connection() as connection:
+            row = connection.execute(
+                "SELECT solution_artifact_hash FROM runs WHERE run_id = ?", (run_id,)
+            ).fetchone()
+        if row is None:
+            raise WorkbenchNotFoundError(f"unknown run: {run_id}")
+        digest = row["solution_artifact_hash"]
+        return self.get_artifact(digest) if digest else None
+
     def request_cancel(self, run_id: str) -> RunRecord:
         with self.connection() as connection:
             cursor = connection.execute(
@@ -758,6 +785,7 @@ class WorkbenchStore:
             created_at=row["created_at"],
             started_at=row["started_at"],
             finished_at=row["finished_at"],
+            solution_artifact_hash=row["solution_artifact_hash"],
             result=result,
             error=json.loads(row["error_json"]) if row["error_json"] else None,
         )

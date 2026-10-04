@@ -8,10 +8,14 @@ from fastapi.testclient import TestClient
 
 from backend.api import workbench_v2
 from backend.main import app
+from backend.application.case_service import load_case
 from backend.application.solve_service import solve_request
 from backend.schemas.result import SolveRequest
+from backend.schemas.workbench import CompilePreview, SnapshotRecord
 from backend.workbench.run_manager import RunManager
 from backend.workbench.storage import WorkbenchStore
+from backend.workbench.compiler import compile_draft, draft_from_case_payload
+from backend.workbench.visualization import build_run_visualization
 
 
 @pytest.fixture()
@@ -52,6 +56,57 @@ def test_clone_compile_snapshot_and_hash_conflict(v2_client):
     )
     assert conflict.status_code == 409
     assert conflict.json()["code"] == "draft_hash_conflict"
+
+
+def test_visualization_contract_binds_draft_and_run_snapshot(v2_client):
+    client, store, _manager = v2_client
+    draft = client.post(
+        "/api/v2/drafts",
+        json={"source_case_id": "benchmark-disruption-recovery"},
+    ).json()
+    visual = client.get(f"/api/v2/drafts/{draft['draft_id']}/visualization")
+    assert visual.status_code == 200
+    payload = visual.json()
+    assert payload["source_type"] == "draft"
+    assert payload["working_hash"] == draft["working_hash"]
+    assert payload["mode_availability"]["original"]["available"] is True
+    assert payload["mode_availability"]["impact"]["available"] is True
+    assert payload["mode_availability"]["recovered"]["available"] is False
+    assert payload["flights"]
+    assert payload["capacity"]["effective"]
+
+    preview = client.post(f"/api/v2/drafts/{draft['draft_id']}/compile").json()
+    snapshot = store.create_snapshot(
+        draft["draft_id"],
+        draft["working_hash"],
+        CompilePreview.model_validate(preview),
+    )
+    run = store.create_run(snapshot, "detailed")
+    artifact_hash = store.attach_solution_artifact(
+        run.run_id,
+        {
+            "schema_version": "1.0.0",
+            "run_id": run.run_id,
+            "flight_options": [],
+            "aircraft_strings": [],
+            "crew_pairings": [],
+            "passenger_itineraries": [],
+        },
+    )
+    store.update_run_status(
+        run.run_id,
+        workbench_v2.JobStatus.COMPLETED,
+        optimization_status="infeasible",
+        result={"status": "infeasible", "resolved_flights": []},
+    )
+    run_visual = client.get(f"/api/v2/runs/{run.run_id}/visualization")
+    assert run_visual.status_code == 200
+    run_payload = run_visual.json()
+    assert run_payload["source_type"] == "run"
+    assert run_payload["input_hash"] == snapshot.content_hash
+    assert run_payload["optimization_status"] == "infeasible"
+    assert run_payload["mode_availability"]["recovered"]["available"] is False
+    assert store.get_run(run.run_id).solution_artifact_hash == artifact_hash
 
 
 def test_precheck_rejects_wrong_outer_contract():
@@ -145,7 +200,12 @@ def test_real_solver_emits_monotonic_phase11_bounds():
         "/api/solve/example-bundle/phase1_benchmark_001"
     ).json()
     events = []
-    result = solve_request(SolveRequest.model_validate(bundle), event_sink=events.append)
+    artifacts = []
+    result = solve_request(
+        SolveRequest.model_validate(bundle),
+        event_sink=events.append,
+        solution_artifact_sink=lambda payload: artifacts.append(payload) or "artifact-test",
+    )
     iterations = [item for item in events if item.get("type") == "benders_iteration"]
     assert result.status.value == "optimal"
     assert iterations
@@ -157,3 +217,29 @@ def test_real_solver_emits_monotonic_phase11_bounds():
     assert phase11_lower_bounds == sorted(phase11_lower_bounds)
     assert events[-1]["type"] == "stage_completed"
     assert events[-1]["upper_bound"] == result.diagnostics.upper_bound
+    assert events[-1]["artifact_refs"] == ["artifact-test"]
+    assert artifacts[0]["aircraft_strings"]
+    assert artifacts[0]["crew_pairings"]
+    assert artifacts[0]["passenger_itineraries"]
+    document = draft_from_case_payload(load_case("benchmark-disruption-recovery"))
+    preview = compile_draft(document)
+    snapshot = SnapshotRecord(
+        snapshot_id="visual-test",
+        draft_id="visual-draft",
+        revision_id="visual-revision",
+        content_hash=preview.compiled_hash,
+        created_at="2026-01-01T00:00:00Z",
+        solve_request=preview.solve_request,
+        compile_preview=preview,
+        draft_document=document,
+    )
+    visual = build_run_visualization(
+        snapshot,
+        result.model_dump(mode="json"),
+        artifacts[0],
+        run_id=result.run_id,
+        optimization_status="optimal",
+    )
+    assert visual.mode_availability["recovered"].available is True
+    assert any(item["recovered_segments"] for item in visual.aircraft)
+    assert any(item["recovered_duties"] for item in visual.crew)

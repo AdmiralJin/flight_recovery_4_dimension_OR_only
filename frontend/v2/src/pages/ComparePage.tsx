@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { EChartsOption } from "echarts";
 import { Filter, GitCompareArrows } from "lucide-react";
 import { Chart } from "../components/Chart";

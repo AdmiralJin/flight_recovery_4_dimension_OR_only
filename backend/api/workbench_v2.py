@@ -21,6 +21,7 @@ from backend.schemas.workbench import (
     RuntimeProfileCloneRequest,
     RuntimeProfileUpdateRequest,
     SnapshotCreateRequest,
+    VisualizationModel,
 )
 from backend.solver import GurobiAdapter
 from backend.workbench.comparison import build_audit, build_comparison
@@ -30,6 +31,10 @@ from backend.workbench.storage import (
     WorkbenchConflictError,
     WorkbenchNotFoundError,
     get_workbench_store,
+)
+from backend.workbench.visualization import (
+    build_draft_visualization,
+    build_run_visualization,
 )
 
 
@@ -181,6 +186,18 @@ def compile_preview(draft_id: str):
     except WorkbenchNotFoundError as exc:
         raise problem(404, "draft_not_found", str(exc)) from exc
     return compile_draft(draft.document)
+
+
+@router.get("/drafts/{draft_id}/visualization", response_model=VisualizationModel)
+def draft_visualization(draft_id: str):
+    try:
+        draft = get_workbench_store().get_draft(draft_id)
+    except WorkbenchNotFoundError as exc:
+        raise problem(404, "draft_not_found", str(exc)) from exc
+    preview = compile_draft(draft.document)
+    return build_draft_visualization(
+        draft.draft_id, draft.working_hash, draft.document, preview
+    )
 
 
 @router.post("/drafts/{draft_id}/snapshots", status_code=201)
@@ -358,6 +375,20 @@ def run_comparison(run_id: str):
     return build_comparison(store.get_snapshot(run.snapshot_id), run.result)
 
 
+@router.get("/runs/{run_id}/visualization", response_model=VisualizationModel)
+def run_visualization(run_id: str):
+    store = get_workbench_store()
+    run = get_run(run_id)
+    snapshot = store.get_snapshot(run.snapshot_id)
+    return build_run_visualization(
+        snapshot,
+        run.result,
+        store.get_run_solution_artifact(run_id),
+        run_id=run_id,
+        optimization_status=run.optimization_status,
+    )
+
+
 @router.get("/runs/{run_id}/audit")
 def run_audit(run_id: str):
     store = get_workbench_store()
@@ -372,6 +403,7 @@ def export_run(run_id: str):
     store = get_workbench_store()
     run = get_run(run_id)
     snapshot = store.get_snapshot(run.snapshot_id)
+    solution_artifact = store.get_run_solution_artifact(run_id)
     return JSONResponse(
         {
             "schema_version": "2.0.0",
@@ -379,6 +411,14 @@ def export_run(run_id: str):
             "run": run.model_dump(mode="json"),
             "snapshot": snapshot.model_dump(mode="json"),
             "comparison": build_comparison(snapshot, run.result),
+            "visualization": build_run_visualization(
+                snapshot,
+                run.result,
+                solution_artifact,
+                run_id=run_id,
+                optimization_status=run.optimization_status,
+            ).model_dump(mode="json"),
+            "selected_solution_artifact": solution_artifact,
             "audit": build_audit(
                 snapshot,
                 run.result,

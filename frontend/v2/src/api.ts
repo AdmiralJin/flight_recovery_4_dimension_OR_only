@@ -8,6 +8,7 @@ import type {
   JsonObject,
   RunRecord,
   Snapshot,
+  VisualizationModel,
 } from "./types";
 
 export class ApiError extends Error {
@@ -56,6 +57,8 @@ export const api = {
     }),
   compile: (id: string) =>
     request<CompilePreview>(`/api/v2/drafts/${id}/compile`, { method: "POST", body: "{}" }),
+  draftVisualization: (id: string) =>
+    request<VisualizationModel>(`/api/v2/drafts/${id}/visualization`),
   snapshot: (draft: Draft, note = "") =>
     request<Snapshot>(`/api/v2/drafts/${draft.draft_id}/snapshots`, {
       method: "POST",
@@ -75,5 +78,6 @@ export const api = {
     }),
   cancelRun: (id: string) => request<RunRecord>(`/api/v2/runs/${id}/cancel`, { method: "POST", body: "{}" }),
   comparison: (id: string) => request<Comparison>(`/api/v2/runs/${id}/comparison`),
+  visualization: (id: string) => request<VisualizationModel>(`/api/v2/runs/${id}/visualization`),
   audit: (id: string) => request<JsonObject>(`/api/v2/runs/${id}/audit`),
 };

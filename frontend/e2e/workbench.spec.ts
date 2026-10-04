@@ -56,3 +56,28 @@ test("390px mode stays within viewport and keeps monitoring navigation", async (
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
   await page.screenshot({ path: resolve(shots, "browser_refactor_mobile_390.png"), fullPage: true });
 });
+
+test("visualization page renders canonical impact and gantt views", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
+  const created = await page.request.post("/api/v2/drafts", { data: { source_case_id: "benchmark-disruption-recovery", name: "E2E visualization" } });
+  expect(created.ok()).toBeTruthy();
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/workbench-v2/visualization");
+  await expect(page.getByRole("heading", { name: "运营可视化" })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("tab", { name: "Impact" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("img", { name: /impact 机场 UTC 时间航班箭头图/i })).toBeVisible();
+  await page.getByLabel("选择联动实体").selectOption({ label: "F1" });
+  await expect(page.getByRole("complementary").getByText("F1", { exact: true })).toBeVisible();
+  await page.screenshot({ path: resolve(shots, "workbench_v2_flight_visualization.png"), fullPage: true });
+  await page.getByRole("tab", { name: "飞机甘特" }).click();
+  await expect(page.getByRole("img", { name: /aircraft impact UTC 甘特图/i })).toBeVisible();
+  await page.screenshot({ path: resolve(shots, "workbench_v2_aircraft_gantt.png"), fullPage: true });
+  await page.getByRole("tab", { name: "容量热力图" }).click();
+  await expect(page.getByRole("img", { name: /impact departure 机场容量热力图/i })).toBeVisible();
+  const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(axe.violations).toEqual([]);
+  expect(errors).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  await page.screenshot({ path: resolve(shots, "workbench_v2_visualization.png"), fullPage: true });
+});

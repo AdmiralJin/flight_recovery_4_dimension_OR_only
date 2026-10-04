@@ -208,6 +208,7 @@ def solve_request(
     cancel_check: Callable[[], bool] | None = None,
     run_id: str | None = None,
     runtime_controls: dict[str, Any] | None = None,
+    solution_artifact_sink: Callable[[dict[str, Any]], str | None] | None = None,
 ) -> RecoveredResult:
     readiness = solve_readiness(request.model_dump(mode="json"))
     if not readiness["solve_ready"]:
@@ -322,6 +323,15 @@ def solve_request(
             )
         }
     )
+    artifact_ref = None
+    if (
+        solution_artifact_sink is not None
+        and result.status.value == "optimal"
+        and core.solution_columns is not None
+    ):
+        artifact_ref = solution_artifact_sink(
+            _selected_solution_artifact(core.solution_columns, result)
+        )
     if event_sink is not None:
         event_sink(
             {
@@ -330,9 +340,67 @@ def solve_request(
                 "message": f"Optimization finished with status {result.status.value}.",
                 "lower_bound": result.diagnostics.lower_bound,
                 "upper_bound": result.diagnostics.upper_bound,
+                "artifact_refs": [artifact_ref] if artifact_ref else [],
             }
         )
     return result
+
+
+def _selected_solution_artifact(
+    columns: RecoveryColumns, result: RecoveredResult
+) -> dict[str, Any]:
+    """Keep only the selected generated universe required for faithful replay."""
+    option_by_id = {item.option_id: item for item in columns.flight_options}
+    string_by_id = {item.string_id: item for item in columns.aircraft_strings}
+    pairing_by_id = {item.pairing_id: item for item in columns.crew_pairings}
+    itinerary_by_id = {
+        item.itinerary_id: item for item in columns.passenger_itineraries
+    }
+    selected_strings = [
+        string_by_id[item]
+        for item in result.selected.aircraft_strings
+        if item in string_by_id
+    ]
+    selected_pairings = [
+        pairing_by_id[item]
+        for item in result.selected.crew_pairings
+        if item in pairing_by_id
+    ]
+    selected_itineraries = [
+        itinerary_by_id[item]
+        for item in result.selected.passenger_itineraries
+        if item in itinerary_by_id
+    ]
+    referenced_options = set(result.selected.flight_options)
+    for item in selected_strings:
+        referenced_options.update(item.leg_option_ids)
+    for pairing in selected_pairings:
+        for duty in pairing.duties:
+            referenced_options.update(
+                segment.flight_option_id
+                for segment in duty.segments
+                if segment.flight_option_id
+            )
+    for itinerary in selected_itineraries:
+        referenced_options.update(
+            segment.flight_option_id
+            for segment in itinerary.segments
+            if segment.flight_option_id
+        )
+    return {
+        "schema_version": "1.0.0",
+        "run_id": result.run_id,
+        "flight_options": [
+            option_by_id[item].model_dump(mode="json")
+            for item in sorted(referenced_options)
+            if item in option_by_id
+        ],
+        "aircraft_strings": [item.model_dump(mode="json") for item in selected_strings],
+        "crew_pairings": [item.model_dump(mode="json") for item in selected_pairings],
+        "passenger_itineraries": [
+            item.model_dump(mode="json") for item in selected_itineraries
+        ],
+    }
 
 
 def example_solve_bundle(case_id: str) -> dict[str, Any]:

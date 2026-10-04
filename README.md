@@ -115,13 +115,13 @@ http://127.0.0.1:8000
 
 # Workbench 视图与边界
 
-React 工作台提供五个任务视图：
+React 工作台提供六个任务视图：
 
 ```text
-数据设计 → 扰动影响 → 求解 → 方案对比 → 审计
+数据设计 → 扰动影响 → 求解 → 可视化 → 方案对比 → 审计
 ```
 
-数据设计覆盖 Scenario、Flight Options、Passenger Itineraries、剩余容量、成本和 Profile。扰动影响页只表达有效容量、直接暴露和资源链传播风险，不表达恢复决策。求解页绘制真实 LB/UB/Gap 事件；方案对比由服务端 canonical model 统一定义，明确 changed/unchanged 和 arrival-only delay。审计页使用当次不可变快照，不把 stale 结果与当前草稿混合解释。
+数据设计覆盖 Scenario、Flight Options、Passenger Itineraries、剩余容量、成本和 Profile。扰动影响页只表达有效容量、直接暴露和资源链传播风险，不表达恢复决策。求解页绘制真实 LB/UB/Gap 事件。独立可视化页提供机场—UTC 时间航班箭头图、飞机/机组甘特、旅客行程、容量热力图、传播链、成本和延误，并统一支持 Original/Impact/Recovered/Delta；其运行视图始终绑定不可变快照。方案对比保留精确字段核对，审计页不把 stale 结果与当前草稿混合解释。
 
 以下 v1 Costs/Constraints/Current Case 说明仅适用于 `/legacy`。
 

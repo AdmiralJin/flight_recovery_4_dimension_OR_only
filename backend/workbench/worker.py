@@ -78,6 +78,9 @@ def execute_run(run_id: str) -> int:
             cancel_check=cancelled,
             run_id=run_id,
             runtime_controls=runtime_profile.parameters.model_dump(mode="json"),
+            solution_artifact_sink=lambda payload: store.attach_solution_artifact(
+                run_id, payload
+            ),
         )
         result_payload = result.model_dump(mode="json")
         if cancelled():

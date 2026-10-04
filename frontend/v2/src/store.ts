@@ -23,6 +23,7 @@ interface WorkbenchState {
   audit: JsonObject | null;
   mode: "original" | "impact" | "recovered" | "delta";
   selectedId: string | null;
+  selectedEntity: { type: "flight" | "aircraft" | "crew" | "passenger" | "capacity"; id: string } | null;
   busy: string | null;
   message: { tone: "info" | "success" | "warning" | "error"; text: string } | null;
   set: (values: Partial<WorkbenchState>) => void;
@@ -44,12 +45,13 @@ export const useWorkbench = create<WorkbenchState>((set) => ({
   audit: null,
   mode: "delta",
   selectedId: null,
+  selectedEntity: null,
   busy: null,
   message: null,
   set: (values) => set(values),
   selectDraft: (draft) =>
-    set({ draft, preview: null, run: null, events: [], comparison: null, audit: null, selectedId: null }),
-  selectRun: (run) => set({ run, events: [], comparison: null, audit: null, selectedId: null }),
+    set({ draft, preview: null, run: null, events: [], comparison: null, audit: null, selectedId: null, selectedEntity: null }),
+  selectRun: (run) => set({ run, events: [], comparison: null, audit: null, selectedId: null, selectedEntity: null }),
   addEvent: (event) =>
     set((state) =>
       state.events.some((item) => item.seq === event.seq)
