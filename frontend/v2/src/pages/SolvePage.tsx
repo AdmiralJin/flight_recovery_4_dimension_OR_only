@@ -1,17 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CircleStop, Clock3, Play, RefreshCw } from "lucide-react";
-import type { EChartsOption } from "echarts";
 import { api } from "../api";
 import { Chart } from "../components/Chart";
+import { PanelToggle, useDetailPanel } from "../components/PanelToggle";
 import { useWorkbench } from "../store";
+import { useTheme } from "../theme";
 import type { RunEvent } from "../types";
+import { solveTraceOption } from "../visualization/chartOptions";
 import { PageHead } from "./DataStudio";
+import { XmaResult } from "../components/XmaPanel";
 
 const terminal = new Set(["completed", "failed", "cancelled", "interrupted"]);
 
 export function SolvePage() {
   const state = useWorkbench();
+  const { theme } = useTheme();
+  const detailPanel = useDetailPanel();
   const query = useQueryClient();
   const source = useRef<EventSource | null>(null);
   const [runtimeProfile, setRuntimeProfile] = useState("default-exact");
@@ -32,7 +37,7 @@ export function SolvePage() {
     const stream = new EventSource(`/api/v2/runs/${run.run_id}/events`);
     source.current = stream;
     stream.onmessage = (message) => state.addEvent(JSON.parse(message.data) as RunEvent);
-    const eventTypes = ["run_queued", "stage_started", "stage_completed", "benders_iteration", "run_started", "run_completed", "run_failed", "run_cancelled"];
+    const eventTypes = ["run_queued", "stage_started", "stage_completed", "benders_iteration", "run_started", "run_completed", "run_failed", "run_cancelled", "building_model", "model_built", "mip_bound", "pricing_iteration", "branch_node", "audit_completed", "solve_bounds"];
     eventTypes.forEach((type) => stream.addEventListener(type, (message) => state.addEvent(JSON.parse((message as MessageEvent).data) as RunEvent)));
     const poll = window.setInterval(async () => {
       const current = await api.run(run.run_id);
@@ -47,24 +52,13 @@ export function SolvePage() {
   }, [state.run?.run_id, state.run?.job_status]);
 
   const points = state.events.filter((item) => item.lower_bound !== null || item.upper_bound !== null);
-  const option: EChartsOption = useMemo(() => ({
-    animation: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    backgroundColor: "transparent",
-    tooltip: { trigger: "axis", valueFormatter: (value) => typeof value === "number" ? value.toLocaleString() : String(value) },
-    legend: { top: 2, textStyle: { color: "#a8bcc9" } },
-    grid: { left: 64, right: 28, top: 46, bottom: 48 },
-    xAxis: { type: "category", name: "事件序号", data: points.map((item) => item.seq), axisLabel: { color: "#8096a5" }, axisLine: { lineStyle: { color: "#2b4352" } } },
-    yAxis: { type: "value", name: "目标值", axisLabel: { color: "#8096a5" }, splitLine: { lineStyle: { color: "#193442" } } },
-    series: [
-      { name: "Lower bound", type: "line", step: "end", showSymbol: true, connectNulls: true, data: points.map((item) => item.lower_bound), lineStyle: { color: "#20c7a6", width: 2 }, itemStyle: { color: "#20c7a6" } },
-      { name: "Incumbent UB", type: "line", step: "end", showSymbol: true, connectNulls: true, data: points.map((item) => item.upper_bound), lineStyle: { color: "#f2b84b", width: 2 }, itemStyle: { color: "#f2b84b" } },
-    ],
-  }), [points]);
+  const option = useMemo(() => solveTraceOption(points, theme), [points, theme]);
   const latest = points.at(-1);
   return <div className="page solve-page"><PageHead eyebrow="03 / SOLVE" title="实时求解" description="显示真实阶段、界、Gap、割、列和节点事件；不伪造百分比进度。"><label className="compact-select"><span className="sr-only">运行 Profile</span><select value={runtimeProfile} onChange={(event) => setRuntimeProfile(event.target.value)}>{(state.capabilities?.runtime_profiles ?? []).map((profile) => <option key={profile.profile_id} value={profile.profile_id}>{profile.name}</option>)}</select></label><button className="button primary" type="button" disabled={!state.draft || start.isPending || state.run?.job_status === "running"} onClick={() => start.mutate()}><Play />{start.isPending ? "创建快照…" : "创建快照并求解"}</button>{state.run && !terminal.has(state.run.job_status) && <button className="button danger" type="button" disabled={cancel.isPending} onClick={() => cancel.mutate()}><CircleStop />取消</button>}</PageHead>
     <section className="metric-row"><Metric label="Job" value={state.run?.job_status ?? "idle"} /><Metric label="Optimization" value={state.run?.optimization_status ?? "—"} /><Metric label="Lower bound" value={format(latest?.lower_bound)} /><Metric label="Upper bound" value={format(latest?.upper_bound)} /><Metric label="Relative gap" value={latest?.relative_gap == null ? "—" : `${(latest.relative_gap * 100).toFixed(3)}%`} /></section>
-    <div className="visual-layout"><section className="visual-card"><div className="card-head"><div><span>核心视觉</span><h2>LB / UB 收敛轨迹</h2></div><span className={`live-indicator ${state.run?.job_status === "running" ? "is-live" : ""}`}>{state.run?.job_status === "running" ? "LIVE" : "TRACE"}</span></div>{points.length ? <Chart option={option} label="求解上下界收敛图" height={430} /> : <div className="empty-state chart-empty"><Clock3 /><h3>等待真实求解事件</h3><p>入队后，Phase 11/12 的界与迭代会从隔离进程写入这里。</p></div>}</section><aside className="detail-panel event-panel"><div className="panel-title"><h2>结构化事件</h2><span>{state.events.length}</span></div><div className="event-stream">{state.events.length ? [...state.events].reverse().map((event) => <article key={event.seq}><span className="event-seq">{String(event.seq).padStart(3, "0")}</span><div><strong>{event.event_type}</strong><p>{event.message || event.stage}</p><small>{event.elapsed_seconds.toFixed(2)}s · {event.stage}</small></div>{event.absolute_gap != null && <code>gap {format(event.absolute_gap)}</code>}</article>) : <div className="empty-note">事件流支持 Last-Event-ID 续传。</div>}</div></aside></div>
+    <div className={`visual-layout ${detailPanel.open ? "" : "is-panel-collapsed"}`}><section className="visual-card"><div className="card-head"><div><span>核心视觉</span><h2>LB / UB 收敛轨迹</h2></div><div className="card-head-tools"><span className={`live-indicator ${state.run?.job_status === "running" ? "is-live" : ""}`}>{state.run?.job_status === "running" ? "LIVE" : "TRACE"}</span><PanelToggle open={detailPanel.open} onToggle={() => detailPanel.setOpen(!detailPanel.open)} label="事件栏" /></div></div>{points.length ? <Chart option={option} label="求解上下界收敛图" theme={theme} height={430} /> : <div className="empty-state chart-empty"><Clock3 /><h3>等待真实求解事件</h3><p>入队后，Phase 11/12 的界与迭代会从隔离进程写入这里。</p></div>}</section><aside className="detail-panel event-panel" hidden={!detailPanel.open}><div className="panel-title"><h2>结构化事件</h2><span>{state.events.length}</span></div><div className="event-stream">{state.events.length ? [...state.events].reverse().map((event) => <article key={event.seq}><span className="event-seq">{String(event.seq).padStart(3, "0")}</span><div><strong>{event.event_type}</strong><p>{event.message || event.stage}</p><small>{event.elapsed_seconds.toFixed(2)}s · {event.stage}</small></div>{event.absolute_gap != null && <code>gap {format(event.absolute_gap)}</code>}</article>) : <div className="empty-note">事件流支持 Last-Event-ID 续传。</div>}</div></aside></div>
     <section className="run-history"><div className="section-title"><div><span>不可变记录</span><h2>运行历史</h2></div><button className="icon-button" title="刷新" aria-label="刷新运行历史" type="button" onClick={() => query.invalidateQueries({ queryKey: ["runs"] })}><RefreshCw /></button></div><div className="run-list">{state.runs.map((run) => <button type="button" key={run.run_id} className={state.run?.run_id === run.run_id ? "is-selected" : ""} onClick={async () => { state.selectRun(run); if (terminal.has(run.job_status)) { const [comparison, audit] = await Promise.all([api.comparison(run.run_id), api.audit(run.run_id)]); state.set({ comparison, audit }); } }}><span className={`run-dot tone-${run.job_status}`} /><strong>{run.run_id.slice(0, 8)}</strong><span>{run.job_status}</span><span>{run.optimization_status ?? "—"}</span><code>{run.input_hash.slice(0, 8)}</code></button>)}</div></section>
+    <XmaResult />
   </div>;
 }
 

@@ -1,0 +1,139 @@
+[
+  {
+    "requested_flights": 2364,
+    "flights": 2364,
+    "tails": 142,
+    "algorithm": "joint_arc_flow",
+    "objective_profile": "tianchi_2017",
+    "step_minutes": 60,
+    "max_delay_minutes": 0,
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "readiness": {
+      "solve_ready": true,
+      "errors": [],
+      "flight_options": 3718,
+      "crew_enabled": false,
+      "capacity_semantics": "physical seats by selected tail",
+      "semantics": "INPUT_READINESS_NOT_OPTIMIZATION_FEASIBILITY",
+      "objective_profile": "tianchi_2017",
+      "algorithm": "joint_arc_flow",
+      "normal_airport_capacity": "unspecified",
+      "assignment_options": 116746
+    },
+    "status": "not_converged",
+    "objective": null,
+    "diagnostics": {
+      "algorithm": "joint_arc_flow",
+      "lower_bound": null,
+      "upper_bound": null,
+      "gap": null,
+      "runtime_seconds": 15.12563810008578,
+      "terminal_reason": "budget_exhausted_during_build",
+      "integrated_audit_pass": null,
+      "statistics": {
+        "variables": 727746,
+        "constraints": 625245,
+        "nodes": 0,
+        "aircraft_columns": 0,
+        "representation": "arc",
+        "solver": "Gurobi"
+      },
+      "candidate_options": 3718,
+      "candidate_scope": "finite delay grid plus source boundary times",
+      "pricing_uses_enumeration": null
+    },
+    "valid": null,
+    "wall_seconds": 15.137305099982768,
+    "process_peak_rss_bytes": 645165056
+  },
+  {
+    "requested_flights": 2364,
+    "flights": 2364,
+    "tails": 142,
+    "algorithm": "benders_joint",
+    "objective_profile": "tianchi_2017",
+    "step_minutes": 60,
+    "max_delay_minutes": 0,
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "readiness": {
+      "solve_ready": true,
+      "errors": [],
+      "flight_options": 3718,
+      "crew_enabled": false,
+      "capacity_semantics": "physical seats by selected tail",
+      "semantics": "INPUT_READINESS_NOT_OPTIMIZATION_FEASIBILITY",
+      "objective_profile": "tianchi_2017",
+      "algorithm": "benders_joint",
+      "normal_airport_capacity": "unspecified",
+      "assignment_options": 116746
+    },
+    "status": "infeasible",
+    "objective": null,
+    "diagnostics": {
+      "algorithm": "benders_joint",
+      "lower_bound": null,
+      "upper_bound": null,
+      "gap": null,
+      "runtime_seconds": 0.7727763999719173,
+      "terminal_reason": "certified_master_infeasible",
+      "integrated_audit_pass": null,
+      "statistics": {
+        "aircraft_columns": 0,
+        "cg_iterations": 0,
+        "bp_nodes": 0,
+        "visited_schedules": 0
+      },
+      "candidate_options": 3718,
+      "candidate_scope": "finite delay grid plus source boundary times",
+      "pricing_uses_enumeration": null
+    },
+    "valid": null,
+    "wall_seconds": 0.7942467000102624,
+    "process_peak_rss_bytes": 230694912
+  },
+  {
+    "requested_flights": 2364,
+    "flights": 2364,
+    "tails": 142,
+    "algorithm": "benders_cg_bp",
+    "objective_profile": "tianchi_2017",
+    "step_minutes": 60,
+    "max_delay_minutes": 0,
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "readiness": {
+      "solve_ready": true,
+      "errors": [],
+      "flight_options": 3718,
+      "crew_enabled": false,
+      "capacity_semantics": "physical seats by selected tail",
+      "semantics": "INPUT_READINESS_NOT_OPTIMIZATION_FEASIBILITY",
+      "objective_profile": "tianchi_2017",
+      "algorithm": "benders_cg_bp",
+      "normal_airport_capacity": "unspecified",
+      "assignment_options": 116746
+    },
+    "status": "infeasible",
+    "objective": null,
+    "diagnostics": {
+      "algorithm": "benders_cg_bp",
+      "lower_bound": null,
+      "upper_bound": null,
+      "gap": null,
+      "runtime_seconds": 0.8251608000136912,
+      "terminal_reason": "certified_master_infeasible",
+      "integrated_audit_pass": null,
+      "statistics": {
+        "aircraft_columns": 0,
+        "cg_iterations": 0,
+        "bp_nodes": 0,
+        "visited_schedules": 0
+      },
+      "candidate_options": 3718,
+      "candidate_scope": "finite delay grid plus source boundary times",
+      "pricing_uses_enumeration": false
+    },
+    "valid": null,
+    "wall_seconds": 0.8371528999414295,
+    "process_peak_rss_bytes": 205799424
+  }
+]

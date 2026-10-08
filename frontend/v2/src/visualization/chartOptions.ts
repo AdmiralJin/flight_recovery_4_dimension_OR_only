@@ -1,31 +1,14 @@
 import type { EChartsOption } from "echarts";
+import type { ThemeMode } from "../theme";
 import type { JsonObject, VisualizationFlight, VisualizationMode, VisualizationModel } from "../types";
+import { CHART_FONT_SIZE, categoryAxis, chartBase, chartPalette, legendStyle, sliderZoom, timeAxis, tooltipStyle, valueAxis } from "./chartTheme";
 
-const colors = {
-  normal: "#20c7a6",
-  direct: "#ee6b72",
-  downstream: "#f2b84b",
-  cancelled: "#ee6b72",
-  od_changed: "#c77cff",
-  time_changed: "#f2b84b",
-  aircraft_reassigned: "#5594dc",
-  crew_reassigned: "#66c7d9",
-  unchanged: "#20c7a6",
-  ghost: "#78909c",
-  ground: "#365361",
-  ferry: "#c77cff",
-  operate: "#20c7a6",
-  deadhead: "#5594dc",
-  rest: "#78909c",
-  ground_transfer: "#f2b84b",
-  surface: "#f2b84b",
-  flight: "#20c7a6",
-};
-
-const axis = { axisLabel: { color: "#8ca4b0" }, axisLine: { lineStyle: { color: "#294653" } }, splitLine: { lineStyle: { color: "#173440" } } };
 const animation = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-export function flightNetworkOption(model: VisualizationModel, mode: VisualizationMode, flights: VisualizationFlight[], selectedId: string | null): EChartsOption {
+export function flightNetworkOption(model: VisualizationModel, mode: VisualizationMode, flights: VisualizationFlight[], selectedId: string | null, theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
+  const timeStyle = timeAxis(theme);
+  const laneStyle = categoryAxis(theme, true);
   const airports = [...new Set(flights.flatMap((item) => [String(item.original.origin), String(item.original.destination), ...(item.recovered ? [String(item.recovered.recovered_origin ?? ""), String(item.recovered.recovered_destination ?? "")] : [])].filter(Boolean)))];
   const lineData: JsonObject[] = [];
   const cancelled: JsonObject[] = [];
@@ -34,7 +17,7 @@ export function flightNetworkOption(model: VisualizationModel, mode: Visualizati
     const recovered = flight.recovered;
     if (mode === "original" || mode === "impact" || mode === "delta") {
       const state = mode === "impact" ? flight.impact.status : mode === "delta" ? "ghost" : "normal";
-      lineData.push(lineItem(flight.flight_id, original, state, selectedId, mode === "delta", airports));
+      lineData.push(lineItem(flight.flight_id, original, state, selectedId, mode === "delta", airports, palette));
     }
     if ((mode === "recovered" || mode === "delta") && recovered) {
       if (recovered.status === "cancelled") {
@@ -45,7 +28,7 @@ export function flightNetworkOption(model: VisualizationModel, mode: Visualizati
           destination: recovered.recovered_destination,
           sched_dep: recovered.recovered_dep,
           sched_arr: recovered.recovered_arr,
-        }, flight.primary_change, selectedId, false, airports));
+        }, flight.primary_change, selectedId, false, airports, palette));
       }
     }
   }
@@ -53,55 +36,34 @@ export function flightNetworkOption(model: VisualizationModel, mode: Visualizati
     value: [airports.indexOf(String(item.airport_id)), Date.parse(String(item.start_time)), Date.parse(String(item.end_time)), String(item.rule_type), String(item.direction)],
     entityId: String(item.rule_id), entityType: "capacity",
   })) : [];
-  const emphasizeAlignment = mode === "impact";
   return {
+    ...chartBase(theme),
     animation,
-    backgroundColor: "transparent",
     aria: { enabled: true, description: `${mode} 机场 UTC 时间航班箭头图` },
-    tooltip: { trigger: "item", formatter: flightTooltip },
-    grid: emphasizeAlignment
-      ? { left: 104, right: 38, top: 42, bottom: 76 }
-      : { left: 88, right: 32, top: 30, bottom: 72 },
-    xAxis: emphasizeAlignment ? {
-      type: "time",
-      name: "时间（UTC）",
-      nameLocation: "end",
-      nameGap: 12,
-      nameTextStyle: { color: "#c8d9df", fontSize: 11, fontWeight: 600 },
-      splitNumber: 10,
-      minInterval: 10 * 60 * 1_000,
-      axisLine: { show: true, lineStyle: { color: "#587480", width: 1.2 } },
-      axisTick: { show: true, length: 6, lineStyle: { color: "#6f8b96" } },
-      axisLabel: { show: true, color: "#c8d9df", fontSize: 11, margin: 12, formatter: timeLabel, hideOverlap: true },
-      splitLine: { show: true, lineStyle: { color: "rgba(125, 157, 169, .30)", width: 1, type: "dashed" } },
-      minorTick: { show: true, splitNumber: 2, lineStyle: { color: "rgba(111, 139, 150, .55)" } },
-      minorSplitLine: { show: true, lineStyle: { color: "rgba(103, 137, 149, .10)", width: 1 } },
-    } : { type: "time", name: "UTC", splitNumber: 7, minInterval: 10 * 60 * 1_000, ...axis, axisLabel: { color: "#8ca4b0", formatter: timeLabel, hideOverlap: true } },
-    yAxis: emphasizeAlignment ? {
-      type: "category",
+    tooltip: { trigger: "item", formatter: flightTooltip, ...tooltipStyle(theme) },
+    grid: { left: 104, right: 38, top: 42, bottom: 82 },
+    xAxis: { ...timeStyle, axisLabel: { ...timeStyle.axisLabel, formatter: timeLabel } },
+    yAxis: {
+      ...laneStyle,
       name: "机场",
       nameLocation: "end",
       nameGap: 14,
-      nameTextStyle: { color: "#c8d9df", fontSize: 11, fontWeight: 600, align: "right" },
+      nameTextStyle: { color: palette.text, fontSize: CHART_FONT_SIZE, fontWeight: 600, align: "right" },
       data: airports,
       inverse: true,
-      axisLine: { show: true, lineStyle: { color: "#587480", width: 1.2 } },
-      axisTick: { show: true, alignWithLabel: true, length: 7, lineStyle: { color: "#6f8b96" } },
-      axisLabel: { show: true, color: "#dbe8ec", fontSize: 12, fontWeight: 600, margin: 14 },
-      splitLine: { show: true, lineStyle: { color: "rgba(125, 157, 169, .26)", width: 1 } },
-      splitArea: { show: true, areaStyle: { color: ["rgba(18, 49, 60, .18)", "rgba(18, 49, 60, .04)"] } },
-    } : { type: "category", data: airports, inverse: true, ...axis },
-    dataZoom: [{ type: "inside", filterMode: "none" }, { type: "slider", bottom: 18, height: 22, borderColor: "#294653", textStyle: { color: "#8ca4b0" } }],
+      axisLabel: { ...laneStyle.axisLabel, color: palette.text, fontWeight: 600, margin: 14 },
+    },
+    dataZoom: [{ type: "inside", filterMode: "none" }, { ...sliderZoom(theme, 18, 24), filterMode: "none" }],
     series: [
-      ...(disruptionData.length ? [{ name: "扰动时域 [start, end)", type: "custom", silent: false, renderItem: renderDisruption as never, encode: { x: [1, 2], y: 0 }, data: disruptionData, z: 1 }] : []),
-      { name: "航班", type: "custom", coordinateSystem: "cartesian2d", renderItem: renderFlight as never, encode: { x: [0, 2], y: [1, 3] }, data: lineData, z: 4 },
-      { name: "取消", type: "scatter", symbol: "path://M-6,-6L6,6M6,-6L-6,6", symbolSize: 18, itemStyle: { color: colors.cancelled }, data: cancelled, z: 6 },
+      ...(disruptionData.length ? [{ name: "扰动时域 [start, end)", type: "custom", silent: false, renderItem: renderDisruption(palette) as never, encode: { x: [1, 2], y: 0 }, data: disruptionData, z: 1 }] : []),
+      { name: "航班", type: "custom", coordinateSystem: "cartesian2d", renderItem: renderFlight(palette) as never, encode: { x: [0, 2], y: [1, 3] }, data: lineData, z: 4 },
+      { name: "取消", type: "scatter", symbol: "path://M-6,-6L6,6M6,-6L-6,6", symbolSize: 18, itemStyle: { color: palette.cancelled }, data: cancelled, z: 6 },
     ],
   } as EChartsOption;
 }
 
-function lineItem(flightId: string, leg: JsonObject, state: string, selectedId: string | null, ghost: boolean, airports: string[]): JsonObject {
-  const color = colors[state as keyof typeof colors] ?? colors.normal;
+function lineItem(flightId: string, leg: JsonObject, state: string, selectedId: string | null, ghost: boolean, airports: string[], palette: ReturnType<typeof chartPalette>): JsonObject {
+  const color = palette[state as keyof typeof palette] ?? palette.normal;
   return {
     name: flightId,
     entityId: flightId,
@@ -112,14 +74,15 @@ function lineItem(flightId: string, leg: JsonObject, state: string, selectedId: 
   };
 }
 
-function renderFlight(_params: unknown, api: { value: (index: number) => number | string; coord: (value: [number, number]) => [number, number] }) {
+function renderFlight(palette: ReturnType<typeof chartPalette>) {
+  return (_params: unknown, api: { value: (index: number) => number | string; coord: (value: [number, number]) => [number, number] }) => {
   const start = api.coord([Number(api.value(0)), Number(api.value(1))]);
   const end = api.coord([Number(api.value(2)), Number(api.value(3))]);
   const label = String(api.value(4));
   const state = String(api.value(5));
   const selected = Number(api.value(6)) === 1;
   const ghost = Number(api.value(7)) === 1;
-  const color = colors[state as keyof typeof colors] ?? colors.normal;
+  const color = palette[state as keyof typeof palette] ?? palette.normal;
   const dx = end[0] - start[0]; const dy = end[1] - start[1]; const length = Math.max(Math.hypot(dx, dy), 1);
   const ux = dx / length; const uy = dy / length; const px = -uy; const py = ux;
   const arrowBaseX = end[0] - ux * 10; const arrowBaseY = end[1] - uy * 10;
@@ -128,8 +91,9 @@ function renderFlight(_params: unknown, api: { value: (index: number) => number 
     { type: "line", shape: { x1: start[0], y1: start[1], x2: end[0], y2: end[1] }, style: { stroke: color, lineWidth: width, opacity: ghost ? 0.42 : 0.95, lineDash: ghost || state === "downstream" ? [6, 5] : undefined } },
     { type: "circle", shape: { cx: start[0], cy: start[1], r: selected ? 5 : 3.5 }, style: { fill: color, opacity: ghost ? 0.42 : 1 } },
     { type: "polygon", shape: { points: [[end[0], end[1]], [arrowBaseX + px * 4, arrowBaseY + py * 4], [arrowBaseX - px * 4, arrowBaseY - py * 4]] }, style: { fill: color, opacity: ghost ? 0.42 : 1 } },
-    { type: "text", style: { x: (start[0] + end[0]) / 2, y: (start[1] + end[1]) / 2 - 8, text: label, fill: "#dce9ef", font: "10px ui-monospace", align: "center" } },
+    { type: "text", style: { x: (start[0] + end[0]) / 2, y: (start[1] + end[1]) / 2 - 9, text: label, fill: palette.text, font: `${CHART_FONT_SIZE}px ui-monospace`, align: "center" } },
   ] };
+  };
 }
 
 function flightTooltip(params: unknown) {
@@ -139,15 +103,20 @@ function flightTooltip(params: unknown) {
   return `<strong>${value.name ?? "航班"}</strong><br/>${String(data.state ?? value.seriesName ?? "")}`;
 }
 
-function renderDisruption(params: { dataIndex: number; coordSys: { x: number; y: number; width: number; height: number } }, api: { value: (index: number) => number; coord: (value: [number, number]) => [number, number]; size: (value: [number, number]) => [number, number] }) {
+function renderDisruption(palette: ReturnType<typeof chartPalette>) {
+  return (params: { dataIndex: number; coordSys: { x: number; y: number; width: number; height: number } }, api: { value: (index: number) => number; coord: (value: [number, number]) => [number, number]; size: (value: [number, number]) => [number, number] }) => {
   const lane = api.value(0);
   const start = api.coord([api.value(1), lane]);
   const end = api.coord([api.value(2), lane]);
   const height = Math.max(24, Math.abs(api.size([0, 1])[1]) * 0.7);
-  return { type: "rect", shape: { x: start[0], y: start[1] - height / 2, width: Math.max(2, end[0] - start[0]), height }, style: { fill: "rgba(238,107,114,.18)", stroke: "#ee6b72", lineWidth: 1, lineDash: [4, 3] } };
+  return { type: "rect", shape: { x: start[0], y: start[1] - height / 2, width: Math.max(2, end[0] - start[0]), height }, style: { fill: `${palette.direct}26`, stroke: palette.direct, lineWidth: 1, lineDash: [4, 3] } };
+  };
 }
 
-export function ganttOption(model: VisualizationModel, view: "aircraft" | "crew" | "passengers", mode: VisualizationMode): EChartsOption {
+export function ganttOption(model: VisualizationModel, view: "aircraft" | "crew" | "passengers", mode: VisualizationMode, theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
+  const timeStyle = timeAxis(theme);
+  const laneStyle = categoryAxis(theme, true);
   const source = model[view] as JsonObject[];
   const laneKey = view === "aircraft" ? "aircraft_id" : view === "crew" ? "crew_id" : "pax_group_id";
   const lanes = source.map((item) => String(item[laneKey]));
@@ -176,19 +145,20 @@ export function ganttOption(model: VisualizationModel, view: "aircraft" | "crew"
         value: [lane, Date.parse(String(segment.start_time)), Date.parse(String(segment.end_time)), track, String(segment.flight_id ?? segment.segment_type ?? "")],
         entityId: String(segment.flight_id ?? row[laneKey]), entityType: segment.flight_id ? "flight" : view === "passengers" ? "passenger" : view.slice(0, -1),
         segment,
-        itemStyle: { color: colors[kind as keyof typeof colors] ?? colors.normal, opacity: ghost ? 0.35 : 0.95 },
+        itemStyle: { color: palette[kind as keyof typeof palette] ?? palette.normal, opacity: ghost ? 0.35 : 0.95 },
       });
     }));
   });
   return {
+    ...chartBase(theme),
     animation,
     aria: { enabled: true, description: `${view} ${mode} UTC 甘特图` },
-    tooltip: { formatter: (params: unknown) => ganttTooltip(params) },
-    grid: { left: 112, right: 28, top: 24, bottom: 70 },
-    xAxis: { type: "time", name: "UTC", splitNumber: 7, minInterval: 10 * 60 * 1_000, ...axis, axisLabel: { color: "#8ca4b0", formatter: timeLabel, hideOverlap: true } },
-    yAxis: { type: "category", data: lanes, inverse: true, ...axis },
-    dataZoom: [{ type: "inside" }, { type: "slider", bottom: 16, height: 22, textStyle: { color: "#8ca4b0" } }],
-    series: [{ type: "custom", renderItem: renderGantt as never, encode: { x: [1, 2], y: 0 }, data }],
+    tooltip: { formatter: (params: unknown) => ganttTooltip(params), ...tooltipStyle(theme) },
+    grid: { left: 120, right: 32, top: 34, bottom: 82 },
+    xAxis: { ...timeStyle, axisLabel: { ...timeStyle.axisLabel, formatter: timeLabel } },
+    yAxis: { ...laneStyle, data: lanes, inverse: true },
+    dataZoom: [{ type: "inside" }, sliderZoom(theme, 18, 24)],
+    series: [{ type: "custom", renderItem: renderGantt(palette) as never, encode: { x: [1, 2], y: 0 }, data }],
   } as EChartsOption;
 }
 
@@ -196,7 +166,8 @@ function flattenDuties(value: unknown): JsonObject[] {
   return Array.isArray(value) ? value.flatMap((item) => Array.isArray((item as JsonObject).segments) ? (item as JsonObject).segments as JsonObject[] : []) : [];
 }
 
-function renderGantt(_params: unknown, api: { value: (index: number) => number | string; coord: (value: [number, number]) => [number, number]; size: (value: [number, number]) => [number, number]; style: () => JsonObject }) {
+function renderGantt(palette: ReturnType<typeof chartPalette>) {
+  return (_params: unknown, api: { value: (index: number) => number | string; coord: (value: [number, number]) => [number, number]; size: (value: [number, number]) => [number, number]; style: () => JsonObject }) => {
   const lane = Number(api.value(0));
   const start = api.coord([Number(api.value(1)), lane]);
   const end = api.coord([Number(api.value(2)), lane]);
@@ -206,9 +177,10 @@ function renderGantt(_params: unknown, api: { value: (index: number) => number |
   const width = Math.max(3, end[0] - start[0]);
   const label = String(api.value(4) ?? "");
   return { type: "group", children: [
-    { type: "rect", shape: { x: start[0], y, width, height }, style: { ...api.style(), stroke: "rgba(220,233,239,.35)", lineWidth: 1 } },
-    ...(width > 46 && label ? [{ type: "text", style: { x: start[0] + 4, y: y + height / 2, text: label, fill: "#e7f3f6", font: "10px ui-monospace", verticalAlign: "middle", width: width - 8, overflow: "truncate" } }] : []),
+    { type: "rect", shape: { x: start[0], y, width, height }, style: { ...api.style(), stroke: palette.border, lineWidth: 1 } },
+    ...(width > 56 && label ? [{ type: "text", style: { x: start[0] + 4, y: y + height / 2, text: label, fill: palette.text, font: `${CHART_FONT_SIZE}px ui-monospace`, verticalAlign: "middle", width: width - 8, overflow: "truncate" } }] : []),
   ] };
+  };
 }
 
 function ganttTooltip(params: unknown) {
@@ -218,7 +190,10 @@ function ganttTooltip(params: unknown) {
   return `<strong>${String(segment.flight_id ?? segment.segment_type ?? "航段")}</strong><br/>${String(segment.origin ?? "—")} → ${String(segment.destination ?? "—")}<br/>${formatUtc(segment.start_time)} – ${formatUtc(segment.end_time)} UTC`;
 }
 
-export function capacityOption(model: VisualizationModel, mode: VisualizationMode, movement: "departure" | "arrival"): EChartsOption {
+export function capacityOption(model: VisualizationModel, mode: VisualizationMode, movement: "departure" | "arrival", theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
+  const xStyle = categoryAxis(theme);
+  const yStyle = categoryAxis(theme, true);
   const set = mode === "original" ? "baseline" : mode === "impact" ? "effective" : mode === "recovered" ? "recovered" : "recovered";
   const rows = model.capacity[set] ?? [];
   const airports = [...new Set(rows.map((row) => String(row.airport_id)))];
@@ -229,19 +204,21 @@ export function capacityOption(model: VisualizationModel, mode: VisualizationMod
     return { value: [intervals.indexOf(String(row.start_time).slice(5, 16).replace("T", " ")), airports.indexOf(String(row.airport_id)), capacity ? load / capacity : load ? 2 : 0, load, capacity], entityId: `${String(row.airport_id)}:${String(row.start_time)}`, entityType: "capacity" };
   });
   return {
+    ...chartBase(theme),
     animation,
     aria: { enabled: true, description: `${mode} ${movement} 机场容量热力图` },
-    tooltip: { formatter: (params: unknown) => { const value = (params as { value?: number[] }).value ?? []; return `负荷 ${value[3] ?? 0} / 容量 ${value[4] ?? 0}<br/>利用率 ${Number(value[2] ?? 0).toFixed(2)}`; } },
-    grid: { left: 82, right: 36, top: 28, bottom: 88 },
-    xAxis: { type: "category", data: intervals, ...axis, axisLabel: { color: "#8ca4b0", rotate: 35 } },
-    yAxis: { type: "category", data: airports, inverse: true, ...axis },
-    visualMap: { min: 0, max: 1.5, calculable: true, orient: "horizontal", left: "center", bottom: 4, textStyle: { color: "#8ca4b0" }, inRange: { color: ["#123c42", "#20c7a6", "#f2b84b", "#ee6b72"] } },
-    dataZoom: [{ type: "inside", xAxisIndex: 0 }, { type: "slider", xAxisIndex: 0, bottom: 50, height: 18 }],
-    series: [{ type: "heatmap", data, label: { show: rows.length < 80, formatter: (params: unknown) => { const value = (params as { value?: number[] }).value ?? []; return `${value[3]}/${value[4]}`; }, color: "#e9f4f6", fontSize: 9 } }],
+    tooltip: { formatter: (params: unknown) => { const value = (params as { value?: number[] }).value ?? []; return `负荷 ${value[3] ?? 0} / 容量 ${value[4] ?? 0}<br/>利用率 ${Number(value[2] ?? 0).toFixed(2)}`; }, ...tooltipStyle(theme) },
+    grid: { left: 92, right: 40, top: 34, bottom: 132 },
+    xAxis: { ...xStyle, data: intervals, axisLabel: { ...xStyle.axisLabel, rotate: 35 } },
+    yAxis: { ...yStyle, data: airports, inverse: true },
+    visualMap: { min: 0, max: 1.5, calculable: true, orient: "horizontal", left: "center", bottom: 8, textStyle: { color: palette.muted, fontSize: CHART_FONT_SIZE }, inRange: { color: theme === "dark" ? ["#17434b", palette.normal, palette.downstream, palette.direct] : ["#dcecea", "#69b8a9", "#e1b94f", "#d65a62"] } },
+    dataZoom: [{ type: "inside", xAxisIndex: 0 }, { ...sliderZoom(theme, 72, 20), xAxisIndex: 0 }],
+    series: [{ type: "heatmap", data, itemStyle: { borderColor: palette.panel, borderWidth: 2 }, label: { show: rows.length < 80, formatter: (params: unknown) => { const value = (params as { value?: number[] }).value ?? []; return `${value[3]}/${value[4]}`; }, color: theme === "dark" ? "#f5fbfc" : "#17242b", fontSize: CHART_FONT_SIZE } }],
   } as EChartsOption;
 }
 
-export function propagationOption(model: VisualizationModel, selectedFlightId: string | null): EChartsOption {
+export function propagationOption(model: VisualizationModel, selectedFlightId: string | null, theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
   const relevant = selectedFlightId ? model.propagation_edges.filter((edge) => edge.source_flight_id === selectedFlightId || edge.target_flight_id === selectedFlightId) : model.propagation_edges.slice(0, 60);
   const nodes = new Map<string, JsonObject>();
   const links: JsonObject[] = [];
@@ -253,26 +230,97 @@ export function propagationOption(model: VisualizationModel, selectedFlightId: s
     links.push({ source, target: resource }, { source: resource, target });
   });
   return {
+    ...chartBase(theme),
     animation,
     aria: { enabled: true, description: "直接暴露经飞机或机组资源序列传播到下游风险航班的证据图" },
-    tooltip: { trigger: "item" },
-    legend: [{ data: ["直接暴露", "资源链", "下游风险"], textStyle: { color: "#8ca4b0" } }],
-    series: [{ type: "graph", layout: "force", roam: true, categories: [{ name: "直接暴露", itemStyle: { color: colors.direct } }, { name: "资源链", itemStyle: { color: colors.aircraft_reassigned } }, { name: "下游风险", itemStyle: { color: colors.downstream } }], data: [...nodes.values()], links, label: { show: true, color: "#dce9ef", fontSize: 10 }, lineStyle: { color: "source", curveness: 0.12, width: 1.5 }, force: { repulsion: 220, edgeLength: 95 } }],
+    tooltip: { trigger: "item", ...tooltipStyle(theme) },
+    legend: [{ data: ["直接暴露", "资源链", "下游风险"], ...legendStyle(theme) }],
+    series: [{ type: "graph", layout: "force", roam: true, categories: [{ name: "直接暴露", itemStyle: { color: palette.direct } }, { name: "资源链", itemStyle: { color: palette.aircraft_reassigned } }, { name: "下游风险", itemStyle: { color: palette.downstream } }], data: [...nodes.values()], links, label: { show: true, color: palette.text, fontSize: CHART_FONT_SIZE }, lineStyle: { color: "source", curveness: 0.12, width: 1.5 }, force: { repulsion: 220, edgeLength: 95 } }],
   } as EChartsOption;
 }
 
-export function costOption(model: VisualizationModel): EChartsOption {
+export function costOption(model: VisualizationModel, theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
   const objective = model.objective ?? {};
   const keys = ["schedule", "aircraft", "crew", "passenger"];
   const values = keys.map((key) => Number(objective[key] ?? 0));
   let running = 0;
   const bases = values.map((value) => { const base = running; running += value; return base; });
-  return { animation, aria: { enabled: true, description: "恢复目标成本瀑布图" }, tooltip: { trigger: "axis" }, grid: { left: 70, right: 30, top: 28, bottom: 54 }, xAxis: { type: "category", data: keys, ...axis }, yAxis: { type: "value", name: "成本", ...axis }, series: [{ type: "bar", stack: "total", data: bases, itemStyle: { color: "transparent" }, silent: true }, { name: "成本", type: "bar", stack: "total", data: values, itemStyle: { color: colors.normal }, label: { show: true, position: "top", color: "#dce9ef" } }] } as EChartsOption;
+  return { ...chartBase(theme), animation, aria: { enabled: true, description: "恢复目标成本瀑布图" }, tooltip: { trigger: "axis", ...tooltipStyle(theme) }, grid: { left: 78, right: 32, top: 36, bottom: 62 }, xAxis: { ...categoryAxis(theme), data: keys }, yAxis: { ...valueAxis(theme), name: "成本" }, series: [{ type: "bar", stack: "total", data: bases, itemStyle: { color: "transparent" }, silent: true }, { name: "成本", type: "bar", stack: "total", data: values, itemStyle: { color: palette.normal }, label: { show: true, position: "top", color: palette.text, fontSize: CHART_FONT_SIZE } }] } as EChartsOption;
 }
 
-export function delayOption(model: VisualizationModel): EChartsOption {
+export function delayOption(model: VisualizationModel, theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
   const rows = model.delay_distribution.filter((row) => Number(row.departure_delay_minutes ?? 0) >= 0 && Number(row.arrival_delay_minutes ?? 0) >= 0);
-  return { animation, aria: { enabled: true, description: "航班起飞与到达延误分布" }, tooltip: { trigger: "axis" }, legend: { textStyle: { color: "#8ca4b0" } }, grid: { left: 66, right: 24, top: 46, bottom: 80 }, xAxis: { type: "category", data: rows.map((row) => String(row.flight_id)), ...axis, axisLabel: { color: "#8ca4b0", rotate: 40 } }, yAxis: { type: "value", name: "分钟", ...axis }, dataZoom: [{ type: "inside" }, { type: "slider", bottom: 20, height: 20 }], series: [{ name: "起飞延误", type: "bar", data: rows.map((row) => Number(row.departure_delay_minutes ?? 0)), itemStyle: { color: colors.normal } }, { name: "到达延误", type: "bar", data: rows.map((row) => Number(row.arrival_delay_minutes ?? 0)), itemStyle: { color: colors.downstream } }] } as EChartsOption;
+  const xStyle = categoryAxis(theme);
+  return { ...chartBase(theme), animation, aria: { enabled: true, description: "航班起飞与到达延误分布" }, tooltip: { trigger: "axis", ...tooltipStyle(theme) }, legend: { ...legendStyle(theme) }, grid: { left: 74, right: 28, top: 52, bottom: 90 }, xAxis: { ...xStyle, data: rows.map((row) => String(row.flight_id)), axisLabel: { ...xStyle.axisLabel, rotate: 40 } }, yAxis: { ...valueAxis(theme), name: "分钟" }, dataZoom: [{ type: "inside" }, sliderZoom(theme, 20, 22)], series: [{ name: "起飞延误", type: "bar", data: rows.map((row) => Number(row.departure_delay_minutes ?? 0)), itemStyle: { color: palette.normal } }, { name: "到达延误", type: "bar", data: rows.map((row) => Number(row.arrival_delay_minutes ?? 0)), itemStyle: { color: palette.downstream } }] } as EChartsOption;
+}
+
+export function solveTraceOption(points: Array<{ seq: number; lower_bound?: number | null; upper_bound?: number | null }>, theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
+  const xStyle = categoryAxis(theme);
+  return {
+    ...chartBase(theme), animation,
+    aria: { enabled: true, description: "求解上下界收敛轨迹" },
+    tooltip: { trigger: "axis", valueFormatter: (value: unknown) => typeof value === "number" ? value.toLocaleString() : String(value), ...tooltipStyle(theme) },
+    legend: { top: 2, ...legendStyle(theme) },
+    grid: { left: 76, right: 32, top: 54, bottom: 60 },
+    xAxis: { ...xStyle, name: "事件序号", data: points.map((item) => item.seq) },
+    yAxis: { ...valueAxis(theme), name: "目标值" },
+    series: [
+      { name: "Lower bound", type: "line", step: "end", showSymbol: true, connectNulls: true, data: points.map((item) => item.lower_bound), lineStyle: { color: palette.normal, width: 2 }, itemStyle: { color: palette.normal } },
+      { name: "Incumbent UB", type: "line", step: "end", showSymbol: true, connectNulls: true, data: points.map((item) => item.upper_bound), lineStyle: { color: palette.downstream, width: 2 }, itemStyle: { color: palette.downstream } },
+    ],
+  } as EChartsOption;
+}
+
+export function comparisonCapacityOption(rows: JsonObject[], theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
+  const xStyle = categoryAxis(theme);
+  return {
+    ...chartBase(theme), animation,
+    tooltip: { trigger: "axis", ...tooltipStyle(theme) },
+    legend: { ...legendStyle(theme) },
+    grid: { left: 76, right: 28, top: 54, bottom: 92 },
+    xAxis: { ...xStyle, data: rows.map((row) => `${String(row.airport_id)}\n${String(row.start_time).slice(11, 16)}`), axisLabel: { ...xStyle.axisLabel, interval: 0, rotate: 35 } },
+    yAxis: { ...valueAxis(theme), name: "架次" },
+    series: [
+      { name: "起飞负荷", type: "bar", data: rows.map((row) => Number(row.departure_load ?? 0)), itemStyle: { color: palette.normal } },
+      { name: "起飞容量", type: "line", data: rows.map((row) => Number(row.departure_capacity ?? 0)), lineStyle: { color: palette.downstream, width: 2 }, itemStyle: { color: palette.downstream } },
+      { name: "到达负荷", type: "bar", data: rows.map((row) => Number(row.arrival_load ?? 0)), itemStyle: { color: palette.aircraft_reassigned } },
+    ],
+    dataZoom: [{ type: "inside" }, sliderZoom(theme, 18, 22)],
+  } as EChartsOption;
+}
+
+export function comparisonCostOption(objective: Record<string, number>, theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
+  const keys = ["schedule", "aircraft", "crew", "passenger"];
+  return {
+    ...chartBase(theme), animation,
+    tooltip: { trigger: "axis", ...tooltipStyle(theme) },
+    grid: { left: 76, right: 28, top: 36, bottom: 62 },
+    xAxis: { ...categoryAxis(theme), data: keys },
+    yAxis: { ...valueAxis(theme), name: "成本" },
+    series: [{ type: "bar", data: keys.map((key) => ({ value: objective[key] ?? 0, itemStyle: { color: key === "passenger" ? palette.downstream : palette.normal } })), label: { show: true, position: "top", color: palette.text, fontSize: CHART_FONT_SIZE } }],
+  } as EChartsOption;
+}
+
+export function comparisonDelayOption(rows: JsonObject[], theme: ThemeMode): EChartsOption {
+  const palette = chartPalette(theme);
+  const xStyle = categoryAxis(theme);
+  return {
+    ...chartBase(theme), animation,
+    tooltip: { trigger: "axis", ...tooltipStyle(theme) }, legend: { ...legendStyle(theme) },
+    grid: { left: 76, right: 28, top: 54, bottom: 96 },
+    xAxis: { ...xStyle, data: rows.map((row) => String(row.flight_id)), axisLabel: { ...xStyle.axisLabel, rotate: 45 } },
+    yAxis: { ...valueAxis(theme), name: "分钟" },
+    series: [
+      { name: "起飞延误", type: "bar", data: rows.map((row) => Number(row.departure_delay_minutes ?? 0)), itemStyle: { color: palette.normal } },
+      { name: "到达延误", type: "bar", data: rows.map((row) => Number(row.arrival_delay_minutes ?? 0)), itemStyle: { color: palette.downstream } },
+    ],
+    dataZoom: [{ type: "inside" }, sliderZoom(theme, 20, 22)],
+  } as EChartsOption;
 }
 
 function timeLabel(value: number) { const text = new Date(value).toISOString(); return text.slice(11, 16) === "00:00" ? text.slice(5, 16).replace("T", " ") : text.slice(11, 16); }

@@ -30,6 +30,9 @@ describe("TimeSpaceNetwork", () => {
     fireEvent.click(line!);
     expect(select).toHaveBeenCalledWith("F1");
     expect(screen.getByRole("group", { name: "impact network" })).toBeInTheDocument();
+    expect(container.querySelectorAll(".time-grid").length).toBeGreaterThanOrEqual(2);
+    expect(container.querySelectorAll(".lane-band")).toHaveLength(2);
+    expect(screen.getByText("时间（UTC）")).toBeInTheDocument();
   });
 
   it("keeps an arrival-only delay in the canonical time-changed view", () => {

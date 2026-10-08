@@ -4,7 +4,9 @@ import { AlertTriangle, Eye, Filter, GitBranch, Plane, RefreshCw } from "lucide-
 import { useSearchParams } from "react-router-dom";
 import { api } from "../api";
 import { Chart, type ChartClickEvent } from "../components/Chart";
+import { PanelToggle, useDetailPanel } from "../components/PanelToggle";
 import { useWorkbench } from "../store";
+import { useTheme, type ThemeMode } from "../theme";
 import type { JsonObject, VisualizationFlight, VisualizationMode, VisualizationModel, VisualizationView } from "../types";
 import {
   capacityOption,
@@ -38,6 +40,8 @@ const terminal = new Set(["completed", "failed", "cancelled", "interrupted"]);
 
 export function VisualizationPage() {
   const state = useWorkbench();
+  const { theme } = useTheme();
+  const detailPanel = useDetailPanel();
   const [params, setParams] = useSearchParams();
   const [view, setView] = useState<VisualizationView>(() => validView(params.get("view")));
   const [scope, setScope] = useState<"all" | "changed" | "unchanged">((params.get("scope") as "all") || "all");
@@ -89,7 +93,7 @@ export function VisualizationPage() {
   const selected = findSelected(model as unknown as JsonObject, state.selectedEntity);
   const unavailable = viewUnavailable(model.layer_availability, view, mode);
   const viewModel = filterVisualizationModel(model, filteredFlights, airport);
-  const chart = unavailable ? null : buildChart(viewModel, view, mode, filteredFlights, state.selectedId, movement);
+  const chart = unavailable ? null : buildChart(viewModel, view, mode, filteredFlights, state.selectedId, movement, theme);
   const selectFromChart = (event: ChartClickEvent) => {
     const data = event.data as { entityId?: string; entityType?: string } | undefined;
     if (!data?.entityId || !data.entityType) return;
@@ -114,17 +118,17 @@ export function VisualizationPage() {
 
     <section className="viz-summary" aria-label="可视化数据摘要"><div><span>数据源</span><strong>{model.source_type === "run" ? `Run ${model.run_id?.slice(0, 8)}` : "Working copy"}</strong></div><div><span>输入 hash</span><code>{(model.input_hash ?? model.compiled_hash ?? model.working_hash)?.slice(0, 12) ?? "—"}</code></div><div><span>UTC 范围</span><strong>{shortUtc(model.time_range.start)} – {shortUtc(model.time_range.end)}</strong></div><div><span>当前航班</span><strong>{filteredFlights.length} / {model.flights.length}</strong></div></section>
 
-    <div className="visual-layout visualization-stage"><section className="visual-card"><div className="card-head"><div><span>核心视觉 · {mode.toUpperCase()}</span><h2>{views.find((item) => item.key === view)?.label}</h2></div><div className="viz-legend"><span className="swatch direct">直接扰动</span><span className="swatch downstream">传播风险</span><span className="swatch recovered">恢复计划</span><span className="swatch ghost">原计划 ghost</span></div></div>{unavailable ? <div className="empty-state chart-empty"><AlertTriangle /><h3>当前图层不可用</h3><p>{unavailable}</p></div> : chart ? <Chart option={chart} label={`${mode} ${views.find((item) => item.key === view)?.label}`} height={Math.max(480, Math.min(760, chartHeight(model, view)))} onClick={selectFromChart} /> : <div className="empty-state chart-empty"><Eye /><h3>没有可绘制的数据</h3></div>}</section><EvidencePanel selected={selected} model={model as unknown as JsonObject} /></div>
+    <div className={`visual-layout visualization-stage ${detailPanel.open ? "" : "is-panel-collapsed"}`}><section className="visual-card"><div className="card-head"><div><span>核心视觉 · {mode.toUpperCase()}</span><h2>{views.find((item) => item.key === view)?.label}</h2></div><div className="card-head-tools"><div className="viz-legend"><span className="swatch direct">直接扰动</span><span className="swatch downstream">传播风险</span><span className="swatch recovered">恢复计划</span><span className="swatch ghost">原计划 ghost</span></div><PanelToggle open={detailPanel.open} onToggle={() => detailPanel.setOpen(!detailPanel.open)} label="证据栏" /></div></div>{unavailable ? <div className="empty-state chart-empty"><AlertTriangle /><h3>当前图层不可用</h3><p>{unavailable}</p></div> : chart ? <Chart option={chart} label={`${mode} ${views.find((item) => item.key === view)?.label}`} theme={theme} height={Math.max(480, Math.min(760, chartHeight(model, view)))} onClick={selectFromChart} /> : <div className="empty-state chart-empty"><Eye /><h3>没有可绘制的数据</h3></div>}</section>{detailPanel.open && <EvidencePanel selected={selected} model={model as unknown as JsonObject} />}</div>
   </div>;
 }
 
-function buildChart(model: VisualizationModel, view: VisualizationView, mode: VisualizationMode, flights: VisualizationFlight[], selectedId: string | null, movement: "departure" | "arrival") {
-  if (view === "flights") return flightNetworkOption(model, mode, flights, selectedId);
-  if (view === "aircraft" || view === "crew" || view === "passengers") return ganttOption(model, view, mode);
-  if (view === "capacity") return capacityOption(model, mode, movement);
-  if (view === "propagation") return propagationOption(model, selectedId);
-  if (view === "cost") return costOption(model);
-  return delayOption(model);
+function buildChart(model: VisualizationModel, view: VisualizationView, mode: VisualizationMode, flights: VisualizationFlight[], selectedId: string | null, movement: "departure" | "arrival", theme: ThemeMode) {
+  if (view === "flights") return flightNetworkOption(model, mode, flights, selectedId, theme);
+  if (view === "aircraft" || view === "crew" || view === "passengers") return ganttOption(model, view, mode, theme);
+  if (view === "capacity") return capacityOption(model, mode, movement, theme);
+  if (view === "propagation") return propagationOption(model, selectedId, theme);
+  if (view === "cost") return costOption(model, theme);
+  return delayOption(model, theme);
 }
 
 function EvidencePanel({ selected, model }: { selected: JsonObject | null; model: JsonObject }) {

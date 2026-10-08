@@ -1,0 +1,65 @@
+{
+  "schema_version": "xma-result-1.0",
+  "status": "not_converged",
+  "scenario_id": "xma_2017_5f7017649664_tails_2",
+  "objective": null,
+  "diagnostics": {
+    "algorithm": "benders_cg_bp",
+    "lower_bound": 6900.0,
+    "upper_bound": null,
+    "gap": null,
+    "runtime_seconds": 15.202421699999832,
+    "terminal_reason": "bp_budget_or_node_limit",
+    "integrated_audit_pass": null,
+    "statistics": {
+      "aircraft_columns": 3834,
+      "cg_iterations": 2173,
+      "bp_nodes": 202,
+      "visited_schedules": 202
+    },
+    "candidate_options": 80,
+    "candidate_scope": "finite delay grid plus source boundary times",
+    "pricing_uses_enumeration": false
+  },
+  "metrics": {
+    "operated_flights": 0,
+    "cancelled_flights": 0,
+    "delayed_flights": 0,
+    "total_flight_departure_delay_minutes": 0,
+    "aircraft_reassignments": 0,
+    "crew_reassignments": 0,
+    "passenger_reaccommodated_count": 0,
+    "unserved_passengers": 0,
+    "passenger_count_semantics": "flight-leg scoring quantities, not unique traveler count"
+  },
+  "resolved_flights": [],
+  "aircraft_outcomes": [],
+  "crew_outcomes": [],
+  "passenger_outcomes": [],
+  "passenger_allocations": [],
+  "selected": {
+    "flight_options": [],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": []
+  },
+  "recovery_actions": [],
+  "business_decisions": [],
+  "independent_audit": null,
+  "run_metadata": {
+    "run_id": null,
+    "input_hash": "005dba66cd5c0cc46d1ebf9bf29bdf1647e0ad4b9af2835a173eea920b103467",
+    "effective_input_hash": "005dba66cd5c0cc46d1ebf9bf29bdf1647e0ad4b9af2835a173eea920b103467",
+    "runtime_controls": null,
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "objective_profile": "tianchi_2017",
+    "objective_version": "tianchi_2017_supported_actions_v1",
+    "source_evaluator_sha256": "cfa995da8ad29c861f5086f8f47df0c096471652633004662744334d65f10735",
+    "objective_parameters": "bundled Configuration.java / ResultEvaluator.java",
+    "algorithm": "benders_cg_bp",
+    "created_at": "2026-10-08T03:50:56.074729+00:00",
+    "crew_enabled": false,
+    "maintenance_enabled": false
+  },
+  "tianchi_csv": null
+}

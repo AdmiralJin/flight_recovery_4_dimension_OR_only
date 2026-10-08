@@ -27,22 +27,37 @@ const model: VisualizationModel = {
 
 describe("visualization chart semantics", () => {
   it("draws disruption windows only in impact mode", () => {
-    const impact = flightNetworkOption(model, "impact", model.flights, null) as { series: Array<{ name?: string }> };
-    const original = flightNetworkOption(model, "original", model.flights, null) as { series: Array<{ name?: string }> };
+    const impact = flightNetworkOption(model, "impact", model.flights, null, "light") as { series: Array<{ name?: string }> };
+    const original = flightNetworkOption(model, "original", model.flights, null, "light") as { series: Array<{ name?: string }> };
     expect(impact.series.some((item) => item.name?.startsWith("扰动时域"))).toBe(true);
     expect(original.series.some((item) => item.name?.startsWith("扰动时域"))).toBe(false);
   });
 
+  it.each(["light", "dark"] as const)("uses the shared readable grid in %s mode", (theme) => {
+    const option = flightNetworkOption(model, "original", model.flights, null, theme) as {
+      textStyle: { fontSize: number };
+      xAxis: { axisLabel: { fontSize: number }; splitLine: { show: boolean }; minorSplitLine: { show: boolean } };
+      yAxis: { axisLabel: { fontSize: number }; splitLine: { show: boolean }; splitArea: { show: boolean } };
+    };
+    expect(option.textStyle.fontSize).toBeGreaterThanOrEqual(12);
+    expect(option.xAxis.axisLabel.fontSize).toBeGreaterThanOrEqual(12);
+    expect(option.yAxis.axisLabel.fontSize).toBeGreaterThanOrEqual(12);
+    expect(option.xAxis.splitLine.show).toBe(true);
+    expect(option.xAxis.minorSplitLine.show).toBe(true);
+    expect(option.yAxis.splitLine.show).toBe(true);
+    expect(option.yAxis.splitArea.show).toBe(true);
+  });
+
   it("keeps the evidence graph explicit and local", () => {
-    const option = propagationOption(model, "F1") as { series: Array<{ data: Array<{ name: string }>; links: unknown[] }> };
+    const option = propagationOption(model, "F1", "light") as { series: Array<{ data: Array<{ name: string }>; links: unknown[] }> };
     expect(option.series[0].data.map((item) => item.name)).toEqual(expect.arrayContaining(["F1", "F2", "aircraft:A1"]));
     expect(option.series[0].links).toHaveLength(2);
   });
 
   it("carries direct exposure into resource gantt segments", () => {
     const aircraft = [{ aircraft_id: "A1", original_segments: [{ flight_id: "F1", segment_type: "flight", start_time: "2026-01-01T01:00:00Z", end_time: "2026-01-01T02:00:00Z" }], recovered_segments: [] }];
-    const option = ganttOption({ ...model, aircraft }, "aircraft", "impact") as { series: Array<{ data: Array<{ itemStyle: { color: string } }> }> };
-    expect(option.series[0].data[0].itemStyle.color).toBe("#ee6b72");
+    const option = ganttOption({ ...model, aircraft }, "aircraft", "impact", "light") as { series: Array<{ data: Array<{ itemStyle: { color: string } }> }> };
+    expect(option.series[0].data[0].itemStyle.color).toBe("#b4232d");
   });
 
   it("builds a 500-flight canvas model without DOM-per-flight rendering", () => {
@@ -57,7 +72,7 @@ describe("visualization chart semantics", () => {
       impact: { ...model.flights[0].impact, flight_id: `F${index}` },
     }));
     const started = performance.now();
-    const option = flightNetworkOption({ ...model, flights }, "impact", flights, null) as { series: Array<{ data?: unknown[] }> };
+    const option = flightNetworkOption({ ...model, flights }, "impact", flights, null, "light") as { series: Array<{ data?: unknown[] }> };
     expect(performance.now() - started).toBeLessThan(1_000);
     expect(option.series.flatMap((item) => item.data ?? []).length).toBeGreaterThanOrEqual(500);
   });

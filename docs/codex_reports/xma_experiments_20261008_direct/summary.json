@@ -1,0 +1,210 @@
+[
+  {
+    "requested_flights": 20,
+    "flights": 30,
+    "tails": 2,
+    "algorithm": "joint_arc_flow",
+    "objective_profile": "tianchi_2017",
+    "step_minutes": 60,
+    "max_delay_minutes": 120,
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "readiness": {
+      "solve_ready": true,
+      "errors": [],
+      "flight_options": 80,
+      "crew_enabled": false,
+      "capacity_semantics": "physical seats by selected tail",
+      "semantics": "INPUT_READINESS_NOT_OPTIMIZATION_FEASIBILITY",
+      "objective_profile": "tianchi_2017",
+      "algorithm": "joint_arc_flow",
+      "normal_airport_capacity": "unspecified",
+      "assignment_options": 73
+    },
+    "status": "optimal",
+    "objective": {
+      "total": 11444.0,
+      "schedule": 9600.0,
+      "aircraft": 0.0,
+      "crew": 0,
+      "passenger": 1844.0,
+      "profile": "tianchi_2017",
+      "units": "tianchi_score",
+      "breakdown": {
+        "empty_flight": 0.0,
+        "cancel_flight": 9600.0,
+        "type_change": 0.0,
+        "swap_flight": 0.0,
+        "straighten": 0.0,
+        "flight_delay": 0.0,
+        "flight_ahead": 0.0,
+        "passenger_cancel": 1844.0,
+        "passenger_delay": 0.0,
+        "sign_change_delay": 0.0
+      }
+    },
+    "diagnostics": {
+      "algorithm": "joint_arc_flow",
+      "lower_bound": 11444.0,
+      "upper_bound": 11444.0,
+      "gap": 0,
+      "runtime_seconds": 0.1623787999851629,
+      "terminal_reason": "2",
+      "integrated_audit_pass": true,
+      "statistics": {
+        "variables": 797,
+        "constraints": 1254,
+        "nodes": 1.0,
+        "aircraft_columns": 0,
+        "representation": "arc",
+        "solver": "Gurobi"
+      },
+      "candidate_options": 80,
+      "candidate_scope": "finite delay grid plus source boundary times",
+      "pricing_uses_enumeration": null
+    },
+    "valid": true,
+    "wall_seconds": 0.1664001999888569,
+    "process_peak_rss_bytes": 142868480
+  },
+  {
+    "requested_flights": 100,
+    "flights": 103,
+    "tails": 6,
+    "algorithm": "joint_arc_flow",
+    "objective_profile": "tianchi_2017",
+    "step_minutes": 60,
+    "max_delay_minutes": 120,
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "readiness": {
+      "solve_ready": true,
+      "errors": [],
+      "flight_options": 276,
+      "crew_enabled": false,
+      "capacity_semantics": "physical seats by selected tail",
+      "semantics": "INPUT_READINESS_NOT_OPTIMIZATION_FEASIBILITY",
+      "objective_profile": "tianchi_2017",
+      "algorithm": "joint_arc_flow",
+      "normal_airport_capacity": "unspecified",
+      "assignment_options": 650
+    },
+    "status": "optimal",
+    "objective": {
+      "total": 56897.62037037037,
+      "schedule": 45000.0,
+      "aircraft": 80.0,
+      "crew": 0,
+      "passenger": 11817.62037037037,
+      "profile": "tianchi_2017",
+      "units": "tianchi_score",
+      "breakdown": {
+        "empty_flight": 0.0,
+        "cancel_flight": 45000.0,
+        "type_change": 0.0,
+        "swap_flight": 80.0,
+        "straighten": 0.0,
+        "flight_delay": 0.0,
+        "flight_ahead": 0.0,
+        "passenger_cancel": 11500.0,
+        "passenger_delay": 0.0,
+        "sign_change_delay": 317.6203703703704
+      }
+    },
+    "diagnostics": {
+      "algorithm": "joint_arc_flow",
+      "lower_bound": 56897.62037037037,
+      "upper_bound": 56897.62037037037,
+      "gap": 0,
+      "runtime_seconds": 0.9685475000878796,
+      "terminal_reason": "2",
+      "integrated_audit_pass": true,
+      "statistics": {
+        "variables": 5228,
+        "constraints": 6235,
+        "nodes": 1,
+        "aircraft_columns": 0,
+        "representation": "arc",
+        "solver": "HiGHS"
+      },
+      "candidate_options": 276,
+      "candidate_scope": "finite delay grid plus source boundary times",
+      "pricing_uses_enumeration": null
+    },
+    "valid": true,
+    "wall_seconds": 0.9782586999936029,
+    "process_peak_rss_bytes": 147828736
+  },
+  {
+    "requested_flights": 500,
+    "flights": 508,
+    "tails": 30,
+    "algorithm": "joint_arc_flow",
+    "objective_profile": "tianchi_2017",
+    "step_minutes": 60,
+    "max_delay_minutes": 120,
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "readiness": {
+      "solve_ready": true,
+      "errors": [],
+      "flight_options": 1371,
+      "crew_enabled": false,
+      "capacity_semantics": "physical seats by selected tail",
+      "semantics": "INPUT_READINESS_NOT_OPTIMIZATION_FEASIBILITY",
+      "objective_profile": "tianchi_2017",
+      "algorithm": "joint_arc_flow",
+      "normal_airport_capacity": "unspecified",
+      "assignment_options": 21013
+    },
+    "status": "not_converged",
+    "objective": null,
+    "diagnostics": {
+      "algorithm": "joint_arc_flow",
+      "lower_bound": null,
+      "upper_bound": null,
+      "gap": null,
+      "runtime_seconds": 18.225073299952783,
+      "terminal_reason": "9",
+      "integrated_audit_pass": null,
+      "statistics": {
+        "variables": 140409,
+        "constraints": 116099,
+        "nodes": 0,
+        "aircraft_columns": 0,
+        "representation": "arc",
+        "solver": "HiGHS"
+      },
+      "candidate_options": 1371,
+      "candidate_scope": "finite delay grid plus source boundary times",
+      "pricing_uses_enumeration": null
+    },
+    "valid": null,
+    "wall_seconds": 18.230815900024027,
+    "process_peak_rss_bytes": 360529920
+  },
+  {
+    "requested_flights": 2364,
+    "flights": 2364,
+    "tails": 142,
+    "algorithm": "joint_arc_flow",
+    "objective_profile": "tianchi_2017",
+    "step_minutes": 60,
+    "max_delay_minutes": 120,
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "readiness": {
+      "solve_ready": false,
+      "errors": [
+        "assignment network has 361810 tail-option pairs, exceeds configured limit 100000; increase delay_step_minutes, lower maximum_delay_minutes, or explicitly raise max_assignment_options"
+      ],
+      "flight_options": 6483,
+      "crew_enabled": false,
+      "capacity_semantics": "physical seats by selected tail",
+      "semantics": "INPUT_READINESS_NOT_OPTIMIZATION_FEASIBILITY",
+      "objective_profile": "tianchi_2017",
+      "algorithm": "joint_arc_flow",
+      "normal_airport_capacity": "unspecified",
+      "assignment_options": 361810
+    },
+    "status": "input_limit",
+    "wall_seconds": 0.00020409992430359125,
+    "process_peak_rss_bytes": null
+  }
+]

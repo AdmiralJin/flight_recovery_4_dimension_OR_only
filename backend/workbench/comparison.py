@@ -37,7 +37,8 @@ def build_comparison(
     effective_by_id = {
         item["flight_id"]: item for item in effective_scenario.get("flights", [])
     }
-    optimal = bool(result and result.get("status") == "optimal")
+    optimal = bool(result and (result.get("status") == "optimal" or
+        result.get("schema_version") == "xma-result-1.0" and (result.get("independent_audit") or {}).get("valid")))
     flights: list[dict[str, Any]] = []
     change_counts: Counter[str] = Counter()
     for flight_id, original in original_by_id.items():
@@ -84,7 +85,9 @@ def build_comparison(
         "mode_semantics": {
             "original": "Baseline schedule and resources only.",
             "impact": "Compiled capacity effects and exposure risk; not a recovery decision.",
-            "recovered": "Solver-selected plan; available only for a complete optimal result.",
+            "recovered": ("Complete independently validated XMA incumbent; optimality is reported separately."
+                if (result or {}).get("schema_version")=="xma-result-1.0" else
+                "Solver-selected plan; available only for a complete optimal result."),
             "delta": "Original ghost plus recovered plan, classified by canonical change flags.",
         },
         "counts": {
@@ -265,6 +268,15 @@ def _crew_comparison(scenario: dict[str, Any], result: dict[str, Any] | None):
 
 
 def _passenger_comparison(scenario: dict[str, Any], result: dict[str, Any] | None):
+    if (result or {}).get("schema_version")=="xma-result-1.0":
+        ledger={r["flight_id"]:r for r in result.get("passenger_allocations",[])}
+        decisions={r["flight_id"]:r for r in result.get("business_decisions",[])}
+        return [{"pax_group_id":group["pax_group_id"],"count":group["count"],"original_itinerary":group["original_itinerary"],
+            "recovered_itinerary":None,"allocations":ledger.get(group["original_itinerary"][0]),
+            "rebook":decisions.get(group["original_itinerary"][0],{}).get("rebook",{}),
+            "changed":bool(ledger.get(group["original_itinerary"][0],{}).get("unserved",0) or
+                ledger.get(group["original_itinerary"][0],{}).get("sign_out",0)),
+            "outcome":None,"count_semantics":"flight-leg quantities; split allocations, not one itinerary"} for group in scenario.get("passengers",[])]
     outcomes = {
         item["outcome"]["pax_group_id"]: item
         for item in (result or {}).get("passenger_outcomes", [])

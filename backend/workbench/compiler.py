@@ -53,6 +53,9 @@ def draft_from_case_payload(payload: dict[str, Any], name: str | None = None) ->
 
 
 def compile_draft(document: DraftDocument) -> CompilePreview:
+    if (document.solve_bundle or {}).get("schema_version") == "xma-solve-1.0":
+        from backend.business.xma.service import compile_document
+        return compile_document(document)
     draft_data = document.model_dump(mode="json")
     draft_hash = content_hash(draft_data)
     issues: list[WorkbenchIssue] = []

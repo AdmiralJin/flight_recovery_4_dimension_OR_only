@@ -82,7 +82,8 @@ def _build_model(
         item["resolved"]["flight_id"]: item["resolved"]
         for item in (result or {}).get("resolved_flights", [])
     }
-    optimal = bool(result and result.get("status") == "optimal")
+    optimal = bool(result and (result.get("status") == "optimal" or
+        result.get("schema_version") == "xma-result-1.0" and (result.get("independent_audit") or {}).get("valid")))
     recovered_complete = optimal and len(recovered_by_id) == len(original_flights)
 
     if source_type == "run":
@@ -479,6 +480,27 @@ def _passenger_timelines(
     options: dict[str, dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], bool]:
     originals = {item["flight_id"]: item for item in flights}
+    if (result or {}).get("schema_version")=="xma-result-1.0":
+        allocations={r["flight_id"]:r for r in result.get("passenger_allocations",[])}
+        decisions={r["flight_id"]:r for r in result.get("business_decisions",[])}
+        rows=[]
+        for group in scenario.get("passengers",[]):
+            fid=group["original_itinerary"][0]
+            ledger=allocations.get(fid,{})
+            recovered=[]
+            decision=decisions.get(fid,{})
+            if ledger.get("resident",0)>0 and originals.get(fid,{}).get("recovered"):
+                recovered.append({**_flight_leg(originals[fid]["recovered"],state="recovered"),"flight_id":fid,"count":ledger["resident"]})
+            for target,count in decision.get("rebook",{}).items():
+                flight=originals.get(target,{}).get("recovered")
+                if flight:
+                    recovered.append({**_flight_leg(flight,state="recovered"),"flight_id":target,"count":count,"segment_type":"rebook"})
+            rows.append({"pax_group_id":group["pax_group_id"],"count":group["count"],"origin":group["origin"],"destination":group["destination"],
+                "original_segments":[{**_flight_leg(originals[fid]["original"],state="original"),"flight_id":fid}],
+                "recovered_segments":recovered,"status":"partly_unserved" if ledger.get("unserved",0) else "allocated",
+                "unserved_count":ledger.get("unserved",0),"changed":bool(ledger.get("sign_out",0) or ledger.get("unserved",0)),
+                "count_semantics":"flight-leg scoring quantities; not unique travelers"})
+        return rows,bool((result.get("independent_audit") or {}).get("valid"))
     itineraries = {
         item["pax_group_id"]: item
         for item in (artifact or {}).get("passenger_itineraries", [])
@@ -601,6 +623,9 @@ def _capacity_rows(scenario: dict[str, Any], flights: list[dict[str, Any]]) -> l
 
 
 def _cost_items(artifact: dict[str, Any] | None) -> list[dict[str, Any]]:
+    if (artifact or {}).get("schema_version")=="xma-result-1.0":
+        return [{"entity_type":"business","entity_id":"XMA","component":item["name"],"value":item["value"]}
+            for item in artifact.get("cost_items",[])]
     items = []
     for collection, entity_type, id_key in (
         ("aircraft_strings", "aircraft", "aircraft_id"),

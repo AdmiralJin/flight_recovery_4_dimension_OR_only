@@ -69,10 +69,18 @@ def execute_run(run_id: str) -> int:
         emit({"stage": "preparing", "type": "stage_started", "message": "Loading immutable solve snapshot."})
         snapshot = store.get_snapshot(run.snapshot_id)
         runtime_profile = store.get_runtime_profile(run.runtime_profile_id)
-        request = SolveRequest.model_validate(snapshot.solve_request)
+        is_xma = snapshot.solve_request.get("schema_version") == "xma-solve-1.0"
+        if is_xma:
+            from backend.business.xma.schema import XmaSolveRequest
+            from backend.business.xma.service import solve as business_solve
+            request = XmaSolveRequest.model_validate(snapshot.solve_request)
+            runner = business_solve
+        else:
+            request = SolveRequest.model_validate(snapshot.solve_request)
+            runner = solve_request
         store.update_run_status(run_id, JobStatus.RUNNING)
         emit({"stage": "optimization", "type": "run_started", "message": "Solver worker started."})
-        result = solve_request(
+        result = runner(
             request,
             event_sink=emit,
             cancel_check=cancelled,
@@ -82,7 +90,9 @@ def execute_run(run_id: str) -> int:
                 run_id, payload
             ),
         )
-        result_payload = result.model_dump(mode="json")
+        result_payload = result if is_xma else result.model_dump(mode="json")
+        status = result_payload["status"]
+        diagnostics = result_payload.get("diagnostics", {})
         if cancelled():
             store.update_run_status(
                 run_id,
@@ -95,17 +105,18 @@ def execute_run(run_id: str) -> int:
             store.update_run_status(
                 run_id,
                 JobStatus.COMPLETED,
-                optimization_status=result.status.value,
+                optimization_status=status,
                 result=result_payload,
             )
             emit(
                 {
                     "stage": "worker",
                     "type": "run_completed",
-                    "message": f"Run completed: {result.status.value}.",
-                    "lower_bound": result.diagnostics.lower_bound,
-                    "upper_bound": result.diagnostics.upper_bound,
-                    "absolute_gap": result.diagnostics.gap,
+                    "message": f"Run completed: {status}.",
+                    "lower_bound": diagnostics.get("lower_bound"),
+                    "upper_bound": diagnostics.get("upper_bound"),
+                    "absolute_gap": diagnostics.get("gap"),
+                    "relative_gap": diagnostics.get("relative_gap"),
                 }
             )
         return 0

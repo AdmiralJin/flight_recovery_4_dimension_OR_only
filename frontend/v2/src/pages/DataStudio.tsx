@@ -3,6 +3,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, CopyPlus, Download, Redo2, Save, Undo2, Upload } from "lucide-react";
 import { api } from "../api";
 import { VirtualTable } from "../components/VirtualTable";
+import { PanelToggle, useDetailPanel } from "../components/PanelToggle";
+import { XmaPanel } from "../components/XmaPanel";
 import { useWorkbench } from "../store";
 import type { DraftDocument, JsonObject } from "../types";
 
@@ -23,6 +25,13 @@ function nested(value: unknown, key: string): JsonObject[] {
 function rowsFor(document: DraftDocument, key: string): JsonObject[] {
   const scenario = document.scenario;
   const bundle = document.solve_bundle as JsonObject | null | undefined;
+  if (bundle?.schema_version === "xma-solve-1.0") {
+    const dataset = bundle.dataset as JsonObject;
+    if (["flights", "aircraft"].includes(key)) return nested(dataset, key);
+    if (key === "disruptions") return nested(dataset, "scenes");
+    if (key === "costs") return Object.entries((bundle.air_objective ?? {}) as JsonObject).map(([key, value]) => ({ key, value }));
+    if (key === "profiles") return ["objective_profile", "algorithm", "delay_step_minutes", "maximum_delay_minutes"].map(key => ({ key, value: bundle[key] }));
+  }
   const columns = bundle?.recovery_columns as JsonObject | undefined;
   if (["flights", "airports", "aircraft", "crew", "passengers", "disruptions"].includes(key)) return nested(scenario, key);
   if (key === "typed_disruptions") return document.typed_disruptions;
@@ -44,6 +53,7 @@ export function DataStudio() {
   const [selected, setSelected] = useState<JsonObject | null>(null);
   const [editor, setEditor] = useState("");
   const [libraryOpen, setLibraryOpen] = useState(!state.draft);
+  const detailPanel = useDetailPanel();
   const history = useRef<string[]>([]);
   const future = useRef<string[]>([]);
   const active = entities.find(([key]) => key === tab) ?? entities[0];
@@ -62,7 +72,13 @@ export function DataStudio() {
     const document = structuredClone(state.draft.document);
     const idKey = active[2];
     const replace = (values: JsonObject[]) => values.map((item) => String(item[idKey]) === String(selected[idKey]) ? parsed : item);
-    if (["flights", "airports", "aircraft", "crew", "passengers", "disruptions"].includes(tab)) {
+    if (document.solve_bundle?.schema_version === "xma-solve-1.0") {
+      const dataset = document.solve_bundle.dataset as JsonObject;
+      if (["flights", "aircraft"].includes(tab)) dataset[tab] = replace(nested(dataset, tab));
+      else if (tab === "costs") (document.solve_bundle.air_objective as JsonObject)[String(parsed.key)] = Number(parsed.value);
+      else if (tab === "profiles") document.solve_bundle[String(parsed.key)] = parsed.value;
+      else throw new Error("请在厦航业务数据 JSON 中编辑此项，保留其来源关系。");
+    } else if (["flights", "airports", "aircraft", "crew", "passengers", "disruptions"].includes(tab)) {
       (document.scenario as JsonObject)[tab] = replace(nested(document.scenario, tab));
     } else if (tab === "typed_disruptions") document.typed_disruptions = replace(document.typed_disruptions);
     else if (tab === "flight_options" || tab === "passenger_itineraries") {
@@ -107,12 +123,14 @@ export function DataStudio() {
         <button className="button secondary" type="button" onClick={() => setLibraryOpen(true)}><CopyPlus />克隆内置 Case</button>
         <label className="button ghost file-button"><Upload />导入草稿<input type="file" accept="application/json" onChange={async (event) => { const file = event.target.files?.[0]; if (!file) return; const draft = await api.importDraft(JSON.parse(await file.text())); state.selectDraft(draft); query.invalidateQueries({ queryKey: ["drafts"] }); }} /></label>
         <button className="button ghost" type="button" disabled={!state.draft} onClick={exportDraft}><Download />导出</button>
+        {state.draft && <PanelToggle open={detailPanel.open} onToggle={() => detailPanel.setOpen(!detailPanel.open)} label="记录检查器" />}
       </PageHead>
+      <XmaPanel />
       {!state.draft ? <div className="empty-state large"><DatabaseEmpty /><h2>先选择一个内置 Case</h2><p>内置 Case 只读；克隆后才能设计和保存。</p><button className="button primary" type="button" onClick={() => setLibraryOpen(true)}>打开 Case 库</button></div> : <>
         <div className="entity-tabs" role="tablist" aria-label="数据实体">{entities.map(([key, label]) => <button key={key} type="button" role="tab" aria-selected={tab === key} onClick={() => { setTab(key); setSelected(null); }}>{label}<span>{rowsFor(state.draft!.document, key).length}</span></button>)}</div>
-        <div className="split-workspace">
+        <div className={`split-workspace ${detailPanel.open ? "" : "is-panel-collapsed"}`}>
           <VirtualTable rows={rows} idKey={active[2]} selectedId={selected ? String(selected[active[2]] ?? "") : null} onSelect={choose} />
-          <aside className="inspector" aria-label="记录检查器">
+          <aside className="inspector" aria-label="记录检查器" hidden={!detailPanel.open}>
             <div className="inspector-head"><div><span>记录检查器</span><strong>{selected ? String(selected[active[2]] ?? "未命名") : "未选择"}</strong></div><div className="icon-group"><button title="撤销" aria-label="撤销" type="button" disabled={!history.current.length} onClick={undo}><Undo2 /></button><button title="重做" aria-label="重做" type="button" disabled={!future.current.length} onClick={redo}><Redo2 /></button></div></div>
             {selected ? <><textarea value={editor} onChange={(event) => changeEditor(event.target.value)} spellCheck={false} aria-label="选中记录 JSON" /><button className="button primary full" type="button" disabled={save.isPending} onClick={() => save.mutate()}><Save />{save.isPending ? "保存中…" : "保存工作副本"}</button></> : <div className="empty-note">选择一行查看字段。桌面端可编辑；保存时会重新执行 Schema 校验。</div>}
           </aside>

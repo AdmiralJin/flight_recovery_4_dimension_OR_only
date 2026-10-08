@@ -40,7 +40,7 @@ export function VirtualTable({
   );
   const table = useReactTable({ data: filtered, columns, getCoreRowModel: getCoreRowModel() });
   const model = table.getRowModel().rows;
-  const virtualizer = useVirtualizer({ count: model.length, getScrollElement: () => viewport.current, estimateSize: () => 42, overscan: 10 });
+  const virtualizer = useVirtualizer({ count: model.length, getScrollElement: () => viewport.current, estimateSize: () => 44, overscan: 10 });
 
   return (
     <section className="data-grid" aria-label="数据表格">

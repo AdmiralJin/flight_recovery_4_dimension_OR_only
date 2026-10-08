@@ -87,6 +87,13 @@ def capabilities() -> dict[str, Any]:
             "max_concurrent_runs": 1,
         },
         "algorithm": "benders_branch_and_price_v1",
+        "business_modes": {"xma_research": {
+            "schema_version":"xma-solve-1.0",
+            "objectives":["tianchi_2017","air_linear_v1"],
+            "algorithms":["joint_arc_flow","joint_path_oracle","benders_joint","benders_cg_bp"],
+            "large_model_fallback":"SciPy/HiGHS on Gurobi license size error 10010",
+            "crew_enabled":False,"maintenance_enabled":False,
+        }},
         "full_scope_only": True,
         "candidate_generation": {
             "unchanged": True,
@@ -156,6 +163,11 @@ def create_draft(data: DraftCreateRequest):
             "draft_source_required",
             "Provide a source_case_id or a complete draft document.",
         )
+    from backend.business.xma.service import normalize_document
+    try:
+        document = normalize_document(document)
+    except ValueError as exc:
+        raise problem(422, "invalid_xma_input", str(exc)) from exc
     return get_workbench_store().create_draft(document)
 
 
@@ -170,13 +182,16 @@ def get_draft(draft_id: str):
 @router.put("/drafts/{draft_id}/working-copy")
 def update_draft(draft_id: str, data: DraftUpdateRequest):
     try:
+        from backend.business.xma.service import normalize_document
         return get_workbench_store().update_draft(
-            draft_id, data.base_hash, data.document
+            draft_id, data.base_hash, normalize_document(data.document)
         )
     except WorkbenchNotFoundError as exc:
         raise problem(404, "draft_not_found", str(exc)) from exc
     except WorkbenchConflictError as exc:
         raise problem(409, "draft_hash_conflict", str(exc), retryable=True) from exc
+    except ValueError as exc:
+        raise problem(422, "invalid_xma_input", str(exc)) from exc
 
 
 @router.post("/drafts/{draft_id}/compile")

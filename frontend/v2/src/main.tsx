@@ -3,8 +3,9 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import { ThemeProvider } from "./theme";
 import "./styles.css";
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } } });
 
-createRoot(document.getElementById("root")!).render(<StrictMode><QueryClientProvider client={queryClient}><BrowserRouter basename="/workbench-v2"><App /></BrowserRouter></QueryClientProvider></StrictMode>);
+createRoot(document.getElementById("root")!).render(<StrictMode><ThemeProvider><QueryClientProvider client={queryClient}><BrowserRouter basename="/workbench-v2"><App /></BrowserRouter></QueryClientProvider></ThemeProvider></StrictMode>);

@@ -10,10 +10,10 @@ export function AuditPage() {
   const state = useWorkbench();
   const [section, setSection] = useState<typeof sections[number]>("summary");
   const audit = state.audit;
-  if (!audit || !state.run) return <div className="page"><PageHead eyebrow="05 / AUDIT" title="审计" description="选择一个运行后查看不可变输入、决策、约束与 Trace。" /><div className="empty-state large"><FileJson2 /><h2>没有可审计的运行</h2><p>审计包独立包含输入快照、hash、结果和事件，可重新导入核验。</p></div></div>;
+  if (!audit || !state.run) return <div className="page"><PageHead eyebrow="06 / AUDIT" title="审计" description="选择一个运行后查看不可变输入、决策、约束与 Trace。" /><div className="empty-state large"><FileJson2 /><h2>没有可审计的运行</h2><p>审计包独立包含输入快照、hash、结果和事件，可重新导入核验。</p></div></div>;
   const download = () => { window.location.href = `/api/v2/runs/${state.run!.run_id}/export`; };
   const expected = audit.expected_check as JsonObject | null;
-  return <div className="page audit-page"><PageHead eyebrow="05 / AUDIT" title="审计与复现" description="所有证据来自本次运行的不可变快照，不与当前工作副本混用。"><button className="button primary" type="button" onClick={download}><Download />导出完整审计包</button></PageHead>
+  return <div className="page audit-page"><PageHead eyebrow="06 / AUDIT" title="审计与复现" description="所有证据来自本次运行的不可变快照，不与当前工作副本混用。"><button className="button primary" type="button" onClick={download}><Download />导出完整审计包</button></PageHead>
     <section className="audit-banner"><div><span>Run ID</span><code>{state.run.run_id}</code></div><div><span>Input hash</span><code>{state.run.input_hash}</code></div><div><span>状态</span><strong>{state.run.job_status} / {state.run.optimization_status ?? "—"}</strong></div></section>
     <div className="audit-layout"><nav className="audit-nav" aria-label="审计章节">{sections.map((item) => <button type="button" key={item} className={section === item ? "is-active" : ""} onClick={() => setSection(item)}>{item}</button>)}</nav><section className="audit-content"><AuditSection section={section} audit={audit} expected={expected} /></section></div>
   </div>;

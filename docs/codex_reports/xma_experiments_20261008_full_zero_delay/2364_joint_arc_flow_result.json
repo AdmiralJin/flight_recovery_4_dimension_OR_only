@@ -1,0 +1,63 @@
+{
+  "schema_version": "xma-result-1.0",
+  "status": "not_converged",
+  "scenario_id": "xma_2017_5f7017649664",
+  "objective": null,
+  "diagnostics": {
+    "algorithm": "joint_arc_flow",
+    "lower_bound": null,
+    "upper_bound": null,
+    "gap": null,
+    "runtime_seconds": 15.12563810008578,
+    "terminal_reason": "budget_exhausted_during_build",
+    "integrated_audit_pass": null,
+    "statistics": {
+      "variables": 727746,
+      "constraints": 625245,
+      "nodes": 0,
+      "aircraft_columns": 0,
+      "representation": "arc",
+      "solver": "Gurobi"
+    },
+    "candidate_options": 3718,
+    "candidate_scope": "finite delay grid plus source boundary times",
+    "pricing_uses_enumeration": null
+  },
+  "metrics": {
+    "operated_flights": 0,
+    "cancelled_flights": 0,
+    "delayed_flights": 0,
+    "total_flight_departure_delay_minutes": 0,
+    "aircraft_reassignments": 0,
+    "crew_reassignments": 0,
+    "passenger_reaccommodated_count": 0,
+    "unserved_passengers": 0,
+    "passenger_count_semantics": "flight-leg scoring quantities, not unique traveler count"
+  },
+  "resolved_flights": [],
+  "aircraft_outcomes": [],
+  "crew_outcomes": [],
+  "passenger_outcomes": [],
+  "passenger_allocations": [],
+  "selected": {
+    "flight_options": [],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": []
+  },
+  "recovery_actions": [],
+  "business_decisions": [],
+  "independent_audit": null,
+  "run_metadata": {
+    "run_id": null,
+    "input_hash": "b5a7e13102b88aad7e530a287c48c71cfb62c92d69a20093a515776e5b1a082a",
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "objective_profile": "tianchi_2017",
+    "objective_parameters": "bundled Configuration.java / ResultEvaluator.java",
+    "algorithm": "joint_arc_flow",
+    "created_at": "2026-10-08T03:41:18.233022+00:00",
+    "crew_enabled": false,
+    "maintenance_enabled": false
+  },
+  "tianchi_csv": null
+}

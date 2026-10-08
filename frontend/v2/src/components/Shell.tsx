@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Activity, BarChart3, Database, FileCheck2, GitCompareArrows, History, LineChart, ShieldCheck } from "lucide-react";
+import { Activity, BarChart3, Database, FileCheck2, GitCompareArrows, History, LineChart, Moon, ShieldCheck, Sun } from "lucide-react";
 import { api } from "../api";
 import { useWorkbench } from "../store";
+import { useTheme } from "../theme";
 
 const nav = [
   { to: "/data", label: "数据设计", short: "数据", icon: Database },
@@ -17,6 +18,7 @@ const nav = [
 export function Shell() {
   const navigate = useNavigate();
   const state = useWorkbench();
+  const { theme, toggleTheme } = useTheme();
   const capabilities = useQuery({ queryKey: ["capabilities"], queryFn: api.capabilities, staleTime: 30_000 });
   const cases = useQuery({ queryKey: ["cases"], queryFn: api.cases, staleTime: Infinity });
   const drafts = useQuery({ queryKey: ["drafts"], queryFn: api.drafts, refetchInterval: 10_000 });
@@ -44,13 +46,13 @@ export function Shell() {
         <nav aria-label="工作流导航">
           {nav.map((item, index) => <NavLink key={item.to} to={item.to} className={({ isActive }) => isActive ? "is-active" : ""} aria-label={item.label}><item.icon aria-hidden="true" /><span className="step-index">0{index + 1}</span><span className="nav-label">{item.label}</span><span className="nav-short">{item.short}</span></NavLink>)}
         </nav>
-        <div className="sidebar-foot"><ShieldCheck aria-hidden="true" /><span>单机 · 可复现 · UTC</span></div>
+        <div className="sidebar-foot"><ShieldCheck aria-hidden="true" /><span>单机 · 可复现 · {state.draft?.document.solve_bundle?.schema_version === "xma-solve-1.0" ? "北京时间" : "UTC"}</span></div>
       </aside>
       <div className="workspace">
         <header className="topbar">
           <div className="draft-switcher">
             <label htmlFor="draft-select">当前草稿</label>
-            <select id="draft-select" value={state.draft?.draft_id ?? ""} onChange={async (event) => {
+            <select id="draft-select" aria-label="当前草稿" value={state.draft?.draft_id ?? ""} onChange={async (event) => {
               const draft = await api.draft(event.target.value);
               state.selectDraft(draft);
               navigate("/data");
@@ -60,12 +62,18 @@ export function Shell() {
             </select>
             {state.draft && <code title={state.draft.working_hash}>{state.draft.working_hash.slice(0, 8)}</code>}
           </div>
-          <div className="status-strip" aria-label="工作台状态">
-            <Status label="校验" value={state.preview ? (state.preview.valid ? "通过" : "有错误") : "待编译"} tone={state.preview?.valid ? "ok" : "neutral"} />
-            <Status label="求解器" value={solver?.available ? "可用" : "不可用"} tone={solver?.available ? "ok" : "error"} />
-            <Status label="运行" value={runStatus} tone={state.run?.job_status === "running" ? "live" : "neutral"} />
+          <div className="topbar-actions">
+            <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`切换到${theme === "light" ? "深色" : "浅色"}主题`} title={`切换到${theme === "light" ? "深色" : "浅色"}主题`}>
+              {theme === "light" ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+              <span className="theme-toggle-label">{theme === "light" ? "浅色" : "深色"}</span>
+            </button>
+            <div className="status-strip" aria-label="工作台状态">
+              <Status label="校验" value={state.preview ? (state.preview.valid ? "通过" : "有错误") : "待编译"} tone={state.preview?.valid ? "ok" : "neutral"} />
+              <Status label="求解器" value={solver?.available ? "可用" : "不可用"} tone={solver?.available ? "ok" : "error"} />
+              <Status label="运行" value={runStatus} tone={state.run?.job_status === "running" ? "live" : "neutral"} />
+            </div>
+            <button className="icon-button mobile-menu" type="button" aria-label="打开运行历史" title="运行历史" onClick={() => navigate("/solve")}><History /></button>
           </div>
-          <button className="icon-button mobile-menu" type="button" aria-label="打开运行历史" title="运行历史" onClick={() => navigate("/solve")}><History /></button>
         </header>
         {state.message && <div className={`global-message tone-${state.message.tone}`} role="status"><span>{state.message.text}</span><button type="button" onClick={() => state.set({ message: null })}>关闭</button></div>}
         <main id="main-content" className="main-content"><Outlet /></main>

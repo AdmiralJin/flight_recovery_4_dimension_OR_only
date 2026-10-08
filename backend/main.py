@@ -13,6 +13,7 @@ from backend.api.validate import router as validate_router
 from backend.api.solve import router as solve_router
 from backend.api.cases import router as cases_router
 from backend.api.workbench_v2 import WorkbenchProblem, router as workbench_v2_router
+from backend.api.xma import router as xma_router
 from backend.schemas.workbench import ProblemDetails, ProblemIssue
 from backend.solver import GurobiAdapter
 
@@ -32,6 +33,7 @@ app.include_router(constraints_router)
 app.include_router(solve_router)
 app.include_router(cases_router)
 app.include_router(workbench_v2_router)
+app.include_router(xma_router)
 app.mount("/static", StaticFiles(directory=FRONTEND_ROOT), name="static")
 if V2_DIST_ROOT.is_dir():
     app.mount(

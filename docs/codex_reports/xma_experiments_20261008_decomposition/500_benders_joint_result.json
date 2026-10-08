@@ -1,0 +1,65 @@
+{
+  "schema_version": "xma-result-1.0",
+  "status": "not_converged",
+  "scenario_id": "xma_2017_5f7017649664_tails_30",
+  "objective": null,
+  "diagnostics": {
+    "algorithm": "benders_joint",
+    "lower_bound": 121558.33333333334,
+    "upper_bound": null,
+    "gap": null,
+    "runtime_seconds": 16.315764000057243,
+    "terminal_reason": "budget_exhausted_during_build",
+    "integrated_audit_pass": null,
+    "statistics": {
+      "aircraft_columns": 0,
+      "cg_iterations": 0,
+      "bp_nodes": 0,
+      "visited_schedules": 8
+    },
+    "candidate_options": 1371,
+    "candidate_scope": "finite delay grid plus source boundary times",
+    "pricing_uses_enumeration": null
+  },
+  "metrics": {
+    "operated_flights": 0,
+    "cancelled_flights": 0,
+    "delayed_flights": 0,
+    "total_flight_departure_delay_minutes": 0,
+    "aircraft_reassignments": 0,
+    "crew_reassignments": 0,
+    "passenger_reaccommodated_count": 0,
+    "unserved_passengers": 0,
+    "passenger_count_semantics": "flight-leg scoring quantities, not unique traveler count"
+  },
+  "resolved_flights": [],
+  "aircraft_outcomes": [],
+  "crew_outcomes": [],
+  "passenger_outcomes": [],
+  "passenger_allocations": [],
+  "selected": {
+    "flight_options": [],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": []
+  },
+  "recovery_actions": [],
+  "business_decisions": [],
+  "independent_audit": null,
+  "run_metadata": {
+    "run_id": null,
+    "input_hash": "b2d240df0062d3a31997a9f13cd828f341cd7199e62adf31f516a49d0fc1fa65",
+    "effective_input_hash": "b2d240df0062d3a31997a9f13cd828f341cd7199e62adf31f516a49d0fc1fa65",
+    "runtime_controls": null,
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "objective_profile": "tianchi_2017",
+    "objective_version": "tianchi_2017_supported_actions_v1",
+    "source_evaluator_sha256": "cfa995da8ad29c861f5086f8f47df0c096471652633004662744334d65f10735",
+    "objective_parameters": "bundled Configuration.java / ResultEvaluator.java",
+    "algorithm": "benders_joint",
+    "created_at": "2026-10-08T03:51:43.174732+00:00",
+    "crew_enabled": false,
+    "maintenance_enabled": false
+  },
+  "tianchi_csv": null
+}
