@@ -58,6 +58,7 @@ def main():
     p.add_argument("--data-root"); p.add_argument("--output", type=Path, required=True)
     p = sub.add_parser("prepare"); p.add_argument("--data-root"); p.add_argument("--output", type=Path, required=True)
     p.add_argument("--budget-hours", type=float, default=24); p.add_argument("--profile", choices=["pilot", "full"], default="full")
+    p.add_argument("--prior-campaign", type=Path, help="carry consumed total and phase budgets from a finished superseded campaign")
     p = sub.add_parser("campaign"); p.add_argument("folder", type=Path); p.add_argument("--background", action="store_true")
     p = sub.add_parser("report"); p.add_argument("folder", type=Path)
     p = sub.add_parser("_job"); p.add_argument("folder", type=Path); p.add_argument("job_id")
@@ -115,7 +116,8 @@ def main():
     else:
         from backend.benchmarks.campaign import prepare, supervise, report, worker, launch
         if args.command == "prepare":
-            result = prepare(args.output, data_root=args.data_root, budget_hours=args.budget_hours, profile=args.profile)
+            result = prepare(args.output, data_root=args.data_root, budget_hours=args.budget_hours, profile=args.profile,
+                             prior_campaign=args.prior_campaign)
         elif args.command == "campaign":
             result = launch(args.folder) if args.background else supervise(args.folder)
         elif args.command == "report":

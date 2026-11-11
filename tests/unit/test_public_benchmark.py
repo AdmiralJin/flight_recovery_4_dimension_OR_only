@@ -48,6 +48,14 @@ def test_legacy_crew_validation_and_public_no_dummy_crew(public_case):
     assert all(f.original_crew is None for f in public_case.scenario.flights)
 
 
+def test_actual_boundary_may_differ_from_planned_rotation_only_when_explicit(public_case):
+    raw = public_case.scenario.model_dump(mode="json")
+    raw["aircraft"][0]["initial_station_at_t"] = "B"
+    assert not validate_scenario(raw)[1]
+    raw["aircraft"][0].pop("boundary_from_fixed_context")
+    assert any(i.code == "initial_station_mismatch" for i in validate_scenario(raw)[1])
+
+
 def test_snapshot_rejects_data_or_display_tampering(public_case):
     document = make_document(public_case)
     assert compile_draft(document).valid

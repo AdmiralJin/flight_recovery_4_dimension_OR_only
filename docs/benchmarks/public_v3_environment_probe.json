@@ -1,0 +1,10 @@
+{
+  "at": "2026-11-11T11:02:24.896215+00:00",
+  "highs": "1.15.1",
+  "gurobi": "13.0.3",
+  "ram_bytes": 16890978304,
+  "gurobi_probe_variables": 2001,
+  "gurobi_probe_backend": "gurobi_explicit_no_fallback",
+  "gurobi_probe_error_code": 10010,
+  "gurobi_probe_error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+}

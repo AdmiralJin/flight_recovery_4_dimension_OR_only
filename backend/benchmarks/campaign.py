@@ -103,11 +103,21 @@ def snapshot_sources(folder):
     return records
 
 
-def prepare(folder, *, data_root=None, budget_hours=24, profile="full"):
+def prepare(folder, *, data_root=None, budget_hours=24, profile="full", prior_campaign=None):
     if not 0 < budget_hours <= 24:
         raise ValueError("first campaign budget must be >0 and <=24 hours")
     folder = folder.resolve()
     folder.mkdir(parents=True, exist_ok=False)
+    prior_budget = None
+    if prior_campaign is not None:
+        prior_folder = Path(prior_campaign).resolve()
+        prior_state, prior_manifest = read_json(prior_folder / "state.json"), read_json(prior_folder / "manifest.json")
+        if prior_state["status"] != "completed":
+            raise ValueError("prior campaign must finish before carrying its consumed budget forward")
+        prior_budget = dict(campaign=str(prior_folder), manifest_sha256=prior_manifest["manifest_sha256"],
+            state_sha256=file_hash(prior_folder / "state.json"), elapsed_seconds=prior_state["elapsed_seconds"],
+            phase_elapsed=prior_state["phase_elapsed"])
+        write_json(folder / "prior_budget.json", prior_budget)
     from . import roadef, delft
     from .solve import precheck
     from .workbench import make_document
@@ -233,6 +243,8 @@ def prepare(folder, *, data_root=None, budget_hours=24, profile="full"):
     for name in ("source_connections.json", "conversion_failures.json", "source_references.json",
                  "reference-2019/summary.json", "reference-2019/rows.jsonl"):
         source_manifest["../"+name] = file_hash(folder / name)
+    if prior_budget:
+        source_manifest["../prior_budget.json"] = file_hash(folder / "prior_budget.json")
     manifest = dict(schema_version="public-campaign-1.0", created_at=utc_now(), baseline=BASELINE,
         git_commit=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         environment=environment(), profile=profile, budget_hours=budget_hours,
@@ -240,11 +252,14 @@ def prepare(folder, *, data_root=None, budget_hours=24, profile="full"):
         resource_policy=dict(threads=1, max_concurrency=1, heavy_exclusive=True, process_tree_memory_gib=6,
                              no_silent_fallback=True, no_automatic_grid_or_demand_reduction=True),
         jobs=jobs, sources=source_manifest, registry_sha256=file_hash(folder / "registry.json"),
+        prior_budget=prior_budget,
         source_roots={k: str(v.resolve()) for k, v in roots.items()},
         sample_freeze="before any campaign algorithm outcomes; seeds 0,17,42; complete tail/window scope")
     manifest["manifest_sha256"] = digest(manifest)
     write_json(folder / "manifest.json", manifest)
-    write_json(folder / "state.json", dict(status="prepared", jobs={}, phase_elapsed={}, elapsed_seconds=0))
+    write_json(folder / "state.json", dict(status="prepared", jobs={},
+        phase_elapsed=prior_budget["phase_elapsed"] if prior_budget else {},
+        elapsed_seconds=prior_budget["elapsed_seconds"] if prior_budget else 0))
     report(folder)
     return dict(campaign=str(folder), jobs=len(jobs), inputs=len(inputs), conversion_failures=len(conversion_failures),
                 budget_hours=budget_hours, manifest_sha256=manifest["manifest_sha256"])

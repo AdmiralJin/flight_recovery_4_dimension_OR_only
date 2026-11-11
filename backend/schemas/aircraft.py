@@ -25,6 +25,7 @@ class Aircraft(IdentifiedModel):
     ready_at: AwareDatetime | None = None
     available_until: AwareDatetime | None = None
     unavailable: list[AircraftUnavailableInterval] = Field(default_factory=list)
+    boundary_from_fixed_context: bool = False
 
     @model_serializer(mode="wrap")
     def serialize_legacy_compatible(self, handler):
@@ -32,6 +33,8 @@ class Aircraft(IdentifiedModel):
         for key in ("ready_at", "available_until", "unavailable"):
             if not data.get(key):
                 data.pop(key, None)
+        if not self.boundary_from_fixed_context:
+            data.pop("boundary_from_fixed_context", None)
         return data
 
     @model_validator(mode="after")

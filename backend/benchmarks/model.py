@@ -133,6 +133,7 @@ def build(raw, *, target=12, seed=0, step=30, max_delay=120, model_type="aircraf
                          "required_station_at_T_end": next_suffix["origin"] if next_suffix else rotation[-1]["destination"],
                          "original_rotation": [f["id"] for f in rotation],
                          "ready_at": ready, "available_until": limit,
+                         "boundary_from_fixed_context": True,
                          "unavailable": [{"start": u["start"], "end": u["end"]}
                                          for u in raw["unavailable"] if u["tail"] == tail]})
         if spec["maintenance"] != "NULL":

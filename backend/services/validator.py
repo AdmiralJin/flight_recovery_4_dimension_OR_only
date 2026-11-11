@@ -137,9 +137,9 @@ def validate_scenario(data: Any) -> tuple[Scenario | None, list[ValidationIssue]
                 issues.append(_issue(f"{prefix}.original_rotation[{flight_index}]", "aircraft_assignment_mismatch", f"{flight.flight_id} names aircraft {flight.original_aircraft!r}"))
             if flight.original_equipment != aircraft.equipment_type:
                 issues.append(_issue(f"{prefix}.original_rotation[{flight_index}]", "equipment_mismatch", f"{flight.flight_id} uses equipment {flight.original_equipment!r}"))
-        if rotation and rotation[0].origin != aircraft.initial_station_at_t:
+        if rotation and not aircraft.boundary_from_fixed_context and rotation[0].origin != aircraft.initial_station_at_t:
             issues.append(_issue(f"{prefix}.initial_station_at_t", "initial_station_mismatch", "initial station differs from first flight origin"))
-        if rotation and rotation[-1].destination != aircraft.required_station_at_T_end:
+        if rotation and not aircraft.boundary_from_fixed_context and rotation[-1].destination != aircraft.required_station_at_T_end:
             issues.append(_issue(f"{prefix}.required_station_at_T_end", "end_station_mismatch", "required station differs from last flight destination"))
 
     for index, crew in enumerate(scenario.crew):
