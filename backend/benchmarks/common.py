@@ -69,6 +69,22 @@ def utc_now():
     return datetime.now(timezone.utc).isoformat()
 
 
+def frozen_repository_state(root=None):
+    """A source copy must not inherit a later HEAD from its enclosing live repo."""
+    path = (Path(root) if root is not None else ROOT).parent / "manifest.json"
+    if not path.exists():
+        return None
+    manifest = read_json(path)
+    if manifest.get("schema_version") != "public-campaign-1.0":
+        return None
+    content = dict(manifest)
+    expected = content.pop("manifest_sha256")
+    if digest(content) != expected:
+        raise ValueError("frozen source manifest fingerprint changed")
+    return dict(git_commit=manifest["git_commit"], dirty=None, diff_hash=digest(manifest["sources"]),
+                source_manifest_sha256=expected)
+
+
 def discover(root=None):
     if root:
         base = Path(root).resolve()

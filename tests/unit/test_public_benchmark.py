@@ -67,6 +67,23 @@ def test_snapshot_rejects_data_or_display_tampering(public_case):
     assert not compile_draft(document).valid
 
 
+def test_frozen_provenance_does_not_inherit_live_repository_head(tmp_path, monkeypatch):
+    from backend.benchmarks.common import frozen_repository_state, write_json
+    from backend.workbench import storage
+    source = tmp_path / "source"
+    source.mkdir()
+    manifest = dict(schema_version="public-campaign-1.0", git_commit="frozen-commit", sources={"frozen.py": "hash"})
+    manifest["manifest_sha256"] = digest(manifest)
+    write_json(tmp_path / "manifest.json", manifest)
+    monkeypatch.setattr(storage, "ROOT", source)
+    assert frozen_repository_state(source)["git_commit"] == "frozen-commit"
+    assert storage._repository_state()["source_manifest_sha256"] == manifest["manifest_sha256"]
+    manifest["git_commit"] = "tampered"
+    write_json(tmp_path / "manifest.json", manifest)
+    with pytest.raises(ValueError, match="fingerprint"):
+        frozen_repository_state(source)
+
+
 def test_cancel_and_tiny_time_budget_do_not_fake_optimality(public_case):
     result = execute(public_case, seconds=30, cancel_check=lambda: True)
     assert result["status"] == "aborted"

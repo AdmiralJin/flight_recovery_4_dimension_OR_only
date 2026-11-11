@@ -146,6 +146,7 @@ def analyze(folder, output):
     with airport_file.open(encoding="utf-8-sig", newline="") as stream:
         mct = {r["airport"]: int(r["min_connection"]) for r in csv.DictReader(stream, delimiter=";")}
     metrics = []
+    original_rule_comparisons = []
     for job in manifest["jobs"]:
         directory = folder / "jobs" / job["id"]
         if job["kind"] not in ("solve", "stop") or not (directory / "evidence.json").exists():
@@ -162,12 +163,30 @@ def analyze(folder, output):
             row["connection_impact"] = {k: v for k, v in impact.items() if k != "records"}
             write_json(output / "connections" / (job["id"]+".json"), impact)
         metrics.append(row)
+    for entry in read_json(folder / "registry.json"):
+        if entry["source"] != "roadef2009":
+            continue
+        native_jobs = [j for j in manifest["jobs"] if j["kind"] == "external" and j["instance"] == entry["id"]]
+        native = []
+        for job in native_jobs:
+            path = folder / "jobs" / job["id"] / "native/checker-evidence.json"
+            if path.exists():
+                result = read_json(path)
+                native.append(dict(job=job["id"], evidence_sha256=file_hash(path),
+                    passed=result["passed"], historical_comparison=result.get("historical_comparison"),
+                    violations=list(result.get("violations", {}))))
+        original_rule_comparisons.append(dict(instance=entry["id"], source_instance=entry["source_instance"],
+            precheck_ready=entry["precheck"]["ready"], native_evidence=native,
+            historical_eligible=any((n.get("historical_comparison") or {}).get("eligible") for n in native),
+            no_score_reason=None if native else "native_evaluation_not_executed_or_no_audited_solution",
+            scheduled_task_verdicts={j["id"]: state["jobs"].get(j["id"], {}).get("verdict", "pending") for j in native_jobs}))
     result = dict(schema_version="public-post-analysis-1.0", created_at=utc_now(), analysis_sha256=file_hash(Path(__file__)),
         campaign_manifest_sha256=manifest["manifest_sha256"], campaign_status=state["status"],
         source_connections_sha256=file_hash(folder / "source_connections.json"),
         publisher_rows_sha256=file_hash(folder / "reference-2019/rows.jsonl"),
         jobs_with_evidence=len(metrics), audited_business_observations=sum(r["metrics"]["eligible"] for r in metrics),
         publisher_distributions=publisher_distributions(folder / "reference-2019/rows.jsonl"), observations=metrics,
+        original_rule_comparisons=original_rule_comparisons,
         limitations=["publisher sheets may overlap; do not pool as independent samples",
                      "only the frozen January 1 connection window is available for connection analysis",
                      "connection and boarding exposures do not establish recovered passenger demand"])

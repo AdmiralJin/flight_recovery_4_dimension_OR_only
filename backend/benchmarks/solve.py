@@ -17,7 +17,7 @@ from backend.solver import HighsAdapter, GurobiAdapter
 from backend.solver.runtime import SolveBudget, use_budget, SolveStopped
 
 from .audit import audit, enumerate_paths, necessary_infeasibility_certificate
-from .common import clean, digest
+from .common import clean, digest, frozen_repository_state
 from .model import PublicSolveRequest
 
 
@@ -199,7 +199,8 @@ def solve_request(request, *, event_sink=None, cancel_check=None, run_id=None, r
         selected_flight_options=selections["flight_options"], selected_aircraft_strings=selections["aircraft_strings"],
         selected_crew_pairings=(), selected_passenger_itineraries=selections["passenger_itineraries"])
     metadata = RunMetadata(run_id=run_id or str(uuid4()), scenario_id=request.scenario.scenario_id,
-        git_commit=_git_commit(), application_version="public-benchmark-1.0", solver=request.backend,
+        git_commit=(frozen_repository_state() or {}).get("git_commit") or _git_commit(),
+        application_version="public-benchmark-1.0", solver=request.backend,
         solver_version=(HighsAdapter if request.backend == "highs" else GurobiAdapter)().solver_version,
         algorithm="public_air_benders_cg_bp_v1", algorithm_profile_ids=SolveProfileIds(**{
             k: request.configs[k]["profile_id"] for k in PROFILE_FILES}),

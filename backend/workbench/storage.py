@@ -59,6 +59,10 @@ def _now() -> str:
 
 
 def _repository_state() -> dict[str, Any]:
+    from backend.benchmarks.common import frozen_repository_state
+    frozen = frozen_repository_state(ROOT)
+    if frozen is not None:
+        return frozen
     try:
         commit = subprocess.run(
             ["git", "rev-parse", "HEAD"],

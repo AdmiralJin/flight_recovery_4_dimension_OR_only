@@ -219,7 +219,7 @@ def execute_xma(public, *, seconds, cancel_check, event_sink, checkpoint_sink=No
     try:
         outcome = (direct(request, options, budget, oracle=public.algorithm.endswith("path_oracle"))
                    if request.algorithm in ("joint_arc_flow", "joint_path_oracle") else
-                   benders(request, options, budget, use_cg=request.algorithm == "benders_cg_bp", strengthen_master=False))
+                   benders(request, options, budget, use_cg=request.algorithm == "benders_cg_bp", strengthen_master=True))
     finally:
         EXPLICIT_BACKEND.reset(token)
     selected, columns, objective, primal = _decisions(public, outcome.decisions) if outcome.decisions else (None, None, None, None)

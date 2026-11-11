@@ -15,7 +15,7 @@ import numpy as np
 from .base import (ConstraintHandle, ConstraintSense, ObjectiveSense, SolverAdapter,
                    SolverCapabilities, SolverCapabilityError, SolverContractError,
                    SolverOutcome, SolverStatus, VariableHandle, VariableType)
-from .runtime import ACTIVE_BUDGET, check_budget
+from .runtime import ACTIVE_BUDGET, check_budget, register_resource
 
 
 class HighsAdapter(SolverAdapter):
@@ -56,6 +56,7 @@ class HighsAdapter(SolverAdapter):
         self._name = model_name
         self._model_token = uuid4().hex
         self._objective_constant = 0.0
+        register_resource(self.close)
 
     def _invalidate(self):
         self._last_outcome = None
