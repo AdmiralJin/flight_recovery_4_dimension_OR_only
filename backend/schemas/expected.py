@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
-from pydantic import AwareDatetime, Field, model_validator
+from pydantic import AwareDatetime, Field, model_validator, model_serializer
 
 from .columns import FlightChangeType, PassengerItineraryStatus
 from .common import SchemaModel
@@ -64,6 +64,14 @@ class ResolvedFlight(SchemaModel):
     arrival_delay_minutes: int | None = Field(ge=0)
     aircraft_id: str | None
     crew_id: str | None
+    crew_required: bool = True
+
+    @model_serializer(mode="wrap")
+    def serialize_legacy_compatible(self, handler):
+        data = handler(self)
+        if self.crew_required:
+            data.pop("crew_required", None)
+        return data
 
     @model_validator(mode="after")
     def validate_status_shape(self):
@@ -77,7 +85,10 @@ class ResolvedFlight(SchemaModel):
             self.aircraft_id,
             self.crew_id,
         )
-        if self.status is ResolvedFlightStatus.OPERATED and any(value is None for value in values):
+        required = values if self.crew_required else values[:-1]
+        if not self.crew_required and self.crew_id is not None:
+            raise ValueError("disabled crew component cannot contain a crew assignment")
+        if self.status is ResolvedFlightStatus.OPERATED and any(value is None for value in required):
             raise ValueError("operated resolved flight requires route, times, delays, aircraft, and crew")
         if self.status is ResolvedFlightStatus.CANCELLED and any(value is not None for value in values):
             raise ValueError("cancelled resolved flight cannot contain operation assignments")

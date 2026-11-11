@@ -1,4 +1,4 @@
-from pydantic import AwareDatetime, Field, model_validator
+from pydantic import AwareDatetime, Field, model_validator, model_serializer
 
 from .common import IdentifiedModel, minutes_between
 
@@ -12,11 +12,24 @@ class Flight(IdentifiedModel):
     duration: int = Field(gt=0, description="Scheduled block time in minutes")
     original_aircraft: str = Field(min_length=1)
     original_equipment: str = Field(min_length=1)
-    original_crew: str = Field(min_length=1)
+    original_crew: str | None = Field(min_length=1)
+    earliest_departure: AwareDatetime | None = None
+    fixed_delay: int | None = Field(default=None, ge=0)
+    cancel_required: bool = False
     strategic_flag: bool = False
     market_flag: bool = False
     min_seats: int = Field(default=0, ge=0)
     max_delay: int = Field(ge=0, description="Maximum recovery delay in minutes")
+
+    @model_serializer(mode="wrap")
+    def serialize_legacy_compatible(self, handler):
+        data = handler(self)
+        for key in ("earliest_departure", "fixed_delay"):
+            if data.get(key) is None:
+                data.pop(key, None)
+        if not self.cancel_required:
+            data.pop("cancel_required", None)
+        return data
 
     @model_validator(mode="after")
     def validate_schedule(self):

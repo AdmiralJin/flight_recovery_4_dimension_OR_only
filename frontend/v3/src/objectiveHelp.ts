@@ -3,6 +3,7 @@ import type { DraftDocument } from "./types";
 
 export function objectiveHelp(doc: DraftDocument | null): string {
   const bundle = object(doc?.solve_bundle);
+  if (bundle.schema_version === "public-benchmark-1.0") return "公开研究模型：最小化航班取消、延误、换机及已启用旅客恢复的线性成本。机组组件关闭。系数及候选已冻结在输入快照中，可在高级数据查看。该目标不能作为 ROADEF 原始评分或历史成绩差距。";
   const xma = bundle.schema_version === "xma-solve-1.0";
   if (xma && bundle.objective_profile === "tianchi_2017") return "最小化：Z = Σ航班 wᶠ(1200·取消ᶠ + 100·延误分钟ᶠ/60) + Σ换机 wᶠκᶠ + Σ留乘人数·g(h) + Σ改签人数·r(h) + 4·未服务人数。\nκᶠ：原计划起飞不晚于调整起日16:00为15，否则为5；wᶠ为航班重要系数，h为小时。\ng(h)：h≤0为0；(0,2]为1；(2,4]为1.5；(4,8]为2；(8,36]为3；更大为10⁹。\nr(h)：先将h截为非负，h<6为h/30；h<24为h/24；h<36为h/18；h≤48为h/16；更大为10⁹。\n非可调整航班的留乘和改签延误计分按后端规则豁免；评分以运行审计及独立重算为准。";
   const coefficients = xma ? object(bundle.air_objective) : object(bundle.cost_overrides);

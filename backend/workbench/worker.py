@@ -70,7 +70,13 @@ def execute_run(run_id: str) -> int:
         snapshot = store.get_snapshot(run.snapshot_id)
         runtime_profile = store.get_runtime_profile(run.runtime_profile_id)
         is_xma = snapshot.solve_request.get("schema_version") == "xma-solve-1.0"
-        if is_xma:
+        is_public = snapshot.solve_request.get("schema_version") == "public-benchmark-1.0"
+        if is_public:
+            from backend.benchmarks.model import PublicSolveRequest
+            from backend.benchmarks.solve import solve_request as public_solve
+            request = PublicSolveRequest.model_validate(snapshot.solve_request)
+            runner = public_solve
+        elif is_xma:
             from backend.business.xma.schema import XmaSolveRequest
             from backend.business.xma.service import solve as business_solve
             request = XmaSolveRequest.model_validate(snapshot.solve_request)

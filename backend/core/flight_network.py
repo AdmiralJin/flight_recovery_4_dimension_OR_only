@@ -125,6 +125,12 @@ def validate_flight_option_for_aircraft(
     if option.dep_time is None or option.arr_time is None:
         reasons.append("missing_times")
     else:
+        if aircraft.ready_at is not None and option.dep_time < aircraft.ready_at:
+            reasons.append("aircraft_not_ready")
+        if aircraft.available_until is not None and option.arr_time > aircraft.available_until:
+            reasons.append("aircraft_boundary_conflict")
+        if any(option.dep_time < interval.end and option.arr_time > interval.start for interval in aircraft.unavailable):
+            reasons.append("aircraft_unavailable")
         if (
             option.dep_time < scenario.recovery_window.start_time
             or option.arr_time > scenario.recovery_window.end_time
@@ -156,6 +162,12 @@ def validate_flight_option_for_aircraft(
         if base is None:
             reasons.append("unknown_base_flight")
         else:
+            if base.cancel_required:
+                reasons.append("source_required_cancellation")
+            if base.fixed_delay is not None and (option.departure_delay_minutes != base.fixed_delay or aircraft.tail_id != base.original_aircraft):
+                reasons.append("source_fixed_disrupted_flight")
+            if base.earliest_departure is not None and option.dep_time is not None and option.dep_time < base.earliest_departure:
+                reasons.append("before_earliest_departure")
             if base.original_equipment != aircraft.equipment_type:
                 reasons.append("equipment_mismatch")
             if option.departure_delay_minutes is None:

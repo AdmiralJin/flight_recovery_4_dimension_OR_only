@@ -113,6 +113,8 @@ def solve_readiness(data: Any) -> dict[str, Any]:
         invalid.append("algorithm")
     if not data.get("scenario"):
         missing.append("missing_scenario")
+    if isinstance(data.get("scenario"), dict) and data["scenario"].get("crew_enabled") is False:
+        invalid.append("crew_disabled_requires_public_benchmark_entry")
     columns = data.get("recovery_columns")
     if not isinstance(columns, dict) or not columns.get("flight_options"):
         missing.append("missing_flight_options")

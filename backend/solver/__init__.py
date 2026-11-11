@@ -14,11 +14,13 @@ from .base import (
     VariableType,
 )
 from .gurobi import GurobiAdapter
+from .highs import HighsAdapter
 
 __all__ = [
     "ConstraintHandle",
     "ConstraintSense",
     "GurobiAdapter",
+    "HighsAdapter",
     "ObjectiveSense",
     "SolverAdapter",
     "SolverCapabilities",

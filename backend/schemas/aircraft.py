@@ -1,6 +1,17 @@
-from pydantic import Field, model_validator
+from pydantic import AwareDatetime, Field, model_validator, model_serializer
 
-from .common import IdentifiedModel
+from .common import IdentifiedModel, SchemaModel
+
+
+class AircraftUnavailableInterval(SchemaModel):
+    start: AwareDatetime
+    end: AwareDatetime
+
+    @model_validator(mode="after")
+    def validate_interval(self):
+        if self.start >= self.end:
+            raise ValueError("unavailability start must precede end")
+        return self
 
 
 class Aircraft(IdentifiedModel):
@@ -11,6 +22,17 @@ class Aircraft(IdentifiedModel):
     maintenance_required: bool = False
     maintenance_stations: list[str] = Field(default_factory=list)
     original_rotation: list[str] = Field(default_factory=list)
+    ready_at: AwareDatetime | None = None
+    available_until: AwareDatetime | None = None
+    unavailable: list[AircraftUnavailableInterval] = Field(default_factory=list)
+
+    @model_serializer(mode="wrap")
+    def serialize_legacy_compatible(self, handler):
+        data = handler(self)
+        for key in ("ready_at", "available_until", "unavailable"):
+            if not data.get(key):
+                data.pop(key, None)
+        return data
 
     @model_validator(mode="after")
     def validate_maintenance(self):

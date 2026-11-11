@@ -53,6 +53,9 @@ def draft_from_case_payload(payload: dict[str, Any], name: str | None = None) ->
 
 
 def compile_draft(document: DraftDocument) -> CompilePreview:
+    if (document.solve_bundle or {}).get("schema_version") == "public-benchmark-1.0":
+        from backend.benchmarks.workbench import compile_document
+        return compile_document(document)
     if (document.solve_bundle or {}).get("schema_version") == "xma-solve-1.0":
         from backend.business.xma.service import compile_document
         return compile_document(document)

@@ -15,6 +15,9 @@ from .schema import Decision, XmaSolveRequest
 
 
 def evaluate(request: XmaSolveRequest, decisions: list[Decision]) -> dict:
+    if request.dataset.public_rules is not None:
+        from backend.benchmarks.xma import evaluate_public
+        return evaluate_public(request, decisions)
     data=request.dataset
     flights={f.flight_id:f for f in data.flights}
     chosen={d.flight_id:d for d in decisions}

@@ -214,6 +214,8 @@ def validate_crew_pairing_master_inputs(
 def original_pairing_by_crew(
     scenario: Scenario, flight_options: Sequence[FlightOption]
 ) -> Mapping[str, CrewPairing]:
+    if not scenario.crew_enabled:
+        return MappingProxyType({})
     originals = resolve_original_flight_option_ids(scenario, flight_options)
     return MappingProxyType(
         {
@@ -272,6 +274,8 @@ def _row_coefficients(
     pairings: Sequence[CrewPairing],
     request: CrewRecoveryRequest,
 ) -> dict[str, dict[str, dict[str, float]]]:
+    if not scenario.crew_enabled:
+        return {key: {} for key in ("selection", "required_operate", "nonrequired_operate", "nonrequired_deadhead", "terminal")}
     required = set(request.required_operated_option_ids)
     revenue = tuple(
         item.option_id

@@ -22,10 +22,11 @@ export function entityRows(doc: DraftDocument, key: string): JsonObject[] {
   if (key === "typed_disruptions") return doc.typed_disruptions;
   if (["flight_options", "passenger_itineraries"].includes(key)) return rows(object(bundle.recovery_columns)[key]);
   if (key === "capacity") return Object.entries(object(object(bundle.capacity_profile).seat_capacity_by_option_id)).map(([option_id, residual_seats]) => ({ option_id, residual_seats }));
-  if (key === "costs") return Object.entries(object(bundle.cost_overrides)).map(([key, value]) => ({ key, value }));
+  if (key === "costs") return Object.entries(bundle.schema_version === "public-benchmark-1.0" ? object(object(bundle.costs).coefficients) : object(bundle.cost_overrides)).map(([key, value]) => ({ key, value }));
   return [];
 }
 export function replaceRow(doc: DraftDocument, key: string, index: number, row: JsonObject) {
+  if (doc.solve_bundle?.schema_version === "public-benchmark-1.0") throw new Error("公开实例已冻结；请通过命令行生成新实例后导入。");
   const bundle = doc.solve_bundle;
   if (isXma(doc) && bundle) {
     if (["flights", "aircraft"].includes(key)) rows(object(bundle.dataset)[key])[index] = row;
@@ -39,6 +40,7 @@ export function replaceRow(doc: DraftDocument, key: string, index: number, row: 
   else if (key === "costs" && bundle) object(bundle.cost_overrides)[String(row.key)] = row.value;
 }
 export function replaceRowImmutable(doc: DraftDocument, key: string, index: number, row: JsonObject): DraftDocument {
+  if (doc.solve_bundle?.schema_version === "public-benchmark-1.0") throw new Error("公开实例已冻结；请通过命令行生成新实例后导入。");
   let path: (string | number)[];
   let value: unknown = row;
   if (isXma(doc)) {

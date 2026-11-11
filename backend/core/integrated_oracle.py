@@ -554,19 +554,20 @@ def build_integrated_fixed_column_oracle(
             0.0,
             name=_name(INTEGRATED_L01_SCHEDULE_AIRCRAFT, option_id),
         )
-        crew_coefficients = {
-            z[pairing_id]: 1.0
-            for pairing_id in crew_incidence.operated_option_to_pairings.columns_for_row(
-                option_id
+        if scenario.crew_enabled:
+            crew_coefficients = {
+                z[pairing_id]: 1.0
+                for pairing_id in crew_incidence.operated_option_to_pairings.columns_for_row(
+                    option_id
+                )
+            }
+            crew_coefficients[x[option_id]] = -1.0
+            solver.add_linear_constraint(
+                crew_coefficients,
+                ConstraintSense.EQUAL,
+                0.0,
+                name=_name(INTEGRATED_L02_SCHEDULE_CREW, option_id),
             )
-        }
-        crew_coefficients[x[option_id]] = -1.0
-        solver.add_linear_constraint(
-            crew_coefficients,
-            ConstraintSense.EQUAL,
-            0.0,
-            name=_name(INTEGRATED_L02_SCHEDULE_CREW, option_id),
-        )
         for pairing_id in crew_incidence.deadhead_option_to_pairings.columns_for_row(
             option_id
         ):
@@ -775,7 +776,7 @@ def recompute_integrated_diagnostics(
         if x_values[option_id] > 0.5
     )
     arm_request = AircraftRecoveryRequest(model.scenario.scenario_id, selected_operated)
-    crm_request = CrewRecoveryRequest(model.scenario.scenario_id, selected_operated)
+    crm_request = CrewRecoveryRequest(model.scenario.scenario_id, selected_operated if model.scenario.crew_enabled else ())
     prm_request = PassengerRecoveryRequest(
         model.scenario.scenario_id,
         selected_operated,
@@ -873,15 +874,16 @@ def recompute_integrated_diagnostics(
                 option_id
             )
         )
-        crew_checks.append(
-            _link_check(
-                INTEGRATED_L02_SCHEDULE_CREW,
-                option_id,
-                crew_coverage,
-                "==",
-                x_values[option_id],
+        if model.scenario.crew_enabled:
+            crew_checks.append(
+                _link_check(
+                    INTEGRATED_L02_SCHEDULE_CREW,
+                    option_id,
+                    crew_coverage,
+                    "==",
+                    x_values[option_id],
+                )
             )
-        )
         for pairing_id in model.crew_incidence.deadhead_option_to_pairings.columns_for_row(
             option_id
         ):

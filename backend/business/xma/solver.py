@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import math
 import threading
+from contextvars import ContextVar
 from time import perf_counter
 
 import gurobipy as gp
@@ -13,11 +14,14 @@ from highspy import cb as highspy_cb
 from scipy.optimize import Bounds, LinearConstraint, linprog, milp
 from backend.solver.runtime import ACTIVE_BUDGET, check_budget
 
+EXPLICIT_BACKEND = ContextVar("xma_explicit_backend", default="auto")
+
 
 class ScalableModel:
     def __init__(self,name,env):
         self.native=gp.Model(name,env=env)
-        self.highs=False
+        self.explicit_backend=EXPLICIT_BACKEND.get()
+        self.highs=self.explicit_backend=="highs"
         self.solver_name="Gurobi"
         self.state={}
         self.primal={}
@@ -85,7 +89,7 @@ class ScalableModel:
                 self.native.optimize(callback)
                 return
             except gp.GurobiError as exc:
-                if exc.errno!=10010:
+                if exc.errno!=10010 or self.__dict__.get("explicit_backend", "auto")!="auto":
                     raise
                 self.highs=True
                 self.solver_name="HiGHS"
@@ -121,6 +125,8 @@ class ScalableModel:
         except MemoryError:
             raise
         except Exception as exc:
+            if self.__dict__.get("explicit_backend", "auto")!="auto":
+                raise
             if self.cancel_check() or any(s in str(exc).lower() for s in ("memory", "bad_alloc", "allocation")):
                 raise
             self.solver_name="SciPy/HiGHS"

@@ -185,6 +185,8 @@ def build_fixed_column_crm(
     """Build, but do not solve, the Phase 2.4 Fixed-Column CRM."""
 
     _validate_request(scenario, columns, request)
+    if not scenario.crew_enabled:
+        request = CrewRecoveryRequest(scenario.scenario_id, ())
     _validate_pairing_flight_segments(columns)
     try:
         indices = build_recovery_indices(scenario, columns)

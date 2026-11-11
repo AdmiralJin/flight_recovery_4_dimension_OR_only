@@ -307,7 +307,7 @@ def build_recovered_result(
         else:
             if (
                 aircraft_cover[option.option_id] != 1
-                or crew_cover[option.option_id] != 1
+                or (scenario.crew_enabled and crew_cover[option.option_id] != 1)
             ):
                 raise ResultBuildError(
                     f"operated option {option.option_id} lacks unique resources"
@@ -324,7 +324,8 @@ def build_recovered_result(
                 departure_delay_minutes=option.departure_delay_minutes,
                 arrival_delay_minutes=option.arrival_delay_minutes,
                 aircraft_id=aircraft_owner[option.option_id],
-                crew_id=crew_owner[option.option_id],
+                crew_id=crew_owner.get(option.option_id),
+                crew_required=scenario.crew_enabled,
             )
             for changed, kind in (
                 (

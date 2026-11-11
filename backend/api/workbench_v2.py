@@ -88,7 +88,11 @@ def capabilities() -> dict[str, Any]:
             "max_concurrent_runs": 1,
         },
         "algorithm": "benders_branch_and_price_v1",
-        "business_modes": {"xma_research": {
+        "business_modes": {"public_benchmark": {
+            "schema_version": "public-benchmark-1.0", "backends": ["highs", "gurobi"],
+            "crew_enabled": False, "frozen_candidates_and_configs": True,
+            "workbench_algorithm": "air_bp", "original_rule_checks": "separate_native_evidence",
+        }, "xma_research": {
             "schema_version":"xma-solve-1.0",
             "objectives":["tianchi_2017","air_linear_v1"],
             "algorithms":["joint_arc_flow","joint_path_oracle","benders_joint","benders_cg_bp"],

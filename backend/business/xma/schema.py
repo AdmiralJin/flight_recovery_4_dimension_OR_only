@@ -122,6 +122,7 @@ class XmaDataset(SchemaModel):
     source_tables: dict[str, list[dict]] = Field(default_factory=dict)
     boundary_flights: dict[str, XmaFlight] = Field(default_factory=dict)
     subset_selection: XmaSubsetSelection | None = None
+    public_rules: dict | None = None
 
 
 class AirObjective(SchemaModel):

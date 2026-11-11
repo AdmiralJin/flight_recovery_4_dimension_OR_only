@@ -11,3 +11,4 @@ frontend/vite.config.js
 frontend/vite.config.d.ts
 test-results/
 playwright-report/
+.public_benchmarks/

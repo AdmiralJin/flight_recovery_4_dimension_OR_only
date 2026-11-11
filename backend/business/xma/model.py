@@ -73,6 +73,10 @@ def add_schedule_rows(model,request,options,x):
 
 def build_joint(request: XmaSolveRequest, options: list[Option], *, representation="arc", schedule=None,
                 relax=False, branch_bounds=None, enumerate_all=False, eliminate_dominated_rebooking=True) -> JointModel:
+    if request.dataset.public_rules is not None:
+        from backend.benchmarks.xma import build_public_joint
+        return build_public_joint(request, options, representation=representation, schedule=schedule,
+                                  relax=relax, branch_bounds=branch_bounds, enumerate_all=enumerate_all)
     if schedule is not None:
         options=[o for o in options if o.option_id in schedule]
     data=request.dataset
@@ -385,8 +389,8 @@ def path_coefficients(joint: JointModel, tail: str, path: tuple) -> dict:
     coeff={("select",tail):1}
     for oid in path:
         coeff["u",tail,oid]=1
-    end=flights[net["options"][path[-1]].flight_id].destination
-    coeff["terminal",aircraft.equipment,end]=1
+    end=flights[net["options"][path[-1]].flight_id].destination if path else aircraft.initial_station
+    coeff["terminal",aircraft.tail_id if data.public_rules is not None else aircraft.equipment,end]=1
     for left,right in zip(path,path[1:]):
         a,b=net["options"][left],net["options"][right]
         pair=(a.flight_id,b.flight_id)

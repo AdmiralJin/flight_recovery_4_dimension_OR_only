@@ -92,6 +92,8 @@ def validate_scenario(data: Any) -> tuple[Scenario | None, list[ValidationIssue]
     flights_by_id = {flight.flight_id: flight for flight in scenario.flights}
     start = scenario.recovery_window.start_time
     end = scenario.recovery_window.end_time
+    if not scenario.crew_enabled and scenario.crew:
+        issues.append(_issue("crew", "disabled_component", "crew must be empty when crew_enabled is false"))
 
     for index, flight in enumerate(scenario.flights):
         prefix = f"flights[{index}]"
@@ -107,7 +109,10 @@ def validate_scenario(data: Any) -> tuple[Scenario | None, list[ValidationIssue]
         elif flight.flight_id not in aircraft.original_rotation:
             issues.append(_issue(f"{prefix}.original_aircraft", "missing_from_rotation", "flight is absent from the original aircraft rotation"))
         assigned_crew = crew_by_id.get(flight.original_crew)
-        if assigned_crew is None:
+        if not scenario.crew_enabled:
+            if flight.original_crew is not None:
+                issues.append(_issue(f"{prefix}.original_crew", "disabled_component", "original_crew must be null when crew is disabled"))
+        elif assigned_crew is None:
             issues.append(_issue(f"{prefix}.original_crew", "unknown_crew", "crew does not exist"))
         elif assigned_crew.rating != flight.original_equipment:
             issues.append(_issue(f"{prefix}.original_crew", "rating_mismatch", "crew rating is incompatible with flight equipment"))

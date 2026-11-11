@@ -58,7 +58,8 @@ class Budget:
         model.Params.TimeLimit=max(0.001,self.remaining())
         if mip:
             model.Params.MIPGap=gap
-        self.emit("optimization","solver_selected","Gurobi selected as the primary solver.",metrics={"solver":"Gurobi","live_bounds_available":bool(mip)})
+        backend = "HiGHS" if model.highs else "Gurobi"
+        self.emit("optimization","solver_selected",f"{backend} selected as the solver.",metrics={"solver":backend,"live_bounds_available":bool(mip)})
         model.cancel_check=self.stopped
         model.progress_sink=lambda event_type,message,metrics,lower_bound=None,upper_bound=None:self.emit(
             "optimization",event_type,message,metrics={**metrics,"bound_scope":scope},lower_bound=lower_bound,upper_bound=upper_bound)
@@ -209,7 +210,8 @@ def price(joint,tail,duals):
     for oid in net["starts"]:
         distance[oid]=-duals["select",tail]-duals["u",tail,oid]
         predecessor[oid]=None
-    best=math.inf
+    best=(-duals["select",tail]-duals["terminal",tail,aircraft.initial_station]
+          if data.public_rules is not None else math.inf)
     best_end=None
     for oid in net["ordered"]:
         check_budget()
@@ -217,7 +219,7 @@ def price(joint,tail,duals):
             continue
         left=net["options"][oid]
         end=flights[left.flight_id].destination
-        cost=distance[oid]-duals["terminal",aircraft.equipment,end]
+        cost=distance[oid]-duals["terminal",aircraft.tail_id if data.public_rules is not None else aircraft.equipment,end]
         if cost<best:
             best,best_end=cost,oid
         for nxt in net["edges"].get(oid,[]):
@@ -243,6 +245,8 @@ def column_generation(request,options,schedule,budget,branch_bounds=None):
     joint=build_joint(request,options,representation="path",schedule=schedule,relax=True,branch_bounds=branch_bounds)
     model=joint.model
     for tail,net in joint.networks.items():
+        if request.dataset.public_rules is not None:
+            add_path(joint,tail,())
         if net["starts"]:
             add_path(joint,tail,(net["starts"][0],))
     model.update()
@@ -264,7 +268,7 @@ def column_generation(request,options,schedule,budget,branch_bounds=None):
         for tail in joint.networks:
             rc,path=price(joint,tail,duals)
             minimum=min(minimum,rc)
-            if path and rc<-1e-7:
+            if (path or request.dataset.public_rules is not None) and rc<-1e-7:
                 if (tail,path) in joint.path_variables:
                     if rc<-1e-5:
                         raise ValueError("negative reduced cost on an existing unbounded column")
