@@ -1,0 +1,389 @@
+{
+  "dataset": "TU_Delft_2019_Results",
+  "source_files": [
+    {
+      "file": "extracted/data/Case study - Delay Outbound Connecting Flights.xlsx",
+      "sha256": "5beaec994ca71fcc469a1ddc5d15e6cbb614500d3a566e0697214a627273aec6"
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sha256": "b862f21a77eaa109e8a7116679c7194526583af9f380eff3c6e9e009a76719f2"
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sha256": "1220de4d59cc1aaf1a82c72e374505a3e597075913b12b93eb5048858dfa261d"
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Random Forest Hyperparameters.xlsx",
+      "sha256": "4de83c3654619a0d062d9e56cc9cc98108147837cfa2f1db7ccf766f82f31ce3"
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sha256": "f5c3b4ead27d41c1d97a782774b50cec80b1b1db2b011899788944679e1ad60d"
+    },
+    {
+      "file": "extracted/data/Verification - Full DSS.xlsx",
+      "sha256": "9ffb5bcffe45d0eccaa1d03f27cb1fdc3900878937175c501bff8b4b98243998"
+    }
+  ],
+  "sheets": [
+    {
+      "file": "extracted/data/Case study - Delay Outbound Connecting Flights.xlsx",
+      "sheet": "With Outbound Delay",
+      "counts": {
+        "run_observation": 131,
+        "eligible_reference": 131,
+        "nonzero_cv": 0,
+        "publisher_101": 131,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Delay Outbound Connecting Flights.xlsx",
+      "sheet": "Without Outbound Delay",
+      "counts": {
+        "run_observation": 131,
+        "eligible_reference": 131,
+        "nonzero_cv": 0,
+        "publisher_101": 131,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Optimum",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Trivial",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 348,
+        "nonzero_cv": 19,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Heuristic",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Full DSS",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 2,
+        "summary_or_auxiliary": 2
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Full DSS-S",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Optimum",
+      "counts": {
+        "run_observation": 146,
+        "eligible_reference": 146,
+        "nonzero_cv": 0,
+        "publisher_101": 146,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Trivial",
+      "counts": {
+        "run_observation": 146,
+        "eligible_reference": 135,
+        "nonzero_cv": 11,
+        "publisher_101": 146,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Heuristic",
+      "counts": {
+        "run_observation": 146,
+        "eligible_reference": 146,
+        "nonzero_cv": 0,
+        "publisher_101": 146,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Full DSS-Jan",
+      "counts": {
+        "run_observation": 146,
+        "eligible_reference": 146,
+        "nonzero_cv": 0,
+        "publisher_101": 146,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Full DSS-Mar",
+      "counts": {
+        "run_observation": 146,
+        "eligible_reference": 146,
+        "nonzero_cv": 0,
+        "publisher_101": 146,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Random Forest Hyperparameters.xlsx",
+      "sheet": "max_features",
+      "counts": {
+        "summary_or_auxiliary": 33,
+        "eligible_reference": 0,
+        "nonzero_cv": 0,
+        "publisher_101": 0,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Random Forest Hyperparameters.xlsx",
+      "sheet": "max_depth",
+      "counts": {
+        "summary_or_auxiliary": 41,
+        "eligible_reference": 0,
+        "nonzero_cv": 0,
+        "publisher_101": 0,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Random Forest Hyperparameters.xlsx",
+      "sheet": "min_samples_leaf",
+      "counts": {
+        "summary_or_auxiliary": 49,
+        "eligible_reference": 0,
+        "nonzero_cv": 0,
+        "publisher_101": 0,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Random Forest Hyperparameters.xlsx",
+      "sheet": "min_samples_split",
+      "counts": {
+        "summary_or_auxiliary": 39,
+        "eligible_reference": 0,
+        "nonzero_cv": 0,
+        "publisher_101": 0,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Overview",
+      "counts": {
+        "summary_or_auxiliary": 13,
+        "eligible_reference": 0,
+        "nonzero_cv": 0,
+        "publisher_101": 0,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Full",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top10",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top20",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top30",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top40",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top50",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top60",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Thresh10",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Thresh20",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 367,
+        "nonzero_cv": 0,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Thresh30",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 366,
+        "nonzero_cv": 1,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Thresh40",
+      "counts": {
+        "run_observation": 367,
+        "eligible_reference": 365,
+        "nonzero_cv": 2,
+        "publisher_101": 367,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": " ",
+      "counts": {}
+    },
+    {
+      "file": "extracted/data/Verification - Full DSS.xlsx",
+      "sheet": "Full",
+      "counts": {
+        "run_observation": 71,
+        "eligible_reference": 71,
+        "nonzero_cv": 0,
+        "publisher_101": 71,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Verification - Full DSS.xlsx",
+      "sheet": "Trivial",
+      "counts": {
+        "run_observation": 71,
+        "eligible_reference": 71,
+        "nonzero_cv": 0,
+        "publisher_101": 71,
+        "formula_errors": 0
+      }
+    },
+    {
+      "file": "extracted/data/Verification - Full DSS.xlsx",
+      "sheet": "Full DSS",
+      "counts": {
+        "run_observation": 71,
+        "eligible_reference": 71,
+        "nonzero_cv": 0,
+        "publisher_101": 71,
+        "formula_errors": 0
+      }
+    }
+  ],
+  "counts": {
+    "run_observation": 7077,
+    "eligible_reference": 7044,
+    "nonzero_cv": 33,
+    "publisher_101": 7077,
+    "formula_errors": 2,
+    "summary_or_auxiliary": 177
+  },
+  "answer_kind": "publisher_results_without_rerunnable_inputs",
+  "paired_with_2020": false,
+  "status_101_is_not_our_optimality_proof": true
+}

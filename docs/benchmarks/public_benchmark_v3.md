@@ -2,6 +2,8 @@
 
 基线为 `fa293d3`（`workbench-v3-optimized`），分支为 `feature/public-benchmark-v3-validation`。公开入口使用 `public-benchmark-1.0` 封装，转换器版本、原文件 SHA-256、记录位置、模型、候选、成本、算法配置和固定上下文均保存在输入 JSON。算法与求解器选择不参与问题指纹；改变问题必须重新转换。
 
+首批冻结实验已结束，验收门槛未通过；实际结果、未执行任务与后续改进依据见[首批验证报告](public_v3_results.md)。
+
 ## 使用方式
 
 在仓库根目录执行，使用安装了 `requirements.txt` 的 Python。Windows 正式运行依赖 pywin32 Job Object，子进程在执行之前加入内存限制。安装前端后执行 `cd frontend`、`npm run build`、`npm run build:v3`，再返回仓库根目录。隔离回归仍检查 v2 页面，两套构建都必须冻结。

@@ -1,0 +1,5474 @@
+{
+  "schema_version": "public-post-analysis-1.0",
+  "created_at": "2026-11-11T12:20:13.645262+00:00",
+  "analysis_sha256": "399aba785a6033e20758e08cfbaced27d2626d55f71d366e3eb4e55bf5897ace",
+  "analysis_dependencies_sha256": {
+    "analysis.py": "399aba785a6033e20758e08cfbaced27d2626d55f71d366e3eb4e55bf5897ace",
+    "common.py": "cb8b597f29f71df814757bddbf1aceabd0c6b973883392204c09fbb02a2348fe",
+    "external.py": "a96d4b4f56ebcbfd33b002a87febb2da5fc939c92d33911711483b0e27744e44"
+  },
+  "campaign_manifest_sha256": "2ee178ad85b6f51fd9e463214fcca88c3354fba2e4a029bce6ffda13e4934fa6",
+  "campaign_status": "completed",
+  "source_connections_sha256": "55fd6aff53198facdd5614e9af7025c875ccb6f488ddf7747eced042f17c453b",
+  "publisher_rows_sha256": "2b00d3160f08be161ca24775c6df22e7dae57b3d3c3e0a75532820e9fd054401",
+  "jobs_with_evidence": 111,
+  "audited_business_observations": 59,
+  "publisher_distributions": [
+    {
+      "file": "extracted/data/Case study - Delay Outbound Connecting Flights.xlsx",
+      "sheet": "With Outbound Delay",
+      "observations": 131,
+      "eligible": 131,
+      "publisher_statuses": {
+        "101": 131
+      },
+      "metrics": {
+        "runtime_seconds": {
+          "n": 131,
+          "min": 5.0,
+          "median": 76.0,
+          "max": 226.0
+        },
+        "dv": {
+          "n": 131,
+          "min": 39447,
+          "median": 1682952,
+          "max": 11380043
+        },
+        "constraints": {
+          "n": 131,
+          "min": 15626,
+          "median": 404071,
+          "max": 1773419
+        },
+        "flights": {
+          "n": 131,
+          "min": 27,
+          "median": 257,
+          "max": 932
+        },
+        "aircraft": {
+          "n": 131,
+          "min": 18,
+          "median": 109,
+          "max": 218
+        },
+        "cost of disruption": {
+          "n": 131,
+          "min": -111368,
+          "median": 2292,
+          "max": 103379
+        },
+        "otp": {
+          "n": 131,
+          "min": 0.962962962962963,
+          "median": 0.995744680851063,
+          "max": 1
+        },
+        "dpc": {
+          "n": 131,
+          "min": 54,
+          "median": 230,
+          "max": 1857
+        },
+        "apd_seconds": {
+          "n": 131,
+          "min": 600.0,
+          "median": 1200.0,
+          "max": 15000.0
+        },
+        "xp": {
+          "n": 131,
+          "min": 0,
+          "median": 0,
+          "max": 0
+        },
+        "xf": {
+          "n": 131,
+          "min": 0,
+          "median": 0,
+          "max": 0
+        },
+        "mcp": {
+          "n": 131,
+          "min": 0,
+          "median": 0,
+          "max": 84
+        },
+        "rcp": {
+          "n": 131,
+          "min": 0,
+          "median": 0,
+          "max": 23
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Delay Outbound Connecting Flights.xlsx",
+      "sheet": "Without Outbound Delay",
+      "observations": 131,
+      "eligible": 131,
+      "publisher_statuses": {
+        "101": 131
+      },
+      "metrics": {
+        "runtime_seconds": {
+          "n": 131,
+          "min": 5.0,
+          "median": 70.0,
+          "max": 192.0
+        },
+        "dv": {
+          "n": 131,
+          "min": 39447,
+          "median": 1682952,
+          "max": 11380043
+        },
+        "constraints": {
+          "n": 131,
+          "min": 15626,
+          "median": 404071,
+          "max": 1773420
+        },
+        "flights": {
+          "n": 131,
+          "min": 27,
+          "median": 257,
+          "max": 932
+        },
+        "aircraft": {
+          "n": 131,
+          "min": 18,
+          "median": 109,
+          "max": 218
+        },
+        "cost of disruption": {
+          "n": 131,
+          "min": 48,
+          "median": 3992,
+          "max": 103379
+        },
+        "otp": {
+          "n": 131,
+          "min": 0.962962962962963,
+          "median": 0.996153846153846,
+          "max": 1
+        },
+        "dpc": {
+          "n": 131,
+          "min": 0,
+          "median": 160,
+          "max": 715
+        },
+        "apd_seconds": {
+          "n": 131,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 15000.0
+        },
+        "xp": {
+          "n": 131,
+          "min": 0,
+          "median": 0,
+          "max": 0
+        },
+        "xf": {
+          "n": 131,
+          "min": 0,
+          "median": 0,
+          "max": 0
+        },
+        "mcp": {
+          "n": 131,
+          "min": 0,
+          "median": 0,
+          "max": 79
+        },
+        "rcp": {
+          "n": 131,
+          "min": 0,
+          "median": 0,
+          "max": 0
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Optimum",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 19.0,
+          "median": 99.0,
+          "max": 500.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 31.0,
+          "max": 111.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 9.0,
+          "median": 69.0,
+          "max": 390.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 638,
+          "median": 1905527,
+          "max": 13926110
+        },
+        "constraints": {
+          "n": 367,
+          "min": 441,
+          "median": 499414,
+          "max": 2514932
+        },
+        "flights": {
+          "n": 367,
+          "min": 2,
+          "median": 279,
+          "max": 1049
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 2,
+          "median": 111,
+          "max": 222
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 395067
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995277449822904,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 196,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 271
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Trivial",
+      "observations": 367,
+      "eligible": 348,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 348,
+          "min": 6.0,
+          "median": 33.5,
+          "max": 117.0
+        },
+        "iterationsetup_seconds": {
+          "n": 348,
+          "min": 5.0,
+          "median": 31.0,
+          "max": 109.0
+        },
+        "time to best solution_seconds": {
+          "n": 348,
+          "min": 5.0,
+          "median": 31.0,
+          "max": 110.0
+        },
+        "dv": {
+          "n": 348,
+          "min": 197,
+          "median": 443.0,
+          "max": 14216
+        },
+        "constraints": {
+          "n": 348,
+          "min": 150,
+          "median": 296.5,
+          "max": 7534
+        },
+        "flights": {
+          "n": 348,
+          "min": 1,
+          "median": 3.0,
+          "max": 18
+        },
+        "aircraft": {
+          "n": 348,
+          "min": 1,
+          "median": 1.0,
+          "max": 8
+        },
+        "cost of disruption": {
+          "n": 348,
+          "min": 30,
+          "median": 4773.5,
+          "max": 806847
+        },
+        "otp": {
+          "n": 348,
+          "min": 0.5,
+          "median": 0.995180694908955,
+          "max": 1
+        },
+        "dpc": {
+          "n": 348,
+          "min": 0,
+          "median": 177.0,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 348,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 348,
+          "min": 0,
+          "median": 0.0,
+          "max": 490
+        },
+        "xf": {
+          "n": 348,
+          "min": 0,
+          "median": 0.0,
+          "max": 4
+        },
+        "mcp": {
+          "n": 348,
+          "min": 0,
+          "median": 0.0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Heuristic",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 14.0,
+          "median": 59.0,
+          "max": 217.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 33.0,
+          "max": 107.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 6.0,
+          "median": 35.0,
+          "max": 122.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 12136,
+          "max": 448445
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 6515,
+          "max": 198677
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 15,
+          "max": 159
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 1,
+          "median": 7,
+          "max": 52
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 500265
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995277449822904,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 190,
+          "max": 1040
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 317
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 163
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Full DSS",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 11.0,
+          "median": 55.0,
+          "max": 219.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 107.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 9.0,
+          "median": 43.0,
+          "max": 180.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 541112,
+          "max": 3580950
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 187479,
+          "max": 937058
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 134,
+          "max": 497
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 1,
+          "median": 56,
+          "max": 113
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 395067
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995277449822904,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 192,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 271
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - January data.xlsx",
+      "sheet": "Full DSS-S",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 11.0,
+          "median": 47.0,
+          "max": 164.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 110.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 7.0,
+          "median": 34.0,
+          "max": 116.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 12967,
+          "max": 717854
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 7094,
+          "max": 217848
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 16,
+          "max": 179
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 11,
+          "median": 11,
+          "max": 88
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 425612
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995277449822904,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 190,
+          "max": 1040
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 271
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 163
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Optimum",
+      "observations": 146,
+      "eligible": 146,
+      "publisher_statuses": {
+        "101": 146
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 146,
+          "min": 11.0,
+          "median": 131.5,
+          "max": 352.0
+        },
+        "iterationsetup_seconds": {
+          "n": 146,
+          "min": 6.0,
+          "median": 71.5,
+          "max": 99.0
+        },
+        "time to optimal_seconds": {
+          "n": 146,
+          "min": 11.0,
+          "median": 110.5,
+          "max": 299.0
+        },
+        "dv": {
+          "n": 146,
+          "min": 41162,
+          "median": 2426210.0,
+          "max": 13538961
+        },
+        "constraints": {
+          "n": 146,
+          "min": 18212,
+          "median": 632339.5,
+          "max": 2145642
+        },
+        "flights": {
+          "n": 146,
+          "min": 26,
+          "median": 343.0,
+          "max": 1044
+        },
+        "aircraft": {
+          "n": 146,
+          "min": 18,
+          "median": 116.0,
+          "max": 227
+        },
+        "cost of disruption": {
+          "n": 146,
+          "min": 75,
+          "median": 8260.5,
+          "max": 482570
+        },
+        "otp": {
+          "n": 146,
+          "min": 0.961538461538461,
+          "median": 0.996557649010546,
+          "max": 1
+        },
+        "dpc": {
+          "n": 146,
+          "min": 0,
+          "median": 217.0,
+          "max": 814
+        },
+        "apd_seconds": {
+          "n": 146,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 16800.0
+        },
+        "xp": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 289
+        },
+        "xf": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 110
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Trivial",
+      "observations": 146,
+      "eligible": 135,
+      "publisher_statuses": {
+        "101": 146
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 135,
+          "min": 8.0,
+          "median": 73.0,
+          "max": 104.0
+        },
+        "iterationsetup_seconds": {
+          "n": 135,
+          "min": 6.0,
+          "median": 70.0,
+          "max": 102.0
+        },
+        "time to optimal_seconds": {
+          "n": 135,
+          "min": 6.0,
+          "median": 70.0,
+          "max": 102.0
+        },
+        "dv": {
+          "n": 135,
+          "min": 197,
+          "median": 420,
+          "max": 3367
+        },
+        "constraints": {
+          "n": 135,
+          "min": 150,
+          "median": 242,
+          "max": 2181
+        },
+        "flights": {
+          "n": 135,
+          "min": 1,
+          "median": 3,
+          "max": 11
+        },
+        "aircraft": {
+          "n": 135,
+          "min": 1,
+          "median": 1,
+          "max": 3
+        },
+        "cost of disruption": {
+          "n": 135,
+          "min": 75,
+          "median": 7740,
+          "max": 820823
+        },
+        "otp": {
+          "n": 135,
+          "min": 0.961538461538461,
+          "median": 0.996296296296296,
+          "max": 1
+        },
+        "dpc": {
+          "n": 135,
+          "min": 0,
+          "median": 183,
+          "max": 814
+        },
+        "apd_seconds": {
+          "n": 135,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 16800.0
+        },
+        "xp": {
+          "n": 135,
+          "min": 0,
+          "median": 0,
+          "max": 513
+        },
+        "xf": {
+          "n": 135,
+          "min": 0,
+          "median": 0,
+          "max": 4
+        },
+        "mcp": {
+          "n": 135,
+          "min": 0,
+          "median": 0,
+          "max": 86
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Heuristic",
+      "observations": 146,
+      "eligible": 146,
+      "publisher_statuses": {
+        "101": 146
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 146,
+          "min": 11.0,
+          "median": 91.0,
+          "max": 172.0
+        },
+        "iterationsetup_seconds": {
+          "n": 146,
+          "min": 6.0,
+          "median": 72.5,
+          "max": 128.0
+        },
+        "time to optimal_seconds": {
+          "n": 146,
+          "min": 8.0,
+          "median": 75.0,
+          "max": 135.0
+        },
+        "dv": {
+          "n": 146,
+          "min": 247,
+          "median": 17070.0,
+          "max": 172946
+        },
+        "constraints": {
+          "n": 146,
+          "min": 151,
+          "median": 8288.5,
+          "max": 68046
+        },
+        "flights": {
+          "n": 146,
+          "min": 2,
+          "median": 22.0,
+          "max": 93
+        },
+        "aircraft": {
+          "n": 146,
+          "min": 11,
+          "median": 11.0,
+          "max": 33
+        },
+        "cost of disruption": {
+          "n": 146,
+          "min": 75,
+          "median": 8260.5,
+          "max": 509104
+        },
+        "otp": {
+          "n": 146,
+          "min": 0.961538461538461,
+          "median": 0.9964087685364276,
+          "max": 1
+        },
+        "dpc": {
+          "n": 146,
+          "min": 0,
+          "median": 211.0,
+          "max": 814
+        },
+        "apd_seconds": {
+          "n": 146,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 16800.0
+        },
+        "xp": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 336
+        },
+        "xf": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 97
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Full DSS-Jan",
+      "observations": 146,
+      "eligible": 146,
+      "publisher_statuses": {
+        "101": 146
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 146,
+          "min": 10.0,
+          "median": 90.0,
+          "max": 199.0
+        },
+        "iterationsetup_seconds": {
+          "n": 146,
+          "min": 6.0,
+          "median": 74.0,
+          "max": 99.0
+        },
+        "time to optimal_seconds": {
+          "n": 146,
+          "min": 9.0,
+          "median": 86.0,
+          "max": 166.0
+        },
+        "dv": {
+          "n": 146,
+          "min": 10730,
+          "median": 684595.5,
+          "max": 3601106
+        },
+        "constraints": {
+          "n": 146,
+          "min": 5866,
+          "median": 237652.5,
+          "max": 863435
+        },
+        "flights": {
+          "n": 146,
+          "min": 11,
+          "median": 168.5,
+          "max": 509
+        },
+        "aircraft": {
+          "n": 146,
+          "min": 9,
+          "median": 58.0,
+          "max": 115
+        },
+        "cost of disruption": {
+          "n": 146,
+          "min": 75,
+          "median": 8260.5,
+          "max": 482570
+        },
+        "otp": {
+          "n": 146,
+          "min": 0.961538461538461,
+          "median": 0.9964847900758635,
+          "max": 1
+        },
+        "dpc": {
+          "n": 146,
+          "min": 0,
+          "median": 212.0,
+          "max": 814
+        },
+        "apd_seconds": {
+          "n": 146,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 16800.0
+        },
+        "xp": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 310
+        },
+        "xf": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 110
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+      "sheet": "Full DSS-Mar",
+      "observations": 146,
+      "eligible": 146,
+      "publisher_statuses": {
+        "101": 146
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 146,
+          "min": 9.0,
+          "median": 83.0,
+          "max": 162.0
+        },
+        "iterationsetup_seconds": {
+          "n": 146,
+          "min": 6.0,
+          "median": 67.0,
+          "max": 92.0
+        },
+        "time to optimal_seconds": {
+          "n": 146,
+          "min": 8.0,
+          "median": 78.0,
+          "max": 134.0
+        },
+        "dv": {
+          "n": 146,
+          "min": 11381,
+          "median": 620889.5,
+          "max": 3594412
+        },
+        "constraints": {
+          "n": 146,
+          "min": 6516,
+          "median": 198023.0,
+          "max": 780496
+        },
+        "flights": {
+          "n": 146,
+          "min": 11,
+          "median": 158.0,
+          "max": 504
+        },
+        "aircraft": {
+          "n": 146,
+          "min": 9,
+          "median": 58.0,
+          "max": 115
+        },
+        "cost of disruption": {
+          "n": 146,
+          "min": 75,
+          "median": 8260.5,
+          "max": 604026
+        },
+        "otp": {
+          "n": 146,
+          "min": 0.961538461538461,
+          "median": 0.9965337017902195,
+          "max": 1
+        },
+        "dpc": {
+          "n": 146,
+          "min": 0,
+          "median": 217.0,
+          "max": 814
+        },
+        "apd_seconds": {
+          "n": 146,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 16800.0
+        },
+        "xp": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 401
+        },
+        "xf": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 3
+        },
+        "mcp": {
+          "n": 146,
+          "min": 0,
+          "median": 0.0,
+          "max": 110
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Full",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 19.0,
+          "median": 99.0,
+          "max": 500.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 31.0,
+          "max": 111.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 9.0,
+          "median": 69.0,
+          "max": 390.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 638,
+          "median": 1905527,
+          "max": 13926110
+        },
+        "constraints": {
+          "n": 367,
+          "min": 441,
+          "median": 499414,
+          "max": 2514932
+        },
+        "flights": {
+          "n": 367,
+          "min": 2,
+          "median": 279,
+          "max": 1049
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 2,
+          "median": 111,
+          "max": 222
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 395067
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995277449822904,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 196,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 271
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top10",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 7.0,
+          "median": 37.0,
+          "max": 116.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 100.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 6.0,
+          "median": 33.0,
+          "max": 104.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 29165,
+          "max": 175375
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 14172,
+          "max": 84668
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 26,
+          "max": 85
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 1,
+          "median": 12,
+          "max": 27
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 462550
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995283018867924,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 185,
+          "max": 1040
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 292
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 163
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top20",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 8.0,
+          "median": 41.0,
+          "max": 139.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 110.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 6.0,
+          "median": 35.0,
+          "max": 122.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 97313,
+          "max": 626510
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 42437,
+          "max": 241457
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 50,
+          "max": 185
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 1,
+          "median": 23,
+          "max": 47
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 444904
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995283018867924,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 189,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 292
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top30",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 9.0,
+          "median": 44.0,
+          "max": 163.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 112.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 7.0,
+          "median": 38.0,
+          "max": 140.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 203627,
+          "max": 1355849
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 82719,
+          "max": 451216
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 79,
+          "max": 287
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 1,
+          "median": 34,
+          "max": 69
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 444904
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995283018867924,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 189,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 292
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top40",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 10.0,
+          "median": 49.0,
+          "max": 181.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 99.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 8.0,
+          "median": 39.0,
+          "max": 152.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 363341,
+          "max": 2311053
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 130248,
+          "max": 667201
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 107,
+          "max": 383
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 1,
+          "median": 45,
+          "max": 91
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 443912
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995277449822904,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 190,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 292
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top50",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 11.0,
+          "median": 55.0,
+          "max": 219.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 107.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 9.0,
+          "median": 43.0,
+          "max": 180.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 541112,
+          "max": 3580950
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 187479,
+          "max": 937058
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 134,
+          "max": 497
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 1,
+          "median": 56,
+          "max": 113
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5511,
+          "max": 395067
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995277449822904,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 192,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 271
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Top60",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 12.0,
+          "median": 61.0,
+          "max": 270.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 112.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 8.0,
+          "median": 46.0,
+          "max": 216.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 746178,
+          "max": 5021872
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 248297,
+          "max": 1145579
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 162,
+          "max": 598
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 1,
+          "median": 67,
+          "max": 135
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5511,
+          "max": 395067
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995277449822904,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 196,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 271
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Thresh10",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 9.0,
+          "median": 71.0,
+          "max": 352.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 31.0,
+          "max": 112.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 7.0,
+          "median": 49.0,
+          "max": 295.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 638,
+          "median": 886662,
+          "max": 10887656
+        },
+        "constraints": {
+          "n": 367,
+          "min": 441,
+          "median": 271236,
+          "max": 1908042
+        },
+        "flights": {
+          "n": 367,
+          "min": 2,
+          "median": 158,
+          "max": 869
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 2,
+          "median": 79,
+          "max": 219
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5489,
+          "max": 395067
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995277449822904,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 196,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 271
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Thresh20",
+      "observations": 367,
+      "eligible": 367,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 367,
+          "min": 7.0,
+          "median": 47.0,
+          "max": 265.0
+        },
+        "iterationsetup_seconds": {
+          "n": 367,
+          "min": 5.0,
+          "median": 31.0,
+          "max": 112.0
+        },
+        "time to best solution_seconds": {
+          "n": 367,
+          "min": 6.0,
+          "median": 39.0,
+          "max": 245.0
+        },
+        "dv": {
+          "n": 367,
+          "min": 197,
+          "median": 121139,
+          "max": 6579161
+        },
+        "constraints": {
+          "n": 367,
+          "min": 150,
+          "median": 54546,
+          "max": 1327852
+        },
+        "flights": {
+          "n": 367,
+          "min": 1,
+          "median": 53,
+          "max": 672
+        },
+        "aircraft": {
+          "n": 367,
+          "min": 1,
+          "median": 27,
+          "max": 194
+        },
+        "cost of disruption": {
+          "n": 367,
+          "min": 30,
+          "median": 5511,
+          "max": 430040
+        },
+        "otp": {
+          "n": 367,
+          "min": 0.5,
+          "median": 0.995271867612293,
+          "max": 1
+        },
+        "dpc": {
+          "n": 367,
+          "min": 0,
+          "median": 192,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 367,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 276
+        },
+        "xf": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 367,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Thresh30",
+      "observations": 367,
+      "eligible": 366,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 366,
+          "min": 7.0,
+          "median": 40.0,
+          "max": 173.0
+        },
+        "iterationsetup_seconds": {
+          "n": 366,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 110.0
+        },
+        "time to best solution_seconds": {
+          "n": 366,
+          "min": 6.0,
+          "median": 35.0,
+          "max": 158.0
+        },
+        "dv": {
+          "n": 366,
+          "min": 197,
+          "median": 26526.5,
+          "max": 3815711
+        },
+        "constraints": {
+          "n": 366,
+          "min": 150,
+          "median": 12257.0,
+          "max": 835349
+        },
+        "flights": {
+          "n": 366,
+          "min": 1,
+          "median": 22.5,
+          "max": 465
+        },
+        "aircraft": {
+          "n": 366,
+          "min": 1,
+          "median": 12.0,
+          "max": 161
+        },
+        "cost of disruption": {
+          "n": 366,
+          "min": 30,
+          "median": 5467.0,
+          "max": 519676
+        },
+        "otp": {
+          "n": 366,
+          "min": 0.5,
+          "median": 0.9952746587175985,
+          "max": 1
+        },
+        "dpc": {
+          "n": 366,
+          "min": 0,
+          "median": 187.0,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 366,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 366,
+          "min": 0,
+          "median": 0.0,
+          "max": 326
+        },
+        "xf": {
+          "n": 366,
+          "min": 0,
+          "median": 0.0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 366,
+          "min": 0,
+          "median": 0.0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+      "sheet": "Thresh40",
+      "observations": 367,
+      "eligible": 365,
+      "publisher_statuses": {
+        "101": 367
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 365,
+          "min": 7.0,
+          "median": 38.0,
+          "max": 125.0
+        },
+        "iterationsetup_seconds": {
+          "n": 365,
+          "min": 5.0,
+          "median": 32.0,
+          "max": 110.0
+        },
+        "time to best solution_seconds": {
+          "n": 365,
+          "min": 6.0,
+          "median": 34.0,
+          "max": 113.0
+        },
+        "dv": {
+          "n": 365,
+          "min": 197,
+          "median": 7657,
+          "max": 2379171
+        },
+        "constraints": {
+          "n": 365,
+          "min": 150,
+          "median": 3919,
+          "max": 632605
+        },
+        "flights": {
+          "n": 365,
+          "min": 1,
+          "median": 11,
+          "max": 311
+        },
+        "aircraft": {
+          "n": 365,
+          "min": 1,
+          "median": 7,
+          "max": 133
+        },
+        "cost of disruption": {
+          "n": 365,
+          "min": 30,
+          "median": 5445,
+          "max": 488352
+        },
+        "otp": {
+          "n": 365,
+          "min": 0.5,
+          "median": 0.995283018867924,
+          "max": 1
+        },
+        "dpc": {
+          "n": 365,
+          "min": 0,
+          "median": 183,
+          "max": 992
+        },
+        "apd_seconds": {
+          "n": 365,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 11400.0
+        },
+        "xp": {
+          "n": 365,
+          "min": 0,
+          "median": 0,
+          "max": 324
+        },
+        "xf": {
+          "n": 365,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 365,
+          "min": 0,
+          "median": 0,
+          "max": 144
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Verification - Full DSS.xlsx",
+      "sheet": "Full",
+      "observations": 71,
+      "eligible": 71,
+      "publisher_statuses": {
+        "101": 71
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 71,
+          "min": 6.0,
+          "median": 81.0,
+          "max": 208.0
+        },
+        "iterationsetup_seconds": {
+          "n": 71,
+          "min": 4.0,
+          "median": 39.0,
+          "max": 78.0
+        },
+        "dv": {
+          "n": 71,
+          "min": 39447,
+          "median": 1611349,
+          "max": 8864336
+        },
+        "constraints": {
+          "n": 71,
+          "min": 15626,
+          "median": 404071,
+          "max": 1773420
+        },
+        "flights": {
+          "n": 71,
+          "min": 27,
+          "median": 233,
+          "max": 689
+        },
+        "aircraft": {
+          "n": 71,
+          "min": 18,
+          "median": 112,
+          "max": 216
+        },
+        "cost of disruption": {
+          "n": 71,
+          "min": 76,
+          "median": 2553,
+          "max": 103379
+        },
+        "otp": {
+          "n": 71,
+          "min": 0.962962962962963,
+          "median": 0.995798319327731,
+          "max": 1
+        },
+        "dpc": {
+          "n": 71,
+          "min": 57,
+          "median": 159,
+          "max": 711
+        },
+        "apd_seconds": {
+          "n": 71,
+          "min": 600.0,
+          "median": 1200.0,
+          "max": 15000.0
+        },
+        "xp": {
+          "n": 71,
+          "min": 0,
+          "median": 0,
+          "max": 0
+        },
+        "xf": {
+          "n": 71,
+          "min": 0,
+          "median": 0,
+          "max": 0
+        },
+        "mcp": {
+          "n": 71,
+          "min": 0,
+          "median": 0,
+          "max": 68
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Verification - Full DSS.xlsx",
+      "sheet": "Trivial",
+      "observations": 71,
+      "eligible": 71,
+      "publisher_statuses": {
+        "101": 71
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 71,
+          "min": 5.0,
+          "median": 40.0,
+          "max": 69.0
+        },
+        "iterationsetup_seconds": {
+          "n": 71,
+          "min": 4.0,
+          "median": 38.0,
+          "max": 65.0
+        },
+        "dv": {
+          "n": 71,
+          "min": 197,
+          "median": 320,
+          "max": 4622
+        },
+        "constraints": {
+          "n": 71,
+          "min": 150,
+          "median": 224,
+          "max": 3046
+        },
+        "flights": {
+          "n": 71,
+          "min": 1,
+          "median": 2,
+          "max": 8
+        },
+        "aircraft": {
+          "n": 71,
+          "min": 1,
+          "median": 1,
+          "max": 4
+        },
+        "cost of disruption": {
+          "n": 71,
+          "min": 76,
+          "median": 2741,
+          "max": 415904
+        },
+        "otp": {
+          "n": 71,
+          "min": 0.962962962962963,
+          "median": 0.995594713656387,
+          "max": 1
+        },
+        "dpc": {
+          "n": 71,
+          "min": 0,
+          "median": 159,
+          "max": 711
+        },
+        "apd_seconds": {
+          "n": 71,
+          "min": 0.0,
+          "median": 1200.0,
+          "max": 15000.0
+        },
+        "xp": {
+          "n": 71,
+          "min": 0,
+          "median": 0,
+          "max": 246
+        },
+        "xf": {
+          "n": 71,
+          "min": 0,
+          "median": 0,
+          "max": 2
+        },
+        "mcp": {
+          "n": 71,
+          "min": 0,
+          "median": 0,
+          "max": 91
+        }
+      }
+    },
+    {
+      "file": "extracted/data/Verification - Full DSS.xlsx",
+      "sheet": "Full DSS",
+      "observations": 71,
+      "eligible": 71,
+      "publisher_statuses": {
+        "101": 71
+      },
+      "metrics": {
+        "iterationtime_seconds": {
+          "n": 71,
+          "min": 6.0,
+          "median": 48.0,
+          "max": 83.0
+        },
+        "iterationsetup_seconds": {
+          "n": 71,
+          "min": 4.0,
+          "median": 38.0,
+          "max": 67.0
+        },
+        "dv": {
+          "n": 71,
+          "min": 4106,
+          "median": 181222,
+          "max": 939779
+        },
+        "constraints": {
+          "n": 71,
+          "min": 1755,
+          "median": 77888,
+          "max": 346683
+        },
+        "flights": {
+          "n": 71,
+          "min": 8,
+          "median": 68,
+          "max": 197
+        },
+        "aircraft": {
+          "n": 71,
+          "min": 6,
+          "median": 34,
+          "max": 66
+        },
+        "cost of disruption": {
+          "n": 71,
+          "min": 76,
+          "median": 2553,
+          "max": 103379
+        },
+        "otp": {
+          "n": 71,
+          "min": 0.962962962962963,
+          "median": 0.995798319327731,
+          "max": 1
+        },
+        "dpc": {
+          "n": 71,
+          "min": 57,
+          "median": 159,
+          "max": 711
+        },
+        "apd_seconds": {
+          "n": 71,
+          "min": 600.0,
+          "median": 1200.0,
+          "max": 15000.0
+        },
+        "xp": {
+          "n": 71,
+          "min": 0,
+          "median": 0,
+          "max": 0
+        },
+        "xf": {
+          "n": 71,
+          "min": 0,
+          "median": 0,
+          "max": 0
+        },
+        "mcp": {
+          "n": 71,
+          "min": 0,
+          "median": 0,
+          "max": 68
+        }
+      }
+    }
+  ],
+  "observations": [
+    {
+      "job": "J0002",
+      "instance": "micro-roadef-A01",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "cd2e1e1afe88ecdd880c5358ccbfd2ea273c92006affb7f2e2ef91ddbececd1a",
+      "evidence_sha256": "ad4de2a14138a27e55d10b8e06475ffc330cf984769b0cc507101c9177aeb6cb",
+      "metrics": {
+        "eligible": true,
+        "flights": 2,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 125,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0003",
+      "instance": "micro-roadef-A01",
+      "algorithm": "fixed_benders",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "d4ada6cdeaf826dd103ff04c8170789a1e61cc1658c5c0205be9fbb7b6f827ca",
+      "evidence_sha256": "bded096e85fc64ee1c9076baa3261ddadf25368e460db164b900c4624a271d6a",
+      "metrics": {
+        "eligible": true,
+        "flights": 2,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 125,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0004",
+      "instance": "micro-roadef-A01",
+      "algorithm": "air_cg",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "178d1f69fb303279bfe2c540a0602d98a911f8fab45d4adce4c6793f07fa6d4c",
+      "evidence_sha256": "bb063384c41dba7ee988910028a3c9db48d42f6fc4f08a61d7207f2259eeaac7",
+      "metrics": {
+        "eligible": true,
+        "flights": 2,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 125,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0005",
+      "instance": "micro-roadef-A01",
+      "algorithm": "air_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "4ec9dcf31ce6f7f8b0e9c61b4d969003c577578521a154a8b4dc47eaf8c2079f",
+      "evidence_sha256": "13b882e8ce43a909a294a49d0429454d57a2cb4aaad5a6f94e991a9258e0cd05",
+      "metrics": {
+        "eligible": true,
+        "flights": 2,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 125,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0006",
+      "instance": "micro-roadef-A01",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "232b690767d450d2fd74e2315899f1b9bcd961d4135f184220ac350118fcfdef",
+      "evidence_sha256": "20220e81b986f655edf81c6678d5fb34136379f1a6bad68880a91992088d42dc",
+      "metrics": {
+        "eligible": true,
+        "flights": 2,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 125,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0007",
+      "instance": "micro-roadef-A01",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "f6f23610d3e217a267085da157781d0f8a667e86b429cd7967f274435b55607e",
+      "evidence_sha256": "2ff8d63835c6a4f0bcc302b88fcd5b2c6d12167584bf26b9fd82acbec3e55126",
+      "metrics": {
+        "eligible": true,
+        "flights": 2,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 125,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0008",
+      "instance": "micro-roadef-A01",
+      "algorithm": "xma_benders_joint",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "8d2298097279302e0f8ca1b542f219598a27931aa4c75d57feaab0e4008d1c4a",
+      "evidence_sha256": "dff52f7f4130a868c9075a9a7523447970ab4e634f839981f0411a54315815ba",
+      "metrics": {
+        "eligible": true,
+        "flights": 2,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 125,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0009",
+      "instance": "micro-roadef-A01",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "d8b70ecee26af942e1f017f486e94cc26f4428770e9fcc5af8181b546cf08b3a",
+      "evidence_sha256": "59fb974b5e5d48fdfe3105b93f980a61e2f78fe1c6485192a99ecdf1b2c0bdb5",
+      "metrics": {
+        "eligible": true,
+        "flights": 2,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 125,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0010",
+      "instance": "micro-roadef-A01",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "45cb017ab4c274acc269475c7cfa0d7d3be3705cfbc71d2a53fba92815548505",
+      "evidence_sha256": "f2802751b55f430c32d06e2bb57ff062cab5b8fff99f1ab8b1ca51e0fac68f1f",
+      "metrics": {
+        "eligible": true,
+        "flights": 2,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 125,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0012",
+      "instance": "micro-roadef-A02",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "21280a70e24a34872d9d3c72d5413a5a3553f01d89b62a4208cf33c639e13e35",
+      "evidence_sha256": "895e21cad1e9a7cd234b24356e4512329dc28957486deb5244a6eba2f1efacbb",
+      "metrics": {
+        "eligible": true,
+        "flights": 4,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 138,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0013",
+      "instance": "micro-roadef-A02",
+      "algorithm": "fixed_benders",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "17f138d1e1e1bca09e7af31d5798a93f889c0d2d76e286f6fa259446f991b5cb",
+      "evidence_sha256": "833a7c04ca34ad64202864001d6e7d788572a43ba1a8786960690b1bdb19cb4d",
+      "metrics": {
+        "eligible": true,
+        "flights": 4,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 138,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0014",
+      "instance": "micro-roadef-A02",
+      "algorithm": "air_cg",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "3ecf08b2ee1932d8128cbd3990e9e4daff56311fe03a8b3ed64470cf2624d1bd",
+      "evidence_sha256": "99a09993bfbd0573586876947eab11724b8b6cd5f5fec976c954cb8111e32295",
+      "metrics": {
+        "eligible": true,
+        "flights": 4,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 138,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0015",
+      "instance": "micro-roadef-A02",
+      "algorithm": "air_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "3e969fad112481650e97e5176693782d29a48f1e2fecfc2eef4154000daedde1",
+      "evidence_sha256": "1d3a3d368d47e6c92820712824c7c315208a8ddbf730d9597c5203febc4c60a5",
+      "metrics": {
+        "eligible": true,
+        "flights": 4,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 138,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0016",
+      "instance": "micro-roadef-A02",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "de8d57359a0075601c2d27f127d38a8f9b10d6a99022d1040493c0d23342c225",
+      "evidence_sha256": "6418f0ad3e509d76191c3e1e423078251bab9d26b2133ed9c889c433b7863903",
+      "metrics": {
+        "eligible": true,
+        "flights": 4,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 138,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0017",
+      "instance": "micro-roadef-A02",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "a24c29cb22ddaf4a6c9101a53bfc33a84b7ea0baef92f1ed677c6180af1c49ef",
+      "evidence_sha256": "d01c5866f6bbfd7e8fb3a3d48ae539c9ec6dee589554fa4d514da3e26aa74871",
+      "metrics": {
+        "eligible": true,
+        "flights": 4,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 138,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0018",
+      "instance": "micro-roadef-A02",
+      "algorithm": "xma_benders_joint",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "562e89d3d4947d74cf5e911559a88c199d0a265836ecbb6909de18074addbe46",
+      "evidence_sha256": "64ce3fa5752a0f70555d8ee46cae2963f57e79c74f75551562e08aa3d845a8ea",
+      "metrics": {
+        "eligible": true,
+        "flights": 4,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 138,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0019",
+      "instance": "micro-roadef-A02",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "9fbd935fe932088e03ba1e9002e4362d9206b8d87d1c61343d22e451bf2f6ae5",
+      "evidence_sha256": "150eaa02073c6d5a2df1281628c2e22470ac43caeb7fca87ea4c2937946f4d00",
+      "metrics": {
+        "eligible": true,
+        "flights": 4,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 138,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0020",
+      "instance": "micro-roadef-A02",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "33c10cca61ec403d9fbf6aac90ffc0d822616b2c2fe0ae624e1f19b6e516393c",
+      "evidence_sha256": "9c3a2a4ac8c00094497d5b170e869f30093a83a402ad21ddeacd4181c0c2cf7c",
+      "metrics": {
+        "eligible": true,
+        "flights": 4,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 138,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0022",
+      "instance": "micro-roadef-A03",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "6205a1529f535d9aa642584cd9360ad2f8cac6e3c0cf238df41ae86e83cf999b",
+      "evidence_sha256": "9cac35584275b2a377192531c0ceb1fc8ff0bddc429191533e1b4dd5e21da4eb",
+      "metrics": {
+        "eligible": true,
+        "flights": 7,
+        "cancelled_flights": 0,
+        "delayed_flights": 4,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 496,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0023",
+      "instance": "micro-roadef-A03",
+      "algorithm": "fixed_benders",
+      "status": "aborted",
+      "raw_status": "aborted",
+      "input_sha256": "6d2219d7c6b1ab473432a2c591ffe2c1c415a2508db85ca9ad92ef2fbc0cd1ba",
+      "evidence_sha256": "e7c6542c2d980d3889dd4a114715aa456c4d1363964e135f9cb2d768a1696344",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0024",
+      "instance": "micro-roadef-A03",
+      "algorithm": "air_cg",
+      "status": "not_converged",
+      "raw_status": "not_converged",
+      "input_sha256": "3f23bdfa36192973ed2b6272e80dc37e2253abc34a3986162c39a2254d22c6fd",
+      "evidence_sha256": "16ff2f30e61834b73e493bd2c037602e00a6e09c5dd1727585e6ddcba2dc9b7f",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0025",
+      "instance": "micro-roadef-A03",
+      "algorithm": "air_bp",
+      "status": "not_converged",
+      "raw_status": "not_converged",
+      "input_sha256": "8acd832f3ec175495eafb266f943442df2e4694714ab7e5c146a5e37f29f845a",
+      "evidence_sha256": "4dcc6a8c75be6e39a057b692911595404e96fd34bb8a07ae2a0fd98e8a5213c9",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0026",
+      "instance": "micro-roadef-A03",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "282d84c8cbe1b3a2cae67aa6386e41f016c5c34c373a5f8d96c246755e8a1892",
+      "evidence_sha256": "859e7a0a30969dc241f409b64cfc759e55c1171066ef35ff46c2e2393680a131",
+      "metrics": {
+        "eligible": true,
+        "flights": 7,
+        "cancelled_flights": 0,
+        "delayed_flights": 4,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 496,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0027",
+      "instance": "micro-roadef-A03",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "5bfd5a415e6eca0893f97942e85bee0b92342895b87737be52dc273ca5f39c39",
+      "evidence_sha256": "8c1d91ab2fa1cc27e578a37c308a33aa0feaf6540b83b00401bae3b6d649b97b",
+      "metrics": {
+        "eligible": true,
+        "flights": 7,
+        "cancelled_flights": 0,
+        "delayed_flights": 4,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 496,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0028",
+      "instance": "micro-roadef-A03",
+      "algorithm": "xma_benders_joint",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "ba83ea55873809bb824a3a2772adf62f9d4d710fabbab26b59c795088b4fbf35",
+      "evidence_sha256": "3b31e2242e246bd9dc41e34b427c9c724e367a61ce2a75406ac2f2455590d43c",
+      "metrics": {
+        "eligible": true,
+        "flights": 7,
+        "cancelled_flights": 0,
+        "delayed_flights": 4,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 496,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0029",
+      "instance": "micro-roadef-A03",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "cbf81e590a774459b2ef64bd557d56a27423212ec9b5ede814f8eb77bda3b962",
+      "evidence_sha256": "5e0465a4babc118f48fc70b2e3eb6ba334e03bccc8bd3923ceabc70252ac3c72",
+      "metrics": {
+        "eligible": true,
+        "flights": 7,
+        "cancelled_flights": 0,
+        "delayed_flights": 4,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 496,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0030",
+      "instance": "micro-roadef-A03",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "86d8477f845369d445e10c3fc98fcf519e792b91ddebb866b42cfc24c1f79bf0",
+      "evidence_sha256": "486afceb95a3ac6bdcca1fd9ed9cd5f070a5e14343257d09cdc9940212bd958e",
+      "metrics": {
+        "eligible": true,
+        "flights": 7,
+        "cancelled_flights": 0,
+        "delayed_flights": 4,
+        "total_departure_delay_minutes": 240,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 496,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0032",
+      "instance": "micro-roadef-A04",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "9142e57fd22a96a82c1c558a73fb06bad502f628fd5bd4401c317c23c3bf9dc0",
+      "evidence_sha256": "95cc33f1af3200c4d4ead102775f800b0b89c907d8d85c396d5f17b6439fa1af",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0033",
+      "instance": "micro-roadef-A04",
+      "algorithm": "fixed_benders",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "98f74209073486d48036ad771ceb6694ef259cdfea1b79b3293dffcc34595684",
+      "evidence_sha256": "a7a772192b28a060d39587f804ad6a0487b3182514d798ccb7c7fcf13b1bf3a4",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0034",
+      "instance": "micro-roadef-A04",
+      "algorithm": "air_cg",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "c27fbe8b0cb3ed82aa6d4e392b4d3ad7ff3d49d3010b99157f23bd2e02d49a37",
+      "evidence_sha256": "24aae3b12be6f245e9a7a5a4018ae070f901f3e40faa4b0532b6f714fcebd202",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0035",
+      "instance": "micro-roadef-A04",
+      "algorithm": "air_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "5504b0e641ec988ee156a4307d71d0da4deecaddf262d4a087d0427751c4af7f",
+      "evidence_sha256": "86edf170d981b0021dec69f4f18ef7a5f0d11af2ddace6c1163bb6a66ee4528e",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0036",
+      "instance": "micro-roadef-A04",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "59f5f52c0765de1ae7cb9662dfbb240a771eedbbaa76f88c4beeb94e326cdea3",
+      "evidence_sha256": "fe3af71649ddca35f8dfecb901ad17356663caf4e18c46dbf013c080152a534a",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0037",
+      "instance": "micro-roadef-A04",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "0c5f35ba99e4239a168d911cb642aa90d58ae9b6a895585977e4d5b65b3f03af",
+      "evidence_sha256": "b91f9d084fa21c11b92bf0a7072c7faf1ad3ad2a3cd8f24cda56c37722d383d1",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0038",
+      "instance": "micro-roadef-A04",
+      "algorithm": "xma_benders_joint",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "8591c653c7c91dc4e91fb1f70368a6644daa83ad0797ebe19bf147d599bf3f5f",
+      "evidence_sha256": "ba6a798fa2c82a07a9c95f4928f854c47f32fe379263069eec15413772a157df",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0039",
+      "instance": "micro-roadef-A04",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "70fb4bbc7c2efff62c8ebacab8b68418cec33afb50cac731502fb22a182eb1f1",
+      "evidence_sha256": "b1ca54f2526b128322d81bf39aeac3cc03e0110efac02550dd57e9103894a8b0",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0040",
+      "instance": "micro-roadef-A04",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "0c883a91f5ff6ae7e0e8cf6c86361e15d094cad5898f90794f781574ee7eefc8",
+      "evidence_sha256": "e9627bbbde44eed5091759b781e79757cadb9e58b7ee5ccd4141413f3555f97a",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0042",
+      "instance": "micro-roadef-B01",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "e8e21cb402fda9af3146279ab6d9b11fbb56bdbe7fc34e67dc18ad46479d075e",
+      "evidence_sha256": "ee5bbec8f9e5375fdb3589a88bc2d13d1896fb4999897a78cd36a60717b429db",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0043",
+      "instance": "micro-roadef-B01",
+      "algorithm": "fixed_benders",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "f6bbbb56bfe1232ba07d2478e3d55da1469384f5ab2cc58fbf06a5280bb90d81",
+      "evidence_sha256": "9d6d748a2ff33a7229e34479557a01b5761e848b6b4b5eb9b9ed795f894c2ed1",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0044",
+      "instance": "micro-roadef-B01",
+      "algorithm": "air_cg",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "279479335aee6a23577319519d570d1c2d73d5d5e0a5ebfb936d4af76c0ff625",
+      "evidence_sha256": "a5c6914eeefc758d53885fbe5b9bc3717ef50dd45b50d61d62fabdb113cf539c",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0045",
+      "instance": "micro-roadef-B01",
+      "algorithm": "air_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "0bb2d96108d2630bfb5133e2ef0a2b65814f50717ec028f3c7fbca762965b44a",
+      "evidence_sha256": "fe255cff0c35b41c03d2470520b222c1b25bf7e6a7f606593168d08e52741ab7",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0046",
+      "instance": "micro-roadef-B01",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "a3d27e14ef651d511e88e1054e7321cad3b1a2d9ce7d16c7627807189d1c03b7",
+      "evidence_sha256": "7c9416aec9ba51a7e897b16a785b5eb2d12abb03e038e43267393b3d51af1445",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0047",
+      "instance": "micro-roadef-B01",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "3efe39cec171fdf56e8ecb012bc25af292df3d43ff79694ede8f7e7e47676a74",
+      "evidence_sha256": "0efc98fe876e81749ffe87385291f569bbe6be0f95b864dd35761b09f3f791b8",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0048",
+      "instance": "micro-roadef-B01",
+      "algorithm": "xma_benders_joint",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "b3f44301df0ba33c51fa78b29c3fb253020f3b475faede1026f6affb45674e55",
+      "evidence_sha256": "ca84f4107b20be9d8a0b8d78ac230a63d6bb53b006fa04a4e13d33403708b522",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0049",
+      "instance": "micro-roadef-B01",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "636209ffb60a2736a564beaf61be95c30413070ce32eada3a6555178569d0a7a",
+      "evidence_sha256": "5468f6f99a4054da6c7a69d886d9290ac0278a9919a5d6f3081956d73a8caa58",
+      "metrics": {
+        "eligible": true,
+        "flights": 11,
+        "cancelled_flights": 0,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0050",
+      "instance": "micro-roadef-B01",
+      "algorithm": "integrated_oracle",
+      "status": "license_limited",
+      "raw_status": "not_converged",
+      "input_sha256": "c025be636594cec2da5fdec38c813ccb0f0531f1442fc660dc12ef88f08abec6",
+      "evidence_sha256": "7745cad6abe07faae15f939cada1b1019cf42d1286401ceadfaaa02784203a35",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0052",
+      "instance": "micro-roadef-B02",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "18b08eef3c4b1196ad934d81c80583f0ce7153a2133b5d5be252e2bc32ea645e",
+      "evidence_sha256": "ec2acad8b1a9af0f2ed73dea757778e29b10c9d9fffd63d4aebc9bc3f7d4b1c4",
+      "metrics": {
+        "eligible": true,
+        "flights": 12,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 125,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0053",
+      "instance": "micro-roadef-B02",
+      "algorithm": "fixed_benders",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "cde97410e7d4494a0b25f4a4fc72a9c629cc33fba58045b963f7714836d1338c",
+      "evidence_sha256": "c56516c791e0aafd039bfa79563de57ea1553dc25c5177981beb45d5d254f676",
+      "metrics": {
+        "eligible": true,
+        "flights": 12,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 125,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0054",
+      "instance": "micro-roadef-B02",
+      "algorithm": "air_cg",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "d9425b644c1b15a387c1b3efbb50c0613d5cbea51651bd0799e015f3785dd2e5",
+      "evidence_sha256": "892a2e4659f992c66cdf5c6c477d80a0a7f1bcbc22d23ad15f59fab5c488a562",
+      "metrics": {
+        "eligible": true,
+        "flights": 12,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 125,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0055",
+      "instance": "micro-roadef-B02",
+      "algorithm": "air_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "6f2d48633a74c50b5028e44f6b2c1ffa26a77990bf84da1da3b70a9639aedfd6",
+      "evidence_sha256": "d76f8416a7fa5e224c22c533712ca9c090ec3533998da3124a550988bf035c71",
+      "metrics": {
+        "eligible": true,
+        "flights": 12,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 125,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0056",
+      "instance": "micro-roadef-B02",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "c515267a8b0113176d7df09a045d80765b7305d24050e713fa738443930ab9da",
+      "evidence_sha256": "97fdad831991ac17acd0f47baabe85426f09dc2a67e98401adc67c84756f379c",
+      "metrics": {
+        "eligible": true,
+        "flights": 12,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 125,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0057",
+      "instance": "micro-roadef-B02",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "dd1445c58fa3ccb17d49cf8cbf89ca4d34b6939a09f03132c0629add84e98478",
+      "evidence_sha256": "d9f53d507758c839aafe03b30b98ded78a6e5b5f5a0df46ebf6d57d3dd91bfb8",
+      "metrics": {
+        "eligible": true,
+        "flights": 12,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 125,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0058",
+      "instance": "micro-roadef-B02",
+      "algorithm": "xma_benders_joint",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "e32b445c6179daa28b344449bd7f0b2f16626be420635afaf644f5d9bb54c2d4",
+      "evidence_sha256": "e9ac159ff8e5ce97fd7a07ac5549119703bc348b16f360fa379d017984cf90b9",
+      "metrics": {
+        "eligible": true,
+        "flights": 12,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 125,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0059",
+      "instance": "micro-roadef-B02",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "a18ca19574d4fb3fc397cc6f0b17c304437491b229d1af7071e98fd98fb20420",
+      "evidence_sha256": "3772f78cd544855e4924d3b50a895c14400d0b0cde2634245ba9f382dc18511f",
+      "metrics": {
+        "eligible": true,
+        "flights": 12,
+        "cancelled_flights": 1,
+        "delayed_flights": 0,
+        "total_departure_delay_minutes": 0,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 125,
+        "original_boardings_on_delayed_legs": 0,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0060",
+      "instance": "micro-roadef-B02",
+      "algorithm": "integrated_oracle",
+      "status": "license_limited",
+      "raw_status": "not_converged",
+      "input_sha256": "c8a31cfd08598bbc058265fe67583bc0336943de0706ffffe24e2db8ab7b8028",
+      "evidence_sha256": "cf0b489b302f53391ffcbbcdc926216968d80ff477855d7946d58714760fba3c",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0062",
+      "instance": "micro-delft-2015-01-01",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "92eea6071dfe67ec6f11b09404fd23cd9544e2eb4dfa59c9b8fec0c776ede2af",
+      "evidence_sha256": "53ebf6e3fd84fbbd0abc124817213be23c007b4e3471adeb3f92e442097b45a6",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0063",
+      "instance": "micro-delft-2015-01-01",
+      "algorithm": "fixed_benders",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "33eaa70e8a0fcaf807ff4287289c1d8b9485bd45a9f5f818de242de8ee5f2286",
+      "evidence_sha256": "53ae4915590d310d75799c5ebaa84e115cf14fb3ccfd0305e434b27fa69b7b09",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0064",
+      "instance": "micro-delft-2015-01-01",
+      "algorithm": "air_cg",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "f167eaa882070abca5c20ca0c065b76f4beabb7fb175a3ddd59c6e4e6e36f50c",
+      "evidence_sha256": "e5682ac9f7401cb4247d8c6ca81c4686113dcb8e93f099f50b56dc607bfa1911",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0065",
+      "instance": "micro-delft-2015-01-01",
+      "algorithm": "air_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "3b2d468b8a2665f0457f786fcb63c04651315e6c30f1c6bf1da40bd8bc668939",
+      "evidence_sha256": "ae476685fd121e1626d2ced9b03cab42fda93705908b9ad2f73c30a3962e7409",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0066",
+      "instance": "micro-delft-2015-01-01",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "d9907bae7484656e343af6ae694355d213f442b356ce50888a3eb12d08e0e8aa",
+      "evidence_sha256": "8d9e290afb1112ae337c3f03c356422d50e5b2f28e99367679782e3fc0e69916",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0067",
+      "instance": "micro-delft-2015-01-01",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "b7575eb3266683c8fe16bec08cef443ebdead6b847f937e3175f35cea2164efd",
+      "evidence_sha256": "e7806125ac0b28ba0e3cefdecf115340bbbee91467bd076ea9344585a623906f",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0068",
+      "instance": "micro-delft-2015-01-01",
+      "algorithm": "xma_benders_joint",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "d93273118a26cced9644275fd08b25d626ce06451174ecdf5b235e544125a295",
+      "evidence_sha256": "ab67afe9420cbbf2c2e0b0dc46e7a29c45cb363da94cc0c0eab60c0371b049ec",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0069",
+      "instance": "micro-delft-2015-01-01",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "df5b737a3c1f1c7eb4fd5f6405b164222b06bf13fa0255989dfb13b175fc1ca0",
+      "evidence_sha256": "47d91356e4974ab10f6c37a58c76a7cf0a86234d21f39817caaa9bdb883eda3d",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0070",
+      "instance": "micro-delft-2015-01-01",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "4da912d2e610de159e53f365df11c51243b2fea60d801862db4b687d4f97958d",
+      "evidence_sha256": "c48a23b04ae3b1e2c831c3b5f2f761e1713f136b7b126be2f8ee9857d1f28288",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0072",
+      "instance": "micro-delft-2015-01-02",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "4c3ae02eba65a6f6826eb0f9b484261b1797059f0229466eee1bcce9cfe1f5fc",
+      "evidence_sha256": "e3c45389be632bfa4abeb91fac2b50c50ae3f14f6a0be3b1fbc3d596926ccb89",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0073",
+      "instance": "micro-delft-2015-01-02",
+      "algorithm": "fixed_benders",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "705ea2e9832608e05837fa2bcd98ce027622759dbd2c8c4577d3cc155b5d0e3f",
+      "evidence_sha256": "b3743c7354108d3b47949436e2dedbe53feea6906c06fd5763f8deacb798a21a",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0074",
+      "instance": "micro-delft-2015-01-02",
+      "algorithm": "air_cg",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "e20711ac11849b63fc3c3297587a9f7be3949e8cc1a47379ce09a1e8ffda94bf",
+      "evidence_sha256": "e21b56f44b212dc659114958538ca682bc0aa628373093d1f9d326d2fa846b5e",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0075",
+      "instance": "micro-delft-2015-01-02",
+      "algorithm": "air_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "e6f5c4d1a4a2590c210f83adeb81799d064b09c4086608ff38db633e9e3d0154",
+      "evidence_sha256": "fbcc6a204155be7b166b70aa3195a349e7a261cc290a47767e1d8af12dcaeb5c",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0076",
+      "instance": "micro-delft-2015-01-02",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "162c9ebde23493400421f9fa65cb40f091b0050671f8f2a91145be1e57bfbdbc",
+      "evidence_sha256": "c9eb3daaf186ff4205be3270ccb3dcffb7210ca30415a04941df0a5c68e2ed8e",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0077",
+      "instance": "micro-delft-2015-01-02",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "4885835cace3d7b750e4c34daf65984866acc0806d4f341a5f911025cf4989cf",
+      "evidence_sha256": "fd106597829d5f3f471e277fe0b8c61ffd41d5f2c0e438fea7082e78ef9d1759",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0078",
+      "instance": "micro-delft-2015-01-02",
+      "algorithm": "xma_benders_joint",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "4b8e1d67a26b180256168fdbce2640f2c44d0d3c2b11ba6cf29b1e435f88a070",
+      "evidence_sha256": "945d893230589986e29c4aa2a7e65476a6c56ce0738ea6e7350fd3514237306e",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0079",
+      "instance": "micro-delft-2015-01-02",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "034557548145efdf6d0d8e5d3e7a0565d2365a7747c2d91fe850187f43788f92",
+      "evidence_sha256": "e0da630d629b2f33b99f25de593623cf23cf119b55b958bfdffce96aa909a3d8",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0080",
+      "instance": "micro-delft-2015-01-02",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "d32e2afbb8113a6bf9e2e3b4d0f1bc10f50737373d97950d9a81926fb75a1d8e",
+      "evidence_sha256": "417e347c7f28cf924baefa775c9b6790d500e138a1416a19219a47ee2eb7b33e",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0082",
+      "instance": "micro-delft-2015-01-04",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "5fb0028e837e1832a4694adc4c08df2a1c5e1b0968f77aa25b70df75ee0388a0",
+      "evidence_sha256": "11d753844039918326a41963f85faaaebb824197d8994a9dbe6bbe6e056929a9",
+      "metrics": {
+        "eligible": true,
+        "flights": 6,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 5,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 230,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      },
+      "connection_impact": {
+        "counts": {},
+        "scope": "source connection observations touching selected legs; not full OD or distinct passengers",
+        "baseline": "derived positive departure delay and observed arrival delay; outside legs fixed to source context"
+      }
+    },
+    {
+      "job": "J0083",
+      "instance": "micro-delft-2015-01-04",
+      "algorithm": "fixed_benders",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "b466179f0f18f9481de7dec8599f06932d9f3fe3232a6f44198aafc210d12a30",
+      "evidence_sha256": "a815b644dcfd21eb7b27a81e8b68f2c9df1dd083de26488186845d9984708215",
+      "metrics": {
+        "eligible": true,
+        "flights": 6,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 5,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 230,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      },
+      "connection_impact": {
+        "counts": {},
+        "scope": "source connection observations touching selected legs; not full OD or distinct passengers",
+        "baseline": "derived positive departure delay and observed arrival delay; outside legs fixed to source context"
+      }
+    },
+    {
+      "job": "J0084",
+      "instance": "micro-delft-2015-01-04",
+      "algorithm": "air_cg",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "5468d38fafe57f6c793e304f81cd7100ad076cd2e2cba56a478a8419c1e3588e",
+      "evidence_sha256": "eed29b6bd29f0e88756bece3f5252cc5bb8ffd8ad379c1495e6d1ab5e9285d83",
+      "metrics": {
+        "eligible": true,
+        "flights": 6,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 5,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 230,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      },
+      "connection_impact": {
+        "counts": {},
+        "scope": "source connection observations touching selected legs; not full OD or distinct passengers",
+        "baseline": "derived positive departure delay and observed arrival delay; outside legs fixed to source context"
+      }
+    },
+    {
+      "job": "J0085",
+      "instance": "micro-delft-2015-01-04",
+      "algorithm": "air_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "4084ff6437720d87f9380932831200711efb017ad3970a1ff0163364b6be026b",
+      "evidence_sha256": "30d37d61217af4816030d0363c2ea09c45d0d266e8e98205597afb756078095d",
+      "metrics": {
+        "eligible": true,
+        "flights": 6,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 5,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 230,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      },
+      "connection_impact": {
+        "counts": {},
+        "scope": "source connection observations touching selected legs; not full OD or distinct passengers",
+        "baseline": "derived positive departure delay and observed arrival delay; outside legs fixed to source context"
+      }
+    },
+    {
+      "job": "J0086",
+      "instance": "micro-delft-2015-01-04",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "5fb3502960ca7320493ed8270b02b516288f01aad63b7b1ae69b461d9b646f45",
+      "evidence_sha256": "60f5afdbcd8e9f57a0631a533d355dd3011c4265fbe1d0f5a5c633a4750c63f5",
+      "metrics": {
+        "eligible": true,
+        "flights": 6,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 5,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 230,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      },
+      "connection_impact": {
+        "counts": {},
+        "scope": "source connection observations touching selected legs; not full OD or distinct passengers",
+        "baseline": "derived positive departure delay and observed arrival delay; outside legs fixed to source context"
+      }
+    },
+    {
+      "job": "J0087",
+      "instance": "micro-delft-2015-01-04",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "78b72f009a623327b0ec5caaa916a01fcaec14bc56c0330f0ffefc758263c27f",
+      "evidence_sha256": "52449ae8166fbb36946131709e9da9d1a4334e0d7ed7df3496792c0a44369fc4",
+      "metrics": {
+        "eligible": true,
+        "flights": 6,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 5,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 230,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      },
+      "connection_impact": {
+        "counts": {},
+        "scope": "source connection observations touching selected legs; not full OD or distinct passengers",
+        "baseline": "derived positive departure delay and observed arrival delay; outside legs fixed to source context"
+      }
+    },
+    {
+      "job": "J0088",
+      "instance": "micro-delft-2015-01-04",
+      "algorithm": "xma_benders_joint",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "79d733abf4b9f3b6eb843a54511d518c3c8a6351a5ddf7c9f549feda63e7dc13",
+      "evidence_sha256": "2b392a786866100b0cde87c5d4df7d14bdb0b3f9267ac02f09685333ed13064b",
+      "metrics": {
+        "eligible": true,
+        "flights": 6,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 5,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 230,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      },
+      "connection_impact": {
+        "counts": {},
+        "scope": "source connection observations touching selected legs; not full OD or distinct passengers",
+        "baseline": "derived positive departure delay and observed arrival delay; outside legs fixed to source context"
+      }
+    },
+    {
+      "job": "J0089",
+      "instance": "micro-delft-2015-01-04",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "64b9a7ebeea933d821cd268953511a1cb27fb4ae220c06949cba068c3f1bcbea",
+      "evidence_sha256": "c4679b56b55fa1749468f0bfc2af67491590fd62b9cf546a22c80e9a002c69cb",
+      "metrics": {
+        "eligible": true,
+        "flights": 6,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 5,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 230,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      },
+      "connection_impact": {
+        "counts": {},
+        "scope": "source connection observations touching selected legs; not full OD or distinct passengers",
+        "baseline": "derived positive departure delay and observed arrival delay; outside legs fixed to source context"
+      }
+    },
+    {
+      "job": "J0090",
+      "instance": "micro-delft-2015-01-04",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "d3be25a6a1508df8bad8b3b1b96a31401312d172a127289f0e51857e8133b269",
+      "evidence_sha256": "116c82eb5b9b8e15d181f461da8e5886952e29b5c7cfc4ff989ffb15fa164f54",
+      "metrics": {
+        "eligible": true,
+        "flights": 6,
+        "cancelled_flights": 0,
+        "delayed_flights": 2,
+        "total_departure_delay_minutes": 5,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 230,
+        "optimized_passenger_groups": 0,
+        "optimized_passengers": 0,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 0,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      },
+      "connection_impact": {
+        "counts": {},
+        "scope": "source connection observations touching selected legs; not full OD or distinct passengers",
+        "baseline": "derived positive departure delay and observed arrival delay; outside legs fixed to source context"
+      }
+    },
+    {
+      "job": "J0092",
+      "instance": "micro-delft-2015-01-08",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "801d1fb0652bb2fea3c769f0664dcb3688720bf35cbea56e59ce724b80515968",
+      "evidence_sha256": "a2180fa46f60a6facbbcbe6fdb661b1d49a29bb87ab752615777706a029ba959",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0093",
+      "instance": "micro-delft-2015-01-08",
+      "algorithm": "fixed_benders",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "b074a1e64d98a8d06c865a95e8c5a9b6e78896a9abcf85c394c4253d92095e51",
+      "evidence_sha256": "477ad709e5ed6a671709918b31d35bf0c9ec575eafac838692a25614f6226164",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0094",
+      "instance": "micro-delft-2015-01-08",
+      "algorithm": "air_cg",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "b5fb4e2662588b107bdf31de9b2ca0aa0ac9d9954b01a863d8756742e6a0f06c",
+      "evidence_sha256": "c832dc4637f9a53fc05a4c58945d1dfec42c022a75c5c217558176cc186f868d",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0095",
+      "instance": "micro-delft-2015-01-08",
+      "algorithm": "air_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "03a6dbaab4411f9e231f8befec1f6fa1d8aff6dffb1422f119f19f24ee252b64",
+      "evidence_sha256": "bd3a5492ea0d0e47d769f8b337c47b0e6c3eea7782946c2f397b03510259a5db",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0096",
+      "instance": "micro-delft-2015-01-08",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "71f375d19f6f44094fbb7e26bec92f090be7ef00a16211f566c2aff3933ef365",
+      "evidence_sha256": "594a5e857d238455585d4f93381566e53531f221009e831748d6c8bf9489fd9e",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0097",
+      "instance": "micro-delft-2015-01-08",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "86abdde1bf752e9e15ee29ce633f201854171d46983a7a0b2fff8be821ae7b87",
+      "evidence_sha256": "9ccbb081704ae924f2993c1cf7530c03b82325ad5349103b689f541918cff66f",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0098",
+      "instance": "micro-delft-2015-01-08",
+      "algorithm": "xma_benders_joint",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "67348388cb4611eee8964c7f98790e5887faa3e694a38dce0b1ed9f4e5e89902",
+      "evidence_sha256": "b7519b618c795930e0e55993d63ed193225164e9b678a5c954551bd496983c4c",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0099",
+      "instance": "micro-delft-2015-01-08",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "9c714ea0dc014ada405828a2f1eb795efc2abd081803483957d96beb51f981ac",
+      "evidence_sha256": "ba558118cb89b1cbd5b6dedbc1eb75829ac557beebbda498651d3a73e30ffe29",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0100",
+      "instance": "micro-delft-2015-01-08",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "c92188d343e7e5a1c3f34da91d15cff6da792128fdac39bbca0e5e0a67697f25",
+      "evidence_sha256": "2bbf617adf72bbbaeb35769117fe91120e663357952ce21369c03087e4d1ed36",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0102",
+      "instance": "micro-delft-2015-02-01",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "f1b075240f75cb6d28a2eeb4dbd82fa9f8b82d301fb9a8972b7b8df382d33d2b",
+      "evidence_sha256": "1edeaaeacd8c474ea7422f505d145ece3bbd93817d01ba510ad44481ebd70ec4",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0103",
+      "instance": "micro-delft-2015-02-01",
+      "algorithm": "fixed_benders",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "593124ddc19c2dabe3616eacfea3edad26c98881ba4114ca0d5f7564def76ada",
+      "evidence_sha256": "ded60d36e03950ceea1c205679b32a5d75ca30678df5eb0cbda3ecddf8941047",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0104",
+      "instance": "micro-delft-2015-02-01",
+      "algorithm": "air_cg",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "322bfbf7a5425094afb7559902809a0668ccccf2d8b5fb8cc242dec25f201a46",
+      "evidence_sha256": "8ec99885c81d1496e117eb77e748c05cc499cd1d05ac63868fb37667c006aebc",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0105",
+      "instance": "micro-delft-2015-02-01",
+      "algorithm": "air_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "4f1fdf4d3e37e58a4d6351fc9ddaf5cd5b4a2a12b379fe0cfd562a6eb21c36aa",
+      "evidence_sha256": "0ee9c863e09387e97a6560dc7e9a8facd3bf1269a9e565dc5aecb41c125b7244",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0106",
+      "instance": "micro-delft-2015-02-01",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "b5a3ea52bab742886c6e6173c5b402291b7201c8b76623036c579f383783f331",
+      "evidence_sha256": "7f66b854d7155f8fbd2116a9a52b07ffd3b60840cbc441596964c930285bbae8",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0107",
+      "instance": "micro-delft-2015-02-01",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "a0a5424931f1ead3378801b2586e0743b1ebaf507ec75f8e6ed757f82ad83ee4",
+      "evidence_sha256": "3f2effbd2071d96e609bddf1f5b1107d48ff5d06dc52c4ef448f16d3263d5c76",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0108",
+      "instance": "micro-delft-2015-02-01",
+      "algorithm": "xma_benders_joint",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "c3723b9c2d2841842e23b5b5b019922c5093928e52b5978945be7eec403f02bc",
+      "evidence_sha256": "9e8be105c474acf37ee31690bca31470cc35a66cd9a0ae512bacac1d11dfce09",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0109",
+      "instance": "micro-delft-2015-02-01",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "f0167eb29fdeb34ad4c02fb3a4afe974660937fc1aaf00fd6bd619c45622c466",
+      "evidence_sha256": "9c8894227904b538fa972c2939936ea940ef90da30a886d983b66deccabc8158",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0110",
+      "instance": "micro-delft-2015-02-01",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "57038f83ad5ee69728aab398368aa80c903fcd03de90e662c884e179fc093ba0",
+      "evidence_sha256": "9ccff4ce18eb178d178261cbe3ba7a5b22ac8cf8c3e7146be941faf3856417e9",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0112",
+      "instance": "micro-delft-2015-03-01",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "d241c1a5adb9adfd3d387b894c0dd60e465ae0e2b90c214fdcae5025826a5665",
+      "evidence_sha256": "d1b10e1f57d259be621788e3312b271360bad0fcfd441b85e29e0d0af62f2408",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0113",
+      "instance": "micro-delft-2015-03-01",
+      "algorithm": "fixed_benders",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "c4acadd5b5c833f61d80a3400fa7794dbad930b05bd123fa432935d203a2fe1a",
+      "evidence_sha256": "286b8d4eb624db6820f4cc7cb09ce89a9ae644d08ba942018144708d204d1bf7",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0114",
+      "instance": "micro-delft-2015-03-01",
+      "algorithm": "air_cg",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "ea5c495eadedd82a1b92831821a96f0b90a8339116b53f656a22b5c45e4a72fc",
+      "evidence_sha256": "079a73220a64d35afa45c010aaccacefac8c0dcf987cca5de0dac065018815b3",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0115",
+      "instance": "micro-delft-2015-03-01",
+      "algorithm": "air_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "21d2eb730cdf405c317ecdc70f3864bd3dd1ad9f7eddce9ad26ac9e567005b63",
+      "evidence_sha256": "45a4c956136c5c7ea1fae88946b3f8b1879d4098c73a6077631b9ec7895240aa",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0116",
+      "instance": "micro-delft-2015-03-01",
+      "algorithm": "xma_joint_arc_flow",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "085dc592a7763384dcda714ba789ca2e1af4c66fe673204a7663a57a9fb79b42",
+      "evidence_sha256": "782ef3b619c18c4ac14850bd31d98edf7c442cee300100feee0076fbe9643bf3",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0117",
+      "instance": "micro-delft-2015-03-01",
+      "algorithm": "xma_joint_path_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "d072eb63d76166cf9cd57c91ade56da707522b8379415da94337719239856e74",
+      "evidence_sha256": "afdb7224d497f38b791fdb155e647e352238bc7b2a72d2ee15ead42e6b32fa6e",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0118",
+      "instance": "micro-delft-2015-03-01",
+      "algorithm": "xma_benders_joint",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "59bfbf5ae361a3bf76dda4fc5856cebc5b4583af58eb9ad7d57ec64dae72d8db",
+      "evidence_sha256": "3977001b129c9616673697a2de3a034deeb3fdd63c35f1db7d9e88244189b8e1",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0119",
+      "instance": "micro-delft-2015-03-01",
+      "algorithm": "xma_benders_cg_bp",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "f34649cf87d40bda8b1c6dad2fe1bbedd130506430c3e6420d4c5a83f9de4311",
+      "evidence_sha256": "a98984bc1812180db2b8eeeb5ea786238fdcbe7f60091b936d290ed5ca9ae40c",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0120",
+      "instance": "micro-delft-2015-03-01",
+      "algorithm": "integrated_oracle",
+      "status": "infeasible",
+      "raw_status": "infeasible",
+      "input_sha256": "b38dac1501be7795a0568c6c08d692874424c069a099fa3fed9dfe7a3e25637a",
+      "evidence_sha256": "ccf291dafae516064be3b1e756de8a45df6582e9a8d4d0389eab630e808c22ff",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0122",
+      "instance": "roadef-pax",
+      "algorithm": "integrated_oracle",
+      "status": "optimal",
+      "raw_status": "optimal",
+      "input_sha256": "d69cdb87c4dd3449a4439287b31f26af6496e65fc104306de85b04e0a5493d60",
+      "evidence_sha256": "af0cece9daf6839a2a4c30e69a1aed939e0d0493b0f49c688ad584d614dce098",
+      "metrics": {
+        "eligible": true,
+        "flights": 8,
+        "cancelled_flights": 0,
+        "delayed_flights": 5,
+        "total_departure_delay_minutes": 150,
+        "reassigned_flights": 0,
+        "original_boardings_on_cancelled_legs": 0,
+        "original_boardings_on_delayed_legs": 684,
+        "optimized_passenger_groups": 16,
+        "optimized_passengers": 469,
+        "unserved_optimized_passengers": 0,
+        "optimized_passenger_delay_minutes": 9360,
+        "exposure_unit": "original flight-leg boardings; not distinct disrupted or recovered people"
+      }
+    },
+    {
+      "job": "J0123",
+      "instance": "roadef-pax",
+      "algorithm": "fixed_benders",
+      "status": "aborted",
+      "raw_status": "aborted",
+      "input_sha256": "97519b6c213ba3960452b478d6088faf8310acd1d6876066da695540dd6092b6",
+      "evidence_sha256": "d19723f54e500dbea3b1b56b0a6be8df1c2577ed0048e85dc81656c2d3886238",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    },
+    {
+      "job": "J0124",
+      "instance": "roadef-pax",
+      "algorithm": "air_bp",
+      "status": "not_converged",
+      "raw_status": "not_converged",
+      "input_sha256": "743a9e49b7a318e622d06c7831108f084dc85439a046d1b95774f8195b7778ef",
+      "evidence_sha256": "4aa5002bb5a5d879de7e8fe7c70fca213867fd7ade8fff483fdb74ebdda7de22",
+      "metrics": {
+        "eligible": false,
+        "reason": "no_independently_audited_primal"
+      }
+    }
+  ],
+  "original_rule_comparisons": [
+    {
+      "instance": "micro-roadef-A01",
+      "source_instance": "A01",
+      "precheck_ready": true,
+      "native_evidence": [
+        {
+          "job": "J0125",
+          "evidence_sha256": "6541e63c1cdb9747a149fb70d9a82c1d1c362f31c32e1b62809c49feb5441f95",
+          "passed": false,
+          "historical_comparison": {
+            "eligible": false,
+            "reason": "native_feasibility_cost_or_reference_missing"
+          },
+          "violations": [
+            "checkItinerary.txt",
+            "checkRotation.txt"
+          ]
+        }
+      ],
+      "historical_eligible": false,
+      "no_score_reason": "native_feasibility_cost_or_mapping_failed",
+      "scheduled_task_verdicts": {
+        "J0125": "passed"
+      }
+    },
+    {
+      "instance": "roadef-pax",
+      "source_instance": "A01",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "grid-roadef-60",
+      "source_instance": "A01",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "grid-roadef-30",
+      "source_instance": "A01",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "grid-roadef-15",
+      "source_instance": "A01",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "micro-roadef-A02",
+      "source_instance": "A02",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "micro-roadef-A03",
+      "source_instance": "A03",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "micro-roadef-A04",
+      "source_instance": "A04",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "micro-roadef-B01",
+      "source_instance": "B01",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "micro-roadef-B02",
+      "source_instance": "B02",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "scale-roadef-20-0",
+      "source_instance": "A01",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "scale-roadef-20-17",
+      "source_instance": "A01",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "scale-roadef-20-42",
+      "source_instance": "A01",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "scale-roadef-50-0",
+      "source_instance": "A01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "scale-roadef-50-17",
+      "source_instance": "A01",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "scale-roadef-50-42",
+      "source_instance": "A01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "scale-roadef-100-0",
+      "source_instance": "A01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "scale-roadef-100-17",
+      "source_instance": "A01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "scale-roadef-100-42",
+      "source_instance": "A01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "stress-roadef-500",
+      "source_instance": "A01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {}
+    },
+    {
+      "instance": "full-roadef-A01",
+      "source_instance": "A01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0435": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-A02",
+      "source_instance": "A02",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0437": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-A03",
+      "source_instance": "A03",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0439": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-A04",
+      "source_instance": "A04",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0441": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-A05",
+      "source_instance": "A05",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0443": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-X01",
+      "source_instance": "X01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0445": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-X02",
+      "source_instance": "X02",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0447": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-X03",
+      "source_instance": "X03",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0449": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-X04",
+      "source_instance": "X04",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0451": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-XA01",
+      "source_instance": "XA01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0453": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-XA02",
+      "source_instance": "XA02",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0455": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-XA03",
+      "source_instance": "XA03",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0457": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-XA04",
+      "source_instance": "XA04",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0459": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-XB01",
+      "source_instance": "XB01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0461": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-XB02",
+      "source_instance": "XB02",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0463": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-XB03",
+      "source_instance": "XB03",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0465": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-XB04",
+      "source_instance": "XB04",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0467": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-A06",
+      "source_instance": "A06",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0469": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-A07",
+      "source_instance": "A07",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0471": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-A08",
+      "source_instance": "A08",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0473": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-A09",
+      "source_instance": "A09",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0475": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-A10",
+      "source_instance": "A10",
+      "precheck_ready": true,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0477": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B01",
+      "source_instance": "B01",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0479": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B02",
+      "source_instance": "B02",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0481": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B03",
+      "source_instance": "B03",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0483": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B04",
+      "source_instance": "B04",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0485": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B05",
+      "source_instance": "B05",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0487": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B06",
+      "source_instance": "B06",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0489": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B07",
+      "source_instance": "B07",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0491": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B08",
+      "source_instance": "B08",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0493": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B09",
+      "source_instance": "B09",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0495": "blocked_by_correctness"
+      }
+    },
+    {
+      "instance": "full-roadef-B10",
+      "source_instance": "B10",
+      "precheck_ready": false,
+      "native_evidence": [],
+      "historical_eligible": false,
+      "no_score_reason": "native_evaluation_not_executed_or_no_audited_solution",
+      "scheduled_task_verdicts": {
+        "J0497": "blocked_by_correctness"
+      }
+    }
+  ],
+  "historical_references": {
+    "B01": {
+      "value": 971182.5,
+      "team": "Jozefowiez, Mancel, Mora-Camino",
+      "file": "verification/official_results_table_2.csv",
+      "row": 8,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "B02": {
+      "value": 1220708.3,
+      "team": "Jozefowiez, Mancel, Mora-Camino",
+      "file": "verification/official_results_table_2.csv",
+      "row": 8,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "B03": {
+      "value": 1007565.7,
+      "team": "Jozefowiez, Mancel, Mora-Camino",
+      "file": "verification/official_results_table_2.csv",
+      "row": 8,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "B04": {
+      "value": 1101394.8,
+      "team": "Jozefowiez, Mancel, Mora-Camino",
+      "file": "verification/official_results_table_2.csv",
+      "row": 8,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "B05": {
+      "value": 9653780.05,
+      "team": "Peekstok, Kuipers",
+      "file": "verification/official_results_table_2.csv",
+      "row": 7,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "B06": {
+      "value": 3218000.1,
+      "team": "Jozefowiez, Mancel, Mora-Camino",
+      "file": "verification/official_results_table_2.csv",
+      "row": 8,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "B07": {
+      "value": 5039744.2,
+      "team": "Jozefowiez, Mancel, Mora-Camino",
+      "file": "verification/official_results_table_2.csv",
+      "row": 8,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "B08": {
+      "value": 3509318.0,
+      "team": "Jozefowiez, Mancel, Mora-Camino",
+      "file": "verification/official_results_table_2.csv",
+      "row": 8,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "B09": {
+      "value": 3967344.7,
+      "team": "Jozefowiez, Mancel, Mora-Camino",
+      "file": "verification/official_results_table_2.csv",
+      "row": 8,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "B10": {
+      "value": 34523605.0,
+      "team": "Hanafi, Wilbaut, Mansi, Clautiaux",
+      "file": "verification/official_results_table_2.csv",
+      "row": 3,
+      "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "XA01": {
+      "value": 116195.2,
+      "team": "Hanafi, Wilbaut, Mansi, Clautiaux",
+      "file": "verification/official_results_table_3.csv",
+      "row": 3,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "XA02": {
+      "value": 1475322.1,
+      "team": "Hanafi, Wilbaut, Mansi, Clautiaux",
+      "file": "verification/official_results_table_3.csv",
+      "row": 3,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "XA03": {
+      "value": 285287.05,
+      "team": "Hanafi, Wilbaut, Mansi, Clautiaux",
+      "file": "verification/official_results_table_3.csv",
+      "row": 3,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "XA04": {
+      "value": 4112262.6,
+      "team": "Hanafi, Wilbaut, Mansi, Clautiaux",
+      "file": "verification/official_results_table_3.csv",
+      "row": 3,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "XB01": {
+      "value": 1352823.05,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "verification/official_results_table_3.csv",
+      "row": 2,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "XB02": {
+      "value": 11297822.2,
+      "team": "Peekstok, Kuipers",
+      "file": "verification/official_results_table_3.csv",
+      "row": 7,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "XB03": {
+      "value": 6463354.3,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "verification/official_results_table_3.csv",
+      "row": 2,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "XB04": {
+      "value": 34331225.8,
+      "team": "Hanafi, Wilbaut, Mansi, Clautiaux",
+      "file": "verification/official_results_table_3.csv",
+      "row": 3,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": true
+    },
+    "X01": {
+      "value": 1116142.85,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "verification/official_results_table_3.csv",
+      "row": 2,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": false
+    },
+    "X02": {
+      "value": 806011.2,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "verification/official_results_table_3.csv",
+      "row": 2,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": false
+    },
+    "X03": {
+      "value": 2682125.0,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "verification/official_results_table_3.csv",
+      "row": 2,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": false
+    },
+    "X04": {
+      "value": 485904.75,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "verification/official_results_table_3.csv",
+      "row": 2,
+      "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+      "reference_kind": "historical_upper_bound",
+      "table": null,
+      "competition_scored": false
+    },
+    "A01": {
+      "value": 23789.05,
+      "team": "Peekstok, Kuipers",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 12,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    },
+    "A02": {
+      "value": 83515.0,
+      "team": "Peekstok, Kuipers",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 12,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    },
+    "A03": {
+      "value": 131694.6,
+      "team": "Hanafi, Wilbaut, Mansi",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 3,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    },
+    "A04": {
+      "value": 108081.9,
+      "team": "Acuna-Agost, Michelon, Feillet, Gueye",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 4,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    },
+    "A05": {
+      "value": 3717376.35,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 2,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    },
+    "A06": {
+      "value": 44305.05,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 2,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    },
+    "A07": {
+      "value": 202247.75,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 2,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    },
+    "A08": {
+      "value": 329521.85,
+      "team": "Hanafi, Wilbaut, Mansi",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 3,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    },
+    "A09": {
+      "value": 187144.4,
+      "team": "Acuna-Agost, Michelon, Feillet, Gueye",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 4,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    },
+    "A10": {
+      "value": 7210166.9,
+      "team": "Bisaillon, Cordeau, Laporte, Pasin",
+      "file": "documentation/resultat_qualif.php.html",
+      "row": 2,
+      "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+      "reference_kind": "historical_upper_bound",
+      "table": 2,
+      "competition_scored": true
+    }
+  },
+  "limitations": [
+    "publisher sheets may overlap; do not pool as independent samples",
+    "only the frozen January 1 connection window is available for connection analysis",
+    "connection and boarding exposures do not establish recovered passenger demand"
+  ]
+}

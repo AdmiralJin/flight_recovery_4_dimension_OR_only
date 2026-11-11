@@ -1,0 +1,63 @@
+{
+  "created_at": "2026-11-11T20:22:29.410523+08:00",
+  "campaign_commit": "8d2b1c7dc46aaab3606d42755a68a97e6ec7f5d8",
+  "reporting_commit": "afea9799662d3842727f6b7edfc4af9bfdee7d2c",
+  "local_detailed_evidence": ".public_benchmarks/formal-v3-20261111-r4",
+  "files": [
+    {
+      "file": ".gitattributes",
+      "sha256": "2926ac3b3bc869e4a3579b39f4aa7b8428bf582c9a35b647b7c665faa2cba5a6",
+      "bytes": 152
+    },
+    {
+      "file": "analysis.json",
+      "sha256": "ac87c5ee59d31daf878afae6f0e455d0b35e6b4f1ed917bf03da3d301e8d11d4",
+      "bytes": 169192
+    },
+    {
+      "file": "evidence_index.json",
+      "sha256": "69292e4421306a35edee1d82e14788924ec686e46d10b87c6e2a9857ffc986aa",
+      "bytes": 123306
+    },
+    {
+      "file": "manifest.json",
+      "sha256": "5ef0f22639fae9403543fdb5268d77f64705453d035f51749c43e186392eab52",
+      "bytes": 212800
+    },
+    {
+      "file": "native_checker_evidence.json",
+      "sha256": "6541e63c1cdb9747a149fb70d9a82c1d1c362f31c32e1b62809c49feb5441f95",
+      "bytes": 6245
+    },
+    {
+      "file": "publisher_2019_summary.json",
+      "sha256": "5fb2b39d1d2055f34bdb959932e1dfed30c671c31632ca0d18decbf92f948f57",
+      "bytes": 11163
+    },
+    {
+      "file": "registry.json",
+      "sha256": "f21984451eb4f4a994e8f11a84da2497ed93e67d71250b9ebf534f16b3767d9a",
+      "bytes": 372594
+    },
+    {
+      "file": "runs.csv",
+      "sha256": "e6ffd65262b711713b02e20595ad45ea30d60f2f4a940a8d614dd6252001c6e5",
+      "bytes": 87285
+    },
+    {
+      "file": "state.json",
+      "sha256": "1ebb10eec95fd720de4b81fd3bf706d58b63aa40c4dc61c3157ba35c93b58649",
+      "bytes": 132179
+    },
+    {
+      "file": "summary.json",
+      "sha256": "8d10625f26e4b9554bbde1177d82a029270f0525b8c471fa36ba7a0933e2c512",
+      "bytes": 33170
+    },
+    {
+      "file": "workbench_review.json",
+      "sha256": "6da121a64195de16ca13c12337edd3d5a65b25c3d62d997eece0f647ac02b842",
+      "bytes": 5307
+    }
+  ]
+}
