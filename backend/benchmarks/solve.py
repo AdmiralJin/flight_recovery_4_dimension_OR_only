@@ -17,7 +17,7 @@ from backend.solver import HighsAdapter, GurobiAdapter
 from backend.solver.runtime import SolveBudget, use_budget, SolveStopped
 
 from .audit import audit, enumerate_paths, necessary_infeasibility_certificate
-from .common import clean, digest, frozen_repository_state
+from .common import clean, digest, frozen_repository_state, solver_failure
 from .model import PublicSolveRequest
 
 
@@ -150,6 +150,11 @@ def execute(request, *, seconds=120, cancel_check=None, event_sink=None, checkpo
                 args.append(configs["branch_and_price"])
             core = fn(*args, solver_factory=factory, solver_parameters=parameters, event_sink=event_sink)
             raw_core = clean(core)
+    failure = solver_failure({"core": raw_core})
+    if failure:
+        return dict(**failure, core=raw_core, problem_sha256=request.problem_sha256,
+                    algorithm=request.algorithm, backend=request.backend, objective=None, lower_bound=None, upper_bound=None,
+                    certified_optimal=False, runtime_seconds=perf_counter()-start, original_rules={"eligible": False})
     if core.solution_columns is not None:
         columns = core.solution_columns
     selected = {"flight_options": core.selected_flight_options, "aircraft_strings": core.selected_aircraft_strings,
@@ -188,10 +193,13 @@ def solve_request(request, *, event_sink=None, cancel_check=None, run_id=None, r
                        node_limit=controls.get("max_branch_nodes"), iteration_limit=controls.get("max_benders_iterations"))
     if evidence["status"] == "unsupported_input":
         raise ValueError(str(evidence["precheck"]["issues"]))
+    if evidence["status"] in ("license_limited", "solver_error"):
+        raise ValueError(evidence["status"]+": "+evidence["reason"])
     from backend.schemas.columns import RecoveryColumns
     raw = evidence.get("core") or {"status": evidence["status"], "objective_value": None,
         "lower_bound": None, "upper_bound": None, "diagnostics": {
-            "terminal_reason": "certified_preprocessing_infeasibility", "infeasibility_certificate": evidence.get("infeasibility_certificate")}}
+            "terminal_reason": "certified_preprocessing_infeasibility" if evidence.get("certified_infeasible") else evidence["status"],
+            "infeasibility_certificate": evidence.get("infeasibility_certificate")}}
     selections = evidence.get("selected") or {"flight_options": [], "aircraft_strings": [], "passenger_itineraries": []}
     core = SimpleNamespace(status=RecoveredStatus(raw["status"]), objective_value=raw["objective_value"],
         lower_bound=raw["lower_bound"], upper_bound=raw["upper_bound"], diagnostics=raw["diagnostics"],

@@ -7,6 +7,7 @@ import re
 import subprocess
 import csv
 import math
+from html.parser import HTMLParser
 
 from backend.schemas.columns import RecoveryColumns, FlightOperationType, PassengerItineraryStatus
 
@@ -19,26 +20,69 @@ CHECK_FILES = ["checkItinerary.txt", "checkPassengerReac.txt", "checkRotation.tx
                "checkFixedFlights.txt"]
 
 
+class _ReferenceTables(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.tables, self.rows, self.row, self.cell = [], None, None, None
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "table":
+            self.rows = []
+            self.tables.append(self.rows)
+        elif tag == "tr" and self.rows is not None:
+            self.row = []
+        elif tag in ("td", "th") and self.row is not None:
+            self.cell = []
+
+    def handle_data(self, data):
+        if self.cell is not None:
+            self.cell.append(data)
+
+    def handle_endtag(self, tag):
+        if tag in ("td", "th") and self.cell is not None:
+            self.row.append("".join(self.cell).strip())
+            self.cell = None
+        elif tag == "tr" and self.row is not None:
+            self.rows.append(self.row)
+            self.row = None
+        elif tag == "table":
+            self.rows = None
+
+
 def historical_references(root):
     """Published feasible upper bounds, never certificates of global optimality."""
     result = {}
+    def add(case, text, path, row_number, team, table=None):
+        if not re.fullmatch(r"(?:A|B|X|XA|XB)\d{2}", case or ""):
+            return
+        try:
+            value = float("".join((text or "").split()).replace(",", "."))
+        except ValueError:
+            return
+        if not math.isfinite(value):
+            return
+        record = dict(value=value, team=team, file=path.relative_to(root).as_posix(), row=row_number,
+                      sha256=file_hash(path), reference_kind="historical_upper_bound", table=table,
+                      competition_scored=case not in ("X01", "X02", "X03", "X04"))
+        if case not in result or value < result[case]["value"]:
+            result[case] = record
     for path in sorted((root / "verification").glob("official_results_table_*.csv")):
         with path.open(encoding="utf-8-sig", newline="") as stream:
             for row_number, row in enumerate(csv.DictReader(stream), 2):
                 for case, text in row.items():
-                    if not re.fullmatch(r"(?:A|B|X|XA|XB)\d{2}", case or ""):
-                        continue
-                    try:
-                        value = float((text or "").strip().replace(",", "."))
-                    except ValueError:
-                        continue
-                    if not math.isfinite(value):
-                        continue
-                    record = dict(value=value, team=row.get("Equipe"), file=path.name, row=row_number,
-                                  sha256=file_hash(path), reference_kind="historical_upper_bound",
-                                  competition_scored=case not in ("X01", "X02", "X03", "X04"))
-                    if case not in result or value < result[case]["value"]:
-                        result[case] = record
+                    add(case, text, path, row_number, row.get("Equipe"))
+    # Qualification A-instance values are in a separate publisher page, not
+    # the downloaded final-results CSV tables (which contain rankings/B/X).
+    path = root / "documentation/resultat_qualif.php.html"
+    if path.exists():
+        parser = _ReferenceTables()
+        parser.feed(path.read_text(encoding="utf-8", errors="replace"))
+        for table_number, rows in enumerate(parser.tables, 1):
+            if not rows:
+                continue
+            for row_number, row in enumerate(rows[1:], 2):
+                for case, text in zip(rows[0][1:], row[1:]):
+                    add(case, text, path, row_number, row[0], table_number)
     return result
 
 

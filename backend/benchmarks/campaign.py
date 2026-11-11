@@ -16,7 +16,7 @@ import sys
 import time
 import traceback
 
-from .common import ROOT, BASELINE, clean, digest, file_hash, read_json, write_json, discover, utc_now
+from .common import ROOT, BASELINE, clean, digest, file_hash, read_json, write_json, discover, utc_now, solver_failure
 from .model import PublicSolveRequest, build
 
 TERMINAL = {"completed", "passed", "failed", "inconclusive", "error", "license_limited", "resource_limited",
@@ -35,7 +35,7 @@ def correctness_gate(manifest, state):
             continue
         result = state["jobs"].get(job["id"], {})
         if job["kind"] in ("pytest", "workbench", "components", "external") and result.get("verdict") != "passed":
-            reasons.append(dict(job=job["id"], reason="regression_or_workbench_not_passed"))
+            reasons.append(dict(job=job["id"], reason=job["kind"]+"_not_passed", verdict=result.get("verdict")))
         if job["kind"] == "solve" and (str(job["instance"]).startswith("micro-") or job["instance"] == "roadef-pax") and not job.get("backend_override"):
             problems[job["instance"]].append((job, result))
     for instance, runs in problems.items():
@@ -414,7 +414,7 @@ def worker(folder, job_id):
                 node_limit=node_limit, iteration_limit=iteration_limit, event_sink=events,
                 checkpoint_sink=lambda value: write_json(target / "checkpoint.json", value))
             write_json(target / "evidence.json", evidence)
-            verdict = "unsupported_input" if evidence["status"] == "unsupported_input" else "completed"
+            verdict = evidence["status"] if evidence["status"] in ("unsupported_input", "license_limited") else "error" if evidence["status"] == "solver_error" else "completed"
             if evidence.get("objective") is not None and not (evidence.get("audit") or {}).get("pass"):
                 verdict = "failed"
             result = dict(verdict=verdict, optimization_status=evidence["status"],
@@ -556,19 +556,29 @@ def report(folder):
     folder = folder.resolve()
     manifest, state = read_json(folder / "manifest.json"), read_json(folder / "state.json")
     registry = {r["id"]: r for r in read_json(folder / "registry.json")}
-    counts = Counter(r["verdict"] for r in state["jobs"].values())
+    counts = Counter()
     rows, grouped = [], defaultdict(list)
     for job in manifest["jobs"]:
-        result = state["jobs"].get(job["id"], {})
+        result = dict(state["jobs"].get(job["id"], {}))
+        raw_verdict, raw_status = result.get("verdict"), result.get("optimization_status")
+        evidence_path = folder / "jobs" / job["id"] / "evidence.json"
+        if job["kind"] in ("solve", "stop") and evidence_path.exists():
+            failure = solver_failure(read_json(evidence_path))
+            if failure:
+                result.update(verdict="license_limited" if failure["status"] == "license_limited" else "error",
+                              optimization_status=failure["status"], error=failure["reason"])
+        if result:
+            counts[result["verdict"]] += 1
         row = {**{k: job.get(k) for k in ("id", "kind", "phase", "instance", "algorithm", "backend", "repeat", "warmup")},
                "actual_flights": registry.get(job["instance"], {}).get("actual_flights"),
                "block": registry.get(job["instance"], {}).get("block"),
                **{k: result.get(k) for k in ("verdict", "optimization_status", "objective", "lower_bound", "upper_bound",
                     "certified_optimal", "certified_infeasible", "preprocessing_only", "retained_incumbent", "audit_pass", "elapsed_seconds", "solver_runtime_seconds", "peak_rss_bytes", "error")}}
         row["verdict"] = row["verdict"] or "pending"
+        row["raw_verdict"], row["raw_optimization_status"] = raw_verdict, raw_status
         rows.append(row)
         if row["certified_optimal"] and not job["warmup"]:
-            grouped[(job["instance"], job["algorithm"])].append(row)
+            grouped[(job["instance"], job["algorithm"], job["backend"], job["phase"])].append(row)
     comparisons = []
     for instance in registry:
         certified = [r for r in rows if r["instance"] == instance and r["certified_optimal"]]
@@ -577,18 +587,21 @@ def report(folder):
             comparisons.append(dict(instance=instance, certified_runs=len(certified), min_objective=min(objectives),
                                     max_objective=max(objectives), consistent=max(objectives)-min(objectives) <= 1e-5))
     performance = []
-    for (instance, algorithm), runs in grouped.items():
+    for (instance, algorithm, backend, phase), runs in grouped.items():
         times = [r["solver_runtime_seconds"] for r in runs if r["solver_runtime_seconds"] is not None]
         if times:
-            performance.append(dict(instance=instance, algorithm=algorithm, n=len(times), median_seconds=statistics.median(times),
+            performance.append(dict(instance=instance, algorithm=algorithm, backend=backend, phase=phase,
+                                    scope="certified runs only; correctness timings are diagnostic, not repeated performance evidence",
+                                    n=len(times), median_seconds=statistics.median(times),
                                     min_seconds=min(times), max_seconds=max(times),
                                     stdev_seconds=statistics.stdev(times) if len(times) > 1 else None,
                                     objective_min=min(r["objective"] for r in runs), objective_max=max(r["objective"] for r in runs)))
     rates, speedups = [], []
-    for algorithm in ALGORITHMS:
-        selected = [r for r in rows if r["kind"] == "solve" and r["algorithm"] == algorithm and not r["warmup"]]
+    for algorithm, backend in sorted({(r["algorithm"], r["backend"]) for r in rows if r["kind"] == "solve"}):
+        selected = [r for r in rows if r["kind"] == "solve" and r["algorithm"] == algorithm
+                    and r["backend"] == backend and not r["warmup"]]
         if selected:
-            rates.append(dict(algorithm=algorithm, registered=len(selected),
+            rates.append(dict(algorithm=algorithm, backend=backend, registered=len(selected),
                 executed=sum(r["verdict"] not in ("pending", "not_run_budget", "blocked_by_correctness") for r in selected),
                 audited_feasible=sum(r["audit_pass"] is True for r in selected),
                 certified_optimal=sum(bool(r["certified_optimal"]) for r in selected),
@@ -623,6 +636,9 @@ def report(folder):
         writer.writeheader(); writer.writerows(rows)
     false_comparisons = [r for r in comparisons if not r["consistent"]]
     summary = dict(status=state["status"], jobs_total=len(rows), jobs_finished=len(state["jobs"]), verdicts=dict(counts),
+        reporting_code_sha256=file_hash(Path(__file__)), raw_state_sha256=file_hash(folder / "state.json"),
+        reporting_dependencies_sha256={name: file_hash(Path(__file__).with_name(name))
+                                       for name in ("campaign.py", "common.py")},
         correctness_gate=correctness_gate(manifest, state),
         certified_optimal=sum(bool(r["certified_optimal"]) for r in rows), audit_pass=sum(r["audit_pass"] is True for r in rows),
         inconsistent_objectives=false_comparisons, comparisons=comparisons, performance=performance,

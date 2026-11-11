@@ -9,7 +9,7 @@ import math
 from pathlib import Path
 import statistics
 
-from .common import file_hash, read_json, write_json, utc_now
+from .common import file_hash, read_json, write_json, utc_now, solver_failure
 
 
 def _time(value):
@@ -147,12 +147,16 @@ def analyze(folder, output):
         mct = {r["airport"]: int(r["min_connection"]) for r in csv.DictReader(stream, delimiter=";")}
     metrics = []
     original_rule_comparisons = []
+    from .external import historical_references, historical_comparison
+    references = historical_references(Path(manifest["source_roots"]["ROADEF_2009"]))
     for job in manifest["jobs"]:
         directory = folder / "jobs" / job["id"]
         if job["kind"] not in ("solve", "stop") or not (directory / "evidence.json").exists():
             continue
         public, evidence = read_json(directory / "input.json"), read_json(directory / "evidence.json")
-        row = dict(job=job["id"], instance=job["instance"], algorithm=job["algorithm"], status=evidence["status"],
+        failure = solver_failure(evidence)
+        row = dict(job=job["id"], instance=job["instance"], algorithm=job["algorithm"],
+                   status=failure["status"] if failure else evidence["status"], raw_status=evidence["status"],
                    input_sha256=file_hash(directory / "input.json"),
                    evidence_sha256=file_hash(directory / "evidence.json"), metrics=business_metrics(public, evidence))
         if row["metrics"]["eligible"] and public["source"]["dataset"] == "delft2020-derived":
@@ -173,20 +177,25 @@ def analyze(folder, output):
             if path.exists():
                 result = read_json(path)
                 native.append(dict(job=job["id"], evidence_sha256=file_hash(path),
-                    passed=result["passed"], historical_comparison=result.get("historical_comparison"),
+                    passed=result["passed"], historical_comparison=historical_comparison(result, references.get(entry["source_instance"])),
                     violations=list(result.get("violations", {}))))
+        eligible = any((n.get("historical_comparison") or {}).get("eligible") for n in native)
         original_rule_comparisons.append(dict(instance=entry["id"], source_instance=entry["source_instance"],
             precheck_ready=entry["precheck"]["ready"], native_evidence=native,
-            historical_eligible=any((n.get("historical_comparison") or {}).get("eligible") for n in native),
-            no_score_reason=None if native else "native_evaluation_not_executed_or_no_audited_solution",
+            historical_eligible=eligible,
+            no_score_reason=None if eligible else ("native_feasibility_cost_or_mapping_failed" if native
+                                                   else "native_evaluation_not_executed_or_no_audited_solution"),
             scheduled_task_verdicts={j["id"]: state["jobs"].get(j["id"], {}).get("verdict", "pending") for j in native_jobs}))
     result = dict(schema_version="public-post-analysis-1.0", created_at=utc_now(), analysis_sha256=file_hash(Path(__file__)),
+        analysis_dependencies_sha256={name: file_hash(Path(__file__).with_name(name))
+                                    for name in ("analysis.py", "common.py", "external.py")},
         campaign_manifest_sha256=manifest["manifest_sha256"], campaign_status=state["status"],
         source_connections_sha256=file_hash(folder / "source_connections.json"),
         publisher_rows_sha256=file_hash(folder / "reference-2019/rows.jsonl"),
         jobs_with_evidence=len(metrics), audited_business_observations=sum(r["metrics"]["eligible"] for r in metrics),
         publisher_distributions=publisher_distributions(folder / "reference-2019/rows.jsonl"), observations=metrics,
         original_rule_comparisons=original_rule_comparisons,
+        historical_references=references,
         limitations=["publisher sheets may overlap; do not pool as independent samples",
                      "only the frozen January 1 connection window is available for connection analysis",
                      "connection and boarding exposures do not establish recovered passenger demand"])

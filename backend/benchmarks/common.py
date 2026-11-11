@@ -85,6 +85,24 @@ def frozen_repository_state(root=None):
                 source_manifest_sha256=expected)
 
 
+def solver_failure(evidence):
+    """Recover structured failures swallowed into a legacy nonoptimal outcome."""
+    core = evidence.get("core") or {}
+    pending = [core.get("diagnostics") or {}]
+    while pending:
+        item = pending.pop()
+        if isinstance(item, dict):
+            if item.get("error_code") == 10010 or item.get("errno") == 10010:
+                return dict(status="license_limited", solver_error_code=10010,
+                            reason=item.get("error_message", "Gurobi size-limited license"))
+            pending.extend(v for v in item.values() if isinstance(v, (dict, list)))
+        elif isinstance(item, list):
+            pending.extend(item)
+    if core.get("status") == "error":
+        return dict(status="solver_error", reason=core.get("termination_reason", "solver_error"))
+    return None
+
+
 def discover(root=None):
     if root:
         base = Path(root).resolve()

@@ -304,3 +304,50 @@ def test_publisher_statistics_exclude_illegal_records_and_preserve_time_definiti
     assert summary["metrics"]["cost of disruption"]["median"] == 10
     assert summary["metrics"]["iterationtime_seconds"]["median"] == 60
     assert summary["metrics"]["iterationsetup_seconds"]["median"] == 5
+
+
+def test_swallowed_license_error_is_not_algorithm_nonconvergence():
+    from backend.benchmarks.common import solver_failure
+    evidence = dict(status="not_converged", core=dict(status="error", termination_reason="solver_error",
+        diagnostics=dict(solver=dict(error_code=10010, error_message="size-limited license"))))
+    assert solver_failure(evidence)["status"] == "license_limited"
+    assert evidence["status"] == "not_converged"  # Classification must preserve raw records.
+    assert solver_failure(dict(core=dict(status="not_converged", diagnostics={}))) is None
+
+
+def test_historical_references_include_qualification_page_and_ignore_inf(tmp_path):
+    from backend.benchmarks.external import historical_references, historical_comparison
+    (tmp_path / "verification").mkdir()
+    (tmp_path / "documentation").mkdir()
+    (tmp_path / "verification/official_results_table_2.csv").write_text('Equipe,B01,X01\nTeam,INF,-2\n', encoding="utf-8")
+    (tmp_path / "documentation/resultat_qualif.php.html").write_text(
+        '<table><tr><th>Team</th><th>A01</th></tr><tr><td>T1</td><td>10,5</td></tr><tr><td>T2</td><td>8,25</td></tr></table>', encoding="utf-8")
+    refs = historical_references(tmp_path)
+    assert refs["A01"]["value"] == 8.25 and refs["A01"]["team"] == "T2"
+    assert refs["X01"]["value"] == -2 and not refs["X01"]["competition_scored"]
+    assert "B01" not in refs
+    assert not historical_comparison({"historical_comparison_eligible": False}, refs["A01"])["eligible"]
+
+
+def test_report_keeps_backend_timings_separate_and_retains_unexecuted_denominator(tmp_path):
+    from backend.benchmarks.campaign import report
+    from backend.benchmarks.common import write_json, read_json
+    jobs = [dict(id=str(i), kind="solve", phase="correctness", instance="micro-I",
+                 algorithm="integrated_oracle", backend=backend, repeat=0, warmup=False)
+            for i, backend in enumerate(("highs", "gurobi", "highs"))]
+    write_json(tmp_path / "manifest.json", dict(jobs=jobs, budget_hours=24, manifest_sha256="fixture"))
+    write_json(tmp_path / "registry.json", [dict(id="micro-I", actual_flights=2, block="fixture")])
+    results = {str(i): dict(verdict="completed", optimization_status="optimal", certified_optimal=True,
+                           objective=40, audit_pass=True, solver_runtime_seconds=seconds)
+               for i, seconds in enumerate((1, 100))}
+    results["2"] = dict(verdict="blocked_by_correctness")
+    write_json(tmp_path / "state.json", dict(status="completed", jobs=results,
+                                            elapsed_seconds=101, phase_elapsed={"correctness": 101}))
+    report(tmp_path)
+    summary = read_json(tmp_path / "summary.json")
+    times = {r["backend"]: r for r in summary["performance"]}
+    assert times["highs"]["n"] == 1 and times["highs"]["median_seconds"] == 1
+    assert times["gurobi"]["n"] == 1 and times["gurobi"]["median_seconds"] == 100
+    rates = {r["backend"]: r for r in summary["registered_task_rates"]}
+    assert rates["highs"]["registered"] == 2 and rates["highs"]["executed"] == 1
+    assert not summary["acceptance_passed"]
