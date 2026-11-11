@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from backend.solver.runtime import ACTIVE_BUDGET, audit_budget, bounded_core, check_budget, retain_incumbent
+
 import hashlib
 import json
 import math
@@ -56,6 +58,7 @@ from .crew_pairing_column_generation import (
 )
 from .integrated_oracle import IntegratedRecoveryRequest
 from .prm import PassengerRecoveryRequest, solve_fixed_column_prm
+from .passenger_master import passenger_master_data
 from .scope import RecoveryScope
 
 
@@ -308,6 +311,7 @@ def _feasibility_cut(
     )
 
 
+@bounded_core(BendersBranchAndPriceResult, BendersBranchAndPriceStatus)
 def solve_benders_with_branch_and_price(
     scenario_data: Any,
     columns_data: Any,
@@ -441,20 +445,20 @@ def solve_benders_with_branch_and_price(
         status = terminal_map[phase11.status]
         return BendersBranchAndPriceResult(
             status,
-            None,
+            phase11.objective_value,
             phase11.lower_bound,
             phase11.upper_bound,
             (),
             (),
             (),
-            empty,
-            empty,
-            empty,
-            empty,
-            (),
-            (),
-            (),
-            (),
+            phase11.x_values,
+            phase11.y_values,
+            phase11.z_values,
+            phase11.w_values,
+            phase11.selected_flight_options,
+            phase11.selected_aircraft_strings,
+            phase11.selected_crew_pairings,
+            phase11.selected_passenger_itineraries,
             {
                 "algorithm": "phase11_lp_exactness_then_branch_and_price",
                 "terminal_reason": f"phase11_{phase11.status.value}",
@@ -462,10 +466,11 @@ def solve_benders_with_branch_and_price(
                 "formal_full_enumerators_used": False,
                 "runtime_seconds": perf_counter() - started,
             },
-            None,
+            phase11.solution_columns,
         )
 
     lp_cuts = list(phase11.cuts)
+    passenger_data = passenger_master_data(scenario, columns, capacity_profile, costs)
     lp_cut_keys = {item.key for item in lp_cuts}
     exact_cuts: list[IntegerRecourseCut] = []
     exact_cut_keys: set[tuple[str, tuple[str, ...], str]] = set()
@@ -474,6 +479,9 @@ def solve_benders_with_branch_and_price(
 
     def record_iteration(item: BendersBranchAndPriceIteration) -> None:
         iterations.append(item)
+        budget = ACTIVE_BUDGET.get()
+        if budget and math.isfinite(item.lower_bound):
+            budget.lower = max(budget.lower if budget.lower is not None else -math.inf, item.lower_bound)
         if event_sink is not None:
             upper = item.incumbent_upper_bound
             lower = item.lower_bound
@@ -513,6 +521,7 @@ def solve_benders_with_branch_and_price(
     current_schedule = phase11.selected_flight_options
     lower_bound = phase11.lower_bound if phase11.lower_bound is not None else -math.inf
     first_upper_bound = phase11.upper_bound
+    incumbent_audits = {}
     metrics = {
         "benders_master_iterations": len(phase11.iterations),
         "visited_schedules": int(phase11.diagnostics.get("visited_schedule_count", 0)),
@@ -563,20 +572,24 @@ def solve_benders_with_branch_and_price(
             "formal_full_enumerators_used": False,
             "runtime_seconds": perf_counter() - started,
         }
-        if status is BendersBranchAndPriceStatus.OPTIMAL:
+        if status is BendersBranchAndPriceStatus.OPTIMAL or incumbent is not None:
             if incumbent is None:
                 raise BendersBranchAndPriceError("OPTIMAL requires an incumbent")
-            audit = recompute_benders_cg_audit(
-                scenario,
-                incumbent.columns,
-                capacity_profile,
-                costs,
-                x_values,
-                y_values,
-                z_values,
-                w_values,
-                solver_factory=solver_factory,
-            )
+            audit = incumbent_audits.get(incumbent.objective)
+            if audit is None:
+                with audit_budget():
+                    audit = recompute_benders_cg_audit(
+                        scenario,
+                        incumbent.columns,
+                        capacity_profile,
+                        costs,
+                        x_values,
+                        y_values,
+                        z_values,
+                        w_values,
+                        solver_factory=solver_factory,
+                    )
+                incumbent_audits[incumbent.objective] = audit
             if not audit.get("all_constraints_satisfied"):
                 raise BendersBranchAndPriceError(
                     "final integrated audit found a constraint violation"
@@ -613,6 +626,7 @@ def solve_benders_with_branch_and_price(
         )
 
     for exact_iteration in range(1, benders_config.max_benders_iterations + 1):
+        check_budget()
         iteration_started = perf_counter()
         if current_schedule in visited_exact:
             return finish(
@@ -923,6 +937,12 @@ def solve_benders_with_branch_and_price(
             )
             if incumbent is None or candidate.objective < incumbent.objective:
                 incumbent = candidate
+                retain_incumbent(finish(BendersBranchAndPriceStatus.NOT_CONVERGED, "audited_incumbent_checkpoint"))
+                if event_sink:
+                    event_sink({"stage": "audit", "type": "incumbent_audited",
+                                "message": "Complete integer recovery independently audited and checkpointed.",
+                                "upper_bound": incumbent.objective,
+                                "lower_bound": lower_bound if math.isfinite(lower_bound) else None})
 
             owner_data = (
                 (
@@ -1060,7 +1080,7 @@ def solve_benders_with_branch_and_price(
         solver = solver_factory()
         try:
             master = _build_master(
-                scenario, columns, costs, lp_cuts, phase11_fingerprint, solver
+                scenario, columns, costs, lp_cuts, phase11_fingerprint, solver, passenger_data
             )
             _add_exact_constraints(solver, master, exact_cuts)
             outcome = solver.solve(solver_parameters)

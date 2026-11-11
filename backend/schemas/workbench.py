@@ -125,6 +125,7 @@ class DraftSummary(SchemaModel):
     draft_id: str
     name: str
     source_case_id: str | None
+    origin_kind: Literal["case_clone", "file_import", "xma_import", "document", "legacy"] = "legacy"
     working_hash: str
     revision_count: int
     created_at: AwareDatetime
@@ -227,6 +228,10 @@ class RunEvent(SchemaModel):
     relative_gap: float | None = None
     metrics: dict[str, Any] = Field(default_factory=dict)
     artifact_refs: list[str] = Field(default_factory=list)
+
+
+class RunEventList(SchemaModel):
+    items: list[RunEvent] = Field(default_factory=list)
 
 
 class RunRecord(SchemaModel):

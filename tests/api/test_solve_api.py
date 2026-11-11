@@ -117,8 +117,10 @@ def test_branch_node_limit_returns_not_converged():
     assert response.status_code == 200
     result = response.json()
     assert result["status"] == "not_converged"
-    assert result["resolved_flights"] == []
-    assert result["objective"] is None
+    assert result["diagnostics"]["integrated_audit_pass"] is True
+    assert len(result["resolved_flights"]) == len(data["scenario"]["flights"])
+    assert result["objective"]["total"] == result["diagnostics"]["upper_bound"]
+    assert result["diagnostics"]["lower_bound"] < result["diagnostics"]["upper_bound"]
 
 
 def test_repeated_request_is_structurally_deterministic():

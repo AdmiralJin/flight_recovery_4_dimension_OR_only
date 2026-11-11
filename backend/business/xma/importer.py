@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+import random
+import secrets
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
@@ -8,7 +10,7 @@ from pathlib import Path
 
 import openpyxl
 
-from .schema import Closure, Scene, SourceRef, Transfer, XmaAircraft, XmaDataset, XmaFlight
+from .schema import Closure, Scene, SourceRef, Transfer, XmaAircraft, XmaDataset, XmaFlight, XmaSubsetSelection
 
 BEIJING = timezone(timedelta(hours=8))
 DEFAULT_WORKBOOK = Path(__file__).resolve().parents[3] / "data/厦航-天池比赛数据/data/XMAE_data.xlsx"
@@ -186,33 +188,63 @@ def validate_dataset(data: XmaDataset) -> list[str]:
     return errors
 
 
-def select_subset(data: XmaDataset, target_flights: int | None) -> XmaDataset:
+def select_subset(
+    data: XmaDataset,
+    target_flights: int | None,
+    *,
+    mode: str = "fixed",
+    seed: int | None = None,
+) -> XmaDataset:
     """Whole-tail subinstances, conditioned on original inbound boundary flights.
 
     They are separate research problems, not feasible full-workbook solutions.
     No transfer into a selected flight is discarded or synthesized.
     """
-    if target_flights is None or target_flights>=len(data.flights):
+    if mode not in ("fixed", "random"):
+        raise ValueError(f"unsupported subset selection mode: {mode}")
+    if target_flights is None:
         return data
+    if target_flights < 1:
+        raise ValueError("target_flights must be a positive integer")
     selected=[]
     count=0
     # Stable airport/tail ordering keeps studies reproducible and includes typhoon tails first.
     affected={s.airport for s in data.scenes if s.kind in ("arrival","departure")}
     flights={f.flight_id:f for f in data.flights}
-    ordered=sorted(data.aircraft,key=lambda a:(not any(flights[fid].origin in affected or flights[fid].destination in affected
-        for fid in a.original_rotation),a.tail_id))
+    def is_affected(aircraft: XmaAircraft) -> bool:
+        return any(flights[fid].origin in affected or flights[fid].destination in affected for fid in aircraft.original_rotation)
+
+    if mode == "fixed":
+        ordered=sorted(data.aircraft,key=lambda a:(not is_affected(a),a.tail_id))
+        actual_seed=None
+    else:
+        actual_seed=seed if seed is not None else secrets.randbits(63)
+        generator=random.Random(actual_seed)
+        affected_tails=sorted((a for a in data.aircraft if is_affected(a)),key=lambda a:a.tail_id)
+        other_tails=sorted((a for a in data.aircraft if not is_affected(a)),key=lambda a:a.tail_id)
+        generator.shuffle(affected_tails)
+        generator.shuffle(other_tails)
+        ordered=[*affected_tails,*other_tails]
     for a in ordered:
         selected.append(a)
         count+=len(a.original_rotation)
-        if count>=target_flights:
+        if count>=target_flights or count>=len(data.flights):
             break
     ids={fid for a in selected for fid in a.original_rotation}
+    selected_tail_ids=[a.tail_id for a in selected]
+    selection_hash=hashlib.sha256(
+        (data.source_sha256+"\0"+"\0".join(sorted(selected_tail_ids))).encode("utf-8")
+    ).hexdigest()
     transfers=[t for t in data.transfers if t.outbound in ids]
     boundary={t.inbound:flights[t.inbound] for t in transfers if t.inbound not in ids}
-    return data.model_copy(update={"dataset_id":data.dataset_id+f"_tails_{len(selected)}","flights":[f for f in data.flights if f.flight_id in ids],
+    suffix=f"_tails_{len(selected)}" if mode=="fixed" else f"_random_{len(ids)}_{selection_hash[:10]}"
+    selection=XmaSubsetSelection(mode=mode,requested_flights=target_flights,actual_flights=len(ids),seed=actual_seed,
+        selected_tail_ids=selected_tail_ids,selection_hash=selection_hash)
+    return data.model_copy(update={"dataset_id":data.dataset_id+suffix,"flights":[f for f in data.flights if f.flight_id in ids],
         "aircraft":selected,"transfers":transfers,"boundary_flights":boundary,
         "connected_pairs":[p for p in data.connected_pairs if p[0] in ids],
-        "notes":[*data.notes,f"Whole-tail subset: {len(ids)} flights. {len(boundary)} inbound boundary flights frozen at their original times. Outbound effects outside the subset are excluded from its objective."]})
+        "subset_selection":selection,
+        "notes":[*data.notes,f"Whole-tail {mode} subset: {len(ids)} flights. {len(boundary)} inbound boundary flights frozen at their original times. Outbound effects outside the subset are excluded from its objective."]})
 
 
 def preview(data: XmaDataset) -> dict:
@@ -227,4 +259,5 @@ def preview(data: XmaDataset) -> dict:
         "original_planning_end":max(f.sched_arr for f in data.flights).isoformat(),
         "adjustment_start":data.adjustment_start.isoformat(),"adjustment_end":data.adjustment_end.isoformat(),
         "issues":validate_dataset(data),"notes":data.notes,
+        "selection":data.subset_selection.model_dump(mode="json") if data.subset_selection else None,
         "passenger_semantics":"Counts are flight-leg loads; their sum is not unique travelers."}

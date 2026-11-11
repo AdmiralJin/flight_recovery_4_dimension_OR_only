@@ -176,6 +176,14 @@ class RecoveredResult(SchemaModel):
 
     @model_validator(mode="after")
     def nonoptimal_has_no_fake_solution(self):
+        if self.status in (RecoveredStatus.NOT_CONVERGED, RecoveredStatus.ABORTED) and self.objective is not None:
+            upper = self.diagnostics.upper_bound
+            lower = self.diagnostics.lower_bound
+            if (self.diagnostics.integrated_audit_pass is True and self.selected.flight_options
+                and self.resolved_flights and self.metrics is not None and upper is not None
+                and abs(upper-self.objective.total) <= max(1e-6, abs(upper)*1e-8)
+                and (lower is None or lower <= upper+max(1e-6, abs(upper)*1e-8))):
+                return self
         if self.status is not RecoveredStatus.OPTIMAL and (
             self.objective is not None
             or self.resolved_flights

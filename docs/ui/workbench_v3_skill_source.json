@@ -1,0 +1,386 @@
+{
+  "name": "ui-ux-pro-max",
+  "version": "2.15.0",
+  "repository": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+  "commit": "b7d5353e0130feb8c5574ef1251f8a1db1873ccb",
+  "checked_at": "2026-11-06T22:24:00+08:00",
+  "stars_at_check": 146008,
+  "license": "MIT",
+  "archived": false,
+  "last_push": "2026-11-05T07:07:39Z",
+  "installed_path": "C:/Users/28635/.codex/skills/ui-ux-pro-max",
+  "installer": "C:/Users/28635/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py",
+  "source_package": ".claude/skills/ui-ux-pro-max",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "git_blob_sha": "23cdf0466e10ed460627ca9c0a68984b1a6bf98b",
+      "size": 16646
+    },
+    {
+      "path": "data/app-interface.csv",
+      "git_blob_sha": "95e328c807a23be02c9c32c736d0fa19109c6076",
+      "size": 11046
+    },
+    {
+      "path": "data/catalog-summary.json",
+      "git_blob_sha": "11b0aa18f863ce45baeb7402e34a2cc24da4df57",
+      "size": 2392
+    },
+    {
+      "path": "data/charts.csv",
+      "git_blob_sha": "c6f4f875fd5b34379f24dbb541539492366a1058",
+      "size": 23365
+    },
+    {
+      "path": "data/colors.csv",
+      "git_blob_sha": "5d2bf7389105f8a824b504b57cc93c00dc1d7e0a",
+      "size": 37940
+    },
+    {
+      "path": "data/data-provenance.json",
+      "git_blob_sha": "2373307696bb67ea9d395ad384950ea8ad0b3615",
+      "size": 37232
+    },
+    {
+      "path": "data/google-font-licenses.json",
+      "git_blob_sha": "3ac2c34e80665bc902e265c52ab6c27b1654524c",
+      "size": 433127
+    },
+    {
+      "path": "data/google-fonts.csv",
+      "git_blob_sha": "d7f87e3e0159b1caba083b9954793d9852256aa0",
+      "size": 747241
+    },
+    {
+      "path": "data/icons.csv",
+      "git_blob_sha": "cfc3f1eccd7e5aee15d8d70f86d8fa17ba737958",
+      "size": 57945
+    },
+    {
+      "path": "data/landing.csv",
+      "git_blob_sha": "34858160aa2789c49dca274d48bb116d51dd3f0a",
+      "size": 25449
+    },
+    {
+      "path": "data/motion.csv",
+      "git_blob_sha": "8e0ca9ceb0e4cd4832aee60ac74713e1e1830de8",
+      "size": 14679
+    },
+    {
+      "path": "data/phosphor-icons-upstream.json",
+      "git_blob_sha": "ec1d76b8117ccbfdce5df214bf0d993e41a75318",
+      "size": 823933
+    },
+    {
+      "path": "data/products.csv",
+      "git_blob_sha": "f5f747335cdc631359ed6705ede2906e93d41b19",
+      "size": 76959
+    },
+    {
+      "path": "data/react-performance.csv",
+      "git_blob_sha": "425a8e76c6b3bae40e8c633ffbf7ad6222c9f73a",
+      "size": 15080
+    },
+    {
+      "path": "data/stacks/angular.csv",
+      "git_blob_sha": "5a1878dbee2b3c55c6468cbb18699b84d1a8c4d2",
+      "size": 19863
+    },
+    {
+      "path": "data/stacks/astro.csv",
+      "git_blob_sha": "1fd2492420b20a0b311295ab883597fadb8245a6",
+      "size": 14591
+    },
+    {
+      "path": "data/stacks/avalonia.csv",
+      "git_blob_sha": "c67f4117105865587eda9020c57d8c209f3a929a",
+      "size": 27327
+    },
+    {
+      "path": "data/stacks/flutter.csv",
+      "git_blob_sha": "731805c4076bd9f2755ca4bd7def5be6f6df7e9c",
+      "size": 14192
+    },
+    {
+      "path": "data/stacks/html-tailwind.csv",
+      "git_blob_sha": "9089eb0fc821ff0c8d135f8ee503be345e8fcb84",
+      "size": 16551
+    },
+    {
+      "path": "data/stacks/javafx.csv",
+      "git_blob_sha": "744bd80f437f12bfb5bb9c84630a58022604675a",
+      "size": 33577
+    },
+    {
+      "path": "data/stacks/jetpack-compose.csv",
+      "git_blob_sha": "8daa0b8f9a2ca3f0f1711664d9d677cd1c38dd9e",
+      "size": 12295
+    },
+    {
+      "path": "data/stacks/laravel.csv",
+      "git_blob_sha": "ed11b0fba457e02857f996d1542fb0b8e1271756",
+      "size": 20163
+    },
+    {
+      "path": "data/stacks/nextjs.csv",
+      "git_blob_sha": "acdaf097dff26ba0d3b22ab4544bf6169c87afd4",
+      "size": 18687
+    },
+    {
+      "path": "data/stacks/nuxt-ui.csv",
+      "git_blob_sha": "f6b8000e106aaf421a61da45134e35c8f03e18c6",
+      "size": 32292
+    },
+    {
+      "path": "data/stacks/nuxtjs.csv",
+      "git_blob_sha": "ceab9cf3358d2788af0bd7dc14cb3fab769740d0",
+      "size": 23014
+    },
+    {
+      "path": "data/stacks/react-native.csv",
+      "git_blob_sha": "a5aea45dc1d0341b11ee42076a86db842d4d2a19",
+      "size": 14049
+    },
+    {
+      "path": "data/stacks/react.csv",
+      "git_blob_sha": "fe8f001e695a978733449e04e99d7135af0f1bf3",
+      "size": 21166
+    },
+    {
+      "path": "data/stacks/shadcn.csv",
+      "git_blob_sha": "0e8bedf3084e7a40d6310bcd3011c437efcb1700",
+      "size": 23184
+    },
+    {
+      "path": "data/stacks/svelte.csv",
+      "git_blob_sha": "51684fe70448e15333cd16207db7da8aea0508e6",
+      "size": 15078
+    },
+    {
+      "path": "data/stacks/swiftui.csv",
+      "git_blob_sha": "ea9b95e8922e663b2adf27a7346e2c2f44c7a215",
+      "size": 15323
+    },
+    {
+      "path": "data/stacks/threejs.csv",
+      "git_blob_sha": "f62286320038beabbdc5e11e07ca2818d8e959a4",
+      "size": 46769
+    },
+    {
+      "path": "data/stacks/uno.csv",
+      "git_blob_sha": "9cab32326b4ad3a3cf43451a3c24553a41126cc1",
+      "size": 30091
+    },
+    {
+      "path": "data/stacks/uwp.csv",
+      "git_blob_sha": "04a84ea092a7657fef11e5daa97982be52dc6f59",
+      "size": 24692
+    },
+    {
+      "path": "data/stacks/vue.csv",
+      "git_blob_sha": "83997c515775170f22b638635aae0a67a46dfc87",
+      "size": 12813
+    },
+    {
+      "path": "data/stacks/winui.csv",
+      "git_blob_sha": "107ecead11728a83ec0ea10d815a9d1f43a35792",
+      "size": 27890
+    },
+    {
+      "path": "data/stacks/wpf.csv",
+      "git_blob_sha": "4e88d6750833a74f85ba487cf2b8f4ff6ebd2f4a",
+      "size": 24158
+    },
+    {
+      "path": "data/styles.csv",
+      "git_blob_sha": "7ed18d6ef06557b9a6f2285b87b458fd71e4722f",
+      "size": 152958
+    },
+    {
+      "path": "data/typography.csv",
+      "git_blob_sha": "70d107d107de30150863c965767320ec33ef29ad",
+      "size": 49997
+    },
+    {
+      "path": "data/ui-reasoning.csv",
+      "git_blob_sha": "8931d4c809f8e22ddac00ce612ce0c35f34a59b6",
+      "size": 77360
+    },
+    {
+      "path": "data/ux-guidelines.csv",
+      "git_blob_sha": "4e7d52b296537a03513b18b2c3f2b946cc802051",
+      "size": 27516
+    },
+    {
+      "path": "references/pro-rules.md",
+      "git_blob_sha": "b2ce233287e37ec9ca13476c4014b922e9d5a0e9",
+      "size": 10909
+    },
+    {
+      "path": "references/quick-reference.md",
+      "git_blob_sha": "7acc7e7540ca6981d878a90aae4455c1638e2385",
+      "size": 24526
+    },
+    {
+      "path": "scripts/core.py",
+      "git_blob_sha": "02a3eee65462772dda9e0e56ae1dc1531b68c85a",
+      "size": 43933
+    },
+    {
+      "path": "scripts/design_system.py",
+      "git_blob_sha": "d5fe1575f00d839f919603bd09b44fe7e9def4fb",
+      "size": 71537
+    },
+    {
+      "path": "scripts/reasoning_contract.py",
+      "git_blob_sha": "63652a666b130c249ea1e2954316f1ac8a5a73d5",
+      "size": 5824
+    },
+    {
+      "path": "scripts/search.py",
+      "git_blob_sha": "9ce5e402c29f265e435481791a87cdef73c4a903",
+      "size": 10642
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/google-api.json",
+      "git_blob_sha": "eacf1bb4559875808247df711376e8cc47c4f7c4",
+      "size": 1079
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/google-catalog.json",
+      "git_blob_sha": "4eb89d4d3312b670ef70d44563bf2ffd5cf814bb",
+      "size": 1772
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/google-existing.csv",
+      "git_blob_sha": "83279e0f218e9725b8a14486a558fa10ff134949",
+      "size": 480
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/google-metadata.json",
+      "git_blob_sha": "43edcbec14c4a5e68d373eda8466c235f2ee7e9b",
+      "size": 328
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/google-overrides.json",
+      "git_blob_sha": "162fd1830b08dc1a7b8b891f92f16dbb8b7015f2",
+      "size": 97
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/icons-curated.csv",
+      "git_blob_sha": "3171bfc7a0a6b3b36745b4f7f0c7743f0afad953",
+      "size": 495
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/phosphor-core.json",
+      "git_blob_sha": "be0edd337f2c731af41b8a745d37089172c5dc60",
+      "size": 571
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/phosphor-package.json",
+      "git_blob_sha": "ad9e6ef4b835e65a6c0bd0ad9d11f0517fd718c1",
+      "size": 370
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/phosphor-react-exports.json",
+      "git_blob_sha": "4a0b4587ce9876acac1904831ea774bbf8c69edf",
+      "size": 87
+    },
+    {
+      "path": "scripts/tests/fixtures/catalogs/phosphor-react-package.json",
+      "git_blob_sha": "a0db183da61e63f3a8f9e3fbfba7405144f41c1e",
+      "size": 81
+    },
+    {
+      "path": "scripts/tests/fixtures/relevance-baseline.json",
+      "git_blob_sha": "0894a44cc154a01d3b2d624a66c30e7ac3e1a3d5",
+      "size": 89426
+    },
+    {
+      "path": "scripts/tests/fixtures/relevance-cases.json",
+      "git_blob_sha": "a1fbb87835bda252ba8ae7f15e7090cee580cb42",
+      "size": 36734
+    },
+    {
+      "path": "scripts/tests/fixtures/relevance-thresholds.json",
+      "git_blob_sha": "8b50c3ee4c6eddc05cbb20879c3ae0ff0312b57d",
+      "size": 5079
+    },
+    {
+      "path": "scripts/tests/test_catalog_refresh.py",
+      "git_blob_sha": "8379cc3a224bb9f3dca2a3ebd561cd92b7e05ae4",
+      "size": 19466
+    },
+    {
+      "path": "scripts/tests/test_catalog_summary_line_endings.py",
+      "git_blob_sha": "056c8e5e7d8ba69c87c31c8ad7bcd32ca3d7223c",
+      "size": 2947
+    },
+    {
+      "path": "scripts/tests/test_core.py",
+      "git_blob_sha": "b30c0ae54c25f38ec91b37a56cda04426b2510a9",
+      "size": 16680
+    },
+    {
+      "path": "scripts/tests/test_core_data_quality.py",
+      "git_blob_sha": "6d36c79b1f9f8c68c4b02f86a09c5e5f9ba410fe",
+      "size": 8954
+    },
+    {
+      "path": "scripts/tests/test_data_contracts.py",
+      "git_blob_sha": "312dc383b3f6548d7200e928c192673a907b5016",
+      "size": 19513
+    },
+    {
+      "path": "scripts/tests/test_design_system_mode.py",
+      "git_blob_sha": "44c80c1caa159058a7a5858284ea269bcb561449",
+      "size": 9815
+    },
+    {
+      "path": "scripts/tests/test_design_system_stack.py",
+      "git_blob_sha": "50f0080300b56f4891014d878edddb781b36d7de",
+      "size": 2261
+    },
+    {
+      "path": "scripts/tests/test_native_desktop_stack_freshness.py",
+      "git_blob_sha": "79e07f4f5f9c88025506cb3d7bb5aad01dbbd339",
+      "size": 8375
+    },
+    {
+      "path": "scripts/tests/test_relevance_evaluator.py",
+      "git_blob_sha": "ed158e2d4e39a342090b29435dee25bcf5c4444f",
+      "size": 8430
+    },
+    {
+      "path": "scripts/tests/test_rtl_support.py",
+      "git_blob_sha": "d013af865b6bee8d426ce9eb62bd71e71ced1785",
+      "size": 6836
+    },
+    {
+      "path": "scripts/tests/test_skill_script_paths.py",
+      "git_blob_sha": "36514964d7ea6edcadc169e0d713c18b1cc0bb09",
+      "size": 4305
+    },
+    {
+      "path": "scripts/tests/test_style_taxonomy.py",
+      "git_blob_sha": "d04913bb025aa5bbce7da31aa0869cb3550b5c99",
+      "size": 7425
+    },
+    {
+      "path": "scripts/tests/test_text_layout_resilience.py",
+      "git_blob_sha": "8db3b873f958b93906abb8f4e4d6ef75a344c76e",
+      "size": 5874
+    },
+    {
+      "path": "scripts/tests/test_web_stack_freshness.py",
+      "git_blob_sha": "434c89b7c2aab7db6623415b1280486df1a91133",
+      "size": 8288
+    },
+    {
+      "path": "scripts/validate_data.py",
+      "git_blob_sha": "8b6c7941f6ad3e51cb9d412b11185133e7763001",
+      "size": 52230
+    }
+  ]
+}

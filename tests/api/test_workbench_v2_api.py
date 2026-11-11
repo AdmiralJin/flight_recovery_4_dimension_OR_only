@@ -36,6 +36,7 @@ def test_clone_compile_snapshot_and_hash_conflict(v2_client):
     )
     assert created.status_code == 201
     draft = created.json()
+    assert draft["origin_kind"] == "case_clone"
 
     preview = client.post(f"/api/v2/drafts/{draft['draft_id']}/compile")
     assert preview.status_code == 200
@@ -192,6 +193,23 @@ def test_sse_resume_serializes_monotonic_event_ids(v2_client):
     assert "id: 1" not in body
     payload = json.loads(next(line[6:] for line in body.splitlines() if line.startswith("data: ")))
     assert payload["relative_gap"] == 0.5
+
+    history = client.get(f"/api/v2/runs/{run.run_id}/event-history")
+    assert history.status_code == 200
+    assert [item["seq"] for item in history.json()["items"]] == [1, 2]
+    resumed = client.get(f"/api/v2/runs/{run.run_id}/event-history?after=1")
+    assert [item["seq"] for item in resumed.json()["items"]] == [2]
+
+
+def test_imported_draft_records_file_origin(v2_client):
+    client, _store, _manager = v2_client
+    cloned = client.post(
+        "/api/v2/drafts",
+        json={"source_case_id": "benchmark-disruption-recovery"},
+    ).json()
+    imported = client.post("/api/v2/imports/draft", json=cloned["document"])
+    assert imported.status_code == 201
+    assert imported.json()["origin_kind"] == "file_import"
 
 
 def test_real_solver_emits_monotonic_phase11_bounds():

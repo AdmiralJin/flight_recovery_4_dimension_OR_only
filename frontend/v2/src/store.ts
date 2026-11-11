@@ -26,6 +26,7 @@ interface WorkbenchState {
   selectedEntity: { type: "flight" | "aircraft" | "crew" | "passenger" | "capacity"; id: string } | null;
   busy: string | null;
   message: { tone: "info" | "success" | "warning" | "error"; text: string } | null;
+  xmaConfigEdits: { draftId: string; baseHash: string; values: JsonObject } | null;
   set: (values: Partial<WorkbenchState>) => void;
   selectDraft: (draft: Draft | null) => void;
   selectRun: (run: RunRecord | null) => void;
@@ -48,9 +49,10 @@ export const useWorkbench = create<WorkbenchState>((set) => ({
   selectedEntity: null,
   busy: null,
   message: null,
+  xmaConfigEdits: null,
   set: (values) => set(values),
   selectDraft: (draft) =>
-    set({ draft, preview: null, run: null, events: [], comparison: null, audit: null, selectedId: null, selectedEntity: null }),
+    set({ draft, preview: null, run: null, events: [], comparison: null, audit: null, selectedId: null, selectedEntity: null, xmaConfigEdits: null }),
   selectRun: (run) => set({ run, events: [], comparison: null, audit: null, selectedId: null, selectedEntity: null }),
   addEvent: (event) =>
     set((state) =>

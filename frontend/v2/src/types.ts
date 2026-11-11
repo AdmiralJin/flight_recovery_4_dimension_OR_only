@@ -29,6 +29,7 @@ export interface Draft {
   draft_id: string;
   name: string;
   source_case_id?: string | null;
+  origin_kind: "case_clone" | "file_import" | "xma_import" | "document" | "legacy";
   working_hash: string;
   revision_count: number;
   created_at: string;

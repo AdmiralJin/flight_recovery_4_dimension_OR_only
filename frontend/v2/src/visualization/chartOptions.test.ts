@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { VisualizationModel } from "../types";
-import { flightNetworkOption, ganttOption, propagationOption } from "./chartOptions";
+import { costOption, delayOption, flightNetworkOption, ganttOption, propagationOption } from "./chartOptions";
 
 const model: VisualizationModel = {
   schema_version: "1.0.0",
@@ -22,7 +22,7 @@ const model: VisualizationModel = {
     changed: true, change_flags: ["time_changed"], primary_change: "time_changed", resources: {}, passenger_group_ids: [],
   }],
   propagation_edges: [{ source_flight_id: "F1", target_flight_id: "F2", resource_type: "aircraft", resource_id: "A1" }],
-  aircraft: [], crew: [], passengers: [], capacity: { baseline: [], effective: [], recovered: [] }, objective: null, cost_items: [], delay_distribution: [], recovery_actions: [],
+  aircraft: [], crew: [], passengers: [], capacity: { baseline: [], effective: [], recovered: [] }, objective: { schedule: 10, aircraft: 20, crew: 30, passenger: 40 }, cost_items: [], delay_distribution: [{ flight_id: "F1", departure_delay_minutes: 10, arrival_delay_minutes: 15 }], recovery_actions: [],
 };
 
 describe("visualization chart semantics", () => {
@@ -75,5 +75,22 @@ describe("visualization chart semantics", () => {
     const option = flightNetworkOption({ ...model, flights }, "impact", flights, null, "light") as { series: Array<{ data?: unknown[] }> };
     expect(performance.now() - started).toBeLessThan(1_000);
     expect(option.series.flatMap((item) => item.data ?? []).length).toBeGreaterThanOrEqual(500);
+  });
+
+  it("uses explicit baseline, recovered and delta semantics for cost", () => {
+    const original = costOption(model, "original", "light") as { series: Array<{ data: number[]; name?: string }> };
+    const recovered = costOption(model, "recovered", "light") as { series: Array<{ data: number[]; name?: string }> };
+    const delta = costOption(model, "delta", "light") as { series: Array<{ data: number[]; name?: string }> };
+    expect(original.series[1].data).toEqual([0, 0, 0, 0]);
+    expect(recovered.series[1].data).toEqual([10, 20, 30, 40]);
+    expect(delta.series[1].name).toBe("相对原计划增量");
+  });
+
+  it("uses zero original delay and recovered delay values", () => {
+    const original = delayOption(model, "original", "light") as { series: Array<{ data: number[] }> };
+    const recovered = delayOption(model, "recovered", "light") as { series: Array<{ data: number[] }> };
+    expect(original.series[0].data).toEqual([0]);
+    expect(recovered.series[0].data).toEqual([10]);
+    expect(recovered.series[1].data).toEqual([15]);
   });
 });

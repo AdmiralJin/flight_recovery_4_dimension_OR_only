@@ -239,37 +239,38 @@ export function propagationOption(model: VisualizationModel, selectedFlightId: s
   } as EChartsOption;
 }
 
-export function costOption(model: VisualizationModel, theme: ThemeMode): EChartsOption {
+export function costOption(model: VisualizationModel, mode: VisualizationMode, theme: ThemeMode): EChartsOption {
   const palette = chartPalette(theme);
   const objective = model.objective ?? {};
   const keys = ["schedule", "aircraft", "crew", "passenger"];
-  const values = keys.map((key) => Number(objective[key] ?? 0));
+  const values = keys.map((key) => mode === "original" ? 0 : Number(objective[key] ?? 0));
+  const seriesName = mode === "delta" ? "相对原计划增量" : mode === "original" ? "原计划基线" : "恢复成本";
   let running = 0;
   const bases = values.map((value) => { const base = running; running += value; return base; });
-  return { ...chartBase(theme), animation, aria: { enabled: true, description: "恢复目标成本瀑布图" }, tooltip: { trigger: "axis", ...tooltipStyle(theme) }, grid: { left: 78, right: 32, top: 36, bottom: 62 }, xAxis: { ...categoryAxis(theme), data: keys }, yAxis: { ...valueAxis(theme), name: "成本" }, series: [{ type: "bar", stack: "total", data: bases, itemStyle: { color: "transparent" }, silent: true }, { name: "成本", type: "bar", stack: "total", data: values, itemStyle: { color: palette.normal }, label: { show: true, position: "top", color: palette.text, fontSize: CHART_FONT_SIZE } }] } as EChartsOption;
+  return { ...chartBase(theme), animation, aria: { enabled: true, description: `${seriesName}瀑布图` }, tooltip: { trigger: "axis", ...tooltipStyle(theme) }, grid: { left: 78, right: 32, top: 36, bottom: 62 }, xAxis: { ...categoryAxis(theme), data: keys }, yAxis: { ...valueAxis(theme), name: "成本" }, series: [{ type: "bar", stack: "total", data: bases, itemStyle: { color: "transparent" }, silent: true }, { name: seriesName, type: "bar", stack: "total", data: values, itemStyle: { color: palette.normal }, label: { show: true, position: "top", color: palette.text, fontSize: CHART_FONT_SIZE } }] } as EChartsOption;
 }
 
-export function delayOption(model: VisualizationModel, theme: ThemeMode): EChartsOption {
+export function delayOption(model: VisualizationModel, mode: VisualizationMode, theme: ThemeMode): EChartsOption {
   const palette = chartPalette(theme);
-  const rows = model.delay_distribution.filter((row) => Number(row.departure_delay_minutes ?? 0) >= 0 && Number(row.arrival_delay_minutes ?? 0) >= 0);
+  const rows = (mode === "original" ? model.flights.map((row) => ({ flight_id: row.flight_id, departure_delay_minutes: 0, arrival_delay_minutes: 0 })) : model.delay_distribution).filter((row) => Number(row.departure_delay_minutes ?? 0) >= 0 && Number(row.arrival_delay_minutes ?? 0) >= 0);
+  const suffix = mode === "delta" ? "增量" : mode === "original" ? "基线" : "";
   const xStyle = categoryAxis(theme);
-  return { ...chartBase(theme), animation, aria: { enabled: true, description: "航班起飞与到达延误分布" }, tooltip: { trigger: "axis", ...tooltipStyle(theme) }, legend: { ...legendStyle(theme) }, grid: { left: 74, right: 28, top: 52, bottom: 90 }, xAxis: { ...xStyle, data: rows.map((row) => String(row.flight_id)), axisLabel: { ...xStyle.axisLabel, rotate: 40 } }, yAxis: { ...valueAxis(theme), name: "分钟" }, dataZoom: [{ type: "inside" }, sliderZoom(theme, 20, 22)], series: [{ name: "起飞延误", type: "bar", data: rows.map((row) => Number(row.departure_delay_minutes ?? 0)), itemStyle: { color: palette.normal } }, { name: "到达延误", type: "bar", data: rows.map((row) => Number(row.arrival_delay_minutes ?? 0)), itemStyle: { color: palette.downstream } }] } as EChartsOption;
+  return { ...chartBase(theme), animation, aria: { enabled: true, description: `航班起飞与到达延误${suffix}分布` }, tooltip: { trigger: "axis", ...tooltipStyle(theme) }, legend: { ...legendStyle(theme) }, grid: { left: 74, right: 28, top: 52, bottom: 90 }, xAxis: { ...xStyle, data: rows.map((row) => String(row.flight_id)), axisLabel: { ...xStyle.axisLabel, rotate: 40 } }, yAxis: { ...valueAxis(theme), name: "分钟" }, dataZoom: [{ type: "inside" }, sliderZoom(theme, 20, 22)], series: [{ name: `起飞延误${suffix}`, type: "bar", data: rows.map((row) => Number(row.departure_delay_minutes ?? 0)), itemStyle: { color: palette.normal } }, { name: `到达延误${suffix}`, type: "bar", data: rows.map((row) => Number(row.arrival_delay_minutes ?? 0)), itemStyle: { color: palette.downstream } }] } as EChartsOption;
 }
 
-export function solveTraceOption(points: Array<{ seq: number; lower_bound?: number | null; upper_bound?: number | null }>, theme: ThemeMode): EChartsOption {
+export function solveTraceOption(points: Array<{ seq: number; elapsed_seconds: number; lower_bound?: number | null; upper_bound?: number | null }>, theme: ThemeMode): EChartsOption {
   const palette = chartPalette(theme);
-  const xStyle = categoryAxis(theme);
   return {
     ...chartBase(theme), animation,
     aria: { enabled: true, description: "求解上下界收敛轨迹" },
     tooltip: { trigger: "axis", valueFormatter: (value: unknown) => typeof value === "number" ? value.toLocaleString() : String(value), ...tooltipStyle(theme) },
     legend: { top: 2, ...legendStyle(theme) },
     grid: { left: 76, right: 32, top: 54, bottom: 60 },
-    xAxis: { ...xStyle, name: "事件序号", data: points.map((item) => item.seq) },
+    xAxis: { ...valueAxis(theme), name: "耗时（秒）", min: 0 },
     yAxis: { ...valueAxis(theme), name: "目标值" },
     series: [
-      { name: "Lower bound", type: "line", step: "end", showSymbol: true, connectNulls: true, data: points.map((item) => item.lower_bound), lineStyle: { color: palette.normal, width: 2 }, itemStyle: { color: palette.normal } },
-      { name: "Incumbent UB", type: "line", step: "end", showSymbol: true, connectNulls: true, data: points.map((item) => item.upper_bound), lineStyle: { color: palette.downstream, width: 2 }, itemStyle: { color: palette.downstream } },
+      { name: "Lower bound", type: "line", step: "end", showSymbol: true, connectNulls: true, data: points.map((item) => [item.elapsed_seconds,item.lower_bound]), lineStyle: { color: palette.normal, width: 2 }, itemStyle: { color: palette.normal } },
+      { name: "Incumbent UB", type: "line", step: "end", showSymbol: true, connectNulls: true, data: points.map((item) => [item.elapsed_seconds,item.upper_bound]), lineStyle: { color: palette.downstream, width: 2 }, itemStyle: { color: palette.downstream } },
     ],
   } as EChartsOption;
 }
@@ -293,7 +294,7 @@ export function comparisonCapacityOption(rows: JsonObject[], theme: ThemeMode): 
   } as EChartsOption;
 }
 
-export function comparisonCostOption(objective: Record<string, number>, theme: ThemeMode): EChartsOption {
+export function comparisonCostOption(objective: Record<string, number>, mode: VisualizationMode, theme: ThemeMode): EChartsOption {
   const palette = chartPalette(theme);
   const keys = ["schedule", "aircraft", "crew", "passenger"];
   return {
@@ -302,11 +303,11 @@ export function comparisonCostOption(objective: Record<string, number>, theme: T
     grid: { left: 76, right: 28, top: 36, bottom: 62 },
     xAxis: { ...categoryAxis(theme), data: keys },
     yAxis: { ...valueAxis(theme), name: "成本" },
-    series: [{ type: "bar", data: keys.map((key) => ({ value: objective[key] ?? 0, itemStyle: { color: key === "passenger" ? palette.downstream : palette.normal } })), label: { show: true, position: "top", color: palette.text, fontSize: CHART_FONT_SIZE } }],
+    series: [{ name: mode === "delta" ? "相对原计划增量" : mode === "original" ? "原计划基线" : "恢复成本", type: "bar", data: keys.map((key) => ({ value: mode === "original" ? 0 : objective[key] ?? 0, itemStyle: { color: key === "passenger" ? palette.downstream : palette.normal } })), label: { show: true, position: "top", color: palette.text, fontSize: CHART_FONT_SIZE } }],
   } as EChartsOption;
 }
 
-export function comparisonDelayOption(rows: JsonObject[], theme: ThemeMode): EChartsOption {
+export function comparisonDelayOption(rows: JsonObject[], mode: VisualizationMode, theme: ThemeMode): EChartsOption {
   const palette = chartPalette(theme);
   const xStyle = categoryAxis(theme);
   return {
@@ -316,8 +317,8 @@ export function comparisonDelayOption(rows: JsonObject[], theme: ThemeMode): ECh
     xAxis: { ...xStyle, data: rows.map((row) => String(row.flight_id)), axisLabel: { ...xStyle.axisLabel, rotate: 45 } },
     yAxis: { ...valueAxis(theme), name: "分钟" },
     series: [
-      { name: "起飞延误", type: "bar", data: rows.map((row) => Number(row.departure_delay_minutes ?? 0)), itemStyle: { color: palette.normal } },
-      { name: "到达延误", type: "bar", data: rows.map((row) => Number(row.arrival_delay_minutes ?? 0)), itemStyle: { color: palette.downstream } },
+      { name: mode === "delta" ? "起飞延误增量" : mode === "original" ? "起飞延误基线" : "起飞延误", type: "bar", data: rows.map((row) => mode === "original" ? 0 : Number(row.departure_delay_minutes ?? 0)), itemStyle: { color: palette.normal } },
+      { name: mode === "delta" ? "到达延误增量" : mode === "original" ? "到达延误基线" : "到达延误", type: "bar", data: rows.map((row) => mode === "original" ? 0 : Number(row.arrival_delay_minutes ?? 0)), itemStyle: { color: palette.downstream } },
     ],
     dataZoom: [{ type: "inside" }, sliderZoom(theme, 20, 22)],
   } as EChartsOption;

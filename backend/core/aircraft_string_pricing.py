@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from backend.solver.runtime import check_budget
+
 from collections.abc import Mapping, Set, Sequence
 from dataclasses import dataclass, field
 from types import MappingProxyType
@@ -191,6 +193,7 @@ def price_aircraft_strings(
         used_options: frozenset[str],
         used_base_flights: frozenset[str],
     ) -> None:
+        check_budget()
         last = option_by_id[path[-1]]
         if last.destination == aircraft.required_station_at_T_end:
             emit(path)

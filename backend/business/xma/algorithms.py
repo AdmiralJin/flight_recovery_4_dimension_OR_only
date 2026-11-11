@@ -4,6 +4,8 @@ import heapq
 import math
 from dataclasses import dataclass, field
 from time import perf_counter
+from functools import wraps
+from backend.solver.runtime import ACTIVE_BUDGET, SolveBudget, SolveStopped, check_budget, use_budget
 
 import gurobipy as gp
 from gurobipy import GRB
@@ -34,6 +36,8 @@ class Budget:
         self.seconds=seconds
         self.event_sink=event_sink or (lambda event:None)
         self.cancel_check=cancel_check or (lambda:False)
+        self.best=None
+        self.incumbent_sink=None
 
     def remaining(self):
         return max(0,self.seconds-(perf_counter()-self.started))
@@ -48,14 +52,18 @@ class Budget:
             kw.setdefault("relative_gap",max(0,upper-lower)/max(1,abs(upper)))
         self.event_sink({"stage":stage,"type":event_type,"message":message,**kw})
 
-    def optimize(self,model, *, mip=False, gap=0):
+    def optimize(self,model, *, mip=False, gap=0, scope="subproblem"):
         if self.stopped():
             return False
         model.Params.TimeLimit=max(0.001,self.remaining())
         if mip:
             model.Params.MIPGap=gap
+        self.emit("optimization","solver_selected","Gurobi selected as the primary solver.",metrics={"solver":"Gurobi","live_bounds_available":bool(mip)})
+        model.cancel_check=self.stopped
+        model.progress_sink=lambda event_type,message,metrics,lower_bound=None,upper_bound=None:self.emit(
+            "optimization",event_type,message,metrics={**metrics,"bound_scope":scope},lower_bound=lower_bound,upper_bound=upper_bound)
         def callback(m,where):
-            if self.cancel_check():
+            if self.stopped():
                 m.terminate()
             if where==GRB.Callback.MIP:
                 lb=m.cbGet(GRB.Callback.MIP_OBJBND)
@@ -63,22 +71,117 @@ class Budget:
                 now=perf_counter()
                 if now-getattr(self,"last_trace",0)>1:
                     self.last_trace=now
-                    self.emit("optimization","mip_bound","联合模型求解",lower_bound=lb if abs(lb)<1e90 else None,
-                        upper_bound=ub if abs(ub)<1e90 else None)
-        model.optimize(callback if mip else lambda m,w: m.terminate() if self.cancel_check() else None)
+                    self.emit("optimization","mip_progress","联合模型求解",lower_bound=lb if abs(lb)<1e90 else None,
+                        upper_bound=ub if abs(ub)<1e90 else None,metrics={"solver":"Gurobi",
+                            "node_count":m.cbGet(GRB.Callback.MIP_NODCNT),"solver_runtime_seconds":m.cbGet(GRB.Callback.RUNTIME),
+                            "live_bounds_available":True,"has_incumbent":abs(ub)<1e90,"bound_scope":scope})
+        model.optimize(callback if mip else lambda m,w: m.terminate() if self.stopped() else None)
         return True
 
+    def audited(self,decisions,objective,lower=None):
+        if self.best is not None and objective>=self.best.objective-TOL:
+            return
+        self.best=Outcome("not_converged",objective,lower,objective,list(decisions),"audited_incumbent_checkpoint")
+        if self.incumbent_sink:
+            self.incumbent_sink(self.best)
+        self.emit("audit","incumbent_audited","完整方案已通过独立审计",upper_bound=objective,lower_bound=lower)
 
+
+def original_tail_candidate(request,options,schedule=None):
+    """Cheap primal heuristic; a complete independent audit is mandatory."""
+    from collections import defaultdict
+    from datetime import timedelta
+    by_flight=defaultdict(list)
+    for option in options:
+        if schedule is None or option.option_id in schedule:
+            by_flight[option.flight_id].append(option)
+    flights={f.flight_id:f for f in request.dataset.flights}
+    decisions=[]
+    for aircraft in request.dataset.aircraft:
+        station=aircraft.initial_station
+        last=None
+        for fid in aircraft.original_rotation:
+            check_budget()
+            flight=flights[fid]
+            allowed=[]
+            for option in by_flight[fid]:
+                turn=min(50,request.dataset.original_turn_minutes.get(f"{last.flight_id}#{fid}",50)) if last else 0
+                if option.cancelled or (flight.origin==station and (last is None or option.dep>=last.arr+timedelta(minutes=turn))):
+                    allowed.append(option)
+            if not allowed:
+                return None
+            option=min(allowed,key=lambda o:(o.cancelled,o.delay,o.option_id))
+            decisions.append(Decision(flight_id=fid,option_id=option.option_id,aircraft_id=aircraft.tail_id,
+                                      cancelled=option.cancelled,dep=option.dep,arr=option.arr,rebook={}))
+            if not option.cancelled:
+                station=flight.destination
+                last=option
+    audit=evaluate(request,decisions)
+    if not audit["valid"]:
+        return None
+    return Outcome("not_converged",audit["objective"],None,audit["objective"],decisions,"audited_original_tail_heuristic")
+
+
+def interruptible(fn):
+    @wraps(fn)
+    def run(request,options,budget,*args,**kwargs):
+        active=ACTIVE_BUDGET.get()
+        control=active or SolveBudget(budget.remaining(),budget.cancel_check)
+        # XMA's own budget already reserves no extra solver time.
+        if active is None:
+            control.reserve=0
+        resource_start=len(control.resources)
+        with use_budget(control):
+            try:
+                check_budget()
+                return fn(request,options,budget,*args,**kwargs)
+            except SolveStopped as exc:
+                best=budget.best
+                if best:
+                    return Outcome("aborted" if str(exc)=="cancelled" else "not_converged",best.objective,
+                                   best.lower,best.upper,best.decisions,str(exc))
+                return Outcome("aborted" if str(exc)=="cancelled" else "not_converged",reason=str(exc))
+            finally:
+                for close in reversed(control.resources[resource_start:]):
+                    close()
+                del control.resources[resource_start:]
+    return run
+
+
+def schedule_precheck(request,options,budget):
+    """Necessary schedule constraints only; feasibility does not certify recourse."""
+    model,env=new_model("xma_necessary_schedule")
+    try:
+        x={o.option_id:model.addVar(vtype=GRB.BINARY,name="x:"+o.option_id) for o in options}
+        add_schedule_rows(model,request,options,x)
+        model.setObjective(0)
+        if not budget.optimize(model,mip=True,scope="necessary_conditions"):
+            return None
+        if model.Status==GRB.INFEASIBLE:
+            return {"certificate":"necessary_schedule_master_infeasible", "constraints":model.NumConstrs,
+                    "variables":model.NumVars,"conflict_rows":model.conflict_rows(),
+                    "full_resource_model_built":False}
+        return None
+    finally:
+        model.dispose(); env.dispose()
+
+
+@interruptible
 def direct(request: XmaSolveRequest,options:list[Option],budget:Budget, *, schedule=None,oracle=False) -> Outcome:
+    if schedule is None:
+        conflict=schedule_precheck(request,options,budget)
+        if conflict:
+            return Outcome("infeasible",reason="certified_master_infeasible",statistics={"schedule_precheck":conflict})
     budget.emit("model","building_model","建立显式航班串基准" if oracle else "建立飞机网络流联合模型")
+    build_started=perf_counter()
     joint=build_joint(request,options,representation="path" if oracle else "arc",schedule=schedule,enumerate_all=oracle)
     try:
-        budget.emit("model","model_built","联合约束已建立",metrics={"variables":joint.model.NumVars,"constraints":joint.model.NumConstrs})
-        optimized=budget.optimize(joint.model,mip=True,gap=request.mip_gap)
+        budget.emit("model","model_built","联合约束已建立",metrics={"variables":joint.model.NumVars,"constraints":joint.model.NumConstrs,"build_seconds":perf_counter()-build_started})
+        optimized=budget.optimize(joint.model,mip=True,gap=request.mip_gap,scope="global" if schedule is None else "subproblem")
         m=joint.model
         stats={"variables":m.NumVars,"constraints":m.NumConstrs,"nodes":m.NodeCount if optimized and m.IsMIP else 0,
             "aircraft_columns":len(joint.paths),"representation":"path" if oracle else "arc",
-            "solver":"HiGHS" if m.highs else "Gurobi"}
+            "solver":m.solver_name if m.highs else "Gurobi"}
         if not optimized:
             return Outcome("aborted" if budget.cancel_check() else "not_converged",reason="budget_exhausted_during_build",statistics=stats)
         if m.SolCount:
@@ -87,6 +190,7 @@ def direct(request: XmaSolveRequest,options:list[Option],budget:Budget, *, sched
             if not audit["valid"] or abs(audit["objective"]-m.ObjVal)>max(TOL,abs(m.ObjVal)*1e-8):
                 raise ValueError(f"independent joint audit failed: {audit['violations']}; score={audit.get('objective')} model={m.ObjVal}")
             exact=m.Status==GRB.OPTIMAL and m.ObjBound is not None and abs(m.ObjVal-m.ObjBound)<=max(TOL,abs(m.ObjVal)*1e-8)
+            budget.audited(decisions,m.ObjVal,m.ObjBound if schedule is None else None)
             return Outcome("optimal" if exact else "not_converged",m.ObjVal,m.ObjBound,m.ObjVal,decisions,str(m.Status),stats)
         return Outcome("infeasible" if m.Status==GRB.INFEASIBLE else "aborted" if budget.cancel_check() else "not_converged",
             lower=m.ObjBound if m.IsMIP and m.Status not in (GRB.LOADED,GRB.INFEASIBLE) else None,reason=str(m.Status),statistics=stats)
@@ -108,6 +212,7 @@ def price(joint,tail,duals):
     best=math.inf
     best_end=None
     for oid in net["ordered"]:
+        check_budget()
         if oid not in distance:
             continue
         left=net["options"][oid]
@@ -189,7 +294,9 @@ def column_generation(request,options,schedule,budget,branch_bounds=None):
 def branch_and_price(request,options,schedule,budget):
     queue=[(-math.inf,0,{})]
     sequence=0
-    incumbent=None
+    incumbent=original_tail_candidate(request,options,schedule) if len(request.dataset.flights)>20 else None
+    if incumbent:
+        budget.audited(incumbent.decisions,incumbent.objective)
     lower=None
     visited=0
     columns=0
@@ -222,6 +329,7 @@ def branch_and_price(request,options,schedule,budget):
                 if not audit["valid"] or abs(audit["objective"]-value)>max(TOL,abs(value)*1e-8):
                     raise ValueError("branch-and-price integer audit failed: "+str(audit["violations"]))
                 incumbent=Outcome("optimal",value,value,value,decisions)
+                budget.audited(decisions,value)
             else:
                 assignments=[v for v in fractional if v.VarName.startswith("u:")]
                 v=max(assignments or fractional,key=lambda v:min(joint.model.value(v)-math.floor(joint.model.value(v)),math.ceil(joint.model.value(v))-joint.model.value(v)))
@@ -238,6 +346,8 @@ def branch_and_price(request,options,schedule,budget):
         "pricing_uses_enumeration":False}
     if not queue and not unresolved:
         if incumbent:
+            incumbent.status="optimal"
+            incumbent.lower=incumbent.upper=incumbent.objective
             incumbent.statistics=stats
             incumbent.reason="exact_branch_and_price"
             return incumbent
@@ -255,19 +365,43 @@ def branch_and_price(request,options,schedule,budget):
     return Outcome("aborted" if budget.cancel_check() else "not_converged",lower=lower,reason="bp_budget_or_node_limit",statistics=stats)
 
 
-def benders(request,options,budget, *, use_cg=False):
-    model,env=new_model("xma_schedule_master")
-    x={o.option_id:model.addVar(vtype=GRB.BINARY,name="x:"+o.option_id) for o in options}
+@interruptible
+def benders(request,options,budget, *, use_cg=False, strengthen_master=True, global_cuts=False):
+    # Lift the continuous resource/passenger relaxation into the master when
+    # its size is moderate. Integer recourse is still solved independently by
+    # direct fixed-schedule MIP or genuine CG/B&P, with no full integer shortcut.
+    lifted=None
+    if strengthen_master and len(options)*len(request.dataset.aircraft)<=50000:
+        conflict=schedule_precheck(request,options,budget)
+        if conflict:
+            return Outcome("infeasible",reason="certified_master_infeasible",statistics={"schedule_precheck":conflict})
+        lifted=build_joint(request,options,relax=True)
+        model,env,x=lifted.model,lifted.environment,lifted.x
+        for var in x.values():
+            var.VType=GRB.BINARY
+    else:
+        model,env=new_model("xma_schedule_master")
+        x={o.option_id:model.addVar(vtype=GRB.BINARY,name="x:"+o.option_id) for o in options}
+        add_schedule_rows(model,request,options,x)
     theta=model.addVar(lb=0,name="joint_aircraft_passenger_recourse")
-    add_schedule_rows(model,request,options,x)
     flights={f.flight_id:f for f in request.dataset.flights}
     sched_cost=gp.quicksum(schedule_cost(request,flights[o.flight_id],o)*x[o.option_id] for o in options)
+    if lifted is not None:
+        model.addConstr(theta>=lifted.objective-sched_cost,name="global_recourse_lp_projection")
     model.setObjective(sched_cost+theta,GRB.MINIMIZE)
-    incumbent=None
+    incumbent=original_tail_candidate(request,options) if len(request.dataset.flights)>20 else None
+    if incumbent:
+        budget.audited(incumbent.decisions,incumbent.objective)
     lower=0.0
     cuts=0
     calls=0
-    stats={"aircraft_columns":0,"cg_iterations":0,"bp_nodes":0,"visited_schedules":0}
+    stats={"aircraft_columns":0,"cg_iterations":0,"bp_nodes":0,"visited_schedules":0,
+           "master_variant":"lifted_resource_passenger_lp_v1" if lifted is not None else "global_lp_cuts_v1" if global_cuts else "conditional_schedule_master_v1",
+           "global_feasibility_cuts":0,"global_optimality_cuts":0,"lifted_lp_variables":len(lifted.integer_variables) if lifted else 0}
+    stats["initial_primal_heuristic"]="original_tail_greedy_with_independent_audit"
+    stats["initial_audited_upper_bound"]=incumbent.objective if incumbent else None
+    stats["strengthening_size_guard"]=lifted is None and strengthen_master
+    recourse=None
     reason="benders_iteration_limit"
     try:
         for iteration in range(1,request.max_benders_iterations+1):
@@ -281,7 +415,9 @@ def benders(request,options,budget, *, use_cg=False):
             if model.ObjBound is not None:
                 lower=max(lower,model.ObjBound)
             if incumbent and lower>=incumbent.objective-TOL:
+                incumbent.status="optimal"
                 incumbent.lower=incumbent.upper=incumbent.objective
+                incumbent.reason="integer_recourse_and_global_master_bound_closed"
                 incumbent.statistics={**stats,"benders_iterations":iteration,"cuts":cuts}
                 return incumbent
             if model.Status!=GRB.OPTIMAL:
@@ -290,6 +426,23 @@ def benders(request,options,budget, *, use_cg=False):
             schedule={oid for oid,v in x.items() if value(model,v)>0.5}
             match=gp.quicksum(x[oid] for oid in schedule)
             exact_schedule_cost=sum(schedule_cost(request,flights[o.flight_id],o) for o in options if o.option_id in schedule)
+            if lifted is None and global_cuts and recourse is None and len(options)*len(request.dataset.aircraft)<=50000:
+                from .recourse import GlobalRecourseLP
+                recourse=GlobalRecourseLP(request,options)
+            if recourse is not None:
+                certificate=recourse.solve(schedule,budget)
+                if certificate is not None:
+                    affine=certificate["value"]+gp.quicksum(
+                        coefficient*(x[oid]-float(oid in schedule)) for oid,coefficient in certificate["gradient"].items()
+                        if abs(coefficient)>1e-14)
+                    if certificate["kind"]=="feasibility" and certificate["value"]>TOL:
+                        model.addConstr(affine<=0,name=f"global_feasibility:{iteration}")
+                        cuts+=1; stats["global_feasibility_cuts"]+=1
+                        budget.emit("benders","global_feasibility_cut","全候选 LP 认证跨计划可行性割",metrics=stats)
+                        continue
+                    if certificate["kind"]=="optimality":
+                        model.addConstr(theta+sched_cost>=affine,name=f"global_value:{iteration}")
+                        cuts+=1; stats["global_optimality_cuts"]+=1
             calls+=1
             sub=branch_and_price(request,options,schedule,budget) if use_cg else direct(request,options,budget,schedule=schedule)
             stats["visited_schedules"]=calls
@@ -319,5 +472,7 @@ def benders(request,options,budget, *, use_cg=False):
             return incumbent
         return Outcome("aborted" if budget.cancel_check() else "not_converged",lower=lower,reason=reason,statistics=stats)
     finally:
+        if recourse is not None:
+            recourse.close()
         model.dispose()
         env.dispose()

@@ -140,6 +140,7 @@ class WorkbenchStore:
                     draft_id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
                     source_case_id TEXT,
+                    origin_kind TEXT NOT NULL DEFAULT 'legacy',
                     working_hash TEXT NOT NULL,
                     working_artifact_hash TEXT NOT NULL REFERENCES artifacts(artifact_hash),
                     created_at TEXT NOT NULL,
@@ -223,6 +224,14 @@ class WorkbenchStore:
                 connection.execute(
                     "ALTER TABLE runs ADD COLUMN runtime_profile_id TEXT NOT NULL DEFAULT 'default-exact'"
                 )
+            draft_columns = {
+                row["name"]
+                for row in connection.execute("PRAGMA table_info(drafts)").fetchall()
+            }
+            if "origin_kind" not in draft_columns:
+                connection.execute(
+                    "ALTER TABLE drafts ADD COLUMN origin_kind TEXT NOT NULL DEFAULT 'legacy'"
+                )
             if "solution_artifact_hash" not in run_columns:
                 connection.execute(
                     "ALTER TABLE runs ADD COLUMN solution_artifact_hash TEXT REFERENCES artifacts(artifact_hash)"
@@ -286,7 +295,9 @@ class WorkbenchStore:
         with gzip.open(path, "rt", encoding="utf-8") as handle:
             return json.load(handle)
 
-    def create_draft(self, document: DraftDocument) -> DraftPayload:
+    def create_draft(
+        self, document: DraftDocument, origin_kind: str = "document"
+    ) -> DraftPayload:
         data = document.model_dump(mode="json")
         digest = self.put_artifact("draft_working_copy", data)
         draft_id = str(uuid4())
@@ -295,14 +306,15 @@ class WorkbenchStore:
             connection.execute(
                 """
                 INSERT INTO drafts(
-                    draft_id, name, source_case_id, working_hash,
+                    draft_id, name, source_case_id, origin_kind, working_hash,
                     working_artifact_hash, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     draft_id,
                     document.name,
                     document.source_case_id,
+                    origin_kind,
                     digest,
                     digest,
                     now,
@@ -760,6 +772,7 @@ class WorkbenchStore:
             draft_id=row["draft_id"],
             name=row["name"],
             source_case_id=row["source_case_id"],
+            origin_kind=row["origin_kind"],
             working_hash=row["working_hash"],
             revision_count=int(row["revision_count"]),
             created_at=row["created_at"],

@@ -39,6 +39,8 @@ def test_xma_snapshot_worker_export_and_visualization(business_client):
     assert done.result['independent_audit']['valid']
     assert done.result['status']=='optimal'
     assert done.solution_artifact_hash
+    event_types={item.event_type for item in store.list_events(run.run_id)}
+    assert {'candidate_generation','model_built','solver_selected','solve_bounds'} <= event_types
     exported=client.get(f'/api/v2/xma/runs/{run.run_id}/csv')
     assert exported.status_code==200
     assert len(exported.text.splitlines())==30
@@ -56,6 +58,13 @@ def test_xma_snapshot_worker_export_and_visualization(business_client):
 
 def test_import_and_evaluation_errors_are_structured(business_client):
     client,_=business_client
+    random_preview=client.post('/api/v2/xma/import-preview?target_flights=20&selection_mode=random&selection_seed=42',content=b'bundled')
+    assert random_preview.status_code==200
+    selection=random_preview.json()['preview']['selection']
+    assert selection['mode']=='random' and selection['seed']==42
+    assert selection['actual_flights']>=20
+    same=client.post('/api/v2/xma/import-preview?target_flights=20&selection_mode=random&selection_seed=42',content=b'bundled')
+    assert same.json()['preview']['selection']['selection_hash']==selection['selection_hash']
     assert client.post('/api/v2/xma/import-preview',content=b'not-an-xlsx').status_code==422
     assert client.post('/api/v2/xma/evaluate',json={}).status_code==422
     assert client.post('/api/v2/xma/export-csv',json={}).status_code==422

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from .solution_availability import has_recovered_solution
+
 from collections import Counter
 from datetime import datetime
 from typing import Any
@@ -37,15 +39,14 @@ def build_comparison(
     effective_by_id = {
         item["flight_id"]: item for item in effective_scenario.get("flights", [])
     }
-    optimal = bool(result and (result.get("status") == "optimal" or
-        result.get("schema_version") == "xma-result-1.0" and (result.get("independent_audit") or {}).get("valid")))
+    recovery_available = has_recovered_solution(result)
     flights: list[dict[str, Any]] = []
     change_counts: Counter[str] = Counter()
     for flight_id, original in original_by_id.items():
         effective = effective_by_id.get(flight_id, original)
         recovery = resolved_by_id.get(flight_id)
         resolved = recovery.get("resolved") if recovery else None
-        flags = _flight_change_flags(original, resolved) if optimal else []
+        flags = _flight_change_flags(original, resolved) if recovery_available else []
         changed = bool(flags)
         if not flags:
             flags = ["unchanged"]
@@ -66,28 +67,28 @@ def build_comparison(
                         "propagation_sources": [],
                     },
                 ),
-                "recovered": resolved if optimal else None,
+                "recovered": resolved if recovery_available else None,
                 "changed": changed,
                 "change_flags": flags,
                 "primary_change": primary,
             }
         )
 
-    aircraft = _aircraft_comparison(original_scenario, result if optimal else None)
-    crew = _crew_comparison(original_scenario, result if optimal else None)
-    passengers = _passenger_comparison(original_scenario, result if optimal else None)
+    aircraft = _aircraft_comparison(original_scenario, result if recovery_available else None)
+    crew = _crew_comparison(original_scenario, result if recovery_available else None)
+    passengers = _passenger_comparison(original_scenario, result if recovery_available else None)
     return {
         "schema_version": "2.0.0",
         "snapshot_id": snapshot.snapshot_id,
         "input_hash": snapshot.content_hash,
         "optimization_status": (result or {}).get("status"),
-        "recovered_available": optimal and len(resolved_by_id) == len(original_by_id),
+        "recovered_available": recovery_available and len(resolved_by_id) == len(original_by_id),
         "mode_semantics": {
             "original": "Baseline schedule and resources only.",
             "impact": "Compiled capacity effects and exposure risk; not a recovery decision.",
             "recovered": ("Complete independently validated XMA incumbent; optimality is reported separately."
                 if (result or {}).get("schema_version")=="xma-result-1.0" else
-                "Solver-selected plan; available only for a complete optimal result."),
+                "Complete independently audited recovery; optimality is reported separately."),
             "delta": "Original ghost plus recovered plan, classified by canonical change flags.",
         },
         "counts": {
@@ -111,10 +112,10 @@ def build_comparison(
                     if item["resolved"].get("status") != "cancelled"
                 ],
             )
-            if optimal
+            if recovery_available
             else [],
         },
-        "objective": (result or {}).get("objective") if optimal else None,
+        "objective": (result or {}).get("objective") if recovery_available else None,
         "delay_distribution": [
             {
                 "flight_id": item["flight_id"],

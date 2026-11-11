@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from collections import defaultdict
+from backend.solver.runtime import check_budget
+
 from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -77,6 +80,7 @@ def validate_flight_option_for_crew(
     crew: Crew,
     segment_type: CrewSegmentType,
     config: CrewPairingGenerationConfig,
+    *, _lookups=None,
 ) -> CrewLegEligibility:
     """Check one typed flight leg against the Phase 6 v1 local contract."""
 
@@ -91,8 +95,8 @@ def validate_flight_option_for_crew(
         reasons.append("not_revenue_operate_option")
         return CrewLegEligibility(key, False, tuple(dict.fromkeys(reasons)))
 
-    flights = {item.flight_id: item for item in scenario.flights}
-    airports = {item.airport_id for item in scenario.airports}
+    flights, airports = _lookups if _lookups is not None else (
+        {item.flight_id: item for item in scenario.flights}, {item.airport_id for item in scenario.airports})
     base = flights.get(option.base_flight_id or "")
     if base is None:
         reasons.append("unknown_base_flight")
@@ -143,10 +147,12 @@ def build_crew_flight_network(
 
     rejected: dict[CrewLegKey, tuple[str, ...]] = {}
     eligible: list[CrewLegKey] = []
+    lookups = ({item.flight_id: item for item in scenario.flights}, {item.airport_id for item in scenario.airports})
     for option in flight_options:
+        check_budget()
         for segment_type in (CrewSegmentType.OPERATE, CrewSegmentType.DEADHEAD):
             audit = validate_flight_option_for_crew(
-                scenario, option, crew, segment_type, config
+                scenario, option, crew, segment_type, config, _lookups=lookups
             )
             if audit.eligible:
                 eligible.append(audit.key)
@@ -167,15 +173,19 @@ def build_crew_flight_network(
     successors: dict[CrewLegKey, tuple[CrewLegKey, ...]] = {}
     rejected_edges: Counter[str] = Counter()
     connection = timedelta(minutes=config.default_min_connection_minutes)
+    by_origin = defaultdict(list)
+    for key in eligible:
+        by_origin[options[key.flight_option_id].origin].append(key)
     for left_key in eligible:
+        check_budget()
         left = options[left_key.flight_option_id]
         accepted: list[CrewLegKey] = []
-        for right_key in eligible:
+        mismatch = len(eligible)-len(by_origin[left.destination])-int(left.origin!=left.destination)
+        if mismatch:
+            rejected_edges["station_mismatch"] += mismatch
+        for right_key in by_origin[left.destination]:
             right = options[right_key.flight_option_id]
             if left_key == right_key:
-                continue
-            if left.destination != right.origin:
-                rejected_edges["station_mismatch"] += 1
                 continue
             assert left.arr_time is not None and right.dep_time is not None
             if left.arr_time > right.dep_time:

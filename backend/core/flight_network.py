@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from collections import defaultdict
+from backend.solver.runtime import check_budget
+
 from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -102,12 +105,13 @@ def validate_flight_option_for_aircraft(
     scenario: Scenario,
     option: FlightOption,
     aircraft: Aircraft,
+    *, _lookups=None,
 ) -> FlightLegEligibility:
     """Independently check one option's aircraft-local Phase 5 eligibility."""
 
     reasons: list[str] = []
-    flights = {item.flight_id: item for item in scenario.flights}
-    airports = {item.airport_id for item in scenario.airports}
+    flights, airports = _lookups if _lookups is not None else (
+        {item.flight_id: item for item in scenario.flights}, {item.airport_id for item in scenario.airports})
     if option.operation_type is FlightOperationType.CANCEL:
         reasons.append("cancel_excluded")
         return FlightLegEligibility(option.option_id, False, tuple(reasons))
@@ -194,8 +198,10 @@ def build_aircraft_flight_network(
     ordered_options = tuple(sorted(flight_options, key=_option_order))
     eligible: list[FlightOption] = []
     rejected_options: dict[str, tuple[str, ...]] = {}
+    lookups = ({item.flight_id: item for item in scenario.flights}, {item.airport_id for item in scenario.airports})
     for option in ordered_options:
-        result = validate_flight_option_for_aircraft(scenario, option, aircraft)
+        check_budget()
+        result = validate_flight_option_for_aircraft(scenario, option, aircraft, _lookups=lookups)
         if result.eligible:
             eligible.append(option)
         else:
@@ -214,10 +220,24 @@ def build_aircraft_flight_network(
     )
     successors: dict[str, tuple[str, ...]] = {}
     rejected_edges: Counter[str] = Counter()
+    by_origin = defaultdict(list)
+    by_base = defaultdict(list)
+    for item in eligible:
+        by_origin[item.origin].append(item)
+        if item.base_flight_id is not None:
+            by_base[item.base_flight_id].append(item)
     for left in eligible:
+        check_budget()
         related: list[str] = []
         assert left.arr_time is not None
-        for right in eligible:
+        same = [right for right in by_base[left.base_flight_id] if right.option_id != left.option_id] if left.base_flight_id is not None else []
+        mismatch = len(eligible)-len(by_origin[left.destination])-int(left.origin!=left.destination)
+        mismatch -= sum(right.origin != left.destination for right in same)
+        if same:
+            rejected_edges["same_base_flight"] += len(same)
+        if mismatch:
+            rejected_edges["station_mismatch"] += mismatch
+        for right in by_origin[left.destination]:
             if left.option_id == right.option_id:
                 continue
             assert right.dep_time is not None
@@ -225,10 +245,6 @@ def build_aircraft_flight_network(
                 left.base_flight_id is not None
                 and left.base_flight_id == right.base_flight_id
             ):
-                rejected_edges["same_base_flight"] += 1
-                continue
-            if left.destination != right.origin:
-                rejected_edges["station_mismatch"] += 1
                 continue
             if left.arr_time + timedelta(minutes=min_turn) > right.dep_time:
                 rejected_edges["turn_time_violation"] += 1

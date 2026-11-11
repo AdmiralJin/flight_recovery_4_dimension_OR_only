@@ -18,6 +18,7 @@ from backend.schemas.workbench import (
     ProblemDetails,
     ProblemIssue,
     RunCreateRequest,
+    RunEventList,
     RuntimeProfileCloneRequest,
     RuntimeProfileUpdateRequest,
     SnapshotCreateRequest,
@@ -91,7 +92,7 @@ def capabilities() -> dict[str, Any]:
             "schema_version":"xma-solve-1.0",
             "objectives":["tianchi_2017","air_linear_v1"],
             "algorithms":["joint_arc_flow","joint_path_oracle","benders_joint","benders_cg_bp"],
-            "large_model_fallback":"SciPy/HiGHS on Gurobi license size error 10010",
+            "large_model_fallback":"Native HiGHS with SciPy compatibility fallback on Gurobi license size error 10010",
             "crew_enabled":False,"maintenance_enabled":False,
         }},
         "full_scope_only": True,
@@ -150,11 +151,13 @@ def create_draft(data: DraftCreateRequest):
         document = data.document.model_copy(
             update={"name": data.name or data.document.name}
         )
+        origin_kind = "document"
     elif data.source_case_id:
         try:
             document = draft_from_case_payload(
                 load_case(data.source_case_id), name=data.name
             )
+            origin_kind = "case_clone"
         except CaseCatalogError as exc:
             raise problem(404, "case_not_found", str(exc)) from exc
     else:
@@ -168,7 +171,7 @@ def create_draft(data: DraftCreateRequest):
         document = normalize_document(document)
     except ValueError as exc:
         raise problem(422, "invalid_xma_input", str(exc)) from exc
-    return get_workbench_store().create_draft(document)
+    return get_workbench_store().create_draft(document, origin_kind=origin_kind)
 
 
 @router.get("/drafts/{draft_id}")
@@ -256,7 +259,10 @@ def get_snapshot(snapshot_id: str):
 
 @router.post("/imports/draft", status_code=201)
 def import_draft(document: DraftDocument):
-    return get_workbench_store().create_draft(document)
+    is_xma = (document.solve_bundle or {}).get("schema_version") == "xma-solve-1.0"
+    return get_workbench_store().create_draft(
+        document, origin_kind="xma_import" if is_xma else "file_import"
+    )
 
 
 @router.get("/drafts/{draft_id}/export")
@@ -402,6 +408,16 @@ def run_visualization(run_id: str):
         run_id=run_id,
         optimization_status=run.optimization_status,
     )
+
+
+@router.get("/runs/{run_id}/event-history", response_model=RunEventList)
+def run_event_history(run_id: str, after: int = Query(default=0, ge=0)):
+    store = get_workbench_store()
+    try:
+        store.get_run(run_id)
+    except WorkbenchNotFoundError as exc:
+        raise problem(404, "run_not_found", str(exc)) from exc
+    return {"items": store.list_events(run_id, after)}
 
 
 @router.get("/runs/{run_id}/audit")

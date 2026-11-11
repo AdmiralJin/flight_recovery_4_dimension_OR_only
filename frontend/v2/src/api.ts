@@ -6,6 +6,7 @@ import type {
   Draft,
   DraftDocument,
   JsonObject,
+  RunEvent,
   RunRecord,
   Snapshot,
   VisualizationModel,
@@ -71,6 +72,8 @@ export const api = {
       )
     ).items,
   run: (id: string) => request<RunRecord>(`/api/v2/runs/${id}`),
+  runEvents: async (id: string) =>
+    (await request<{ items: RunEvent[] }>(`/api/v2/runs/${id}/event-history`)).items,
   createRun: (snapshotId: string, runtimeProfileId = "default-exact") =>
     request<RunRecord>("/api/v2/runs", {
       method: "POST",

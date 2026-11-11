@@ -11,6 +11,7 @@ from .objectives import assignment_cost, resident_cost, schedule_cost, sign_cost
 from .rules import adjustable, build_networks, enumerate_paths, movement_buckets
 from .schema import Decision, Option, XmaSolveRequest
 from .solver import ScalableModel, value
+from backend.solver.runtime import check_budget, register_resource
 
 
 @dataclass
@@ -37,10 +38,16 @@ class JointModel:
 
 
 def new_model(name: str):
+    check_budget()
     env=gp.Env(empty=True)
     env.setParam("OutputFlag",0)
     env.start()
     model=ScalableModel(name,env)
+    def cleanup():
+        if not model._disposed:
+            model.dispose()
+            env.dispose()
+    register_resource(cleanup)
     model.Params.OutputFlag=0
     model.Params.Threads=1
     model.Params.Seed=0
@@ -65,7 +72,7 @@ def add_schedule_rows(model,request,options,x):
 
 
 def build_joint(request: XmaSolveRequest, options: list[Option], *, representation="arc", schedule=None,
-                relax=False, branch_bounds=None, enumerate_all=False) -> JointModel:
+                relax=False, branch_bounds=None, enumerate_all=False, eliminate_dominated_rebooking=True) -> JointModel:
     if schedule is not None:
         options=[o for o in options if o.option_id in schedule]
     data=request.dataset
@@ -322,7 +329,15 @@ def build_joint(request: XmaSolveRequest, options: list[Option], *, representati
             coefficient=sign_cost(request,delay)
             if request.objective_profile=="tianchi_2017" and not adjustable(data,flights[o.flight_id]):
                 coefficient=0
-            objective+=coefficient*v
+            # Rebooking has no compulsory minimum. Removing a booking whose
+            # cost exceeds leaving that passenger unserved frees target seats
+            # and cannot violate source limits or the no-sign-chain rule.
+            # Keep the variable/option identity, but eliminate this provably
+            # dominated choice and its potentially 1e9 objective coefficient.
+            if eliminate_dominated_rebooking and coefficient>unserved_cost(request):
+                v.UB=0
+            else:
+                objective+=coefficient*v
     for f in data.flights:
         fid=f.flight_id
         out=gp.quicksum(outs[fid])

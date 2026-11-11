@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from backend.solver.runtime import check_budget
+
 from collections import Counter
 from collections.abc import Mapping, Sequence, Set
 from dataclasses import dataclass, field
@@ -190,6 +192,7 @@ def price_crew_pairings(
         emit(())
 
     def visit(state: CrewPairingPricingState) -> None:
+        check_budget()
         last_option = option_by_id[state.last_leg.flight_option_id]
         if last_option.destination == crew.required_station_at_T_end:
             emit(state.typed_path)

@@ -147,7 +147,10 @@ def build_recovered_result(
         diagnostics=diagnostics,
         run_metadata=metadata,
     )
-    if status is not RecoveredStatus.OPTIMAL:
+    if status is not RecoveredStatus.OPTIMAL and not (
+        core.solution_columns is not None and core.objective_value is not None
+        and diagnostics.integrated_audit_pass is True
+    ):
         return RecoveredResult(
             **common,
             objective=None,

@@ -89,6 +89,10 @@ async def disable_workbench_asset_cache(request, call_next):
 
 @app.get("/", include_in_schema=False)
 def index():
+    if (FRONTEND_ROOT / "workbench-v3" / "index.html").is_file():
+        return RedirectResponse(
+            url="/static/workbench-v3/index.html#/prepare", status_code=307
+        )
     v2_index = V2_DIST_ROOT / "index.html"
     if v2_index.is_file():
         # The React router is built with basename="/workbench-v2". Serving its

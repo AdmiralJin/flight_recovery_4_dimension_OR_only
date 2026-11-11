@@ -23,14 +23,13 @@ def test_health_and_frontend_are_served():
         "production_ready": False,
     }
     assert root_redirect.status_code == 307
-    assert root_redirect.headers["location"] == "/workbench-v2/data"
+    assert root_redirect.headers["location"] == "/static/workbench-v3/index.html#/prepare"
     assert page.status_code == 200
-    if 'id="root"' in page.text:
-        assert "AIR Recovery Workbench" in page.text
-        assert 'src="/workbench-v2/assets/' in page.text
-    else:
-        assert "加载 Case" in page.text
-        assert "当前 Case" in page.text
+    assert "Flight Recovery · Workbench v3" in page.text
+    assert 'src="/static/workbench-v3/assets/' in page.text
+    v2_page = client.get("/workbench-v2/data")
+    assert v2_page.status_code == 200
+    assert 'src="/workbench-v2/assets/' in v2_page.text
     assert page.headers["cache-control"] == "no-store, max-age=0"
     legacy = client.get("/legacy")
     assert legacy.status_code == 200

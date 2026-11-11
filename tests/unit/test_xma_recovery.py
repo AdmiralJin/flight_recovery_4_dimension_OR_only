@@ -1,14 +1,16 @@
 from datetime import datetime, timedelta, timezone
 
 import pytest
+import gurobipy as gp
 
 from backend.business.xma.algorithms import Budget, benders, direct
 from backend.business.xma.evaluator import evaluate, export_csv
-from backend.business.xma.importer import load_workbook, preview
+from backend.business.xma.importer import load_workbook, preview, select_subset
 from backend.business.xma.objectives import normal_delay_cost, rebook_delay_cost
 from backend.business.xma.rules import generate_options
 from backend.business.xma.schema import Decision, SourceRef, XmaAircraft, XmaDataset, XmaFlight, XmaSolveRequest
 from backend.business.xma.schema import Scene
+from backend.business.xma.solver import ScalableModel
 
 
 def micro_request(objective="tianchi_2017"):
@@ -34,6 +36,36 @@ def test_real_workbook_structure():
         "oversold_flights":48,"short_original_turns":212}
     assert data.flights[0].source.row==2
     assert data.flights[0].sched_dep.utcoffset()==timedelta(hours=8)
+
+
+def test_fixed_and_seeded_random_whole_tail_subsets():
+    data=load_workbook()
+    flights={f.flight_id:f for f in data.flights}
+    affected={s.airport for s in data.scenes if s.kind in ("arrival","departure")}
+    expected=sorted(data.aircraft,key=lambda a:(not any(flights[fid].origin in affected or flights[fid].destination in affected
+        for fid in a.original_rotation),a.tail_id))
+    fixed=select_subset(data,100)
+    expected_ids=[]
+    expected_count=0
+    for aircraft in expected:
+        expected_ids.append(aircraft.tail_id)
+        expected_count+=len(aircraft.original_rotation)
+        if expected_count>=100:
+            break
+    assert [a.tail_id for a in fixed.aircraft]==expected_ids
+    assert fixed.subset_selection.mode=="fixed"
+
+    first=select_subset(data,100,mode="random",seed=20261022)
+    repeated=select_subset(data,100,mode="random",seed=20261022)
+    other=select_subset(data,100,mode="random",seed=20261023)
+    assert first.subset_selection==repeated.subset_selection
+    assert [a.tail_id for a in first.aircraft]==[a.tail_id for a in repeated.aircraft]
+    assert first.subset_selection.selection_hash!=other.subset_selection.selection_hash
+    assert len(first.flights)>=100
+    assert {f.flight_id for f in first.flights}=={fid for a in first.aircraft for fid in a.original_rotation}
+    assert not preview(first)["issues"]
+    assert all(any(flights[fid].origin in affected or flights[fid].destination in affected for fid in a.original_rotation)
+        for a in first.aircraft)
 
 
 @pytest.mark.parametrize("hours,value",[(0,0),(2,1),(2.01,1.5),(4,1.5),(8,2),(36,3),(36.01,1e9)])
@@ -119,11 +151,15 @@ def test_highs_fallback_matches_gurobi(monkeypatch):
     req=micro_request()
     req.dataset.flights[0].passengers=12
     options=generate_options(req)
-    outcome=direct(req,options,Budget(30))
+    events=[]
+    outcome=direct(req,options,Budget(30,events.append))
     cg=benders(req,options,Budget(30),use_cg=True)
     assert outcome.status==cg.status=="optimal"
     assert outcome.objective==cg.objective==16
     assert outcome.statistics["solver"]=="HiGHS"
+    progress=[event for event in events if event["type"]=="mip_progress"]
+    assert progress and progress[-1]["upper_bound"]==pytest.approx(16)
+    assert progress[-1]["lower_bound"]==pytest.approx(16)
 
 
 def test_branch_and_price_reprices_fractional_assignment_nodes():
@@ -183,3 +219,21 @@ def test_budget_exhausted_during_build_is_not_optimal():
     outcome=direct(req,generate_options(req),Budget(0))
     assert outcome.status=='not_converged'
     assert outcome.lower is None and not outcome.decisions
+
+
+def test_gurobi_size_limit_emits_explicit_highs_fallback():
+    class LimitedNative:
+        def optimize(self, _callback):
+            raise gp.GurobiError(10010, "size limited")
+
+    model=object.__new__(ScalableModel)
+    model.native=LimitedNative()
+    model.highs=False
+    events=[]
+    solved=[]
+    model.progress_sink=lambda event_type,message,metrics:events.append((event_type,message,metrics))
+    model._solve_highs=lambda:solved.append(True)
+    model.optimize()
+    assert solved==[True]
+    assert events[0][0]=='solver_fallback'
+    assert events[0][2]['to_solver']=='HiGHS'

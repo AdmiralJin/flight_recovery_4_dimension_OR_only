@@ -127,8 +127,8 @@ function buildChart(model: VisualizationModel, view: VisualizationView, mode: Vi
   if (view === "aircraft" || view === "crew" || view === "passengers") return ganttOption(model, view, mode, theme);
   if (view === "capacity") return capacityOption(model, mode, movement, theme);
   if (view === "propagation") return propagationOption(model, selectedId, theme);
-  if (view === "cost") return costOption(model, theme);
-  return delayOption(model, theme);
+  if (view === "cost") return costOption(model, mode, theme);
+  return delayOption(model, mode, theme);
 }
 
 function EvidencePanel({ selected, model }: { selected: JsonObject | null; model: JsonObject }) {
@@ -159,6 +159,8 @@ function findSelected(model: JsonObject, selected: { type: string; id: string } 
 }
 
 function viewUnavailable(layers: Record<string, { available: boolean; reason?: string | null }>, view: VisualizationView, mode: VisualizationMode) {
+  if ((view === "cost" || view === "delay") && mode === "impact") return "Impact 只表示扰动暴露，不生成恢复成本或实际延误。";
+  if ((view === "cost" || view === "delay") && mode === "original") return null;
   const layer = view === "flights" ? "flights" : view === "passengers" ? "passengers" : view;
   if (!layers[layer]?.available) return layers[layer]?.reason ?? "图层不可用";
   if (["recovered", "delta"].includes(mode) && ["aircraft", "crew", "passengers"].includes(view)) {

@@ -5,6 +5,7 @@ from collections import defaultdict
 from datetime import timedelta, timezone
 
 from .schema import Option, XmaDataset, XmaFlight, XmaSolveRequest
+from backend.solver.runtime import check_budget
 
 
 def adjustable(data: XmaDataset, flight: XmaFlight) -> bool:
@@ -36,6 +37,7 @@ def generate_options(request: XmaSolveRequest) -> list[Option]:
     data = request.dataset
     options = []
     for f in data.flights:
+        check_budget()
         delays = {0}
         if adjustable(data,f):
             maximum = min(request.maximum_delay_minutes,1440 if f.domestic else 2160)
@@ -109,6 +111,7 @@ def build_networks(data: XmaDataset, options: list[Option], *, connect=True) -> 
     origin_times={a:[o.dep for o in values] for a,values in by_origin.items()}
     result={}
     for tail in data.aircraft:
+        check_budget()
         rotation=[flights[fid] for fid in tail.original_rotation]
         before=[f for f in rotation if f.sched_dep<data.adjustment_start]
         after=[f for f in rotation if f.sched_dep>data.adjustment_end]
@@ -142,6 +145,7 @@ def build_networks(data: XmaDataset, options: list[Option], *, connect=True) -> 
         starts=[oid for oid in ordered if flights[eligible[oid].flight_id].origin==tail.initial_station]
         edges=defaultdict(list)
         for oid in ordered if connect else []:
+            check_budget()
             left=eligible[oid]
             station=flights[left.flight_id].destination
             values=by_origin[station]

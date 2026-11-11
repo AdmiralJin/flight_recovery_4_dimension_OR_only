@@ -41,7 +41,7 @@ test("desktop task flow is compact, navigable and accessible", async ({ page }) 
   await expect(page.getByRole("heading", { name: "扰动影响" })).toBeVisible();
   await page.getByRole("button", { name: "编译并预览" }).click();
   await expect(page.getByText("Ready", { exact: true })).toBeVisible();
-  await expect(page.getByRole("group", { name: "扰动影响时空网络" })).toBeVisible();
+  await expect(page.getByRole("img", { name: /impact 机场 UTC 时间航班箭头图/i })).toBeVisible();
   const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(axe.violations).toEqual([]);
   expect(errors).toEqual([]);

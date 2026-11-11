@@ -10,6 +10,9 @@ from time import perf_counter
 from types import MappingProxyType
 from typing import Any
 
+from backend.solver.runtime import ACTIVE_BUDGET, SolveStopped, audit_budget, bounded_core, check_budget, retain_incumbent
+from .passenger_master import add_passenger_master, passenger_master_data
+
 from backend.config import (
     AircraftStringColumnGenerationConfig,
     BendersColumnGenerationConfig,
@@ -378,6 +381,7 @@ def benders_cg_implicit_universe_fingerprint(
         key=lambda value: json.dumps(value, sort_keys=True, separators=(",", ":")),
     )
     payload = {
+        "master_variant": "exact_fixed_passenger_itineraries_v1",
         "scenario": scenario_payload,
         "flight_options": _sorted_models(columns.flight_options, "option_id"),
         "passenger_itineraries": _sorted_models(
@@ -461,6 +465,7 @@ def _build_master(
     cuts: Sequence[BendersCgCut],
     fingerprint: str,
     solver: SolverAdapter,
+    passenger_data=None,
 ) -> _BendersCgMaster:
     srm = build_fixed_column_srm(scenario, columns, costs, solver)
     theta = {
@@ -476,6 +481,8 @@ def _build_master(
     }
     objective.update({theta[item]: 1.0 for item in BendersSubproblem})
     solver.set_objective(objective, ObjectiveSense.MINIMIZE)
+    if passenger_data is not None:
+        add_passenger_master(solver, srm.variables, theta[BendersSubproblem.PRM], passenger_data)
 
     seen: set[tuple[str, str | None, tuple[str, ...], str]] = set()
     for cut in cuts:
@@ -656,6 +663,7 @@ def _result(
     )
 
 
+@bounded_core(BendersCgResult, BendersCgStatus)
 def solve_benders_with_column_generation(
     scenario_data: Any,
     columns_data: Any,
@@ -682,6 +690,7 @@ def solve_benders_with_column_generation(
     if not config.require_full_scope:
         raise BendersColumnGenerationError("Phase 11 v1 requires full-scope config")
     scenario, columns = _validated_inputs(scenario_data, columns_data, capacity_profile)
+    passenger_data = passenger_master_data(scenario, columns, capacity_profile, costs)
     fingerprint = benders_cg_implicit_universe_fingerprint(
         scenario,
         columns,
@@ -702,6 +711,9 @@ def solve_benders_with_column_generation(
 
     def record_iteration(item: BendersCgIteration) -> None:
         iterations.append(item)
+        budget = ACTIVE_BUDGET.get()
+        if budget and math.isfinite(item.lower_bound):
+            budget.lower = max(budget.lower if budget.lower is not None else -math.inf, item.lower_bound)
         if event_sink is not None:
             event_sink(
                 {
@@ -749,6 +761,7 @@ def solve_benders_with_column_generation(
         "crew_generated_columns": 0,
     }
     terminal_reason = "maximum_iterations_reached"
+    incumbent_audits = {}
 
     def finish(status: BendersCgStatus) -> BendersCgResult:
         nonlocal terminal_reason
@@ -770,6 +783,7 @@ def solve_benders_with_column_generation(
             )
         diagnostics: dict[str, Any] = {
             "algorithm": "schedule_benders_with_aircraft_and_crew_column_generation",
+            "master_variant": "exact_fixed_passenger_itineraries_v1",
             "terminal_reason": terminal_reason,
             "implicit_universe_fingerprint": fingerprint,
             "visited_schedule_count": len(visited),
@@ -793,22 +807,26 @@ def solve_benders_with_column_generation(
             "scope_mode": "full",
             "formal_full_enumerators_used": False,
         }
-        if status is BendersCgStatus.OPTIMAL:
+        if status is BendersCgStatus.OPTIMAL or incumbent is not None:
             if incumbent is None:
                 raise BendersColumnGenerationError(
                     "OPTIMAL result requires an integer incumbent"
                 )
-            audit = recompute_benders_cg_audit(
-                scenario,
-                incumbent.columns,
-                capacity_profile,
-                costs,
-                incumbent.x_values,
-                incumbent.y_values,
-                incumbent.z_values,
-                incumbent.w_values,
-                solver_factory=solver_factory,
-            )
+            audit = incumbent_audits.get(incumbent.objective)
+            if audit is None:
+                with audit_budget():
+                    audit = recompute_benders_cg_audit(
+                        scenario,
+                        incumbent.columns,
+                        capacity_profile,
+                        costs,
+                        incumbent.x_values,
+                        incumbent.y_values,
+                        incumbent.z_values,
+                        incumbent.w_values,
+                        solver_factory=solver_factory,
+                    )
+                incumbent_audits[incumbent.objective] = audit
             if not audit.get("all_constraints_satisfied"):
                 raise BendersColumnGenerationError(
                     "final Integrated audit found a constraint violation"
@@ -835,10 +853,11 @@ def solve_benders_with_column_generation(
         )
 
     for iteration in range(1, config.max_benders_iterations + 1):
+        check_budget()
         iteration_started = perf_counter()
         solver = solver_factory()
         try:
-            master = _build_master(scenario, columns, costs, cuts, fingerprint, solver)
+            master = _build_master(scenario, columns, costs, cuts, fingerprint, solver, passenger_data)
             outcome = solver.solve(solver_parameters)
             if outcome.status is SolverStatus.INFEASIBLE:
                 terminal_reason = "master_infeasible"
@@ -983,6 +1002,8 @@ def solve_benders_with_column_generation(
                 aircraft_cg_config,
                 solver_factory,
             )
+        except SolveStopped:
+            raise
         except Exception as exc:
             raise BendersColumnGenerationError(
                 f"iteration {iteration}, aircraft CG failed: {exc}"
@@ -1008,6 +1029,8 @@ def solve_benders_with_column_generation(
                 crew_cg_config,
                 solver_factory,
             )
+        except SolveStopped:
+            raise
         except Exception as exc:
             raise BendersColumnGenerationError(
                 f"iteration {iteration}, crew CG failed: {exc}"
@@ -1041,6 +1064,8 @@ def solve_benders_with_column_generation(
                     solver_parameters=solver_parameters,
                 ),
             )
+        except SolveStopped:
+            raise
         except Exception as exc:
             raise BendersColumnGenerationError(
                 f"iteration {iteration}, PRM failed: {exc}"
@@ -1085,6 +1110,8 @@ def solve_benders_with_column_generation(
                     raise BendersColumnGenerationError(
                         _validation_message("generated columns", dynamic_issues)
                     )
+            except SolveStopped:
+                raise
             except Exception as exc:
                 if isinstance(exc, BendersColumnGenerationError):
                     raise
@@ -1168,6 +1195,13 @@ def solve_benders_with_column_generation(
                 )
                 if incumbent is None or candidate.objective < incumbent.objective:
                     incumbent = candidate
+                    checkpoint = finish(BendersCgStatus.NOT_CONVERGED)
+                    retain_incumbent(checkpoint)
+                    if event_sink:
+                        event_sink({"stage": "audit", "type": "incumbent_audited",
+                                    "message": "Complete recovery incumbent independently audited and checkpointed.",
+                                    "upper_bound": incumbent.objective,
+                                    "lower_bound": lower_bound if math.isfinite(lower_bound) else None})
 
         cert_values = {
             "aircraft_status": aircraft.status.value,

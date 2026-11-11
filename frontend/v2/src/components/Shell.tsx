@@ -36,6 +36,12 @@ export function Shell() {
     }
   }, [drafts.data]);
   useEffect(() => state.set({ runs: runs.data ?? [] }), [runs.data]);
+  useEffect(() => {
+    if (!state.xmaConfigEdits) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [state.xmaConfigEdits]);
 
   const solver = state.capabilities?.solver;
   const runStatus = state.run?.job_status ?? "未运行";
@@ -51,14 +57,15 @@ export function Shell() {
       <div className="workspace">
         <header className="topbar">
           <div className="draft-switcher">
-            <label htmlFor="draft-select">当前草稿</label>
-            <select id="draft-select" aria-label="当前草稿" value={state.draft?.draft_id ?? ""} onChange={async (event) => {
+            <label htmlFor="draft-select">当前工作草稿</label>
+            <select id="draft-select" aria-label="当前工作草稿" value={state.draft?.draft_id ?? ""} onChange={async (event) => {
+              if (state.xmaConfigEdits && state.xmaConfigEdits.draftId !== event.target.value && !window.confirm("当前厦航求解配置尚未保存。确定放弃修改并切换草稿吗？")) return;
               const draft = await api.draft(event.target.value);
               state.selectDraft(draft);
               navigate("/data");
             }}>
               {!state.drafts.length && <option value="">尚无草稿</option>}
-              {state.drafts.map((draft) => <option key={draft.draft_id} value={draft.draft_id}>{draft.name}</option>)}
+              {state.drafts.map((draft) => <option key={draft.draft_id} value={draft.draft_id}>{draft.name} · {originLabel(draft.origin_kind)} · {draft.working_hash.slice(0, 8)}</option>)}
             </select>
             {state.draft && <code title={state.draft.working_hash}>{state.draft.working_hash.slice(0, 8)}</code>}
           </div>
@@ -84,4 +91,8 @@ export function Shell() {
 
 function Status({ label, value, tone }: { label: string; value: string; tone: string }) {
   return <div className={`status-item tone-${tone}`}><span>{label}</span><strong>{value}</strong></div>;
+}
+
+function originLabel(origin: import("../types").Draft["origin_kind"]) {
+  return ({ case_clone: "Case 克隆", file_import: "文件导入", xma_import: "厦航导入", document: "文档创建", legacy: "历史草稿" } as const)[origin];
 }

@@ -5,6 +5,8 @@ from collections.abc import Callable, Mapping
 from types import MappingProxyType
 from uuid import uuid4
 
+from .runtime import ACTIVE_BUDGET, check_budget
+
 from .base import (
     ConstraintHandle,
     ConstraintSense,
@@ -149,6 +151,7 @@ class GurobiAdapter(SolverAdapter):
                 environment.dispose()
 
     def create_model(self, model_name: str) -> None:
+        check_budget()
         if not model_name.strip():
             raise ValueError("model_name must be non-empty")
         self.close()
@@ -178,6 +181,7 @@ class GurobiAdapter(SolverAdapter):
         upper_bound: float | None = None,
         variable_type: VariableType = VariableType.CONTINUOUS,
     ) -> VariableHandle:
+        check_budget()
         model = self._require_model()
         if not name.strip():
             raise ValueError("variable name must be non-empty")
@@ -204,6 +208,7 @@ class GurobiAdapter(SolverAdapter):
         *,
         name: str,
     ) -> ConstraintHandle:
+        check_budget()
         model = self._require_model()
         if not name.strip():
             raise ValueError("constraint name must be non-empty")
@@ -251,14 +256,18 @@ class GurobiAdapter(SolverAdapter):
         parameters: Mapping[str, SolverParameterValue] | None = None,
     ) -> SolverOutcome:
         model = self._require_model()
+        check_budget()
         try:
             for name, value in (parameters or {}).items():
                 model.setParam(name, value)
-            if self._cancel_check is None:
+            budget = ACTIVE_BUDGET.get()
+            if budget is not None and not budget.auditing:
+                model.setParam("TimeLimit", min(float(model.Params.TimeLimit), max(.001, budget.remaining())))
+            if self._cancel_check is None and budget is None:
                 model.optimize()
             else:
                 def cancel_callback(active_model, _where):
-                    if self._cancel_check and self._cancel_check():
+                    if (self._cancel_check and self._cancel_check()) or (budget and not budget.auditing and budget.remaining() <= 0):
                         active_model.terminate()
 
                 model.optimize(cancel_callback)
@@ -295,6 +304,14 @@ class GurobiAdapter(SolverAdapter):
                 diagnostics=diagnostics,
             )
         except gp.GurobiError as exc:
+            budget = ACTIVE_BUDGET.get()
+            if budget and getattr(budget, "event_sink", None) and exc.errno in (10010, 10001):
+                budget.event_sink({"stage": "optimization", "type": "solver_limit",
+                                   "message": "Gurobi license size limit reached." if exc.errno == 10010 else "Gurobi memory limit reached.",
+                                   "metrics": {"solver": "Gurobi", "error_code": exc.errno,
+                                               "model": model.ModelName, "variables": model.NumVars,
+                                               "constraints": model.NumConstrs,
+                                               "nonzeros": model.NumNZs, "solver_version": self.solver_version}})
             outcome = SolverOutcome(
                 model_name=getattr(model, "ModelName", "unknown_model"),
                 status=SolverStatus.ERROR,
@@ -305,7 +322,9 @@ class GurobiAdapter(SolverAdapter):
                 best_bound=None,
                 mip_gap=None,
                 diagnostics=MappingProxyType(
-                    {"error_code": exc.errno, "error_message": str(exc)}
+                    {"error_code": exc.errno, "error_message": str(exc),
+                     "variables": model.NumVars, "constraints": model.NumConstrs,
+                     "nonzeros": model.NumNZs, "solver_version": self.solver_version}
                 ),
             )
         self._last_outcome = outcome

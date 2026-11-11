@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import subprocess
+import hashlib
 from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
 from time import perf_counter
 from typing import Any
 from uuid import uuid4
+from types import SimpleNamespace
 
 from pydantic import ValidationError
 
@@ -39,6 +41,7 @@ from backend.schemas.scenario import Scenario
 from backend.services.column_validator import validate_recovery_columns
 from backend.services.validator import validate_scenario
 from backend.solver import GurobiAdapter
+from backend.solver.runtime import SolveBudget, use_budget
 
 from .result_builder import build_recovered_result
 
@@ -218,6 +221,8 @@ def solve_request(
         )
     started = datetime.now(timezone.utc)
     tick = perf_counter()
+    run_id = run_id or str(uuid4())
+    input_sha256 = hashlib.sha256(request.model_dump_json().encode("utf-8")).hexdigest()
     if event_sink is not None:
         event_sink({"stage": "validation", "type": "stage_completed", "message": "Solve input validated."})
     scenario = Scenario.model_validate(request.scenario)
@@ -264,23 +269,48 @@ def solve_request(
         solver_parameters["TimeLimit"] = runtime_controls["time_limit_seconds"]
     if event_sink is not None:
         event_sink({"stage": "optimization", "type": "stage_started", "message": "Exact recovery optimization started."})
-    core = solve_benders_with_branch_and_price(
-        scenario,
-        columns,
-        capacity,
-        costs,
-        configs["flight_string_generation"],
-        configs["crew_pairing_generation"],
-        configs["aircraft_string_cg"],
-        configs["crew_pairing_cg"],
-        configs["benders_cg"],
-        configs["branch_and_price"],
-        solver_factory=lambda: GurobiAdapter(
-            output_flag=False, cancel_check=cancel_check
+    def checkpoint(partial):
+        if solution_artifact_sink is None or partial.solution_columns is None:
+            return
+        selected = SimpleNamespace(flight_options=partial.selected_flight_options,
+                                   aircraft_strings=partial.selected_aircraft_strings,
+                                   crew_pairings=partial.selected_crew_pairings,
+                                   passenger_itineraries=partial.selected_passenger_itineraries)
+        artifact = _selected_solution_artifact(partial.solution_columns, SimpleNamespace(run_id=run_id, selected=selected))
+        artifact["checkpoint"] = {"status": "not_converged", "objective": partial.objective_value,
+                                  "input_sha256": input_sha256,
+                                  "implicit_universe_fingerprint": partial.diagnostics.get("implicit_universe_fingerprint"),
+                                  "lower_bound": partial.lower_bound, "upper_bound": partial.upper_bound,
+                                  "independent_audit": partial.diagnostics.get("integrated_audit"),
+                                  "selected": vars(selected), "elapsed_seconds": perf_counter()-tick}
+        artifact_ref = solution_artifact_sink(artifact)
+        if event_sink:
+            event_sink({"stage": "result", "type": "incumbent_checkpoint_saved",
+                        "message": "Audited recovery checkpoint saved.",
+                        "artifact_refs": [artifact_ref] if artifact_ref else []})
+
+    seconds = runtime_controls.get("time_limit_seconds")
+    budget = SolveBudget(max(0, float(seconds)-(perf_counter()-tick)) if seconds is not None else None,
+                         cancel_check, checkpoint)
+    budget.event_sink = event_sink
+    with use_budget(budget):
+        core = solve_benders_with_branch_and_price(
+            scenario,
+            columns,
+            capacity,
+            costs,
+            configs["flight_string_generation"],
+            configs["crew_pairing_generation"],
+            configs["aircraft_string_cg"],
+            configs["crew_pairing_cg"],
+            configs["benders_cg"],
+            configs["branch_and_price"],
+            solver_factory=lambda: GurobiAdapter(
+                output_flag=False, cancel_check=cancel_check
         ),
         solver_parameters=solver_parameters,
         event_sink=event_sink,
-    )
+        )
     integrated_audit = core.diagnostics.get("integrated_audit")
     if integrated_audit is None:
         phase11_diagnostics = core.diagnostics.get("phase11_diagnostics", {})
@@ -326,7 +356,7 @@ def solve_request(
     artifact_ref = None
     if (
         solution_artifact_sink is not None
-        and result.status.value == "optimal"
+        and result.diagnostics.integrated_audit_pass is True
         and core.solution_columns is not None
     ):
         artifact_ref = solution_artifact_sink(

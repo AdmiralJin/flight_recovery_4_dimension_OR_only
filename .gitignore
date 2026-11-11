@@ -5,6 +5,7 @@ __pycache__/
 .workbench/
 frontend/node_modules/
 frontend/dist/
+frontend/workbench-v3/
 frontend/*.tsbuildinfo
 frontend/vite.config.js
 frontend/vite.config.d.ts

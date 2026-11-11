@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
+from typing import Literal
 from zipfile import BadZipFile
 
 from backend.business.xma.importer import load_workbook, preview, select_subset
@@ -18,11 +19,16 @@ class EvaluationRequest(BaseModel):
 
 
 @router.post("/import-preview")
-async def import_preview(request: Request,target_flights: int | None=Query(default=None,ge=1)):
+async def import_preview(
+    request: Request,
+    target_flights: int | None=Query(default=None,ge=1),
+    selection_mode: Literal["fixed","random"]=Query(default="fixed"),
+    selection_seed: int | None=Query(default=None,ge=0),
+):
     try:
         raw=await request.body()
         dataset=load_workbook() if not raw or raw==b"bundled" else load_workbook(raw)
-        dataset=select_subset(dataset,target_flights)
+        dataset=select_subset(dataset,target_flights,mode=selection_mode,seed=selection_seed)
         bundle=XmaSolveRequest(dataset=dataset)
         return {"preview":preview(dataset),"document":make_document(bundle).model_dump(mode="json")}
     except (ValueError,KeyError,OSError,BadZipFile,IndexError) as exc:

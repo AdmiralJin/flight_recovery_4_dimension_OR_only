@@ -9,7 +9,13 @@
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run --config vitest.config.ts",
     "lint": "eslint v2/src --max-warnings=0",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "dev:v3": "vite --config vite.v3.config.ts",
+    "build:v3": "tsc -p tsconfig.v3.json && vite build --config vite.v3.config.ts",
+    "typecheck:v3": "tsc -p tsconfig.v3.json --pretty false",
+    "lint:v3": "eslint v3/src --max-warnings=0",
+    "test:v3": "vitest run --config vitest.v3.config.ts",
+    "e2e:v3": "playwright test --config playwright.v3.config.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.2",

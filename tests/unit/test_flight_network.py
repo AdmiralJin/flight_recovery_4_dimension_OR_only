@@ -14,6 +14,34 @@ from backend.schemas.scenario import Scenario
 ROOT = Path(__file__).parents[2]
 
 
+def test_indexed_aircraft_graph_matches_original_quadratic_reference(
+    toy_case_007_string_generator_data, toy_case_007_string_generator_columns_data
+):
+    from collections import Counter
+    scenario, columns, config = _inputs(toy_case_007_string_generator_data, toy_case_007_string_generator_columns_data)
+    options={o.option_id:o for o in columns.flight_options}
+    for aircraft in scenario.aircraft:
+        graph=build_aircraft_flight_network(scenario,columns.flight_options,aircraft,config)
+        rejected=Counter()
+        for left_id in graph.option_ids:
+            left=options[left_id]
+            accepted=[]
+            for right_id in graph.option_ids:
+                right=options[right_id]
+                if left_id==right_id:
+                    continue
+                if left.base_flight_id is not None and left.base_flight_id==right.base_flight_id:
+                    rejected["same_base_flight"]+=1
+                elif left.destination!=right.origin:
+                    rejected["station_mismatch"]+=1
+                elif left.arr_time+timedelta(minutes=graph.min_turn_minutes)>right.dep_time:
+                    rejected["turn_time_violation"]+=1
+                else:
+                    accepted.append(right_id)
+            assert tuple(accepted)==graph.successor_option_ids[left_id]
+        assert dict(rejected)==dict(graph.rejected_edge_counts)
+
+
 def _inputs(scenario_data, columns_data):
     return (
         Scenario.model_validate(scenario_data),

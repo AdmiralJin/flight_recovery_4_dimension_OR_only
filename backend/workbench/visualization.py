@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from .solution_availability import has_recovered_solution
+
 from datetime import datetime
 from typing import Any
 
@@ -82,9 +84,8 @@ def _build_model(
         item["resolved"]["flight_id"]: item["resolved"]
         for item in (result or {}).get("resolved_flights", [])
     }
-    optimal = bool(result and (result.get("status") == "optimal" or
-        result.get("schema_version") == "xma-result-1.0" and (result.get("independent_audit") or {}).get("valid")))
-    recovered_complete = optimal and len(recovered_by_id) == len(original_flights)
+    recovery_available = has_recovered_solution(result)
+    recovered_complete = recovery_available and len(recovered_by_id) == len(original_flights)
 
     if source_type == "run":
         comparison = build_comparison(
@@ -122,7 +123,7 @@ def _build_model(
                 "original": flight,
                 "effective": effective_by_id.get(flight_id, flight),
                 "impact": impacts.get(flight_id, _normal_impact(flight_id)),
-                "recovered": recovered_by_id.get(flight_id) if optimal else None,
+                "recovered": recovered_by_id.get(flight_id) if recovery_available else None,
                 "changed": bool(compared and compared["changed"]),
                 "change_flags": compared["change_flags"] if compared else ["unchanged"],
                 "primary_change": compared["primary_change"] if compared else "unchanged",
@@ -149,7 +150,7 @@ def _build_model(
     passengers, passengers_full = _passenger_timelines(
         original, flights, result, solution_artifact, options
     )
-    capacity = _capacity_sets(original, effective, recovered_by_id if optimal else {})
+    capacity = _capacity_sets(original, effective, recovered_by_id if recovery_available else {})
     disruptions = _disruption_windows(document, preview)
     propagation_edges = _propagation_edges(preview)
     delay_distribution = (
@@ -165,11 +166,11 @@ def _build_model(
         ),
         "recovered": _available(
             recovered_complete,
-            "A complete optimal result is required for recovered views.",
+            "A complete independently audited recovery is required for recovered views.",
         ),
         "delta": _available(
             recovered_complete,
-            "A complete optimal result is required for delta views.",
+            "A complete independently audited recovery is required for delta views.",
         ),
     }
     layer_availability = {
@@ -193,7 +194,7 @@ def _build_model(
         "propagation": _available(
             bool(propagation_edges), "No resource-sequence propagation evidence is available."
         ),
-        "cost": _available(bool((result or {}).get("objective")), "No optimal objective is available."),
+        "cost": _available(bool((result or {}).get("objective")), "No audited feasible objective is available."),
         "delay": _available(bool(delay_distribution), "No recovered delay distribution is available."),
     }
     time_range = _time_range(
@@ -388,7 +389,7 @@ def _aircraft_timelines(
                 "changed": outcomes.get(aircraft_id, {}).get("reassignment_count", 0) > 0,
             }
         )
-    return rows, bool(strings) or not bool(result and result.get("status") == "optimal")
+    return rows, bool(strings) or not has_recovered_solution(result)
 
 
 def _with_ground_intervals(segments: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -469,7 +470,7 @@ def _crew_timelines(
                 "changed": outcomes.get(crew["crew_id"], {}).get("reassignment_count", 0) > 0,
             }
         )
-    return rows, bool(pairings) or not bool(result and result.get("status") == "optimal")
+    return rows, bool(pairings) or not has_recovered_solution(result)
 
 
 def _passenger_timelines(
@@ -555,7 +556,7 @@ def _passenger_timelines(
                 "changed": bool(outcome and outcome.get("recovered_itinerary") != passenger.get("original_itinerary")),
             }
         )
-    return rows, bool(itineraries) or not bool(result and result.get("status") == "optimal")
+    return rows, bool(itineraries) or not has_recovered_solution(result)
 
 
 def _capacity_sets(

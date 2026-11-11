@@ -52,6 +52,16 @@ class XmaAircraft(SchemaModel):
     original_rotation: list[str]
 
 
+class XmaSubsetSelection(SchemaModel):
+    mode: Literal["fixed", "random"]
+    algorithm_version: Literal["whole_tail_affected_first_v1"] = "whole_tail_affected_first_v1"
+    requested_flights: int = Field(ge=1)
+    actual_flights: int = Field(ge=1)
+    seed: int | None = Field(default=None, ge=0)
+    selected_tail_ids: list[str]
+    selection_hash: str
+
+
 class Transfer(SchemaModel):
     inbound: str
     outbound: str
@@ -111,6 +121,7 @@ class XmaDataset(SchemaModel):
     notes: list[str] = Field(default_factory=list)
     source_tables: dict[str, list[dict]] = Field(default_factory=dict)
     boundary_flights: dict[str, XmaFlight] = Field(default_factory=dict)
+    subset_selection: XmaSubsetSelection | None = None
 
 
 class AirObjective(SchemaModel):

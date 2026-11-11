@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from backend.solver.runtime import SolveBudget, SolveStopped, use_budget
+from .algorithms import Outcome
+
 import hashlib
 from collections import Counter
 from datetime import datetime, timedelta, timezone
@@ -13,6 +16,24 @@ from .evaluator import evaluate, export_csv
 from .importer import validate_dataset
 from .rules import adjustable, generate_options, build_networks
 from .schema import XmaSolveRequest
+
+
+def study_signature(request: XmaSolveRequest) -> str:
+    """Hash the research problem while excluding algorithm and runtime budgets."""
+    data=request.dataset
+    payload={
+        "source_sha256":data.source_sha256,
+        "dataset_id":data.dataset_id,
+        "flight_ids":sorted(f.flight_id for f in data.flights),
+        "tail_ids":sorted(a.tail_id for a in data.aircraft),
+        "objective_profile":request.objective_profile,
+        "objective_parameters":request.air_objective.model_dump(mode="json") if request.objective_profile=="air_linear_v1" else "tianchi_2017",
+        "delay_step_minutes":request.delay_step_minutes,
+        "maximum_delay_minutes":request.maximum_delay_minutes,
+        "crew_enabled":request.crew_enabled,
+        "maintenance_enabled":request.maintenance_enabled,
+    }
+    return content_hash(payload)
 
 
 def presentation_scenario(request: XmaSolveRequest) -> dict:
@@ -51,11 +72,11 @@ def normalize_document(document: DraftDocument) -> DraftDocument:
     return document
 
 
-def precheck(request: XmaSolveRequest) -> dict:
+def precheck(request: XmaSolveRequest, *, _options=None) -> dict:
     errors=validate_dataset(request.dataset)
     if any(s.flight_id or s.tail_id for s in request.dataset.scenes):
         errors.append("flight/tail-specific scenes are unsupported in this dataset profile")
-    options=generate_options(request) if not errors else []
+    options=(_options if _options is not None else generate_options(request)) if not errors else []
     counts=Counter(o.flight_id for o in options)
     errors.extend(f"no legal candidate for flight {f.flight_id}" for f in request.dataset.flights if not counts[f.flight_id])
     assignment_count=sum(len(n["ordered"]) for n in build_networks(request.dataset,options,connect=False).values()) if not errors else 0
@@ -106,9 +127,6 @@ def compile_document(document: DraftDocument) -> CompilePreview:
 def solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id=None,runtime_controls=None,solution_artifact_sink=None) -> dict:
     started=perf_counter()
     input_digest=content_hash(request.model_dump(mode="json"))
-    ready=precheck(request)
-    if not ready["solve_ready"]:
-        raise ValueError("; ".join(ready["errors"]))
     if runtime_controls:
         duration=runtime_controls.get("time_limit_seconds")
         if duration:
@@ -119,8 +137,45 @@ def solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id=
         if runtime_controls.get("relative_gap_tolerance") is not None:
             request=request.model_copy(update={"mip_gap":float(runtime_controls["relative_gap_tolerance"])})
     budget=Budget(request.time_limit_seconds,event_sink,cancel_check)
-    options=generate_options(request)
-    if request.algorithm in ("joint_arc_flow","joint_path_oracle"):
+    budget.started=started
+    def checkpoint(partial):
+        if solution_artifact_sink:
+            audit=evaluate(request,partial.decisions)
+            if not audit["valid"]:
+                raise ValueError("checkpoint independent audit failed")
+            solution_artifact_sink({"schema_version":"xma-result-1.0","checkpoint":True,
+                "status":"not_converged","input_hash":input_digest,"objective":partial.objective,
+                "lower_bound":partial.lower,"upper_bound":partial.upper,
+                "flight_options":[o.model_dump(mode="json") for o in options if o.option_id in {d.option_id for d in partial.decisions}],
+                "business_decisions":[d.model_dump(mode="json") for d in partial.decisions],"independent_audit":audit})
+    budget.incumbent_sink=checkpoint
+    signature=study_signature(request)
+    budget.emit("preparing","study_context","厦航研究问题已绑定",metrics={
+        "study_signature":signature,"dataset_id":request.dataset.dataset_id,
+        "objective_profile":request.objective_profile,
+        "objective_units":"tianchi_score" if request.objective_profile=="tianchi_2017" else "abstract_cost_units",
+        "requested_flights":request.dataset.subset_selection.requested_flights if request.dataset.subset_selection else len(request.dataset.flights),
+        "actual_flights":len(request.dataset.flights),
+        "selection_mode":request.dataset.subset_selection.mode if request.dataset.subset_selection else "full",
+        "selection_seed":request.dataset.subset_selection.seed if request.dataset.subset_selection else None,
+    })
+    option_started=perf_counter()
+    options=[]
+    outcome=None
+    control=SolveBudget(budget.remaining(),cancel_check)
+    control.reserve=0
+    try:
+        with use_budget(control):
+            options=generate_options(request)
+            ready=precheck(request,_options=options)
+            if not ready["solve_ready"]:
+                raise ValueError("; ".join(ready["errors"]))
+    except SolveStopped as exc:
+        outcome=Outcome("aborted" if str(exc)=="cancelled" else "not_converged",reason=str(exc))
+    budget.emit("candidate_generation","candidate_generation","厦航航班候选生成完成",metrics={"flight_options":len(options),"generation_seconds":perf_counter()-option_started})
+    if outcome is not None:
+        pass
+    elif request.algorithm in ("joint_arc_flow","joint_path_oracle"):
         outcome=direct(request,options,budget,oracle=request.algorithm=="joint_path_oracle")
     else:
         outcome=benders(request,options,budget,use_cg=request.algorithm=="benders_cg_bp")
@@ -189,6 +244,7 @@ def solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id=
             "rebook":d.rebook} for d in outcome.decisions if d.cancelled or d.dep!=flights[d.flight_id].sched_dep or d.aircraft_id!=flights[d.flight_id].original_aircraft or d.rebook],
         "business_decisions":[d.model_dump(mode="json") for d in outcome.decisions],"independent_audit":audit,
         "run_metadata":{"run_id":run_id,"input_hash":input_digest,"effective_input_hash":digest,"runtime_controls":runtime_controls,
+            "study_signature":signature,
             "source_sha256":data.source_sha256,"objective_profile":request.objective_profile,
             "objective_version":"tianchi_2017_supported_actions_v1" if request.objective_profile=="tianchi_2017" else "air_linear_v1",
             "source_evaluator_sha256":evaluator_sha,

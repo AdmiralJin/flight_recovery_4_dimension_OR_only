@@ -64,7 +64,7 @@ export function DataStudio() {
 
   const clone = useMutation({ mutationFn: api.createDraft, onSuccess: async (draft) => {
     state.selectDraft(draft); setLibraryOpen(false); await query.invalidateQueries({ queryKey: ["drafts"] });
-    state.set({ message: { tone: "success", text: `已克隆为草稿“${draft.name}”。内置 Case 保持只读。` } });
+    state.set({ message: { tone: "success", text: `已从内置 Case 创建新草稿“${draft.name}”。内置 Case 保持只读。` } });
   }});
   const save = useMutation({ mutationFn: async () => {
     if (!state.draft || !selected) throw new Error("没有选中记录");
@@ -121,7 +121,7 @@ export function DataStudio() {
     <div className="page data-page">
       <PageHead eyebrow="01 / DATA DESIGN" title="数据设计" description="完整检查 Scenario、候选、容量、成本与求解 Profile；所有派生状态绑定内容 hash。">
         <button className="button secondary" type="button" onClick={() => setLibraryOpen(true)}><CopyPlus />克隆内置 Case</button>
-        <label className="button ghost file-button"><Upload />导入草稿<input type="file" accept="application/json" onChange={async (event) => { const file = event.target.files?.[0]; if (!file) return; const draft = await api.importDraft(JSON.parse(await file.text())); state.selectDraft(draft); query.invalidateQueries({ queryKey: ["drafts"] }); }} /></label>
+        <label className="button ghost file-button"><Upload />导入草稿<input type="file" accept="application/json" onChange={async (event) => { const file = event.target.files?.[0]; if (!file) return; const draft = await api.importDraft(JSON.parse(await file.text())); state.selectDraft(draft); query.invalidateQueries({ queryKey: ["drafts"] }); state.set({ message: { tone: "success", text: `已从文件创建新草稿“${draft.name}”。原有草稿未被覆盖。` } }); }} /></label>
         <button className="button ghost" type="button" disabled={!state.draft} onClick={exportDraft}><Download />导出</button>
         {state.draft && <PanelToggle open={detailPanel.open} onToggle={() => detailPanel.setOpen(!detailPanel.open)} label="记录检查器" />}
       </PageHead>

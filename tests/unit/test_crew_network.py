@@ -4,6 +4,36 @@ from backend.schemas.columns import CrewSegmentType, RecoveryColumns
 from backend.schemas.scenario import Scenario
 
 
+def test_indexed_crew_graph_matches_original_quadratic_reference(
+    toy_case_008_crew_pairing_generator_data, toy_case_008_crew_pairing_generator_columns_data
+):
+    from collections import Counter
+    from datetime import timedelta
+    scenario=Scenario.model_validate(toy_case_008_crew_pairing_generator_data)
+    columns=RecoveryColumns.model_validate(toy_case_008_crew_pairing_generator_columns_data)
+    options={o.option_id:o for o in columns.flight_options}
+    for crew in scenario.crew:
+        graph=build_crew_flight_network(scenario,columns.flight_options,crew,_config())
+        rejected=Counter()
+        for left_key in graph.leg_keys:
+            left=options[left_key.flight_option_id]
+            accepted=[]
+            for right_key in graph.leg_keys:
+                right=options[right_key.flight_option_id]
+                if left_key==right_key:
+                    continue
+                if left.destination!=right.origin:
+                    rejected["station_mismatch"]+=1
+                elif left.arr_time>right.dep_time:
+                    rejected["time_overlap"]+=1
+                elif left.arr_time+timedelta(minutes=graph.min_connection_minutes)>right.dep_time:
+                    rejected["min_connection_violation"]+=1
+                else:
+                    accepted.append(right_key)
+            assert tuple(accepted)==graph.successor_leg_keys[left_key]
+        assert dict(rejected)==dict(graph.rejected_edge_counts)
+
+
 def _config(**updates):
     data = {
         "schema_version": "1.0.0",

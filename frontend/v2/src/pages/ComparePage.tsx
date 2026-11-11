@@ -28,7 +28,7 @@ export function ComparePage() {
     <section className="comparison-summary"><div><span>航班总数</span><strong>{comparison.counts.total_flights}</strong></div><div className="changed"><span>Changed</span><strong>{comparison.counts.changed_flights}</strong></div><div><span>Unchanged</span><strong>{comparison.counts.unchanged_flights}</strong></div><p>{comparison.mode_semantics[state.mode]}</p></section>
     <div className="entity-tabs compare-tabs" role="tablist" aria-label="对比实体">{entities.map(([key, label]) => <button key={key} role="tab" type="button" aria-selected={entity === key} onClick={() => setEntity(key)}>{label}</button>)}</div>
     {entity === "flights" && <div className={`visual-layout ${detailPanel.open ? "" : "is-panel-collapsed"}`}><section className="visual-card"><div className="card-head"><div><span>核心视觉 · {state.mode.toUpperCase()}</span><h2>航班时空网络</h2></div><div className="card-head-tools"><label className="compact-select"><Filter /><span className="sr-only">变化筛选</span><select value={scope} onChange={(event) => setScope(event.target.value as typeof scope)}><option value="all">全部航班</option><option value="changed">仅 Changed</option><option value="unchanged">仅 Unchanged</option></select></label><PanelToggle open={detailPanel.open} onToggle={() => detailPanel.setOpen(!detailPanel.open)} label="航班证据" /></div></div><TimeSpaceNetwork flights={network.rows} impacts={network.impacts} selectedId={state.selectedId} onSelect={(selectedId) => state.set({ selectedId })} label={`${state.mode} 航班时空网络`} /></section><aside className="detail-panel" hidden={!detailPanel.open}><h2>航班证据</h2>{selected ? <FlightDetail flight={selected} mode={state.mode} /> : <div className="empty-note">选择图中的航班，查看原计划、扰动暴露、恢复结果和全部变化标签。</div>}</aside></div>}
-    {entity !== "flights" && <EntityVisual entity={entity} comparison={comparison as unknown as JsonObject} theme={theme} />}
+    {entity !== "flights" && <EntityVisual entity={entity} comparison={comparison as unknown as JsonObject} mode={state.mode} theme={theme} />}
   </div>;
 }
 
@@ -42,7 +42,7 @@ function FlightDetail({ flight, mode }: { flight: ComparisonFlight; mode: string
   return <div className="flight-detail"><div className="detail-id"><strong>{flight.flight_id}</strong><span className={`change-pill state-${flight.primary_change}`}>{flight.primary_change}</span></div><div className="tag-row">{flight.change_flags.map((flag) => <span key={flag}>{flag}</span>)}</div><dl>{mode !== "recovered" && Object.entries(flight.original).slice(0, 8).map(([key, value]) => <div key={`o-${key}`}><dt>Original · {key}</dt><dd>{String(value)}</dd></div>)}{mode === "impact" && <><div><dt>Exposure</dt><dd>{flight.impact.status}</dd></div><div><dt>Rules</dt><dd>{flight.impact.direct_rule_ids.join(", ") || "—"}</dd></div></>}{["recovered", "delta"].includes(mode) && flight.recovered && Object.entries(flight.recovered).slice(0, 10).map(([key, value]) => <div key={`r-${key}`}><dt>Recovered · {key}</dt><dd>{String(value)}</dd></div>)}</dl></div>;
 }
 
-function EntityVisual({ entity, comparison, theme }: { entity: string; comparison: JsonObject; theme: ThemeMode }) {
+function EntityVisual({ entity, comparison, mode, theme }: { entity: string; comparison: JsonObject; mode: (typeof modes)[number]; theme: ThemeMode }) {
   if (["aircraft", "crew", "passengers"].includes(entity)) {
     const rows = (comparison[entity] as JsonObject[]) ?? [];
     return <section className="visual-card wide"><div className="card-head"><div><span>实体对比</span><h2>{entities.find(([key]) => key === entity)?.[1]}</h2></div></div><VirtualTable rows={rows} /></section>;
@@ -54,13 +54,22 @@ function EntityVisual({ entity, comparison, theme }: { entity: string; compariso
     return <section className="visual-card wide"><div className="card-head"><div><span>基线 / 有效 / 恢复</span><h2>机场容量与负荷</h2></div></div><Chart option={option} label="机场容量和负荷图" theme={theme} height={500} /></section>;
   }
   if (entity === "cost") {
+    if (mode === "impact") return <ModeUnavailable label="成本" />;
     const objective = (comparison.objective ?? {}) as Record<string, number>;
-    const option = comparisonCostOption(objective, theme);
-    return <section className="visual-card wide"><div className="card-head"><div><span>Objective decomposition</span><h2>成本四分量</h2></div><strong>{objective.total?.toLocaleString() ?? "—"}</strong></div><Chart option={option} label="成本四分量柱状图" theme={theme} height={480} /></section>;
+    if ((mode === "recovered" || mode === "delta") && comparison.objective == null) return <ModeUnavailable label="成本" reason="该运行没有可用的恢复目标函数。" />;
+    const option = comparisonCostOption(objective, mode, theme);
+    return <section className="visual-card wide"><div className="card-head"><div><span>{mode === "delta" ? "DELTA TO ORIGINAL" : mode === "original" ? "ORIGINAL BASELINE" : "OBJECTIVE DECOMPOSITION"}</span><h2>成本四分量</h2></div><strong>{mode === "original" ? "0" : objective.total?.toLocaleString() ?? "—"}</strong></div><Chart option={option} label={`${mode} 成本四分量柱状图`} theme={theme} height={480} /></section>;
   }
+  if (mode === "impact") return <ModeUnavailable label="延误" />;
   const rows = (comparison.delay_distribution as JsonObject[]) ?? [];
-  const option = comparisonDelayOption(rows, theme);
-  return <section className="visual-card wide"><div className="card-head"><div><span>Distribution</span><h2>起飞 / 到达延误</h2></div></div><Chart option={option} label="航班延误分布" theme={theme} height={500} /></section>;
+  if ((mode === "recovered" || mode === "delta") && !rows.length) return <ModeUnavailable label="延误" reason="该运行没有可用的恢复延误分布。" />;
+  const shownRows = mode === "original" ? (comparison.flights as JsonObject[]).map((item) => ({ flight_id: item.flight_id, departure_delay_minutes: 0, arrival_delay_minutes: 0 })) : rows;
+  const option = comparisonDelayOption(shownRows, mode, theme);
+  return <section className="visual-card wide"><div className="card-head"><div><span>{mode === "delta" ? "DELTA TO ORIGINAL" : mode === "original" ? "ORIGINAL BASELINE" : "RECOVERED DISTRIBUTION"}</span><h2>起飞 / 到达延误</h2></div></div><Chart option={option} label={`${mode} 航班延误分布`} theme={theme} height={500} /></section>;
+}
+
+function ModeUnavailable({ label, reason = "Impact 只表示扰动暴露，不生成恢复成本或实际延误。" }: { label: string; reason?: string }) {
+  return <section className="visual-card wide"><div className="empty-state chart-empty"><GitCompareArrows /><h3>{label}在当前模式下不可用</h3><p>{reason}</p></div></section>;
 }
 
 function modeLabel(mode: string) { return ({ original: "Original", impact: "Impact", recovered: "Recovered", delta: "Delta" } as Record<string, string>)[mode]; }
