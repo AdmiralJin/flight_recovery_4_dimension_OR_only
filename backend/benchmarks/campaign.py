@@ -88,7 +88,8 @@ def snapshot_sources(folder):
         paths.update(p.relative_to(ROOT).as_posix() for p in (ROOT / name).rglob("*.py"))
     # The v3 distribution is intentionally gitignored but is part of the live
     # HTTP serving contract and must accompany source-isolated API regressions.
-    paths.update(p.relative_to(ROOT).as_posix() for p in (ROOT / "frontend/workbench-v3").rglob("*") if p.is_file())
+    for distribution in ("frontend/dist", "frontend/workbench-v3"):
+        paths.update(p.relative_to(ROOT).as_posix() for p in (ROOT / distribution).rglob("*") if p.is_file())
     records = {}
     for relative in sorted(paths):
         if not relative or not (ROOT / relative).is_file() or "__pycache__" in relative:
@@ -106,6 +107,9 @@ def snapshot_sources(folder):
 def prepare(folder, *, data_root=None, budget_hours=24, profile="full", prior_campaign=None):
     if not 0 < budget_hours <= 24:
         raise ValueError("first campaign budget must be >0 and <=24 hours")
+    for distribution in ("frontend/dist", "frontend/workbench-v3"):
+        if not (ROOT / distribution / "index.html").exists():
+            raise ValueError("build both frontend distributions before freezing: npm run build; npm run build:v3")
     folder = folder.resolve()
     folder.mkdir(parents=True, exist_ok=False)
     prior_budget = None
@@ -275,6 +279,45 @@ def _verify(folder, manifest):
     for path, expected in manifest["sources"].items():
         if file_hash(folder / "source" / path) != expected:
             raise ValueError("frozen source or instance changed: "+path)
+
+
+def refreeze(previous, folder, *, reason):
+    """Replace code/environment while preserving every previously frozen sample and task."""
+    previous, folder = previous.resolve(), folder.resolve()
+    old, consumed = read_json(previous / "manifest.json"), read_json(previous / "state.json")
+    if consumed["status"] != "completed":
+        raise ValueError("stop the prior campaign before refreezing its immutable inputs")
+    _verify(previous, old)
+    for distribution in ("frontend/dist", "frontend/workbench-v3"):
+        if not (ROOT / distribution / "index.html").exists():
+            raise ValueError("build both frontend distributions before refreezing")
+    folder.mkdir(parents=True, exist_ok=False)
+    for name in ("inputs", "drafts", "reference-2019"):
+        shutil.copytree(previous / name, folder / name)
+    names = ["registry.json", "conversion_failures.json", "source_connections.json", "source_references.json"]
+    for name in names:
+        shutil.copy2(previous / name, folder / name)
+    prior = dict(campaign=str(previous), manifest_sha256=old["manifest_sha256"],
+                 state_sha256=file_hash(previous / "state.json"), elapsed_seconds=consumed["elapsed_seconds"],
+                 phase_elapsed=consumed["phase_elapsed"])
+    write_json(folder / "prior_budget.json", prior)
+    sources = snapshot_sources(folder)
+    registry = read_json(folder / "registry.json")
+    for entry in registry:
+        sources["../"+entry["path"]] = entry["sha256"]
+    for name in names+["prior_budget.json", "reference-2019/summary.json", "reference-2019/rows.jsonl"]:
+        sources["../"+name] = file_hash(folder / name)
+    manifest = {**old, "created_at": utc_now(), "environment": environment(), "sources": sources,
+                "prior_budget": prior, "refrozen_from_manifest": old["manifest_sha256"], "refreeze_reason": reason,
+                "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()}
+    manifest.pop("manifest_sha256")
+    manifest["manifest_sha256"] = digest(manifest)
+    write_json(folder / "manifest.json", manifest)
+    write_json(folder / "state.json", dict(status="prepared", jobs={}, phase_elapsed=prior["phase_elapsed"],
+                                          elapsed_seconds=prior["elapsed_seconds"]))
+    report(folder)
+    return dict(campaign=str(folder), inputs=len(registry), jobs=len(manifest["jobs"]),
+                manifest_sha256=manifest["manifest_sha256"], carried_budget_seconds=prior["elapsed_seconds"])
 
 
 def worker(folder, job_id):

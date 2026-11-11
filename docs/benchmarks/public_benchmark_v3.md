@@ -4,7 +4,7 @@
 
 ## 使用方式
 
-在仓库根目录执行，使用安装了 `requirements.txt` 的 Python。Windows 正式运行依赖 pywin32 Job Object，子进程在执行之前加入内存限制。安装前端后执行 `cd frontend`、`npm run build:v3`，再返回仓库根目录。
+在仓库根目录执行，使用安装了 `requirements.txt` 的 Python。Windows 正式运行依赖 pywin32 Job Object，子进程在执行之前加入内存限制。安装前端后执行 `cd frontend`、`npm run build`、`npm run build:v3`，再返回仓库根目录。隔离回归仍检查 v2 页面，两套构建都必须冻结。
 
 ```powershell
 python scripts/public_benchmark.py inventory --output .public_benchmarks/source-inventory.json
@@ -25,6 +25,7 @@ python scripts/public_benchmark.py external .public_benchmarks/a01.json --eviden
 python scripts/public_benchmark.py prepare --profile full --budget-hours 24 --output .public_benchmarks/formal-v3
 python scripts/public_benchmark.py campaign .public_benchmarks/formal-v3 --background
 python scripts/public_benchmark.py report .public_benchmarks/formal-v3
+python scripts/public_benchmark.py analyze .public_benchmarks/formal-v3 --output .public_benchmarks/formal-v3-analysis
 # 中断后续跑：再次执行 campaign；已完成任务不会重新执行
 python scripts/public_benchmark.py campaign .public_benchmarks/formal-v3 --background
 # 停止派发并终止当前受控进程树
@@ -34,6 +35,8 @@ New-Item .public_benchmarks/formal-v3/cancel.request -ItemType File
 运行的是 `source/` 内冻结副本；修改工作区不会改变当前实验。恢复时验证清单、源代码及所有输入指纹。原始大文件仍保存在数据目录；不放入 Git。清除 `cancel.request` 后，已标记取消的任务仍属于历史结果；重新实验应建立新清单。
 
 若接口修正需要替换已冻结清单，使用 `prepare --prior-campaign <已结束清单目录>` 将其已消耗的总预算和各阶段预算计入新清单，不能重新获得 24 小时。调度器重启时也保守计入中断任务的耗时；未完成的旧尝试保留为中断，继续派发其余任务。
+
+只替换运行代码或依赖、需要保留全部原抽样与任务时，使用 `refreeze <已结束目录> --output <新目录> --reason <原因>`。输入、注册表和任务不变，源代码重新冻结，累计预算继续扣除，旧记录不覆盖。该命令不会根据已有结果挑选样本。
 
 ## 数据及规则映射
 
@@ -101,6 +104,8 @@ AIR 使用原生 `HighsAdapter`，支持 LP/MIP、LP 对偶及 reduced cost、�
 调度器被迫终止任务时保留已审计的检查点；它不能因此变成最优解。重复运行允许最优决策不同，只比较目标、有效界、状态和时间。报告给出中位数、范围和标准差；只有同一问题、两路线各三次均审计且认证同一最优值，才计算相对直接联合路线的加速比。超时、未收敛和未执行不从登记分母删除。同日窗口及同网络变体按相关样本解释，样本不足不输出伪精确的置信区间。
 
 AIR 证据提供求解器接口构造、求解调用、完整枚举及独立审计分项计时；注册表另记规范化与候选生成时间，工作进程记录端到端与内存。厦航分项及原始 HDF 解析目前未逐项计时，不宜据此比较单独的解析/构模阶段。
+
+`analyze` 只读取证据，不重新求解：按文件/工作表分别统计 2019 合法参考记录的成本、KPI 和不同定义的时间分布；对审计通过的我方方案复算取消、延误、换机、优化旅客与原始逐航段登机人数暴露。Delft 连接评价使用原始组合键、公开最小转机时间和冻结窗口外上下文；没有上下文或事件语义时标为未知。逐航段人数和连接人数不等于独立旅客人数，也不代表已经完成旅客重分配。分析文件记录自身代码、输入及证据指纹。
 
 v3 复核时在数据准备页导入 `drafts/*.json`，保存校验、启动运行、查看恢复结果。公开候选和配置冻结；编辑展示数据会导致指纹校验失败。Workbench 使用相同的公开求解入口，旧 AIR 入口仍拒绝缺少机组的实例。
 

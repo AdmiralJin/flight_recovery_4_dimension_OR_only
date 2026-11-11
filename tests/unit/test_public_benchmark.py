@@ -168,6 +168,47 @@ def test_resume_charges_unrecorded_active_work_once():
     assert state["elapsed_seconds"] == 175
 
 
+def test_refreeze_preserves_samples_tasks_and_budget_and_rejects_tampering(tmp_path, monkeypatch):
+    from backend.benchmarks import campaign
+    from backend.benchmarks.common import write_json, read_json, file_hash, digest
+    previous, target = tmp_path / "previous", tmp_path / "replacement"
+    for name in ("inputs", "drafts", "reference-2019", "source"):
+        (previous / name).mkdir(parents=True)
+    for name in ("frontend/dist", "frontend/workbench-v3"):
+        (tmp_path / name).mkdir(parents=True)
+        (tmp_path / name / "index.html").write_text("unit fixture")
+    write_json(previous / "inputs/I.json", {"unit_fixture": 1})
+    entry = dict(id="I", path="inputs/I.json", sha256=file_hash(previous / "inputs/I.json"))
+    write_json(previous / "registry.json", [entry])
+    for name in ("conversion_failures.json", "source_connections.json", "source_references.json", "reference-2019/summary.json"):
+        write_json(previous / name, [])
+    (previous / "reference-2019/rows.jsonl").write_text("")
+    jobs = [dict(id="J1", kind="solve", phase="correctness", instance="I", algorithm="air_bp", backend="highs", warmup=False)]
+    manifest = dict(jobs=jobs, budget_hours=24, sources={"../inputs/I.json": entry["sha256"]},
+                    registry_sha256=file_hash(previous / "registry.json"))
+    manifest["manifest_sha256"] = digest(manifest)
+    write_json(previous / "manifest.json", manifest)
+    write_json(previous / "state.json", dict(status="completed", elapsed_seconds=30, phase_elapsed={"correctness": 25}))
+    def snapshot(folder):
+        (folder / "source").mkdir()
+        path = folder / "source/frozen.py"
+        path.write_text("# unit code fixture\n")
+        return {"frozen.py": file_hash(path)}
+    monkeypatch.setattr(campaign, "ROOT", tmp_path)
+    monkeypatch.setattr(campaign, "snapshot_sources", snapshot)
+    monkeypatch.setattr(campaign.subprocess, "check_output", lambda *args, **kwargs: "unit-commit\n")
+    campaign.refreeze(previous, target, reason="unit environment repair")
+    fresh = read_json(target / "manifest.json")
+    assert fresh["jobs"] == jobs
+    assert (target / "inputs/I.json").read_bytes() == (previous / "inputs/I.json").read_bytes()
+    assert read_json(target / "state.json")["elapsed_seconds"] == 30
+    assert fresh["prior_budget"]["phase_elapsed"]["correctness"] == 25
+    campaign._verify(target, fresh)
+    write_json(target / "inputs/I.json", {"unit_fixture": 2})
+    with pytest.raises(ValueError, match="changed"):
+        campaign._verify(target, fresh)
+
+
 def test_public_snapshot_worker_api_and_visualization(public_case, tmp_path, monkeypatch):
     from fastapi.testclient import TestClient
     from backend.api import workbench_v2
@@ -198,3 +239,51 @@ def test_public_snapshot_worker_api_and_visualization(public_case, tmp_path, mon
     assert visual.status_code == 200
     assert visual.json()["mode_availability"]["recovered"]["available"]
     assert store.list_events(run.run_id)[-1].event_type == "run_completed"
+
+
+def test_business_metrics_keep_boarding_exposure_separate_from_passenger_recovery(public_case):
+    from backend.benchmarks.analysis import business_metrics
+    evidence = execute(public_case.model_copy(update={"algorithm": "integrated_oracle"}), seconds=30)
+    metrics = business_metrics(public_case.model_dump(mode="json"), evidence)
+    assert metrics["cancelled_flights"] == 0 and metrics["delayed_flights"] == 1
+    assert metrics["total_departure_delay_minutes"] == 40
+    assert metrics["reassigned_flights"] == 2
+    assert metrics["optimized_passengers"] == 0
+    assert not business_metrics({}, {"audit": {"pass": False}})["eligible"]
+
+
+def test_connection_evaluation_does_not_invent_missing_context_or_od_demand():
+    from backend.benchmarks.analysis import connection_impact
+    records = [dict(id="F1", number="1", dep="2006-01-07T08:00:00+00:00", arr="2006-01-07T09:00:00+00:00", origin="A", destination="B", delay=0),
+               dict(id="F2", number="2", dep="2006-01-07T09:30:00+00:00", arr="2006-01-07T10:30:00+00:00", origin="B", destination="C", delay=0)]
+    public = dict(source=dict(records=records), fixed_context=dict(flights=[]), recovery_columns=dict(flight_options=[
+        dict(option_id="C1", base_flight_id="F1", operation_type="cancel")]))
+    evidence = dict(selected=dict(flight_options=["C1"]))
+    row = dict(first_flight_no="1", second_flight_no="2", planned_departure_time=records[0]["dep"],
+        planned_conn_departure_time=records[1]["dep"], planned_origin="A", planned_connection="B", planned_destination="C",
+        _source_row=42, num_passengers=7, first_in_window=True, second_in_window=False)
+    impact = connection_impact(public, evidence, [row], {"B": 20})
+    assert impact["counts"]["newly_broken_connection_boardings"] == 7
+    assert impact["records"][0]["first_in_window"] and not impact["records"][0]["second_in_window"]
+    public["fixed_context"]["flights"] = []
+    public["source"]["records"] = records[:1]
+    missing = connection_impact(public, evidence, [row], {"B": 20})
+    assert missing["counts"]["unknown_records"] == 1
+    assert "newly_broken_connection_boardings" not in missing["counts"]
+
+
+def test_publisher_statistics_exclude_illegal_records_and_preserve_time_definitions(tmp_path):
+    import json
+    from backend.benchmarks.analysis import publisher_distributions
+    base = dict(file="unit-fixture.xlsx", sheet="reference", kind="run_observation", publisher_status=101)
+    records = [{**base, "eligible_reference": legal, "cells": {
+        "Cost of Disruption": {"value": cost, "seconds": None},
+        "Iterationtime": {"value": "00:01:00", "seconds": 60},
+        "Iterationsetup": {"value": "00:00:05", "seconds": 5}}} for legal, cost in ((True, 10), (False, -1))]
+    path = tmp_path / "rows.jsonl"
+    path.write_text("\n".join(json.dumps(r) for r in records), encoding="utf-8")
+    summary = publisher_distributions(path)[0]
+    assert summary["observations"] == 2 and summary["eligible"] == 1
+    assert summary["metrics"]["cost of disruption"]["median"] == 10
+    assert summary["metrics"]["iterationtime_seconds"]["median"] == 60
+    assert summary["metrics"]["iterationsetup_seconds"]["median"] == 5

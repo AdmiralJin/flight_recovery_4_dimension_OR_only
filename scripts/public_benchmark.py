@@ -61,6 +61,9 @@ def main():
     p.add_argument("--prior-campaign", type=Path, help="carry consumed total and phase budgets from a finished superseded campaign")
     p = sub.add_parser("campaign"); p.add_argument("folder", type=Path); p.add_argument("--background", action="store_true")
     p = sub.add_parser("report"); p.add_argument("folder", type=Path)
+    p = sub.add_parser("analyze"); p.add_argument("folder", type=Path); p.add_argument("--output", type=Path, required=True)
+    p = sub.add_parser("refreeze"); p.add_argument("previous", type=Path); p.add_argument("--output", type=Path, required=True)
+    p.add_argument("--reason", required=True)
     p = sub.add_parser("_job"); p.add_argument("folder", type=Path); p.add_argument("job_id")
     args = parser.parse_args()
     if args.command == "inventory":
@@ -113,6 +116,12 @@ def main():
     elif args.command == "results2019":
         from backend.benchmarks.results2019 import extract
         result = extract(discover(args.data_root)["TU_Delft_2019_Results"], args.output)["counts"]
+    elif args.command == "analyze":
+        from backend.benchmarks.analysis import analyze
+        result = analyze(args.folder, args.output)
+    elif args.command == "refreeze":
+        from backend.benchmarks.campaign import refreeze
+        result = refreeze(args.previous, args.output, reason=args.reason)
     else:
         from backend.benchmarks.campaign import prepare, supervise, report, worker, launch
         if args.command == "prepare":
