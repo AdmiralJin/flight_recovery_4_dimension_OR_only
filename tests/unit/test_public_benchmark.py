@@ -184,6 +184,17 @@ def test_baseline_group_collects_worker_evidence_after_enter(tmp_path, monkeypat
     assert read_json(tmp_path / "summary_micro.json")["counts"] == {"optimal":1}
 
 
+def test_baseline_report_flags_conflicting_feasibility_certificates(tmp_path):
+    from backend.benchmarks.direct_campaign import report
+    from backend.benchmarks.common import write_json
+    common = dict(group="micro", instance="same-problem", source="unit", backend="highs", seconds=600, scale={})
+    jobs = [dict(common, id="H1", algorithm="direct_mip"), dict(common, id="H2", algorithm="integrated_oracle")]
+    write_json(tmp_path / "manifest.json", dict(jobs=jobs, manifest_sha256="unit"))
+    write_json(tmp_path / "jobs/H1/result.json", dict(status="optimal", objective=40, certified_optimal=True))
+    write_json(tmp_path / "jobs/H2/result.json", dict(status="infeasible", certified_infeasible=True))
+    assert report(tmp_path)["certified_feasibility_conflicts"] == ["same-problem"]
+
+
 def test_actual_boundary_may_differ_from_planned_rotation_only_when_explicit(public_case):
     raw = public_case.scenario.model_dump(mode="json")
     raw["aircraft"][0]["initial_station_at_t"] = "B"
