@@ -144,7 +144,10 @@ def launch(folder):
     windows = []
     for group in manifest["groups"]:
         path = folder / f"start_{group}.cmd"
-        process = subprocess.Popen([os.environ.get("COMSPEC", "cmd.exe"), "/d", "/k", f'call "{path}"'],
+        # cmd.exe does not understand list2cmdline's backslash-escaped embedded
+        # quotes; supply its command tail using native CMD quoting instead.
+        command = f'"{os.environ.get("COMSPEC", "cmd.exe")}" /d /k call "{path}"'
+        process = subprocess.Popen(command,
             cwd=folder, creationflags=subprocess.CREATE_NEW_CONSOLE)
         windows.append(dict(group=group, pid=process.pid, launcher=str(path), launched_at=utc_now()))
     write_json(existing, windows)
