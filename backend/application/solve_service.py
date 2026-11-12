@@ -249,6 +249,11 @@ def solve_request(
             ROOT / "data/config" / LIMITED_BRANCH_FILE
         )
     runtime_controls = runtime_controls or {}
+    if runtime_controls.get("time_limit_seconds") is None:
+        from backend.workbench.solve_policy import recommend_time_limit
+        runtime_controls = {**runtime_controls, "time_limit_seconds": recommend_time_limit(
+            len(scenario.flights), len(columns.flight_options),
+            len(columns.flight_options)*len(scenario.aircraft))["time_limit_seconds"]}
     benders_updates = {
         key: runtime_controls[key]
         for key in (

@@ -91,11 +91,13 @@ def capabilities() -> dict[str, Any]:
         "business_modes": {"public_benchmark": {
             "schema_version": "public-benchmark-1.0", "backends": ["highs", "gurobi"],
             "crew_enabled": False, "frozen_candidates_and_configs": True,
-            "workbench_algorithm": "air_bp", "original_rule_checks": "separate_native_evidence",
+            "workbench_algorithm": "air_bp", "workbench_algorithms": ["direct_mip", "integrated_oracle", "air_bp"],
+            "default_baseline": "direct_mip", "original_rule_checks": "separate_native_evidence",
         }, "xma_research": {
             "schema_version":"xma-solve-1.0",
             "objectives":["tianchi_2017","air_linear_v1"],
             "algorithms":["joint_arc_flow","joint_path_oracle","benders_joint","benders_cg_bp"],
+            "backends":["auto","highs","gurobi"],
             "large_model_fallback":"Native HiGHS with SciPy compatibility fallback on Gurobi license size error 10010",
             "crew_enabled":False,"maintenance_enabled":False,
         }},

@@ -32,10 +32,14 @@ def precheck(request):
                   "problem_sha256": request.problem_sha256, "rules": request.rule_mapping})
 
 
-def execute(request, *, seconds=120, cancel_check=None, event_sink=None, checkpoint_sink=None,
-            node_limit=None, iteration_limit=None):
+def execute(request, *, seconds=None, cancel_check=None, event_sink=None, checkpoint_sink=None,
+            node_limit=None, iteration_limit=None, output_flag=False):
     if not isinstance(request, PublicSolveRequest):
         request = PublicSolveRequest.model_validate(request)
+    if seconds is None:
+        from backend.workbench.solve_policy import recommend_time_limit
+        seconds = recommend_time_limit(len(request.scenario.flights), len(request.recovery_columns.flight_options),
+            len(request.recovery_columns.flight_options)*len(request.scenario.aircraft))["time_limit_seconds"]
     ready = precheck(request)
     if not ready["ready"]:
         return {"status": "unsupported_input", "precheck": ready, "problem_sha256": request.problem_sha256}
@@ -46,6 +50,12 @@ def execute(request, *, seconds=120, cancel_check=None, event_sink=None, checkpo
         return dict(status="aborted", algorithm=request.algorithm, backend=request.backend,
                     problem_sha256=request.problem_sha256, certified_optimal=False, runtime_seconds=0,
                     objective=None, lower_bound=None, upper_bound=None, selected=None)
+    # Direct baselines deliberately enter the solver even when the existing
+    # temporal relaxation could prove infeasibility without running a MIP.
+    if request.algorithm == "direct_mip":
+        from .direct import execute_direct
+        return execute_direct(request, seconds=seconds, cancel_check=cancel_check, event_sink=event_sink,
+                              checkpoint_sink=checkpoint_sink, output_flag=output_flag)
     certificate = necessary_infeasibility_certificate(request)
     if certificate:
         return {"status": "infeasible", "algorithm": request.algorithm, "backend": request.backend,
@@ -55,7 +65,7 @@ def execute(request, *, seconds=120, cancel_check=None, event_sink=None, checkpo
                 "runtime_seconds": perf_counter()-start, "original_rules": {"eligible": False}}
     factory_type = HighsAdapter if request.backend == "highs" else GurobiAdapter
     def factory():
-        adapter = factory_type(output_flag=False, cancel_check=cancel_check)
+        adapter = factory_type(output_flag=output_flag, cancel_check=cancel_check)
         def track(method, key):
             def measured(*args, **kwargs):
                 before = perf_counter()
@@ -184,11 +194,11 @@ def solve_request(request, *, event_sink=None, cancel_check=None, run_id=None, r
                   solution_artifact_sink=None):
     """Workbench worker entry; use the same snapshot, solve and audit as batch runs."""
     request = request if isinstance(request, PublicSolveRequest) else PublicSolveRequest.model_validate(request)
-    if request.algorithm != "air_bp":
-        raise ValueError("Workbench representative runs use AIR Benders CG/BP")
+    if request.algorithm not in ("air_bp", "direct_mip", "integrated_oracle"):
+        raise ValueError("Workbench supports public direct MIP, small Oracle and AIR Benders CG/BP")
     controls = runtime_controls or {}
     started = datetime.now(timezone.utc)
-    evidence = execute(request, seconds=controls.get("time_limit_seconds") or 300, cancel_check=cancel_check,
+    evidence = execute(request, seconds=controls.get("time_limit_seconds"), cancel_check=cancel_check,
                        event_sink=event_sink, checkpoint_sink=solution_artifact_sink,
                        node_limit=controls.get("max_branch_nodes"), iteration_limit=controls.get("max_benders_iterations"))
     if evidence["status"] == "unsupported_input":
@@ -200,6 +210,12 @@ def solve_request(request, *, event_sink=None, cancel_check=None, run_id=None, r
         "lower_bound": None, "upper_bound": None, "diagnostics": {
             "terminal_reason": "certified_preprocessing_infeasibility" if evidence.get("certified_infeasible") else evidence["status"],
             "infeasibility_certificate": evidence.get("infeasibility_certificate")}}
+    if request.algorithm in ("direct_mip", "integrated_oracle"):
+        raw = dict(status="not_converged" if evidence["status"] == "input_limit" else evidence["status"], objective_value=evidence.get("objective"),
+                   lower_bound=evidence.get("lower_bound"), upper_bound=evidence.get("upper_bound"),
+                   diagnostics={"terminal_reason": evidence.get("reason") or (evidence.get("core") or {}).get("termination_reason"),
+                       "integrated_audit": {"all_constraints_satisfied": bool((evidence.get("audit") or {}).get("pass"))},
+                       "model_size": evidence.get("model_size"), "timings": evidence.get("timings")})
     selections = evidence.get("selected") or {"flight_options": [], "aircraft_strings": [], "passenger_itineraries": []}
     core = SimpleNamespace(status=RecoveredStatus(raw["status"]), objective_value=raw["objective_value"],
         lower_bound=raw["lower_bound"], upper_bound=raw["upper_bound"], diagnostics=raw["diagnostics"],
@@ -210,7 +226,8 @@ def solve_request(request, *, event_sink=None, cancel_check=None, run_id=None, r
         git_commit=(frozen_repository_state() or {}).get("git_commit") or _git_commit(),
         application_version="public-benchmark-1.0", solver=request.backend,
         solver_version=(HighsAdapter if request.backend == "highs" else GurobiAdapter)().solver_version,
-        algorithm="public_air_benders_cg_bp_v1", algorithm_profile_ids=SolveProfileIds(**{
+        algorithm={"air_bp": "public_air_benders_cg_bp_v1", "direct_mip": "public_compact_direct_mip_v1",
+                   "integrated_oracle": "public_integrated_oracle_v1"}[request.algorithm], algorithm_profile_ids=SolveProfileIds(**{
             k: request.configs[k]["profile_id"] for k in PROFILE_FILES}),
         cost_profile_id=request.costs.cost_profile_id, capacity_profile_id=request.capacity_profile.capacity_profile_id,
         started_at=started, finished_at=datetime.now(timezone.utc), runtime_seconds=evidence["runtime_seconds"])

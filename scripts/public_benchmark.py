@@ -51,7 +51,8 @@ def main():
     p = sub.add_parser("precheck"); p.add_argument("input", type=Path)
     p = sub.add_parser("run"); p.add_argument("input", type=Path); p.add_argument("--output", type=Path, required=True)
     p.add_argument("--algorithm", default="air_bp", choices=list(PublicSolveRequest.model_fields["algorithm"].annotation.__args__))
-    p.add_argument("--backend", choices=["highs", "gurobi"], default="highs"); p.add_argument("--seconds", type=float, default=120)
+    p.add_argument("--backend", choices=["highs", "gurobi"], default="highs"); p.add_argument("--seconds", type=float,
+        help="override size-aware runtime recommendation")
     p = sub.add_parser("results2019"); p.add_argument("--data-root"); p.add_argument("--output", type=Path, required=True)
     p = sub.add_parser("draft"); p.add_argument("input", type=Path); p.add_argument("--output", type=Path, required=True)
     p = sub.add_parser("external"); p.add_argument("input", type=Path); p.add_argument("--evidence", type=Path)

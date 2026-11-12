@@ -28,7 +28,7 @@ def public_case():
     return build(raw, target=4)
 
 
-@pytest.mark.parametrize("algorithm", ["integrated_oracle", "fixed_benders", "air_cg", "air_bp",
+@pytest.mark.parametrize("algorithm", ["direct_mip", "integrated_oracle", "fixed_benders", "air_cg", "air_bp",
     "xma_joint_arc_flow", "xma_joint_path_oracle", "xma_benders_joint", "xma_benders_cg_bp"])
 def test_all_routes_match_nonzero_analytical_optimum(public_case, algorithm):
     result = execute(public_case.model_copy(update={"algorithm": algorithm}), seconds=30)
@@ -46,6 +46,142 @@ def test_legacy_crew_validation_and_public_no_dummy_crew(public_case):
     assert any(issue.code == "unknown_crew" for issue in validate_scenario(legacy)[1])
     assert public_case.scenario.crew == []
     assert all(f.original_crew is None for f in public_case.scenario.flights)
+
+
+def test_direct_mip_checkpoints_and_workbench_route(public_case):
+    from backend.benchmarks.solve import solve_request
+    checkpoints, events = [], []
+    request = public_case.model_copy(update={"algorithm":"direct_mip"})
+    assert compile_draft(make_document(request)).valid
+    result = execute(request, seconds=30, checkpoint_sink=checkpoints.append, event_sink=events.append)
+    assert result["certified_optimal"]
+    assert checkpoints and all(c["audit"]["pass"] for c in checkpoints)
+    assert any(e["type"] == "model_built" for e in events)
+    displayed = solve_request(request, runtime_controls={"time_limit_seconds":30})
+    assert displayed.status.value == "optimal"
+    assert displayed.run_metadata.algorithm == "public_compact_direct_mip_v1"
+    oracle_display = solve_request(public_case.model_copy(update={"algorithm":"integrated_oracle"}),
+                                   runtime_controls={"time_limit_seconds":30})
+    assert oracle_display.status.value == "optimal"
+    assert oracle_display.objective.total == pytest.approx(displayed.objective.total)
+
+
+def test_direct_mip_reports_true_infeasibility_without_preprocessor(public_case):
+    data = public_case.model_dump(mode="json")
+    data["scenario"]["aircraft"][0]["required_station_at_T_end"] = "B"
+    data["scenario"]["aircraft"][1]["required_station_at_T_end"] = "B"
+    data["problem_sha256"] = digest({k:v for k,v in data.items() if k not in ("problem_sha256", "algorithm", "backend")})
+    request = PublicSolveRequest.model_validate(data).model_copy(update={"algorithm":"direct_mip"})
+    # Fixed flight A1 must operate; all other legs may cancel, so force both
+    # return legs as well and make both required B terminals impossible.
+    data = request.model_dump(mode="json")
+    for f in data["scenario"]["flights"]:
+        f["strategic_flag"] = True
+    data["problem_sha256"] = digest({k:v for k,v in data.items() if k not in ("problem_sha256", "algorithm", "backend")})
+    request = PublicSolveRequest.model_validate(data)
+    result = execute(request, seconds=30)
+    assert result["status"] == "infeasible" and result["certified_infeasible"]
+    assert not result.get("preprocessing_only")
+
+
+def test_direct_model_limits_do_not_claim_infeasibility(public_case):
+    from backend.benchmarks.direct import execute_direct
+    result = execute_direct(public_case, seconds=30, max_variables=1)
+    assert result["status"] == "input_limit"
+    assert not result["certified_optimal"]
+
+
+def test_runtime_policy_scales_with_candidates_and_assignments():
+    from backend.workbench.solve_policy import recommend_time_limit
+    assert [recommend_time_limit(n)["time_limit_seconds"] for n in (2, 20, 100, 500, 2000)] == [600,1800,3600,7200,14400]
+    assert recommend_time_limit(5, assignment_pairs=1000001)["time_limit_seconds"] == 14400
+
+
+def test_direct_passenger_capacity_matches_independent_oracle(public_case):
+    from backend.schemas.passenger import PassengerCommodity
+    from backend.config import PassengerItineraryGenerationConfig
+    from backend.core import generate_passenger_itineraries
+    first = public_case.scenario.flights[0]
+    group = PassengerCommodity(pax_group_id="analytical-capacity", count=101, origin=first.origin,
+        destination=first.destination, original_departure=first.sched_dep,
+        scheduled_arrival=first.sched_arr, original_itinerary=[first.flight_id])
+    scenario = public_case.scenario.model_copy(update={"passengers":[group]})
+    itineraries = generate_passenger_itineraries(scenario, public_case.recovery_columns.flight_options, None,
+        PassengerItineraryGenerationConfig.model_validate(public_case.configs["itinerary_generation"]))
+    data = public_case.model_dump(mode="json")
+    data.update(scenario=scenario.model_dump(mode="json"), model_type="aircraft_passenger",
+                components=dict(aircraft=True, passenger=True, crew=False))
+    data["recovery_columns"]["passenger_itineraries"] = [i.model_dump(mode="json") for i in itineraries]
+    data["problem_sha256"] = digest({k:v for k,v in data.items() if k not in ("problem_sha256", "algorithm", "backend")})
+    request = PublicSolveRequest.model_validate(data)
+    direct = execute(request.model_copy(update={"algorithm":"direct_mip"}), seconds=30)
+    oracle = execute(request.model_copy(update={"algorithm":"integrated_oracle"}), seconds=30)
+    assert direct["certified_optimal"] and oracle["certified_optimal"]
+    assert direct["objective"] == pytest.approx(oracle["objective"])
+    assert direct["audit"]["breakdown"]["passenger"] == pytest.approx(101*request.costs.coefficients.unserved_passenger.value)
+
+
+def test_baseline_waits_for_enter_before_any_solver_or_verification(tmp_path, monkeypatch):
+    from backend.benchmarks import direct_campaign
+    from backend.benchmarks.common import write_json, read_json
+    write_json(tmp_path / "manifest.json", dict(jobs=[dict(id="H1", group="micro", seconds=600)]))
+    write_json(tmp_path / "groups/micro.json", dict(status="prepared_not_started", jobs={}))
+    def no_enter(prompt):
+        raise EOFError("unit test does not press Enter")
+    monkeypatch.setattr("builtins.input", no_enter)
+    monkeypatch.setattr(direct_campaign, "verify", lambda *a: pytest.fail("verification started before Enter"))
+    with pytest.raises(EOFError):
+        direct_campaign.run_group(tmp_path, "micro")
+    assert read_json(tmp_path / "groups/micro_window.json")["status"] == "waiting_for_enter"
+    assert not (tmp_path / "jobs").exists()
+
+
+def test_baseline_retained_checkpoint_cannot_claim_optimal(tmp_path):
+    from backend.benchmarks.direct_campaign import _retained
+    from backend.benchmarks.common import write_json
+    write_json(tmp_path / "checkpoint.json", dict(objective=240, lower_bound=150, audit={"pass":True}))
+    result = _retained(tmp_path, dict(status="timed_out", certified_optimal=True))
+    assert result["upper_bound"] == 240 and result["lower_bound"] == 150
+    assert result["audit_pass"] and not result["certified_optimal"]
+
+
+def test_direct_cancel_after_incumbent_retains_plan_without_optimal_label(public_case):
+    cancelled = [False]
+    saved = []
+    def checkpoint(value):
+        saved.append(value)
+        cancelled[0] = True
+    result = execute(public_case.model_copy(update={"algorithm":"direct_mip"}), seconds=30,
+                     cancel_check=lambda: cancelled[0], checkpoint_sink=checkpoint)
+    assert saved and all(s["audit"]["pass"] for s in saved)
+    assert result["status"] == "aborted" and not result["certified_optimal"]
+    assert result["audit"]["pass"] and result["upper_bound"] is not None
+
+
+def test_baseline_group_collects_worker_evidence_after_enter(tmp_path, monkeypatch):
+    from backend.benchmarks import direct_campaign
+    from backend.benchmarks.common import write_json, read_json
+    job = dict(id="H1", group="micro", instance="analytical", source="unit_fixture", algorithm="direct_mip",
+               backend="highs", seconds=600, memory_gib=6, watchdog_grace_seconds=120,
+               scale=dict(flights=4, candidates=24, assignment_pairs=48))
+    manifest = dict(jobs=[job], live_root=str(tmp_path), manifest_sha256="unit-fixture")
+    write_json(tmp_path / "manifest.json", manifest)
+    write_json(tmp_path / "groups/micro.json", dict(status="prepared_not_started", jobs={}))
+    monkeypatch.setattr("builtins.input", lambda prompt: "")
+    monkeypatch.setattr(direct_campaign, "verify", lambda folder: manifest)
+    class FinishedWorker:
+        def __init__(self, command, **kwargs):
+            write_json(Path(command[-1]) / "result.json", dict(status="optimal", objective=40,
+                       lower_bound=40, upper_bound=40, certified_optimal=True, audit_pass=True))
+        def poll(self): return 0
+        def peak_commit(self): return 0
+        def close(self): pass
+    from pathlib import Path
+    monkeypatch.setattr("scripts.validation_campaign.GuardedChild", FinishedWorker)
+    state = direct_campaign.run_group(tmp_path, "micro")
+    assert state["status"] == "completed"
+    assert read_json(tmp_path / "jobs/H1/result.json")["certified_optimal"]
+    assert read_json(tmp_path / "summary_micro.json")["counts"] == {"optimal":1}
 
 
 def test_actual_boundary_may_differ_from_planned_rotation_only_when_explicit(public_case):

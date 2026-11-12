@@ -13,6 +13,9 @@ export function objectiveHelp(doc: DraftDocument | null): string {
 }
 
 export const algorithmHelp: Record<string, string> = {
+  direct_mip: "完整模型直接求解：冻结航班候选、飞机衔接和已启用旅客行程，构建一个整数模型交给选定求解器。无需枚举飞机全部路径，不使用我们组织的 Benders、列生成或分支定价。最优结论仍需独立审计和有效闭合界。",
+  integrated_oracle: "全路径独立 Oracle：限 12 班以内，完整枚举飞机路径，与直接模型交叉检查。枚举超限不代表问题不可行。",
+  air_bp: "AIR Benders＋分支定价：主问题与资源子问题迭代协调；与完整模型直接求解分别记录结果。",
   joint_arc_flow: "直接联合优化：用航班候选、飞机网络流及旅客分配构建一个联合整数模型，由求解器进行分支定界。最优结论需有合法完整方案及闭合的全局上下界。",
   joint_path_oracle: "显式航班串 Oracle：枚举飞机可行路径，再联合优化航班与旅客。用于小实例对拍；路径数增长很快，路径上限或资源限制不等于认证不可行。",
   benders_joint: "Benders＋联合子问题：主问题选择航班计划，子问题联合检查资源与旅客；通过有效割收紧主问题。当前实现对适中规模还加入资源、旅客 LP 强化；需全局界闭合才证明最优。",

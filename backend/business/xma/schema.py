@@ -140,6 +140,7 @@ class XmaSolveRequest(SchemaModel):
     objective_profile: Literal["tianchi_2017", "air_linear_v1"] = "tianchi_2017"
     air_objective: AirObjective = Field(default_factory=AirObjective)
     algorithm: Literal["joint_arc_flow", "joint_path_oracle", "benders_joint", "benders_cg_bp"] = "joint_arc_flow"
+    solver_backend: Literal["auto", "highs", "gurobi"] = "auto"
     delay_step_minutes: int = Field(default=30, ge=1, le=360)
     maximum_delay_minutes: int = Field(default=1440, ge=0, le=2160)
     max_benders_iterations: int = Field(default=500, ge=1)

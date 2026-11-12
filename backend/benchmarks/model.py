@@ -33,7 +33,7 @@ class PublicSolveRequest(SchemaModel):
     fixed_context: dict[str, Any]
     rule_mapping: list[dict[str, Any]]
     precheck_issues: list[dict[str, Any]] = Field(default_factory=list)
-    algorithm: Literal["air_bp", "air_cg", "fixed_benders", "integrated_oracle",
+    algorithm: Literal["direct_mip", "air_bp", "air_cg", "fixed_benders", "integrated_oracle",
                        "xma_joint_arc_flow", "xma_joint_path_oracle", "xma_benders_joint",
                        "xma_benders_cg_bp"] = "air_bp"
     backend: Literal["highs", "gurobi"] = "highs"

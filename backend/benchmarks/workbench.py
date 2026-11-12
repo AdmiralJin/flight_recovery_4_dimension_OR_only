@@ -23,7 +23,10 @@ def compile_document(document):
                 or document.candidate_policy.regenerate_flight_options):
             raise ValueError("public benchmark snapshots require frozen candidates and source disturbances")
         ready = precheck(request)
-        valid = ready["ready"] and request.algorithm == "air_bp"
+        supported = request.algorithm in ("air_bp", "direct_mip", "integrated_oracle")
+        if request.algorithm == "integrated_oracle" and len(request.scenario.flights) > 12:
+            supported = False
+        valid = ready["ready"] and supported
         return CompilePreview(valid=valid, draft_hash=draft_hash,
             compiled_hash=content_hash(request.model_dump(mode="json")) if valid else None,
             effective_scenario=request.scenario.model_dump(mode="json"),
@@ -36,7 +39,9 @@ def compile_document(document):
             flight_impacts=[FlightImpact(flight_id=f.flight_id,
                 status="direct" if f.cancel_required or (f.earliest_departure and f.earliest_departure > f.sched_dep) else "normal")
                 for f in request.scenario.flights],
-            issues=[WorkbenchIssue(code="public_precheck", message=str(issue), path="solve_bundle") for issue in ready["issues"]])
+            issues=[WorkbenchIssue(code="public_precheck", message=str(issue), path="solve_bundle") for issue in ready["issues"]]
+                   + ([] if supported else [WorkbenchIssue(code="unsupported_public_algorithm",
+                       message="请选择直接模型或 AIR 主线；全路径 Oracle 限 12 个航班以内。", path="solve_bundle.algorithm")]))
     except ValueError as exc:
         return CompilePreview(valid=False, draft_hash=draft_hash,
             issues=[WorkbenchIssue(code="invalid_public_problem", message=str(exc), path="solve_bundle")])

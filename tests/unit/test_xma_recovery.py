@@ -38,6 +38,22 @@ def test_real_workbook_structure():
     assert data.flights[0].sched_dep.utcoffset()==timedelta(hours=8)
 
 
+def test_explicit_highs_direct_baseline_never_optimizes_with_gurobi(monkeypatch):
+    from backend.business.xma.service import solve
+    original = ScalableModel.optimize
+    seen = []
+    def checked(model, *args, **kwargs):
+        assert model.highs and model.explicit_backend == "highs"
+        seen.append(model.solver_name)
+        return original(model, *args, **kwargs)
+    monkeypatch.setattr(ScalableModel, "optimize", checked)
+    request = micro_request().model_copy(update={"solver_backend":"highs"})
+    result = solve(request)
+    assert result["status"] == "optimal" and result["independent_audit"]["valid"]
+    assert seen and set(seen) == {"HiGHS"}
+    assert result["diagnostics"]["statistics"]["solver"] == "HiGHS"
+
+
 def test_fixed_and_seeded_random_whole_tail_subsets():
     data=load_workbook()
     flights={f.flight_id:f for f in data.flights}

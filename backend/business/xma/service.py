@@ -124,7 +124,16 @@ def compile_document(document: DraftDocument) -> CompilePreview:
         return CompilePreview(valid=False,draft_hash=digest,issues=[WorkbenchIssue(code="invalid_xma_input",message=str(exc),path="solve_bundle")])
 
 
-def solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id=None,runtime_controls=None,solution_artifact_sink=None) -> dict:
+def solve(request: XmaSolveRequest, **kwargs) -> dict:
+    from .solver import EXPLICIT_BACKEND
+    token = EXPLICIT_BACKEND.set(request.solver_backend)
+    try:
+        return _solve(request, **kwargs)
+    finally:
+        EXPLICIT_BACKEND.reset(token)
+
+
+def _solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id=None,runtime_controls=None,solution_artifact_sink=None) -> dict:
     started=perf_counter()
     input_digest=content_hash(request.model_dump(mode="json"))
     if runtime_controls:
@@ -223,7 +232,7 @@ def solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id=
         "gap":max(0,outcome.upper-outcome.lower) if outcome.upper is not None and outcome.lower is not None else None,
         "relative_gap":max(0,outcome.upper-outcome.lower)/max(1,abs(outcome.upper)) if outcome.upper is not None and outcome.lower is not None else None,
         "runtime_seconds":perf_counter()-started,"terminal_reason":outcome.reason,"integrated_audit_pass":audit["valid"] if audit else None,
-        "statistics":outcome.statistics,"candidate_options":len(options),"candidate_scope":"finite delay grid plus source boundary times",
+        "statistics":outcome.statistics,"solver_backend":request.solver_backend,"candidate_options":len(options),"candidate_scope":"finite delay grid plus source boundary times",
         "pricing_uses_enumeration":False if request.algorithm=="benders_cg_bp" else None}
     artifact={"schema_version":"xma-result-1.0","flight_options":[{"option_id":o.option_id,"base_flight_id":o.flight_id,
         "flight_id":o.flight_id,"operation_type":"cancel" if o.cancelled else "operate","origin":flights[o.flight_id].origin,

@@ -13,6 +13,7 @@ import { isXma } from "./data";
 import { globalTrace } from "./monitor";
 import { chooseRun, download, execute, object, patchDocument, saveAndValidate, startBlockers, startRun, statusLabel, terminal, useWb } from "./state";
 import { solveTraceOption } from "../../v2/src/visualization/chartOptions";
+import { recommendSeconds } from "./solvePolicy";
 
 export const numberText = (value: unknown) => typeof value === "number" && Number.isFinite(value) ? value.toLocaleString("zh-CN", { maximumFractionDigits: 3 }) : "—";
 export const Run = memo(function Run() {
@@ -29,18 +30,28 @@ export const Run = memo(function Run() {
   const policy = object(doc?.candidate_policy);
   const profile = caps.data?.runtime_profiles.find(p => p.profile_id === state.runtimeProfile);
   const runtimeValues = state.runtimeEdits ?? profile?.parameters ?? {};
+  const recommended = recommendSeconds(doc);
   const reasons = startBlockers();
   if (!xma && !(publicBenchmark && bundle.backend === "highs") && caps.data?.solver.available === false) reasons.push(caps.data.solver.reason ?? "求解器不可用");
   const runs = (history.data ?? []).filter(r => allHistory || !state.draft || r.draft_id === state.draft.draft_id);
   const objective = String(bundle.objective_profile ?? "air_linear_v1");
   const setBundle = (key: string, value: unknown) => patchDocument(["solve_bundle", key], value);
   const setRuntime = (key: string, value: string) => useWb.setState(s => ({ runtimeEdits: { ...runtimeValues, [key]: value === "" ? null : Number(value) }, version: s.version + 1, preview: null, checkedProfile: null }));
+  const applyTime = () => xma ? setBundle("time_limit_seconds", recommended) : setRuntime("time_limit_seconds", String(recommended));
+  const applyBaseline = () => {
+    patchDocument(["solve_bundle"], { ...bundle, algorithm: xma ? "joint_arc_flow" : "direct_mip", ...(xma ? { solver_backend: "highs", time_limit_seconds: recommended } : { backend: "highs" }) });
+    if (!xma) setRuntime("time_limit_seconds", String(recommended));
+  };
   return <div className="workspace stack">
     <header className="page-head"><div><span className="eyebrow">02 / CONFIGURE & RUN</span><h1>配置与运行</h1><p>保存配置，校验输入，再从不可变快照启动求解。</p></div><div className="actions"><Button loading={state.busy === "正在保存并校验"} disabled={!doc || !!state.busy} onClick={() => execute("正在保存并校验", async () => { await saveAndValidate(); await cache.invalidateQueries({ queryKey: ["wb3", "capabilities"] }); })}><CheckCheck size={17}/>保存并校验</Button><Button variant="primary" loading={state.busy === "正在创建运行"} disabled={reasons.length > 0} aria-describedby="run-readiness" onClick={() => execute("正在创建运行", startRun)}><Play size={17}/>{state.busy === "正在创建运行" ? state.busy : "开始求解"}</Button></div></header>
     {!doc ? <Card><Empty title="请先准备研究数据" action={<Link className="text-link" to="/prepare">前往数据准备 <ArrowRight size={16}/></Link>}>创建或选择草稿后，可设置算法和求解时限。</Empty></Card> : <Card title="求解配置" note={`${doc.name} · ${xma ? "厦航研究 / 北京时间" : publicBenchmark ? `公开研究模型 / ${String(bundle.backend)} / UTC` : "AIR 联合恢复 / UTC"}`}>
-      <fieldset disabled={!!state.busy || state.rawText !== null} className="config-form"><div className="form-grid">
+      <fieldset disabled={!!state.busy || state.rawText !== null} className="config-form">
+      <div className="actions"><Button onClick={applyTime}>采用规模建议时限：{recommended / 60} 分钟</Button>{(xma || publicBenchmark) && <Button onClick={applyBaseline}>设置 HiGHS 直接求解基线</Button>}</div>
+      <p className="field-hint">建议时限结合航班、候选和飞机数量；可以手动调整。达到时限后保留已审计方案，不代表已证明最优。</p>
+      <div className="form-grid">
         <Field label="目标函数" help={objectiveHelp(doc)} hint={xma && objective === "tianchi_2017" ? "天池评分（分）" : "AIR 研究成本；与天池评分分别比较"}>{xma ? <select value={String(bundle.objective_profile)} onChange={e => setBundle("objective_profile", e.target.value)}><option value="tianchi_2017">天池 2017 评分</option><option value="air_linear_v1">AIR 线性研究成本</option></select> : <input value="AIR 联合恢复成本" readOnly/>}</Field>
-        <Field label="求解算法" help={algorithmHelp[xma ? String(bundle.algorithm) : "air"]} hint={xma ? "显式航班串基准适合小实例" : "后端提供固定的 Benders / 分支定价路线"}>{xma ? <select value={String(bundle.algorithm)} onChange={e => setBundle("algorithm", e.target.value)}><option value="joint_arc_flow">直接联合优化</option><option value="joint_path_oracle">显式航班串 Oracle</option><option value="benders_joint">Benders＋联合子问题</option><option value="benders_cg_bp">Benders＋列生成 / 分支定价</option></select> : <input value="Benders＋Branch & Price" readOnly/>}</Field>
+        <Field label="求解算法" help={algorithmHelp[publicBenchmark ? String(bundle.algorithm) : xma ? String(bundle.algorithm) : "air"]} hint={publicBenchmark ? "直接联合模型不枚举飞机路径；Oracle 限 12 班以内" : xma ? "显式航班串基准适合小实例" : "Benders / 分支定价路线"}>{xma ? <select value={String(bundle.algorithm)} onChange={e => setBundle("algorithm", e.target.value)}><option value="joint_arc_flow">直接联合优化</option><option value="joint_path_oracle">显式航班串 Oracle</option><option value="benders_joint">Benders＋联合子问题</option><option value="benders_cg_bp">Benders＋列生成 / 分支定价</option></select> : publicBenchmark ? <select value={String(bundle.algorithm)} onChange={e => setBundle("algorithm", e.target.value)}><option value="direct_mip">完整模型直接求解</option><option value="integrated_oracle">小例全路径 Oracle</option><option value="air_bp">AIR Benders＋Branch & Price</option></select> : <input value="Benders＋Branch & Price" readOnly/>}</Field>
+        {(xma || publicBenchmark) && <Field label="求解器" hint="基线实验显式选择 HiGHS；Gurobi 需有效许可"><select value={String(xma ? bundle.solver_backend ?? "auto" : bundle.backend)} onChange={e => setBundle(xma ? "solver_backend" : "backend", e.target.value)}>{xma && <option value="auto">自动选择</option>}<option value="highs">HiGHS</option><option value="gurobi">Gurobi</option></select></Field>}
         {xma ? <>{([['delay_step_minutes', '候选步长（分钟）', 1, 360], ['maximum_delay_minutes', '最大延误（分钟）', 0, 2160], ['time_limit_seconds', '求解时限（秒）', 1, 86400], ['max_assignment_options', '分配候选上限（项）', 1, 10000000]] as const).map(([key, label, min, max]) => <Field key={key} label={label} error={!Number.isInteger(Number(bundle[key])) || Number(bundle[key]) < min || Number(bundle[key]) > max ? `请输入 ${min}–${max} 的整数` : undefined}><input type="number" min={min} max={max} value={String(bundle[key] ?? "")} onChange={e => setBundle(key, e.target.value === "" ? "" : Number(e.target.value))}/></Field>)}</> : <>
           <Field label="运行参数模板" hint="自定义参数保存为独立副本，原模板保留"><select value={state.runtimeProfile} disabled={state.runtimeEdits !== null} onChange={e => useWb.setState(s => ({ runtimeProfile: e.target.value, checkedProfile: null, version: s.version + 1 }))}>{(caps.data?.runtime_profiles ?? [{ profile_id: "default-exact", name: "默认精确求解" }]).map(p => <option key={p.profile_id} value={p.profile_id}>{p.name}</option>)}</select></Field>
           {([['time_limit_seconds', '求解时限（秒）', 1, 86400], ['max_benders_iterations', 'Benders 迭代上限（次）', 1, 100000], ['max_branch_nodes', '分支节点上限（个）', 1, 1000000]] as const).map(([key, label, min, max]) => <Field key={key} label={label} hint="留空使用算法默认值" error={runtimeValues[key] != null && (Number(runtimeValues[key]) < min || Number(runtimeValues[key]) > max) ? `请输入 ${min}–${max}` : undefined}><input type="number" min={min} max={max} value={String(runtimeValues[key] ?? "")} placeholder="算法默认值" onChange={e => setRuntime(key, e.target.value)}/></Field>)}

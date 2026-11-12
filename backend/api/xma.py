@@ -30,6 +30,10 @@ async def import_preview(
         dataset=load_workbook() if not raw or raw==b"bundled" else load_workbook(raw)
         dataset=select_subset(dataset,target_flights,mode=selection_mode,seed=selection_seed)
         bundle=XmaSolveRequest(dataset=dataset)
+        from backend.workbench.solve_policy import recommend_time_limit
+        candidates = len(dataset.flights)*(bundle.maximum_delay_minutes//bundle.delay_step_minutes+2)
+        bundle = bundle.model_copy(update={"time_limit_seconds": recommend_time_limit(
+            len(dataset.flights), candidates, candidates*len(dataset.aircraft))["time_limit_seconds"]})
         return {"preview":preview(dataset),"document":make_document(bundle).model_dump(mode="json")}
     except (ValueError,KeyError,OSError,BadZipFile,IndexError) as exc:
         raise HTTPException(422,detail={"code":"xma_import_failed","message":str(exc)}) from exc

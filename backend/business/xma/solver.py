@@ -15,6 +15,7 @@ from scipy.optimize import Bounds, LinearConstraint, linprog, milp
 from backend.solver.runtime import ACTIVE_BUDGET, check_budget
 
 EXPLICIT_BACKEND = ContextVar("xma_explicit_backend", default="auto")
+SOLVER_OUTPUT = ContextVar("xma_solver_output", default=False)
 
 
 class ScalableModel:
@@ -22,7 +23,7 @@ class ScalableModel:
         self.native=gp.Model(name,env=env)
         self.explicit_backend=EXPLICIT_BACKEND.get()
         self.highs=self.explicit_backend=="highs"
-        self.solver_name="Gurobi"
+        self.solver_name="HiGHS" if self.highs else "Gurobi"
         self.state={}
         self.primal={}
         self.duals={}
@@ -173,14 +174,14 @@ class ScalableModel:
                 self._lp_solver.clear()
                 self._lp_solver=None; self._lp_snapshot=None
             solver=highspy.Highs()
-            solver.setOptionValue("output_flag",False)
+            solver.setOptionValue("output_flag",SOLVER_OUTPUT.get())
             self._pass_highs_model(solver,problem)
             if not is_mip:
                 self._lp_solver=solver
                 self.reuse_statistics["lp_rebuilds"]+=1
         if not is_mip:
             self._lp_snapshot=(*names,matrix)
-        solver.setOptionValue("output_flag",False)
+        solver.setOptionValue("output_flag",SOLVER_OUTPUT.get())
         solver.setOptionValue("threads",1)
         solver.setOptionValue("presolve","on")
         if not is_mip:
