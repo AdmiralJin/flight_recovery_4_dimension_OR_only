@@ -381,12 +381,16 @@ def report(folder, group=None):
                    certified_optimal=sum(bool(r.get("certified_optimal")) for r in rows),
                    generated_at=utc_now(), manifest_sha256=manifest["manifest_sha256"])
     # Paired assertions only compare certificates of exactly the same frozen problem.
-    conflicts = []
+    conflicts, feasibility_conflicts = [], []
     for instance in {r["instance"] for r in rows}:
-        values = [r["objective"] for r in rows if r["instance"] == instance and r.get("certified_optimal")]
+        paired = [r for r in rows if r["instance"] == instance]
+        values = [r["objective"] for r in paired if r.get("certified_optimal")]
         if len(values) > 1 and max(values)-min(values) > 1e-5:
             conflicts.append(instance)
+        if values and any(r.get("certified_infeasible") for r in paired):
+            feasibility_conflicts.append(instance)
     summary["certified_objective_conflicts"] = conflicts
+    summary["certified_feasibility_conflicts"] = feasibility_conflicts
     suffix = "_"+group if group else ""
     write_json(folder / ("summary"+suffix+".json"), summary)
     keys = list(dict.fromkeys(k for r in rows for k in r))
