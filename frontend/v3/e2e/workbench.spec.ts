@@ -34,10 +34,30 @@ test("XMA: random import, target parameters, save, start and cancel", async ({ p
   await page.getByRole("button", { name: "使用预览创建草稿" }).click(); await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.getByRole("link", { name: "配置与运行" }).first().click();
   await page.getByLabel("求解算法", { exact: true }).selectOption("benders_joint"); await page.getByLabel("目标函数", { exact: true }).selectOption("air_linear_v1");
-  await page.getByLabel("候选步长（分钟）", { exact: true }).fill("60"); await page.getByLabel("最大延误（分钟）", { exact: true }).fill("120");
+  await page.getByLabel("候选步长（分钟）", { exact: true }).fill("60"); await page.getByLabel("额外最大延误（分钟）", { exact: true }).fill("120");
   await page.getByRole("button", { name: "保存并校验", exact: true }).click(); await page.getByRole("button", { name: "开始求解", exact: true }).click();
   await expect(page.getByRole("button", { name: "取消运行", exact: true })).toBeVisible(); await page.getByRole("button", { name: "取消运行", exact: true }).click();
   await expect(page.getByText("已取消", { exact: true }).first()).toBeVisible(); expect(mock.creates).toBe(1);
+});
+
+test("XMA: optional caps, Beijing deadline and first-solution strategy survive saving", async ({ page }) => {
+  const mock = await mockApi(page); await page.goto(entry);
+  await page.getByLabel("当前草稿", { exact: true }).selectOption(fixture.xma.draft.draft_id);
+  await page.getByRole("link", { name: "配置与运行" }).first().click();
+  await page.getByLabel("求解算法", { exact: true }).selectOption("joint_arc_flow");
+  await page.getByLabel("求解器", { exact: true }).selectOption("highs");
+  await page.getByLabel("额外最大延误（分钟）", { exact: true }).fill("");
+  await page.getByLabel("分配候选上限（项）", { exact: true }).fill("");
+  await page.getByLabel("整体恢复截止（北京时间）", { exact: true }).fill("2017-05-10T21:40");
+  await page.getByLabel("首解策略", { exact: true }).selectOption("true");
+  await expect(page.getByRole("button", { name: "采用规模建议时限：360 分钟" })).toBeVisible();
+  await page.getByRole("button", { name: "保存并校验", exact: true }).click();
+  await expect(page.getByRole("button", { name: "开始求解", exact: true })).toBeEnabled();
+  const bundle = mock.drafts.find(d => d.draft_id === fixture.xma.draft.draft_id)!.document.solve_bundle!;
+  expect(bundle.maximum_delay_minutes).toBeNull(); expect(bundle.max_assignment_options).toBeNull();
+  expect(bundle.recovery_end).toBe("2017-05-10T21:40:00+08:00"); expect(bundle.first_solution_search).toBe(true);
+  await page.getByLabel("求解算法", { exact: true }).selectOption("benders_joint");
+  await expect(page.getByLabel("首解策略", { exact: true })).toHaveValue("false");
 });
 
 test("draft switching offers save / discard / cancel and workspace navigation retains edits", async ({ page }) => {

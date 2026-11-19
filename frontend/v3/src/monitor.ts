@@ -4,7 +4,7 @@ import { api } from "./api";
 import { mergeEvents, terminal, useWb } from "./state";
 import type { RunEvent, RunRecord } from "./types";
 
-const eventTypes = ["run_queued", "stage_started", "stage_completed", "benders_iteration", "run_started", "run_completed", "run_failed", "run_cancelled", "study_context", "candidate_generation", "building_model", "model_built", "solver_selected", "solver_fallback", "solver_heartbeat", "mip_progress", "mip_bound", "pricing_iteration", "branch_node", "audit_completed", "solve_bounds"];
+const eventTypes = ["run_queued", "stage_started", "stage_completed", "benders_iteration", "run_started", "run_completed", "run_failed", "run_cancelled", "study_context", "candidate_generation", "building_model", "model_built", "solver_selected", "solver_fallback", "solver_heartbeat", "mip_progress", "mip_bound", "mip_start", "incumbent_audited", "model_size_estimate", "resource_limited", "pricing_iteration", "branch_node", "audit_completed", "solve_bounds"];
 export function useRunMonitor() {
   const id = useWb(s => s.run?.run_id);
   const cache = useQueryClient();
@@ -82,5 +82,5 @@ function unchangedRun(left: RunRecord | null, right: RunRecord) {
 export function globalTrace(events: RunEvent[], run: RunRecord | null) {
   const algorithm = String((run?.result?.run_metadata as Record<string, unknown> | undefined)?.algorithm ?? events.find(e => e.event_type === "study_context")?.metrics.algorithm ?? "");
   const direct = ["joint_arc_flow", "joint_path_oracle"].includes(algorithm);
-  return events.filter(event => ["benders_iteration", "solve_bounds", "run_completed"].includes(event.event_type) || direct && ["mip_progress", "mip_bound"].includes(event.event_type)).filter(event => event.lower_bound != null || event.upper_bound != null);
+  return events.filter(event => ["benders_iteration", "solve_bounds", "run_completed", "incumbent_audited"].includes(event.event_type) || direct && ["mip_progress", "mip_bound"].includes(event.event_type) && event.metrics.bound_scope === "global").filter(event => event.lower_bound != null || event.upper_bound != null);
 }

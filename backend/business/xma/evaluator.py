@@ -23,6 +23,7 @@ def evaluate(request: XmaSolveRequest, decisions: list[Decision]) -> dict:
     chosen={d.flight_id:d for d in decisions}
     tails={a.tail_id:a for a in data.aircraft}
     errors=[]
+    forbidden=set(data.route_prohibitions)
     if len(chosen)!=len(decisions) or set(chosen)!=set(flights):
         return {"valid":False,"violations":["flight IDs are missing, duplicated or unknown"],"score":None}
     for fid,f in data.boundary_flights.items():
@@ -72,7 +73,11 @@ def evaluate(request: XmaSolveRequest, decisions: list[Decision]) -> dict:
             operated_by_tail[d.aircraft_id].append(d)
             if d.arr-d.dep!=f.sched_arr-f.sched_dep or delay<0 or delay>(1440 if f.domestic else 2160):
                 errors.append(f"invalid timing {f.flight_id}")
-            if a.equipment!=f.equipment or (f.origin,f.destination,a.tail_id) in set(data.route_prohibitions):
+            if adjustable(data,f) and request.maximum_delay_minutes is not None and delay>request.maximum_delay_minutes:
+                errors.append(f"configured delay limit {f.flight_id}")
+            if request.recovery_end is not None and d.arr>request.recovery_end:
+                errors.append(f"recovery deadline {f.flight_id}")
+            if a.equipment!=f.equipment or (f.origin,f.destination,a.tail_id) in forbidden:
                 errors.append(f"incompatible assignment {f.flight_id}")
             if closed(data,f.origin,d.dep) or closed(data,f.destination,d.arr):
                 errors.append(f"closure {f.flight_id}")

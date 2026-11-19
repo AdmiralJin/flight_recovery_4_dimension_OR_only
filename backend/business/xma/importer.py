@@ -247,6 +247,29 @@ def select_subset(
         "notes":[*data.notes,f"Whole-tail {mode} subset: {len(ids)} flights. {len(boundary)} inbound boundary flights frozen at their original times. Outbound effects outside the subset are excluded from its objective."]})
 
 
+def select_tail_subset(data: XmaDataset, tail_ids: list[str]) -> XmaDataset:
+    """Explicit whole-tail conditional subset for a frozen balanced partition."""
+    wanted=set(tail_ids)
+    if not wanted or not wanted<=set(a.tail_id for a in data.aircraft):
+        raise ValueError("tail subset is empty or contains unknown tails")
+    selected=[a for a in data.aircraft if a.tail_id in wanted]
+    ids={fid for a in selected for fid in a.original_rotation}
+    if any((a in ids)!=(b in ids) for a,b in data.connected_pairs):
+        raise ValueError("connected pair crosses whole-tail subset")
+    if len(selected)==len(data.aircraft):
+        return data
+    flights={f.flight_id:f for f in data.flights}
+    transfers=[t for t in data.transfers if t.outbound in ids]
+    boundary={t.inbound:flights[t.inbound] for t in transfers if t.inbound not in ids}
+    selection_hash=hashlib.sha256((data.source_sha256+'\0'+'\0'.join(sorted(wanted))).encode()).hexdigest()
+    selection=XmaSubsetSelection(mode='balanced',algorithm_version='balanced_whole_tail_v1',
+        requested_flights=len(ids),actual_flights=len(ids),selected_tail_ids=sorted(wanted),selection_hash=selection_hash)
+    return data.model_copy(update=dict(dataset_id=data.dataset_id+'_balanced_'+selection_hash[:10],
+        flights=[f for f in data.flights if f.flight_id in ids],aircraft=selected,transfers=transfers,boundary_flights=boundary,
+        connected_pairs=[p for p in data.connected_pairs if p[0] in ids],subset_selection=selection,
+        notes=[*data.notes,'Balanced whole-tail conditional subset; external inbound transfers frozen at original times; outgoing effects excluded; source airport limits unscaled, outside occupancy not deducted.']))
+
+
 def preview(data: XmaDataset) -> dict:
     return {"dataset_id":data.dataset_id,"source_sha256":data.source_sha256,"counts":{
         "flights":len(data.flights),"aircraft":len(data.aircraft),"airports":len(data.airports),

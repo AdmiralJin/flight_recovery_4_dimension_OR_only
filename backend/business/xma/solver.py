@@ -18,6 +18,10 @@ EXPLICIT_BACKEND = ContextVar("xma_explicit_backend", default="auto")
 SOLVER_OUTPUT = ContextVar("xma_solver_output", default=False)
 
 
+class SolutionAuditError(RuntimeError):
+    """An incumbent failed business validation; never retry another backend."""
+
+
 class ScalableModel:
     def __init__(self,name,env):
         self.native=gp.Model(name,env=env)
@@ -26,9 +30,12 @@ class ScalableModel:
         self.solver_name="HiGHS" if self.highs else "Gurobi"
         self.state={}
         self.primal={}
+        self._primal_values=None
         self.duals={}
         self.progress_sink=lambda event_type,message,metrics,lower_bound=None,upper_bound=None:None
         self.cancel_check=lambda:False
+        self.solution_sink=None
+        self.mip_start={}
         self._lp_solver=None
         self._lp_snapshot=None
         self.timings={}
@@ -48,6 +55,10 @@ class ScalableModel:
             self._lp_solver=None
             self._lp_snapshot=None
         self.native.dispose()
+        self._primal_values=None
+        self.primal.clear()
+        self.solution_sink=None
+        self.mip_start.clear()
 
     def addVar(self,*args,**kwargs):
         check_budget()
@@ -79,7 +90,9 @@ class ScalableModel:
         return getattr(self.native,name)
 
     def value(self,variable):
-        return self.primal[variable.VarName] if self.highs else variable.X
+        if self.highs:
+            return float(self._primal_values[variable.index]) if self._primal_values is not None else self.primal[variable.VarName]
+        return variable.X
 
     def dual(self,row):
         return self.duals[row.ConstrName] if self.highs else row.Pi
@@ -120,13 +133,14 @@ class ScalableModel:
     def _solve_highs(self):
         self.solver_name="HiGHS"
         self.primal={}; self.duals={}; self.state={}
+        self._primal_values=None
         problem=self._problem()
         try:
             self._solve_highspy(problem)
         except MemoryError:
             raise
         except Exception as exc:
-            if self.__dict__.get("explicit_backend", "auto")!="auto":
+            if isinstance(exc,SolutionAuditError) or self.__dict__.get("explicit_backend", "auto")!="auto":
                 raise
             if self.cancel_check() or any(s in str(exc).lower() for s in ("memory", "bad_alloc", "allocation")):
                 raise
@@ -143,7 +157,7 @@ class ScalableModel:
         variables,rows,matrix,cost,bounds,lower,upper,integrality=problem
         is_mip=bool(np.any(integrality))
         update_started=perf_counter()
-        names=(tuple(v.VarName for v in variables),tuple(r.ConstrName for r in rows))
+        names=(tuple(v.VarName for v in variables),tuple(r.ConstrName for r in rows)) if not is_mip else ((),())
         old=self._lp_snapshot
         reusable=not is_mip and old is not None and names[1]==old[1] and names[0][:len(old[0])]==old[0]
         if reusable:
@@ -194,10 +208,19 @@ class ScalableModel:
         # HiGHS clocks are cumulative across run() calls on a persistent model.
         solver.setOptionValue("time_limit",solver.getRunTime()+max(.001,remaining))
         solver.setOptionValue("mip_rel_gap",float(self.native.Params.MIPGap))
+        solver.setOptionValue("random_seed",0)
+        if is_mip and self.mip_start:
+            accepted=solver.setSolution(len(self.mip_start),np.asarray(list(self.mip_start),dtype=np.int32),
+                                        np.asarray(list(self.mip_start.values()),dtype=float))
+            self.progress_sink("mip_start","HiGHS partial MIP start submitted.",
+                               {"start_columns":len(self.mip_start),"start_status":str(accepted),"solver":"HiGHS"})
+            self.mip_start.clear()
         self.timings["solver_model_update_seconds"]=self.timings.get("solver_model_update_seconds",0)+perf_counter()-update_started
-        self._run_highs(solver,variables,rows,is_mip)
-        if is_mip and self._infeasible_solver is not solver:
-            solver.clear()
+        try:
+            self._run_highs(solver,variables,rows,is_mip)
+        finally:
+            if is_mip and self._infeasible_solver is not solver:
+                solver.clear()
 
     def _pass_highs_model(self,solver,problem):
         variables,rows,matrix,cost,bounds,lower,upper,integrality=problem
@@ -218,6 +241,7 @@ class ScalableModel:
         lock=threading.Lock()
         telemetry={"last_emit":0.0,"last_activity":started,"seen_incumbent":False,"lower":None,"upper":None}
         stopped=threading.Event()
+        callback_errors=[]
 
         def publish(data_out,force=False):
             now=perf_counter()
@@ -243,7 +267,17 @@ class ScalableModel:
                 highspy_cb.HighsCallbackType.kCallbackMipLogging,highspy_cb.HighsCallbackType.kCallbackMipInterrupt):
                 with lock:
                     publish(data_out)
-            if self.cancel_check():
+            if callback_type==highspy_cb.HighsCallbackType.kCallbackMipImprovingSolution and self.solution_sink and not callback_errors:
+                try:
+                    vector=data_out.mip_solution
+                    if len(vector)!=len(variables):
+                        raise SolutionAuditError("HiGHS callback solution column count mismatch")
+                    self.solution_sink(lambda variable:float(vector[variable.index]),
+                                       float(data_out.mip_primal_bound),
+                                       float(data_out.mip_dual_bound) if self._finite(data_out.mip_dual_bound) else None)
+                except Exception as exc:
+                    callback_errors.append(exc)
+            if callback_errors or self.cancel_check():
                 data_in.user_interrupt=True
 
         solver.setCallback(callback,None)
@@ -275,6 +309,8 @@ class ScalableModel:
         monitor.start()
         try:
             run_status=solver.run()
+            if callback_errors:
+                raise SolutionAuditError(str(callback_errors[0])) from callback_errors[0]
             if run_status==highspy.HighsStatus.kError:
                 raise RuntimeError("HiGHS solve failed")
         finally:
@@ -295,7 +331,8 @@ class ScalableModel:
         }
         has_solution=bool(solution.value_valid and info.primal_solution_status==highspy.SolutionStatus.kSolutionStatusFeasible
                           and len(solution.col_value)==len(variables) and np.all(np.isfinite(solution.col_value)))
-        self.primal={v.VarName:float(value) for v,value in zip(variables,solution.col_value)} if has_solution else {}
+        self._primal_values=np.asarray(solution.col_value,dtype=float) if has_solution else None
+        self.primal={}
         value=float(info.objective_function_value) if has_solution and self._finite(info.objective_function_value) else None
         bound=float(info.mip_dual_bound) if is_mip and self._finite(info.mip_dual_bound) else value if model_status==highspy.HighsModelStatus.kOptimal else None
         self.duals={r.ConstrName:float(v) for r,v in zip(rows,solution.row_dual)} if not is_mip and solution.dual_valid and model_status==highspy.HighsModelStatus.kOptimal else {}

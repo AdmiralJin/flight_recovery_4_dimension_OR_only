@@ -14,7 +14,7 @@ from backend.workbench.storage import content_hash
 from .algorithms import Budget, benders, direct
 from .evaluator import evaluate, export_csv
 from .importer import validate_dataset
-from .rules import adjustable, generate_options, build_networks
+from .rules import adjustable, generate_options, build_networks, tail_pools
 from .schema import XmaSolveRequest
 
 
@@ -30,6 +30,9 @@ def study_signature(request: XmaSolveRequest) -> str:
         "objective_parameters":request.air_objective.model_dump(mode="json") if request.objective_profile=="air_linear_v1" else "tianchi_2017",
         "delay_step_minutes":request.delay_step_minutes,
         "maximum_delay_minutes":request.maximum_delay_minutes,
+        "recovery_end":request.recovery_end.isoformat() if request.recovery_end else None,
+        "tail_pool_size":request.tail_pool_size,
+        "dataset_sha256":content_hash(data.model_dump(mode="json")),
         "crew_enabled":request.crew_enabled,
         "maintenance_enabled":request.maintenance_enabled,
     }
@@ -40,12 +43,13 @@ def presentation_scenario(request: XmaSolveRequest) -> dict:
     """Read-only workbench presentation; intentionally not an AIR Scenario."""
     data=request.dataset
     return {"scenario_id":data.dataset_id,"recovery_window":{"start_time":min(f.sched_dep for f in data.flights).isoformat(),
-        "end_time":(max(f.sched_arr for f in data.flights)+timedelta(minutes=request.maximum_delay_minutes)).isoformat()},
+        "end_time":(request.recovery_end or max(f.sched_arr+timedelta(minutes=min(request.maximum_delay_minutes if request.maximum_delay_minutes is not None else 2160,
+            1440 if f.domestic else 2160) if adjustable(data,f) else 0) for f in data.flights)).isoformat()},
         "airports":[{"airport_id":a,"name":a} for a in sorted(data.airports)],
         "flights":[{"flight_id":f.flight_id,"origin":f.origin,"destination":f.destination,"sched_dep":f.sched_dep.isoformat(),
             "sched_arr":f.sched_arr.isoformat(),"duration":int((f.sched_arr-f.sched_dep).total_seconds()/60),
             "original_aircraft":f.original_aircraft,"original_equipment":f.equipment,"original_crew":None,
-            "strategic_flag":False,"market_flag":False,"min_seats":0,"max_delay":request.maximum_delay_minutes,
+            "strategic_flag":False,"market_flag":False,"min_seats":0,"max_delay":min(request.maximum_delay_minutes if request.maximum_delay_minutes is not None else 2160,1440 if f.domestic else 2160),
             "passengers":f.passengers,"through_passengers":f.through_passengers,"physical_seats":f.seats,"importance":f.importance}
             for f in data.flights],
         "aircraft":[{"tail_id":a.tail_id,"equipment_type":a.equipment,"initial_station_at_t":a.initial_station,
@@ -74,18 +78,23 @@ def normalize_document(document: DraftDocument) -> DraftDocument:
 
 def precheck(request: XmaSolveRequest, *, _options=None) -> dict:
     errors=validate_dataset(request.dataset)
+    if request.first_solution_search and (request.algorithm!="joint_arc_flow" or request.solver_backend!="highs" or request.tail_pool_size is not None):
+        errors.append("first_solution_search requires explicit HiGHS joint_arc_flow and no fixed tail_pool_size")
+    if request.dataset.public_rules is not None and (request.tail_pool_size or request.first_solution_search):
+        errors.append("tail neighborhoods are supported only for the native XMA dataset")
     if any(s.flight_id or s.tail_id for s in request.dataset.scenes):
         errors.append("flight/tail-specific scenes are unsupported in this dataset profile")
     options=(_options if _options is not None else generate_options(request)) if not errors else []
     counts=Counter(o.flight_id for o in options)
     errors.extend(f"no legal candidate for flight {f.flight_id}" for f in request.dataset.flights if not counts[f.flight_id])
-    assignment_count=sum(len(n["ordered"]) for n in build_networks(request.dataset,options,connect=False).values()) if not errors else 0
-    if assignment_count>request.max_assignment_options:
+    pool_size=1 if request.first_solution_search else request.tail_pool_size
+    assignment_count=sum(len(n["ordered"]) for n in build_networks(request.dataset,options,connect=False,pools=tail_pools(request.dataset,pool_size)).values()) if not errors else 0
+    if request.max_assignment_options is not None and assignment_count>request.max_assignment_options:
         errors.append(f"assignment network has {assignment_count} tail-option pairs, exceeds configured limit {request.max_assignment_options}; increase delay_step_minutes, lower maximum_delay_minutes, or explicitly raise max_assignment_options")
     return {"solve_ready":not errors,"errors":errors,"flight_options":len(options),"crew_enabled":False,
         "capacity_semantics":"physical seats by selected tail","semantics":"INPUT_READINESS_NOT_OPTIMIZATION_FEASIBILITY",
         "objective_profile":request.objective_profile,"algorithm":request.algorithm,"normal_airport_capacity":"unspecified",
-        "assignment_options":assignment_count}
+        "assignment_options":assignment_count,"assignment_scope":"original_tail_readiness" if request.first_solution_search else "restricted" if pool_size else "full"}
 
 
 def compile_document(document: DraftDocument) -> CompilePreview:
@@ -154,12 +163,15 @@ def _solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id
                 raise ValueError("checkpoint independent audit failed")
             solution_artifact_sink({"schema_version":"xma-result-1.0","checkpoint":True,
                 "status":"not_converged","input_hash":input_digest,"objective":partial.objective,
-                "lower_bound":partial.lower,"upper_bound":partial.upper,
+                "lower_bound":partial.lower,"upper_bound":partial.upper,"study_signature":signature,
+                "search_scope":getattr(budget,"search_scope","full"),
+                "source_sha256":request.dataset.source_sha256,"created_at":datetime.now(timezone.utc).isoformat(),
                 "flight_options":[o.model_dump(mode="json") for o in options if o.option_id in {d.option_id for d in partial.decisions}],
                 "business_decisions":[d.model_dump(mode="json") for d in partial.decisions],"independent_audit":audit})
     budget.incumbent_sink=checkpoint
     signature=study_signature(request)
     budget.emit("preparing","study_context","厦航研究问题已绑定",metrics={
+        "algorithm":request.algorithm,
         "study_signature":signature,"dataset_id":request.dataset.dataset_id,
         "objective_profile":request.objective_profile,
         "objective_units":"tianchi_score" if request.objective_profile=="tianchi_2017" else "abstract_cost_units",
@@ -184,6 +196,9 @@ def _solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id
     budget.emit("candidate_generation","candidate_generation","厦航航班候选生成完成",metrics={"flight_options":len(options),"generation_seconds":perf_counter()-option_started})
     if outcome is not None:
         pass
+    elif request.first_solution_search:
+        from .search import first_solution
+        outcome=first_solution(request,options,budget)
     elif request.algorithm in ("joint_arc_flow","joint_path_oracle"):
         outcome=direct(request,options,budget,oracle=request.algorithm=="joint_path_oracle")
     else:
@@ -224,6 +239,8 @@ def _solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id
         "crew_reassignments":0,"passenger_reaccommodated_count":sum(sum(d.rebook.values()) for d in outcome.decisions),
         "unserved_passengers":sum(row["unserved"] for row in audit["passenger_ledger"]) if audit else 0,
         "passenger_count_semantics":"flight-leg scoring quantities, not unique traveler count"}
+    if not outcome.decisions:
+        metrics={key:None if key!="passenger_count_semantics" else val for key,val in metrics.items()}
     digest=content_hash(request.model_dump(mode="json"))
     from .importer import DEFAULT_WORKBOOK
     evaluator_file=DEFAULT_WORKBOOK.parent/"XMAEvaluation_source_code.zip"
@@ -233,7 +250,8 @@ def _solve(request: XmaSolveRequest, *, event_sink=None,cancel_check=None,run_id
         "relative_gap":max(0,outcome.upper-outcome.lower)/max(1,abs(outcome.upper)) if outcome.upper is not None and outcome.lower is not None else None,
         "runtime_seconds":perf_counter()-started,"terminal_reason":outcome.reason,"integrated_audit_pass":audit["valid"] if audit else None,
         "statistics":outcome.statistics,"solver_backend":request.solver_backend,"candidate_options":len(options),"candidate_scope":"finite delay grid plus source boundary times",
-        "pricing_uses_enumeration":False if request.algorithm=="benders_cg_bp" else None}
+        "pricing_uses_enumeration":False if request.algorithm=="benders_cg_bp" else None,
+        "search_scope":"first_solution" if request.first_solution_search else "restricted" if request.tail_pool_size else "full"}
     artifact={"schema_version":"xma-result-1.0","flight_options":[{"option_id":o.option_id,"base_flight_id":o.flight_id,
         "flight_id":o.flight_id,"operation_type":"cancel" if o.cancelled else "operate","origin":flights[o.flight_id].origin,
         "destination":flights[o.flight_id].destination,"dep_time":o.dep.isoformat(),"arr_time":o.arr.isoformat()} for o in options],

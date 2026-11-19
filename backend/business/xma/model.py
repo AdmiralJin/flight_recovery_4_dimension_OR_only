@@ -8,7 +8,7 @@ import gurobipy as gp
 from gurobipy import GRB
 
 from .objectives import assignment_cost, resident_cost, schedule_cost, sign_cost, unserved_cost
-from .rules import adjustable, build_networks, enumerate_paths, movement_buckets
+from .rules import adjustable, build_networks, enumerate_paths, movement_buckets, tail_pools
 from .schema import Decision, Option, XmaSolveRequest
 from .solver import ScalableModel, value
 from backend.solver.runtime import check_budget, register_resource
@@ -72,7 +72,8 @@ def add_schedule_rows(model,request,options,x):
 
 
 def build_joint(request: XmaSolveRequest, options: list[Option], *, representation="arc", schedule=None,
-                relax=False, branch_bounds=None, enumerate_all=False, eliminate_dominated_rebooking=True) -> JointModel:
+                relax=False, branch_bounds=None, enumerate_all=False, eliminate_dominated_rebooking=True,
+                compact_connections=True) -> JointModel:
     if request.dataset.public_rules is not None:
         from backend.benchmarks.xma import build_public_joint
         return build_public_joint(request, options, representation=representation, schedule=schedule,
@@ -100,7 +101,7 @@ def build_joint(request: XmaSolveRequest, options: list[Option], *, representati
         by_flight[o.flight_id].append(o)
     c={f.flight_id:gp.quicksum(x[o.option_id] for o in by_flight[f.flight_id] if o.cancelled) for f in data.flights}
     alive={f.flight_id:1-c[f.flight_id] for f in data.flights}
-    networks=build_networks(data,options,connect=representation!="arc")
+    networks=build_networks(data,options,connect=representation!="arc",pools=tail_pools(data,request.tail_pool_size))
     u={}
     objective=gp.quicksum(schedule_cost(request,flights[o.flight_id],o)*x[o.option_id] for o in options)
     for tail,net in networks.items():
@@ -162,17 +163,21 @@ def build_joint(request: XmaSolveRequest, options: list[Option], *, representati
                     outgoing[airport,left].append(v)
                     incoming[airport,right].append(v)
             endings=[]
+            landings={}
             for oid in net["ordered"]:
                 o=net["options"][oid]
                 f=flights[o.flight_id]
                 v=var(f"arc:{tail}:{oid}:END")
                 endings.append(v)
                 landing_out=[v]
+                landings[oid]=landing_out
                 terminal_terms[tails[tail].equipment,f.destination].append(v)
                 release=var(f"release:{tail}:{oid}")
                 landing_out.append(release)
                 incoming[f.destination,o.arr+timedelta(minutes=50)].append(release)
                 for next_fid in shortcuts[f.flight_id]:
+                    if compact_connections:
+                        continue
                     next_options=local_by_flight[next_fid]
                     short=data.original_turn_minutes.get(f"{f.flight_id}#{next_fid}",50)<50
                     pair=(f.flight_id,next_fid)
@@ -189,7 +194,45 @@ def build_joint(request: XmaSolveRequest, options: list[Option], *, representati
                         boarding[right.option_id].append(edge)
                         if pair in pair_keys:
                             pair_terms[pair].append(edge)
-                model.addConstr(gp.quicksum(landing_out)==u[tail,oid],name=f"landing:{tail}:{oid}")
+            if compact_connections:
+                # A private acyclic channel for each designated flight pair.
+                # It can only leave through that pair's right flight, so the
+                # aircraft cannot use a short-turn exception to board a third leg.
+                for left_fid,left_options in list(local_by_flight.items()):
+                    for right_fid in sorted(shortcuts[left_fid]):
+                        right_options=local_by_flight.get(right_fid,[])
+                        if not right_options or flights[left_fid].destination!=flights[right_fid].origin:
+                            continue
+                        turn=min(50,data.original_turn_minutes.get(f"{left_fid}#{right_fid}",50))
+                        latest=max(o.dep for o in right_options)
+                        releases=[(o,o.arr+timedelta(minutes=turn)) for o in left_options if o.arr+timedelta(minutes=turn)<=latest]
+                        if not releases:
+                            continue
+                        earliest=min(t for _,t in releases)
+                        right_options=[o for o in right_options if o.dep>=earliest]
+                        channel_in=defaultdict(list)
+                        channel_out=defaultdict(list)
+                        times=sorted({t for _,t in releases}|{o.dep for o in right_options})
+                        key=f"{tail}:{left_fid}:{right_fid}"
+                        for o,time in releases:
+                            edge=var(f"short_enter:{key}:{o.option_id}")
+                            landings[o.option_id].append(edge)
+                            channel_in[time].append(edge)
+                        for o in right_options:
+                            edge=var(f"short_exit:{key}:{o.option_id}")
+                            channel_out[o.dep].append(edge)
+                            boarding[o.option_id].append(edge)
+                            if (left_fid,right_fid) in pair_keys:
+                                pair_terms[left_fid,right_fid].append(edge)
+                        for left,right in zip(times,times[1:]):
+                            edge=var(f"short_wait:{key}:{left.isoformat()}")
+                            channel_out[left].append(edge)
+                            channel_in[right].append(edge)
+                        for time in times:
+                            model.addConstr(gp.quicksum(channel_in[time])==gp.quicksum(channel_out[time]),
+                                            name=f"short_flow:{key}:{time.isoformat()}")
+            for oid in net["ordered"]:
+                model.addConstr(gp.quicksum(landings[oid])==u[tail,oid],name=f"landing:{tail}:{oid}")
             for oid in net["ordered"]:
                 model.addConstr(gp.quicksum(boarding[oid])==u[tail,oid],name=f"boarding:{tail}:{oid}")
             model.addConstr(gp.quicksum(endings)==1,name="end:"+tail)
@@ -415,14 +458,15 @@ def add_path(joint: JointModel, tail: str, path: tuple, *, integer=False):
     joint.path_variables[key]=v
 
 
-def decisions_from_model(joint: JointModel) -> list[Decision]:
-    chosen={o.flight_id:o for o in joint.options if value(joint.model,joint.x[o.option_id])>0.5}
+def decisions_from_model(joint: JointModel, read=None) -> list[Decision]:
+    read=read or (lambda variable:value(joint.model,variable))
+    chosen={o.flight_id:o for o in joint.options if read(joint.x[o.option_id])>0.5}
     flights={f.flight_id:f for f in joint.request.dataset.flights}
-    assigned={oid:tail for (tail,oid),v in joint.u.items() if value(joint.model,v)>0.5}
+    assigned={oid:tail for (tail,oid),v in joint.u.items() if read(v)>0.5}
     options={o.option_id:o for o in joint.options}
     rebook=defaultdict(Counter)
     for (fid,oid),v in joint.sign.items():
-        if value(joint.model,v)>0.5:
-            rebook[fid][options[oid].flight_id]+=int(round(value(joint.model,v)))
+        if read(v)>0.5:
+            rebook[fid][options[oid].flight_id]+=int(round(read(v)))
     return [Decision(flight_id=fid,option_id=o.option_id,aircraft_id=assigned.get(o.option_id,flights[fid].original_aircraft),
         cancelled=o.cancelled,dep=o.dep,arr=o.arr,rebook=dict(rebook[fid])) for fid,o in chosen.items()]

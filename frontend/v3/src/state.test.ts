@@ -82,6 +82,16 @@ describe("saved inputs and immutable runs", () => {
     const events = [event(1, "mip_progress", { lower_bound: 999 }), event(2, "branch_node", { lower_bound: 500 }), event(3, "benders_iteration", { lower_bound: 10 }), event(4, "solve_bounds", { upper_bound: 20 })];
     expect(globalTrace(events, run).map(e => e.seq)).toEqual([3, 4]);
   });
+  it("keeps necessary and restricted bounds out of the direct global trace", () => {
+    const direct = { ...run, result: { run_metadata: { algorithm: "joint_arc_flow" } } } as RunRecord;
+    const events = [
+      event(1, "mip_progress", { upper_bound: 0, metrics: { bound_scope: "necessary_conditions" } }),
+      event(2, "mip_progress", { lower_bound: 900, upper_bound: 1000, metrics: { bound_scope: "restricted" } }),
+      event(3, "incumbent_audited", { upper_bound: 1000, metrics: { bound_scope: "global" } }),
+      event(4, "mip_progress", { lower_bound: 20, metrics: { bound_scope: "global" } }),
+    ];
+    expect(globalTrace(events, direct).map(e => e.seq)).toEqual([3, 4]);
+  });
   it("maps AIR and XMA row edits to their original input locations", () => {
     const air = structuredClone(document); air.scenario.flights = [{ flight_id: "f1", max_delay: 60 }];
     replaceRow(air, "flights", 0, { flight_id: "f1", max_delay: 120 }); expect(entityRows(air, "flights")[0].max_delay).toBe(120);

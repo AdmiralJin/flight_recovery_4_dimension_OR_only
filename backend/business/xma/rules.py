@@ -40,9 +40,17 @@ def generate_options(request: XmaSolveRequest) -> list[Option]:
         check_budget()
         delays = {0}
         if adjustable(data,f):
-            maximum = min(request.maximum_delay_minutes,1440 if f.domestic else 2160)
+            maximum = 1440 if f.domestic else 2160
+            if request.maximum_delay_minutes is not None:
+                maximum = min(maximum, request.maximum_delay_minutes)
+            if request.recovery_end is not None:
+                maximum = min(maximum, int((request.recovery_end-f.sched_arr).total_seconds()//60))
+            if maximum < 0:
+                maximum = -1
+                delays.clear()
             delays.update(range(request.delay_step_minutes,maximum+1,request.delay_step_minutes))
-            delays.add(maximum)
+            if maximum >= 0:
+                delays.add(maximum)
             # Exact source boundaries supplement the reproducible uniform grid.
             for s in data.scenes:
                 base = f.sched_dep if s.kind == "departure" else f.sched_arr
@@ -65,7 +73,7 @@ def generate_options(request: XmaSolveRequest) -> list[Option]:
         for delay in sorted(delays):
             o=Option(option_id=f"XMA_{f.flight_id}_D{delay}",flight_id=f.flight_id,cancelled=False,
                 dep=f.sched_dep+timedelta(minutes=delay),arr=f.sched_arr+timedelta(minutes=delay),delay=delay)
-            if option_legal(data,o,f):
+            if (request.recovery_end is None or o.arr<=request.recovery_end) and option_legal(data,o,f):
                 options.append(o)
         if adjustable(data,f):
             options.append(Option(option_id=f"XMA_{f.flight_id}_C",flight_id=f.flight_id,cancelled=True,
@@ -99,7 +107,24 @@ def parking_coefficients(data: XmaDataset, left: Option, right: Option) -> tuple
         and left.arr<=s.start and right.dep>=s.end)
 
 
-def build_networks(data: XmaDataset, options: list[Option], *, connect=True) -> dict[str,dict]:
+def tail_pools(data: XmaDataset, size: int | None) -> dict[str, frozenset[str]] | None:
+    """Nested, deterministic same-equipment neighborhoods; None is unrestricted."""
+    if size is None:
+        return None
+    by_equipment=defaultdict(list)
+    for tail in data.aircraft:
+        by_equipment[tail.equipment].append(tail)
+    result={}
+    for tails in by_equipment.values():
+        tails.sort(key=lambda a:(a.initial_station,(0,int(a.tail_id)) if a.tail_id.isdigit() else (1,a.tail_id)))
+        for start in range(0,len(tails),size):
+            group=frozenset(a.tail_id for a in tails[start:start+size])
+            result.update({tid:group for tid in group})
+    return result
+
+
+def iter_networks(data: XmaDataset, options: list[Option], *, connect=True, pools=None):
+    """Yield one tail at a time for bounded-memory sizing and network building."""
     flights={f.flight_id:f for f in data.flights}
     forbidden=set(data.route_prohibitions)
     by_origin=defaultdict(list)
@@ -109,7 +134,12 @@ def build_networks(data: XmaDataset, options: list[Option], *, connect=True) -> 
     for values in by_origin.values():
         values.sort(key=lambda o:(o.dep,o.option_id))
     origin_times={a:[o.dep for o in values] for a,values in by_origin.items()}
-    result={}
+    by_equipment=defaultdict(list)
+    by_original_tail=defaultdict(list)
+    for o in options:
+        if not o.cancelled:
+            by_equipment[flights[o.flight_id].equipment].append(o)
+            by_original_tail[flights[o.flight_id].original_aircraft].append(o)
     for tail in data.aircraft:
         check_budget()
         rotation=[flights[fid] for fid in tail.original_rotation]
@@ -126,8 +156,9 @@ def build_networks(data: XmaDataset, options: list[Option], *, connect=True) -> 
             if suffix and o.arr>suffix.sched_dep-timedelta(minutes=min(50,data.original_turn_minutes.get(f"{f.flight_id}#{suffix.flight_id}",50))):
                 return False
             return True
-        eligible={o.option_id:o for o in options if not o.cancelled
-            and flights[o.flight_id].equipment==tail.equipment
+        candidates=(o for tid in sorted(pools[tail.tail_id]) for o in by_original_tail[tid]) if pools else by_equipment[tail.equipment]
+        eligible={o.option_id:o for o in candidates
+            if flights[o.flight_id].equipment==tail.equipment
             and (flights[o.flight_id].origin,flights[o.flight_id].destination,tail.tail_id) not in forbidden
             and within_fixed_context(o)}
         ordered=sorted(eligible,key=lambda oid:(eligible[oid].dep,oid))
@@ -157,8 +188,11 @@ def build_networks(data: XmaDataset, options: list[Option], *, connect=True) -> 
                 turn=min(50,data.original_turn_minutes.get(f"{left.flight_id}#{right.flight_id}",50))
                 if right.dep>=left.arr+timedelta(minutes=turn):
                     edges[oid].append(right.option_id)
-        result[tail.tail_id]={"options":eligible,"ordered":ordered,"starts":starts,"edges":dict(edges)}
-    return result
+        yield tail.tail_id,{"options":eligible,"ordered":ordered,"starts":starts,"edges":dict(edges)}
+
+
+def build_networks(data: XmaDataset, options: list[Option], *, connect=True, pools=None) -> dict[str,dict]:
+    return dict(iter_networks(data,options,connect=connect,pools=pools))
 
 
 def enumerate_paths(network: dict, limit: int) -> list[tuple[str,...]]:

@@ -53,8 +53,8 @@ class XmaAircraft(SchemaModel):
 
 
 class XmaSubsetSelection(SchemaModel):
-    mode: Literal["fixed", "random"]
-    algorithm_version: Literal["whole_tail_affected_first_v1"] = "whole_tail_affected_first_v1"
+    mode: Literal["fixed", "random", "balanced"]
+    algorithm_version: Literal["whole_tail_affected_first_v1", "balanced_whole_tail_v1"] = "whole_tail_affected_first_v1"
     requested_flights: int = Field(ge=1)
     actual_flights: int = Field(ge=1)
     seed: int | None = Field(default=None, ge=0)
@@ -142,16 +142,27 @@ class XmaSolveRequest(SchemaModel):
     algorithm: Literal["joint_arc_flow", "joint_path_oracle", "benders_joint", "benders_cg_bp"] = "joint_arc_flow"
     solver_backend: Literal["auto", "highs", "gurobi"] = "auto"
     delay_step_minutes: int = Field(default=30, ge=1, le=360)
-    maximum_delay_minutes: int = Field(default=1440, ge=0, le=2160)
+    maximum_delay_minutes: int | None = Field(default=1440, ge=0, le=2160)
+    recovery_end: AwareDatetime | None = None
+    first_solution_search: bool = False
+    tail_pool_size: int | None = Field(default=None, ge=1)
     max_benders_iterations: int = Field(default=500, ge=1)
     max_bp_nodes: int = Field(default=1000, ge=1)
     max_cg_iterations: int = Field(default=1000, ge=1)
     oracle_path_limit: int = Field(default=100000, ge=1)
     time_limit_seconds: float = Field(default=300, gt=0, allow_inf_nan=False)
     mip_gap: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
-    max_assignment_options: int = Field(default=100000, ge=1)
+    max_assignment_options: int | None = Field(default=100000, ge=1)
     crew_enabled: Literal[False] = False
     maintenance_enabled: Literal[False] = False
+
+    @model_validator(mode="after")
+    def recovery_deadline(self):
+        if self.recovery_end is not None:
+            if self.recovery_end.second or self.recovery_end.microsecond:
+                raise ValueError("recovery_end must be minute-aligned")
+            self.recovery_end=self.recovery_end.astimezone(timezone(timedelta(hours=8)))
+        return self
 
 
 class Option(SchemaModel):

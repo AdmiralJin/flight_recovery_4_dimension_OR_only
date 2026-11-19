@@ -85,7 +85,8 @@ class Budget:
         self.best=Outcome("not_converged",objective,lower,objective,list(decisions),"audited_incumbent_checkpoint")
         if self.incumbent_sink:
             self.incumbent_sink(self.best)
-        self.emit("audit","incumbent_audited","完整方案已通过独立审计",upper_bound=objective,lower_bound=lower)
+        self.emit("audit","incumbent_audited","完整方案已通过独立审计",upper_bound=objective,lower_bound=lower,
+                  metrics={"bound_scope":"global","audited":True})
 
 
 def original_tail_candidate(request,options,schedule=None):
@@ -168,8 +169,8 @@ def schedule_precheck(request,options,budget):
 
 
 @interruptible
-def direct(request: XmaSolveRequest,options:list[Option],budget:Budget, *, schedule=None,oracle=False) -> Outcome:
-    if schedule is None:
+def direct(request: XmaSolveRequest,options:list[Option],budget:Budget, *, schedule=None,oracle=False,skip_precheck=False) -> Outcome:
+    if schedule is None and not skip_precheck:
         conflict=schedule_precheck(request,options,budget)
         if conflict:
             return Outcome("infeasible",reason="certified_master_infeasible",statistics={"schedule_precheck":conflict})
@@ -177,12 +178,40 @@ def direct(request: XmaSolveRequest,options:list[Option],budget:Budget, *, sched
     build_started=perf_counter()
     joint=build_joint(request,options,representation="path" if oracle else "arc",schedule=schedule,enumerate_all=oracle)
     try:
+        global_scope=schedule is None and request.tail_pool_size is None
+        scope="global" if global_scope else "restricted" if schedule is None else "subproblem"
+        last_audit=[0.0]
+        def incumbent(read,objective,lower):
+            now=perf_counter()
+            if last_audit[0] and now-last_audit[0]<5:
+                return
+            decisions=decisions_from_model(joint,read)
+            audit=evaluate(request,decisions)
+            if not audit["valid"] or abs(audit["objective"]-objective)>max(TOL,abs(objective)*1e-8):
+                budget.emit("audit","audit_rejected","候选方案未通过业务审计",metrics={"violations":audit['violations'],
+                    "audit_objective":audit.get('objective'),"model_objective":objective,
+                    "business_decisions":[d.model_dump(mode='json') for d in decisions]})
+                raise ValueError(f"live joint audit failed: {audit['violations']}; score={audit.get('objective')} model={objective}")
+            budget.audited(decisions,objective,lower if global_scope else None)
+            last_audit[0]=now
+        joint.model.solution_sink=incumbent
+        if getattr(budget,"start_decisions",None):
+            chosen={d.flight_id:d for d in budget.start_decisions}
+            joint.model.mip_start={joint.x[d.option_id].index:1.0 for d in chosen.values()}
+            for d in chosen.values():
+                if not d.cancelled and (d.aircraft_id,d.option_id) in joint.u:
+                    joint.model.mip_start[joint.u[d.aircraft_id,d.option_id].index]=1.0
+                for target,count in d.rebook.items():
+                    variable=joint.sign.get((d.flight_id,chosen[target].option_id))
+                    if variable is not None:
+                        joint.model.mip_start[variable.index]=float(count)
         budget.emit("model","model_built","联合约束已建立",metrics={"variables":joint.model.NumVars,"constraints":joint.model.NumConstrs,"build_seconds":perf_counter()-build_started})
-        optimized=budget.optimize(joint.model,mip=True,gap=request.mip_gap,scope="global" if schedule is None else "subproblem")
+        optimized=budget.optimize(joint.model,mip=True,gap=request.mip_gap,scope=scope)
         m=joint.model
         stats={"variables":m.NumVars,"constraints":m.NumConstrs,"nodes":m.NodeCount if optimized and m.IsMIP else 0,
             "aircraft_columns":len(joint.paths),"representation":"path" if oracle else "arc",
-            "solver":m.solver_name if m.highs else "Gurobi"}
+            "solver":m.solver_name if m.highs else "Gurobi","bound_scope":scope,"tail_pool_size":request.tail_pool_size,
+            "timings":dict(joint.model.timings)}
         if not optimized:
             return Outcome("aborted" if budget.cancel_check() else "not_converged",reason="budget_exhausted_during_build",statistics=stats)
         if m.SolCount:
@@ -191,10 +220,17 @@ def direct(request: XmaSolveRequest,options:list[Option],budget:Budget, *, sched
             if not audit["valid"] or abs(audit["objective"]-m.ObjVal)>max(TOL,abs(m.ObjVal)*1e-8):
                 raise ValueError(f"independent joint audit failed: {audit['violations']}; score={audit.get('objective')} model={m.ObjVal}")
             exact=m.Status==GRB.OPTIMAL and m.ObjBound is not None and abs(m.ObjVal-m.ObjBound)<=max(TOL,abs(m.ObjVal)*1e-8)
-            budget.audited(decisions,m.ObjVal,m.ObjBound if schedule is None else None)
-            return Outcome("optimal" if exact else "not_converged",m.ObjVal,m.ObjBound,m.ObjVal,decisions,str(m.Status),stats)
+            budget.audited(decisions,m.ObjVal,m.ObjBound if global_scope else None)
+            if not global_scope and schedule is None:
+                stats.update(restricted_lower_bound=m.ObjBound,restricted_optimal=exact)
+                return Outcome("not_converged",m.ObjVal,None,m.ObjVal,decisions,"restricted_optimal" if exact else str(m.Status),stats)
+            return Outcome("aborted" if budget.cancel_check() else "optimal" if exact else "not_converged",m.ObjVal,m.ObjBound,m.ObjVal,decisions,str(m.Status),stats)
+        if budget.best:
+            best=budget.best
+            return Outcome("aborted" if budget.cancel_check() else "not_converged",best.objective,
+                           m.ObjBound if global_scope else None,best.upper,list(best.decisions),"retained_live_incumbent",stats)
         return Outcome("infeasible" if m.Status==GRB.INFEASIBLE else "aborted" if budget.cancel_check() else "not_converged",
-            lower=m.ObjBound if m.IsMIP and m.Status not in (GRB.LOADED,GRB.INFEASIBLE) else None,reason=str(m.Status),statistics=stats)
+            lower=m.ObjBound if global_scope and m.IsMIP and m.Status not in (GRB.LOADED,GRB.INFEASIBLE) else None,reason=str(m.Status),statistics=stats)
     finally:
         joint.close()
 
