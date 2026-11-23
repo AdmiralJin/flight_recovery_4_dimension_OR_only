@@ -112,7 +112,7 @@ def prepare(folder,calibration=None):
         boundary_sha256={f'{j["id"]}.json':file_hash(folder/'boundaries'/f'{j["id"]}.json') for j in jobs},
         memory_calibration=factor,recovery_end=end.isoformat(),policy=dict(user_enter_required_by_default=True,
         explicit_start_now_supported=True,global_concurrency=1,
-        startup_available_gib=7.5,emergency_available_gib=1.5,emergency_seconds=10,watchdog_grace_seconds=120,
+        startup_available_gib=4,emergency_available_gib=1.5,emergency_seconds=10,watchdog_grace_seconds=120,
         restricted_bounds_are_local=True,optimization_backend='highs',fallback=False,subset_is_full_solution=False))
     manifest['manifest_sha256']=digest(manifest)
     write_json(folder/'manifest.json',manifest)
@@ -291,10 +291,11 @@ def run(folder, *, start_now=False):
                 if (folder/'STOP').exists():break
                 final=folder/'jobs'/job['id']/'result.json'
                 if final.exists():continue
-                # 7.5 GiB startup gate is independent of wall/solver clocks.
-                while psutil.virtual_memory().available<7.5*GIB:
+                # Startup gate is independent of wall/solver clocks.
+                startup_gib=manifest['policy']['startup_available_gib']
+                while psutil.virtual_memory().available<startup_gib*GIB:
                     state.update(status='waiting_for_memory',active=None);write_json(state_path,state)
-                    print(f'{job["id"]}: waiting for 7.5 GiB available; task clock has not started.',flush=True)
+                    print(f'{job["id"]}: waiting for {startup_gib:g} GiB available; task clock has not started.',flush=True)
                     if (folder/'STOP').exists():break
                     time.sleep(5)
                 if (folder/'STOP').exists():break
