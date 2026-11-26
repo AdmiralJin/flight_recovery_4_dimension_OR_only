@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "phase8_test_benders_v1",
+  "algorithm": "logic_based_fixed_column_benders",
+  "max_iterations": 500,
+  "absolute_gap_tolerance": 0.000001,
+  "relative_gap_tolerance": 0.000000001,
+  "enable_arm": true,
+  "enable_crm": true,
+  "enable_prm": true,
+  "source": "implementation_assumption",
+  "notes": [
+    "Correctness-first fixed-column decomposition.",
+    "No pricing, reduced cost, or dynamic columns.",
+    "Binary recourse is handled with logic-based exact-schedule cuts."
+  ]
+}

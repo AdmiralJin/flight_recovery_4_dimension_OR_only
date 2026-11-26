@@ -1,0 +1,69 @@
+{
+  "status": "resource_limited",
+  "reason": "system_memory_floor",
+  "audit_pass": false,
+  "objective": null,
+  "lower_bound": null,
+  "upper_bound": null,
+  "relative_gap": null,
+  "model_statistics": {
+    "search_stages": [
+      {
+        "scope": "tail_pool_1",
+        "scale": {
+          "flight_options": 72984,
+          "assignment_options": 67542,
+          "station_events": 119448,
+          "shortcut_variables": 80306,
+          "rebooking_variables": 249502,
+          "estimated_variables": 904302,
+          "estimated_constraints": 833326,
+          "estimated_peak_bytes": 2896170256,
+          "calibration_factor": 1.0,
+          "estimator_version": "xma-compact-structural-v1",
+          "tail_pool_size": 1
+        },
+        "sizing_seconds": 1.0730799000011757,
+        "status": "aborted",
+        "reason": "11",
+        "statistics": {
+          "variables": 877803,
+          "constraints": 810244,
+          "nodes": 0,
+          "aircraft_columns": 0,
+          "representation": "arc",
+          "solver": "HiGHS",
+          "bound_scope": "restricted",
+          "tail_pool_size": 1,
+          "timings": {
+            "matrix_extraction_seconds": 2.154426399967633,
+            "solver_model_update_seconds": 0.8397206999361515,
+            "native_optimization_seconds": 399.29647459997796
+          }
+        },
+        "elapsed_seconds": 602.3605518999975,
+        "objective": null
+      }
+    ],
+    "full_model_built": false,
+    "bound_scope": "global",
+    "memory_limit_gib": 6
+  },
+  "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+  "study_signature": "366f59f05796b5e3fed748e79d8b60bf7c561ce590a1c56a2de8db061c9d1130",
+  "flights": 2364,
+  "complete_decisions": false,
+  "certified_optimal": false,
+  "external_evaluator": "not_run",
+  "first_solver_incumbent_seconds": null,
+  "first_audited_solution_seconds": null,
+  "first_checkpoint_seconds": null,
+  "job_id": "FULL",
+  "worker_seconds": 614.9529999999795,
+  "finished_at": "2026-11-19T19:29:27.526393+00:00",
+  "elapsed_seconds": 617.6720000000205,
+  "peak_rss_bytes": 5340844032,
+  "peak_commit_bytes": 6209978368,
+  "worker_returncode": 0,
+  "evidence_directory": "jobs\\FULL\\attempt_001"
+}

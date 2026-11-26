@@ -9,11 +9,9 @@ import gc
 import os
 
 from .algorithms import Budget, Outcome, direct, schedule_precheck, interruptible
+from .memory import DEFAULT_MEMORY_GIB, admission_bytes
 from .rules import adjustable, iter_networks, tail_pools
 from backend.solver.runtime import check_budget, SolveBudget, use_budget
-
-GIB=1024**3
-
 
 def estimate_size(request,options):
     """Stream tail networks; deliberately never construct the whole MIP to size it.
@@ -103,7 +101,8 @@ def first_solution(request,options,budget):
     while size<largest:
         sizes.append(size);size*=2
     sizes.append(None)
-    memory_limit=6*GIB*.8
+    memory_gib = int(os.environ.get('XMA_MEMORY_GIB', DEFAULT_MEMORY_GIB))
+    memory_limit = admission_bytes(memory_gib)
     full_lower=None
     last_outcome=None
     for size in sizes:
@@ -114,9 +113,11 @@ def first_solution(request,options,budget):
         current=request.model_copy(update={'tail_pool_size':size,'first_solution_search':False})
         sizing_started=perf_counter()
         scale=estimate_size(current,options)
-        stage={'scope':scope,'scale':scale,'sizing_seconds':perf_counter()-sizing_started}
+        stage={'scope':scope,'scale':scale,'sizing_seconds':perf_counter()-sizing_started,
+               'memory_limit_gib':memory_gib,'admission_bytes':memory_limit}
         stages.append(stage)
-        budget.emit('sizing','model_size_estimate','联合模型资源预测',metrics={**scale,'search_scope':scope,'bound_scope':'restricted' if size else 'global'})
+        budget.emit('sizing','model_size_estimate','联合模型资源预测',metrics={**scale,'search_scope':scope,
+            'memory_limit_gib':memory_gib,'admission_bytes':memory_limit,'bound_scope':'restricted' if size else 'global'})
         if scale['estimated_peak_bytes']>memory_limit:
             stage.update(status='resource_limited',reason='predicted_memory_exceeds_admission')
             budget.emit('resource','resource_limited','该搜索范围超过内存准入预测，保留已有合法方案',metrics=stage)
@@ -168,4 +169,4 @@ def first_solution(request,options,budget):
     return Outcome('aborted' if budget.cancel_check() else 'not_converged',best.objective if best else None,
                    full_lower,best.upper if best else None,list(best.decisions) if best else [],reason,
                    {'search_stages':stages,'full_model_built':any(s['scope']=='full' and s.get('status')!='resource_limited' for s in stages),
-                    'bound_scope':'global','memory_limit_gib':6})
+                    'bound_scope':'global','memory_limit_gib':memory_gib,'admission_bytes':memory_limit})

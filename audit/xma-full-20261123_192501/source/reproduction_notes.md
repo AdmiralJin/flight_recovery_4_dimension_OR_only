@@ -1,0 +1,861 @@
+# Reproduction Notes
+
+本文件记录 Petersen et al. (2010) AIR 论文与当前代码仓库之间的复现边界、已完成层级和仍未实现部分。
+
+---
+
+# 1. Reproduction Strategy
+
+项目采用逐层 Oracle 结构：
+
+```text
+Scenario/Data Boundary
+    ↓
+Manual Columns + Manual Reference
+    ↓
+Fixed-column SRM / ARM / CRM / PRM
+    ↓
+Full Integrated Fixed-column Oracle
+    ↓
+Fixed-column Benders
+    ↓
+Column Generation
+    ↓
+Benders + Column Generation
+```
+
+核心原则：
+
+> 复杂版本只有在小实例上与更简单、可审计版本一致后，才进入下一阶段。
+
+---
+
+# 2. Phase 0：Data Boundary
+
+Phase 0 已建立：
+
+- Scenario Schema；
+- Airports；
+- Flights；
+- Aircraft；
+- Crew；
+- Passenger Commodities；
+- Airport Capacity Intervals；
+- Disruptions；
+- 跨实体一致性 Validator；
+- JSON Import / Export；
+- FastAPI 数据接口；
+- `toy_case_001`；
+- HTML 数据编辑工作台。
+
+Phase 0 不包含：
+
+- Flight String optimization；
+- Mathematical decision variables；
+- Solver；
+- Benders；
+- Column Generation。
+
+Phase 0 时 `/api/solve` 曾是安全闸门：在真正 Solver 接入前，合法数据也不应假装求解成功。Phase 13 已将其替换为正式求解接口，见第 27–28 节。
+
+---
+
+# 3. Phase 0.5：Deterministic Visualization
+
+Phase 0.5 已在同一前端工作台增加 Visualization。
+
+当前可视化读取合法 Scenario，展示：
+
+- 原计划时空网络；
+- 已知 Disruption；
+- Direct Exposure；
+- 沿原 Aircraft/Crew Chain 的 Downstream Risk；
+- Airport Capacity Load。
+
+它不产生恢复决策。
+
+特别注意：
+
+```text
+direct exposure / downstream risk
+!=
+actual delay / cancellation / optimized recovery
+```
+
+Phase 0.5 不属于 OR 求解器。
+
+---
+
+# 4. `toy_case_001` 的定位
+
+`toy_case_001` 包含：
+
+- 3 Airports；
+- 6 Flights；
+- 2 Aircraft；
+- 2 Cockpit Crews；
+- 4 Passenger Groups；
+- 8 小时 Recovery Horizon；
+- B 机场 Departure Capacity Reduction。
+
+它现在主要是：
+
+```text
+Phase 0 / 0.5 smoke fixture
+```
+
+用于验证：
+
+- Scenario Schema；
+- Validator；
+- Frontend round-trip；
+- Visualization；
+- 简单风险传播。
+
+它不再承担 Phase 1 主 Integrated Benchmark 的全部职责。
+
+---
+
+# 5. Phase 1 主 Benchmark
+
+Phase 1 主人工集成基准为：
+
+```text
+phase1_benchmark_001
+```
+
+主要规模：
+
+```text
+4 Airports
+12 Flights
+4 Aircraft
+5 Crew
+8 Passenger Groups
+1 Departure-Capacity Disruption
+```
+
+其职责是：
+
+- 人工建立 Flight Recovery Options；
+- 人工建立 Aircraft Strings；
+- 人工建立 Crew Pairings；
+- 人工建立 Passenger Itineraries；
+- 人工建立一套可解释 Reference Recovery；
+- 为后续 Fixed-Column 模型提供第一套综合 Oracle 输入。
+
+详细设计见：
+
+```text
+docs/benchmarks/PHASE1_BENCHMARK_001_DESIGN.md
+```
+
+---
+
+# 6. Phase 1 Columns Exchange Format
+
+Phase 1 已定义 Recovery Columns Schema v1.0.0。
+
+顶层分为：
+
+```text
+flight_options
+aircraft_strings
+crew_pairings
+passenger_itineraries
+```
+
+核心设计：
+
+> 原 Flight ID 永不被恢复动作修改。
+
+例如：
+
+```text
+base_flight_id = F2
+
+FO_F2_ORIG
+FO_F2_D50
+FO_F2_CANCEL
+```
+
+该接口可表达：
+
+- unchanged；
+- delay；
+- cancellation；
+- origin change；
+- destination change；
+- ferry / positioning；
+- aircraft reassignment；
+- crew reassignment；
+- passenger reaccommodation；
+- unserved passenger。
+
+Schema 设计详见：
+
+```text
+docs/RECOVERY_COLUMNS_EXPECTED_SCHEMA_V1.md
+```
+
+---
+
+# 7. Phase 1 Expected / Oracle Format
+
+Expected Schema v1.0.0 不再把 Ground Truth 简化为一个完整 Solution Vector。
+
+它区分：
+
+```text
+reference_solution
+oracle_invariants
+comparison_policy
+objective
+```
+
+原因是后续可能存在等价 Assignment。
+
+因此：
+
+- `reference_solution`：给出一套人工具体方案；
+- `oracle_invariants`：定义真正应通过的验证条件；
+- `comparison_policy`：决定 exact / non-exact comparison；
+- `objective`：成本模型定义后才填正式数值。
+
+---
+
+# 8. 当前 `phase1_benchmark_001` 人工 Reference
+
+当前人工 Reference 使用：
+
+```text
+F2 +50 min
+F10 +20 min
+F11 +10 min
+```
+
+并通过 Aircraft Reassignment：
+
+```text
+AC1:
+F1 → F2 → F10
+
+AC4:
+F3 → F11 → F12
+```
+
+保持 F3 原计划不延误。
+
+同时：
+
+```text
+P4:
+F2→F3
+→
+F8
+```
+
+作为 Passenger Reaccommodation。
+
+Reference Metrics：
+
+```text
+operated_flights = 12
+cancelled_flights = 0
+delayed_flights = 3
+aircraft_reassignments = 2
+crew_reassignments = 0
+passenger_reaccommodated_count = 15
+total_flight_departure_delay_minutes = 80
+passenger_delay_minutes_weighted = 1800
+unserved_passengers = 0
+```
+
+---
+
+# 9. 当前 Reference 不是 Proven Optimal
+
+当前 Expected 明确应标记：
+
+```text
+reference_type = manual_reference
+solution_status = feasible
+```
+
+而不是：
+
+```text
+solver_optimal
+```
+
+当前 Phase 2 test cost 状态为：
+
+- SRM-owned delay / cancellation / route change 已实现；
+- ARM-owned aircraft reassignment / ferry 已实现；
+- CRM-owned crew reassignment / deadhead 已实现；
+- PRM-owned passenger delay / unserved passenger 已进入 Fixed-Column PRM，并按 passenger-minutes / passenger count 独立复算。
+
+上述成本仍是 `abstract_cost_units` / implementation test profile，不代表真实航空公司生产成本，也未完成真实业务校准。
+
+所以：
+
+> 当前 80 分钟方案是一套人工合理恢复结果，不是已经由 AIR 综合目标证明的全局最优解。
+
+---
+
+# 10. Paper-to-Schema Distinction
+
+论文定义的是优化集合、网络、目标与约束，而不是完整的工程 JSON Interchange Format。
+
+因此本项目新增的字段和 JSON 结构属于：
+
+```text
+Implementation Interface
+```
+
+而不是声称来自论文原始数据格式。
+
+所有会改变可行域或目标的实现补充均应登记于：
+
+```text
+assumptions.md
+```
+
+---
+
+# 11. SRM / ARM / CRM / PRM 数据映射
+
+当前数据资产已经为四部分保留接口：
+
+## SRM
+
+- Flight；
+- Flight Options；
+- Strategic / Market flags；
+- Airport-time capacities；
+- Disruptions；
+- Cancellation / Delay candidates。
+
+## ARM
+
+- Individual Tail；
+- Equipment；
+- Start / Required End Station；
+- Maintenance；
+- Aircraft Strings；
+- Reassignment candidates。
+
+## CRM
+
+- Individual Crew；
+- Rating；
+- Start / Required End Station；
+- Duties；
+- Crew Pairings；
+- Reassignment / future Deadhead interfaces。
+
+## PRM
+
+- Passenger Commodities；
+- Original Itineraries；
+- Alternative Itineraries；
+- Reaccommodation；
+- Unserved option。
+
+---
+
+# 12. Phase 2.0：Indices / Incidence
+
+Phase 2.0 已完成：
+
+- deterministic ordered indices；
+- base flight / aircraft / crew / passenger candidate-choice incidence；
+- aircraft / operating crew / deadhead / passenger operational incidence；
+- maintenance incidence；
+- arrival / departure capacity incidence；
+- Ferry / Cancel / Deadhead 分离；
+- `[start,end)` 容量边界；
+- benchmark001 regression。
+
+Gate incidence 仍明确暂缓，等待 Gate Occupancy 语义冻结。
+
+---
+
+# 13. Phase 2.1：Solver / Cost / Result Contract
+
+Phase 2.1 已建立：
+
+- Gurobi 13.0.3 Primary Adapter；
+- solver-independent variable/constraint/objective/solve/read contract；
+- normalized solver status 与 capability declaration；
+- LP dual / reduced-cost 访问；
+- MIP objective / bound / gap / runtime 访问；
+- 独立 `ModelSolveResult`；
+- 版本化 `FixedColumnCostConfig` 与 `phase2_test_costs_v1`；
+- 每项成本的单位、来源和 canonical model owner。
+
+论文 Table 2 中可直接映射的测试值与工程假设严格分开。该成本 profile 是 abstract test units，不是当前航空公司业务成本，也没有为匹配 Phase 1 Manual Reference 调参。
+
+---
+
+# 14. Phase 2.2：Fixed-Column SRM
+
+Phase 2.2 已建立固定候选列的 Schedule Recovery Model：
+
+- `SRM-C01-FLIGHT-COVERAGE`：每个 revenue flight 恰选一个 operate/cancel option；
+- `SRM-C02-STRATEGIC-FLIGHT`：strategic flight 禁止取消；
+- `SRM-C03-ARRIVAL-CAPACITY` / `SRM-C04-DEPARTURE-CAPACITY`：复用 Phase 2.0 的 `[start,end)` incidence；
+- `SRM-C05-GATE-INVENTORY`：明确标记为 `PROVISIONAL_AGGREGATE_GATE_INVENTORY`；
+- `SRM-C06-MARKET-SEAT`：明确标记为 `MARKET_SEAT_PROXY`，只保存市场服务，不证明真实座位容量。
+
+模型只为 revenue `operate` / `cancel` options 建变量，Ferry 留给 ARM。求解后不依赖 Gurobi status 直接宣称正确，而是独立复算每个约束实例、capacity/gate slack 与 SRM-owned objective breakdown。
+
+在 `phase1_benchmark_001` 上，Phase 2 test cost profile 的 SRM optimum 为 70：`F2_D50` 消除 B 机场 departure-capacity 冲突，`F10_D20` 保持 aggregate ground inventory 非负。该结果不包含 Aircraft/Crew/Passenger 联动，因此不能替代 80 分钟的完整恢复 Manual Reference。
+
+Review fix 已冻结 Gate boundary：internal boundary 使用右侧 `[start,end)` interval；recovery-end terminal checkpoint 使用唯一以 recovery end 结尾的 interval。现有不完整 benchmark 只有在同一机场 gate capacities 全部一致时才允许 provisional fallback。
+
+---
+
+# 15. Phase 2.3：Fixed-Column ARM
+
+Phase 2.3 接收外生 `AircraftRecoveryRequest.required_operated_option_ids`，不重新决定 SRM schedule，并使用现有人工 `aircraft_strings` 建立：
+
+- `ARM-C01-AIRCRAFT-STRING-SELECTION`：每架 aircraft 恰选一条显式 String，对应论文 (3.10)；
+- `ARM-C02-FLIGHT-OPTION-COVERAGE`：required revenue option 恰覆盖一次，non-required revenue option 覆盖为零，是论文 (3.9) 的 fixed-option 映射；
+- `ARM-C03-TERMINAL-STATION`：selected String 满足 required terminal；
+- `ARM-C04-MAINTENANCE`：maintenance-required aircraft 选择 validated satisfied String，对应论文 (3.11)；
+- `ARM-C05-STRING-FEASIBILITY`：复用 pre-model semantic validation；
+- 二元 String variables 对应论文 (3.12)，ARM-owned assignment objective 对应 (3.8)。
+
+ARM Objective 只收取 aircraft reassignment 与 Ferry。Ferry 可作为 String leg，但不进入 revenue coverage；所有结果在求解后独立复算 coverage、schedule leakage、terminal、maintenance、reassignment、Ferry 和 Objective。
+
+Benchmark 顺序测试得到：SRM optimum 70 的 schedule 在现有 fixed Aircraft Strings 下 `ARM = INFEASIBLE`。结构分析定位 AC4 没有不泄漏 schedule 的候选 String，`F3_ORIG`、`F11_ORIG`、`F12_ORIG` 没有 eligible exact cover。这是 fixed-column coverage 不足，未通过修改 SRM 或 Columns 掩盖。Phase 1 Manual schedule 则得到 ARM `OPTIMAL`、objective 0（当前 reassignment coefficient 为 0）、两次 reassignment、无 Ferry，全部独立审计通过。
+
+---
+
+# 16. Phase 2.4：Fixed-Column CRM
+
+Phase 2.4 接收外生 `CrewRecoveryRequest.required_operated_option_ids`，复用 SRM 的 canonical operated-option handoff，不重新决定 schedule，并使用现有人工 `crew_pairings` 建立：
+
+- 每个 crew 恰选一条显式 Pairing；
+- required revenue option 由 OPERATE segment 恰覆盖一次；
+- non-required OPERATE / DEADHEAD schedule leakage 禁止；
+- fixed-column legality 与 terminal ownership 审计；
+- CRM-owned crew reassignment / deadhead objective；
+- 求解后独立复算 pairing selection、coverage、terminal、cost 与全部约束。
+
+当前 crew reassignment 是“按 reassigned operating flight leg 计数”的 Phase 2 implementation mapping；未来真实业务成本标定时必须重新确认实际计费粒度是 crew / duty / pairing / flight-leg 中哪一种。Phase 2.4 不改变该既有成本逻辑。
+
+---
+
+# 17. Phase 2.5：Fixed-Column PRM
+
+Phase 2.5 接收外生 `PassengerRecoveryRequest` 与独立 `PassengerCapacityProfile`，复用 canonical SRM operated-option handoff，不重新决定 schedule、aircraft 或 crew，并使用现有人工 `passenger_itineraries` 建立：
+
+- `PRM-C01`：每个 passenger group 恰选一条 transported / explicit unserved itinerary；
+- `PRM-C02`：引用 non-selected Flight Option 的 itinerary 固定为零；
+- `PRM-C03`：按 `PassengerCommodity.count` 消耗每个 FLIGHT segment 的外生 residual seat capacity；
+- `PRM-C04`：复用 fixed-column validator 的 OD、时间连续、arrival/delay 与 UNSERVED shape；
+- `(3.16)` PRM-owned arrival delay / unserved objective 与独立复算；
+- reaccommodation、unserved、weighted passenger delay、seat load/capacity/slack diagnostics。
+
+论文 `(3.16)-(3.18)` 的变量是非负整数旅客流；当前 fixed-column 映射使用 binary、不可拆分 passenger group，并以 explicit UNSERVED itinerary 映射论文 `s_i`。Capacity profile 表示可供模型内 passenger groups 使用的 test residual inventory，不使用 `Flight.min_seats`，也不代表真实 aircraft capacity。
+
+`toy_case_003` 提供容量瓶颈与 alternative itinerary 的可手算 Oracle。Phase 1 Manual schedule 下 PRM 复现 1800 pax-min、15 名 reaccommodated、0 unserved；SRM 70-cost schedule 下 PRM 可行，但因现有 fixed itinerary coverage 使 P6 的 12 人选择 explicit unserved。
+
+---
+
+# 18. Phase 4 Scope Limiting
+
+Phase 4 已核对论文 Appendix Algorithms 3-6，并在当前 fixed-column universe 上实现可审计映射：
+
+```text
+direct departure disruption
+→ scoped base flights/options
+→ aircraft strings / crew pairings / passenger itineraries
+→ additional revenue flights
+→ airport capacity / gate / seat shared coupling
+→ fixed-point closure
+```
+
+`RecoveryScope` 是 immutable、stable-ordering 的结果对象，并为 scoped entities/candidates 保存 deterministic propagation reasons。当前正式支持 `departure_capacity_reduction`，使用 `[start_time, end_time)`；未知 restriction type 显式失败。
+
+Phase 4 v1 保留完整 Phase 3 MIP。Scope 外 owner 通过不依赖 ID 命名的 semantic original resolver 固定到原计划，Scope 内 owner 保持自由。独立 audit 同时检查 Phase 3 local/cross-model constraints、objective 与 Scope fixes。
+
+验证结果：
+
+```text
+toy_case_006_scope:
+  OBJ_full  = 2040
+  OBJ_scope = 2040
+  free binary candidates = 10 / 14
+
+phase1_benchmark_001:
+  OBJ_full  = 18080
+  OBJ_scope = 18080
+  strict closure = Full Scope
+```
+
+主 benchmark 的 Full Scope 是其 candidate/shared-row 依赖图实际全连通的结果，不通过漏掉 gate/capacity 传播制造缩减。`toy_case_006_scope` 保留一组完全独立的 Flight/Aircraft/Crew/Passenger，用于验收真实冻结与缩减。
+
+---
+
+# 19. Phase 5 Flight String Generator
+
+Phase 5 已在“只消费 existing Flight Options、不进入 Pricing”的边界内完成：
+
+```text
+Scenario + existing Flight Options + RecoveryScope + versioned Turn-Time Config
+→ deterministic aircraft-local Flight Network
+→ DFS explicit/full path enumeration
+→ generated AircraftString columns
+→ independent legality validation
+```
+
+生成器检查 aircraft ownership、equipment compatibility、Station continuity、Flight timing、显式 Turn Time、Max Delay、Recovery Horizon、hard airport-local restrictions、Maintenance terminal proxy 与 required terminal station。CANCEL 不进入 String；输入中已有的 FERRY 可以作为 leg；合法 idle 用零 leg 的显式 String 表达。
+
+`scope=None` 对全部 aircraft 全量生成；提供 `RecoveryScope` 时只对 scoped aircraft 枚举，scope 外 aircraft 仅保留经语义解析确认的原计划 String。Original resolver 已加严：原计划 Aircraft/Crew/Passenger 候选不能夹带额外 FERRY、DEADHEAD、surface 或 recovery-only segment。
+
+正确性验证：
+
+```text
+toy_case_007_string_generator:
+  smart DFS legal set = brute-force permutation legal set
+  generated strings = 6 (AC1=3, AC2=1, AC3=2)
+
+phase1_benchmark_001:
+  manual strings = 11
+  generated strings = 77 (AC1=10, AC2=27, AC3=13, AC4=27)
+  manual semantic key coverage = 11 / 11
+  Integrated objective = 18080 (与人工 Strings 相同)
+```
+
+Turn Time 使用版本化测试配置：默认 15 分钟，E1 为兼容已冻结 Phase 1 人工列显式 override 为 0 分钟。该配置和 maintenance terminal proxy 都是工程测试假设，不代表真实航司生产规则。
+
+---
+
+# 19.1 Phase 6 Crew Pairing Generator
+
+Phase 6 在每次候选宇宙变化后重新构造 `RecoveryScope`，并只消费已有 revenue OPERATE Flight Options；其完整性表述严格限定为 **full explicit enumeration within the Phase 6 v1 generation profile**：
+
+```text
+Scenario + existing Flight Options + latest RecoveryScope + versioned Crew Config
+→ deterministic crew-local OPERATE/DEADHEAD Network
+→ single-duty DFS explicit enumeration
+→ generated CrewPairing columns
+→ independent legality validation
+```
+
+OPERATE 检查现有 `Crew.rating`；DEADHEAD 不计 operating coverage，但 Integrated Oracle 要求对应 Flight Option 被选中。Generator 检查 ownership、Station/Timing、Min Connection、Duty duration、Recovery Horizon、Terminal、Original/Idle、重复 option/base flight 与测试配置中的 DEADHEAD 上限。Airport/gate/passenger capacity 和 Aircraft String selection 不进入 crew-local network。
+
+正确性验证：
+
+```text
+toy_case_008_crew_pairing_generator:
+  C1 smart DFS legal set = brute-force permutation/role legal set = 5
+  total generated pairings = 8 (C1=5, C2=3)
+
+phase1_benchmark_001:
+  manual pairings = 10
+  generated pairings = 374 (C1=28, C2=122, C3=56, C4=73, C5=95)
+  manual semantic key coverage = 10 / 10
+  generated OPERATE leg incidences = 1094
+  generated DEADHEAD leg incidences = 288
+  Full Integrated objective = 18080 (与人工 Pairings 相同)
+  Scope-limited Integrated objective = 18080
+```
+
+当前单 duty、0 分钟 benchmark connection、480 分钟 duty bound、最多 1 个 DEADHEAD 都是版本化工程测试边界，不代表真实航司 Crew legality。Phase 6 未实现多 duty/rest、Crew Rostering、Pricing、Reduced Cost、Column Generation 或 Benders。
+
+---
+
+# 19.2 Phase 7 Passenger Itinerary Generator
+
+Phase 7 是明确标记的 `Implementation Assumption / Extension`。它只消费 existing revenue OPERATE Flight Options，并执行 **full explicit enumeration within the Phase 7 v1 generation profile**：
+
+```text
+Scenario + existing Flight Options + latest RecoveryScope + versioned Passenger Config
+→ deterministic passenger-local Flight Network
+→ FLIGHT-only DFS path enumeration + explicit UNSERVED
+→ independent itinerary legality validation
+→ generated PassengerItinerary columns
+→ rebuild canonical RecoveryScope
+```
+
+Generator 检查 passenger ownership、O-D/时间连续性、MCT、Recovery Horizon、最大航段数、重复 option/base flight、original/Scope 与 arrival delay；CANCEL/FERRY 不进入网络，SURFACE v1 禁用。Passenger count 和 seat capacity 不参与局部剪枝，容量竞争继续由 PRM-C03 与 INTEGRATED-L05 负责。
+
+正确性验证：
+
+```text
+toy_case_009_passenger_itinerary_generator:
+  P1 smart DFS legal set = brute-force permutation legal set = 4
+  generated itineraries = 7 (5 transported, 2 unserved)
+
+phase1_benchmark_001:
+  manual itineraries = 17
+  generated itineraries = 55 (47 transported, 8 unserved)
+  by group = P1:10, P2:11, P3:8, P4:8, P5:7, P6:5, P7:4, P8:2
+  manual semantic key coverage = 17 / 17
+  PRM objective = 18000
+  Full Integrated objective = 18080
+  Scope-limited Integrated objective = 18080
+```
+
+Benchmark profile 的 0 分钟 MCT、最多 3 个 flight legs 与 FLIGHT-only 都是版本化测试边界，不代表真实航司 MCT/行程规则。Phase 7 不实现 Passenger Pricing、Surface network、旅客拆分、舱位等级、Column Generation 或 Benders。
+
+## Phase 8 Fixed-Column Logic-Based Benders
+
+Phase 8 在完全冻结的 Phase 7 candidate universe 上实现：
+
+```text
+SRM x + thetaA/thetaC/thetaP Master
+        ↓
+existing ARM / CRM / PRM binary MIP recourse
+        ↓
+exact-schedule no-good feasibility cuts
++ conditional exact-recourse Big-M optimality cuts
+        ↓
+Integrated diagnostics audit
+```
+
+这是工程 correctness decomposition baseline。当前 recourse 是 binary MIP，因此没有读取 LP dual，也不声称复现 classical dual-derived Benders cuts。Master 每轮从 SRM 重新构建，owner Big-M 从实际 scope-restricted fixed candidates 程序化计算；cuts 只对当前 candidate universe、scope、cost/capacity profile 有效。
+
+验证结果：`toy_case_010_fixed_column_benders` 在 4 轮中产生 feasibility 与三类 owner optimality cuts，Benders/Integrated objective 均为 `220`。`toy_case_004`、`toy_case_005`、`toy_case_006_scope` 的 full/scope 均与 Integrated Oracle 等价。Phase 7 benchmark universe（21 个 schedule candidates、77 Strings、374 Pairings、55 Itineraries）在 8 轮、7 个 visited schedules、17 个 unique cuts 后达到 `LB = UB = 18080`，最终 local/linking/scope/objective audit 全通过。
+
+Phase 8 不实现 Pricing、Reduced Cost、Column Generation、Benders + Column Generation、callbacks、dual stabilization 或动态列。
+
+---
+
+# 20. Phase 8 当时仍未实现的层级（历史记录）
+
+截至 Phase 8 时，以下尚未完成；这些层级已分别在 Phase 9–12 实现：
+
+```text
+Column Generation
+Benders + Column Generation
+Integrality / Branching
+```
+
+---
+
+# 21. 当前工程状态
+
+Phase 1、Phase 2.0 至 Phase 2.5，以及 Phase 3 已完成：
+
+```text
+Benchmark design
+Manual columns
+JSON exchange schemas
+Manual feasible reference
+Oracle comparison design
+Documentation
+Python/Pydantic Columns / Expected Schema
+Column / Oracle Semantic Validation
+Reference Metrics recomputation
+Benchmark regression and negative tests
+Deterministic indices and incidence builder
+Solver / Cost / ModelSolveResult contracts
+Analytical LP/MIP solver smoke tests
+Fixed-column Schedule Recovery Model
+SRM-C01 至 SRM-C06 constraints
+Provisional Aggregate Gate Inventory
+Market Service Preservation Proxy
+Independent SRM constraint/objective diagnostics
+Fixed-column Aircraft Recovery Model
+External required-operated-option contract
+Aircraft String / schedule no-leakage constraints
+Terminal / fixed-column Maintenance audit
+Aircraft reassignment / Ferry objective audit
+Fixed-column Crew Recovery Model
+External required-operated-option contract reuse
+OPERATE / DEADHEAD separation and schedule no-leakage constraints
+Crew terminal / fixed-column legality audit
+Crew reassignment / deadhead objective audit
+Fixed-column Passenger Recovery Model
+External versioned residual seat-capacity contract
+Passenger group / schedule / capacity constraints
+Passenger delay / unserved objective and independent audit
+toy_case_003 passenger-capacity Oracle
+Full Integrated Fixed-column Oracle with x/y/z/w in one MIP
+Schedule/Aircraft, Schedule/Crew, Deadhead/Schedule linking
+Passenger/Schedule and residual Seat/Schedule linking
+Canonical SRM + ARM + CRM + PRM objective and independent recomputation
+toy_case_004 aircraft-coupling Oracle
+toy_case_005 passenger-coupling Oracle
+phase1_benchmark_001 integrated optimum and Manual Reference upper-bound audit
+Immutable deterministic Recovery Scope and direct disruption seed
+Resource/passenger/shared-row fixed-point closure
+Semantic original candidate resolver and Scope safety invariants
+Scope-limited Integrated Oracle with independent freeze audit
+toy_case_006_scope Full-vs-Scope equivalence and real reduction
+Versioned Aircraft Turn-Time configuration
+Deterministic aircraft-local Flight Network
+Existing-option Aircraft String DFS full enumeration
+Independent generated String legality validation
+Explicit original / idle / FERRY semantics
+Scope-aware generation with out-of-scope original retention
+toy_case_007 smart-vs-brute-force legal-set Oracle
+phase1_benchmark_001 77 generated Strings and 11/11 manual-key coverage
+Generated-String Integrated Oracle objective 18080
+Versioned Crew Pairing generation configuration
+Deterministic crew-local OPERATE/DEADHEAD Network
+Single-duty Crew Pairing DFS explicit enumeration
+Independent generated Pairing legality validation
+Explicit original / idle / terminal semantics
+Scope-aware generation with out-of-scope original retention
+toy_case_008 smart-vs-brute-force legal-set Oracle
+phase1_benchmark_001 374 generated Pairings and 10/10 manual-key coverage
+Generated-Pairing Integrated Oracle objective 18080
+Versioned Passenger Itinerary generation configuration
+Deterministic passenger-local Flight Network
+FLIGHT-only Passenger Itinerary DFS explicit enumeration
+Independent generated Itinerary legality validation
+Explicit original / UNSERVED / Scope semantics
+toy_case_009 smart-vs-brute-force legal-set Oracle
+phase1_benchmark_001 55 generated Itineraries and 17/17 manual-key coverage
+Generated-Itinerary PRM objective 18000
+Generated-Itinerary Full/Scope Integrated objective 18080
+Versioned logic-based fixed-column Benders configuration
+SRM Master with nonnegative ARM/CRM/PRM recourse variables
+Exact-schedule feasibility and conditional exact-recourse optimality cuts
+Programmatic owner-specific Big-M bounds
+Scope-restricted recourse candidate views
+Deterministic cut IDs, input fingerprint, LB/UB trajectory and status handling
+toy_case_010 feasibility/optimality cut convergence Oracle
+toy_case_004/005 and toy_case_006_scope Benders/Integrated equality
+phase1_benchmark_001 generated-universe Benders objective 18080
+Final Benders incumbent Integrated diagnostics audit
+Fixed-schedule full-column Aircraft String LP Oracle
+Fresh-rebuild restricted Aircraft String LP master
+Explicit Phase I artificial-variable feasibility restoration
+Public-dual `c - pi*a` reduced-cost mapping and solver RC audit
+Aircraft-local DAG pricing without full-pool dependency
+toy_case_011 Phase II negative-reduced-cost improvement
+phase1_benchmark_001 77-full-column versus 15-CG-column equality
+Full-pool omitted-column termination audit
+Fixed-schedule All-Pairings Crew LP Oracle
+Fresh-rebuild restricted Crew Pairing LP master
+Crew Phase I artificial-variable feasibility restoration
+Typed OPERATE/DEADHEAD Crew DAG pricing without full-pool dependency
+Crew manual `c - pi*a` versus solver reduced-cost audit
+toy_case_012 deadhead/reassignment Phase II improvement
+phase1_benchmark_001 374-full-pairing versus 34-CG-pairing equality
+Crew full-pool omitted-pairing termination audit
+Versioned Schedule Benders + Column Generation configuration
+Implicit-universe fingerprint excluding materialized dynamic pool IDs
+Pricing-certified Aircraft/Crew full-LP conditional lower-bound cuts
+Exact Passenger MIP cuts and certified schedule no-good cuts
+Generated-pool binary ARM/CRM integer-feasible upper bounds
+Explicit `INTEGRALITY_REQUIRED` LP/integer boundary
+toy_case_013 three-Schedule Benders-CG Oracle equality at 220
+phase1_benchmark_001 Benders-CG / Full Explicit Integrated equality at 18080
+Formal Phase 11 independence from Aircraft/Crew full enumerators
+Final generated-column incumbent Integrated diagnostics audit
+```
+
+Phase 3 将四类决策放入同一个 MIP，并以显式 linking 解决 SRM 独立最优可能缺少 Aircraft String 的边界。`phase1_benchmark_001` 的 Manual Reference 完整联合 audit 可行，candidate objective 为 `18080`；Gurobi 得到相同的 Integrated optimum `18080`，所有 local/cross-model/objective audit 均通过。SRM market-seat 仍是 provisional proxy，PRM capacity 仍是 test/residual inventory，不是 aircraft physical capacity。
+
+---
+
+# 22. Phase 11 时的下一工程步骤（历史记录）
+
+Phase 11 完成后，当时的下一步是：
+
+```text
+Phase 12 Integrality / Branching
+```
+
+Phase 11 已在 toy 与完整 benchmark 上证明 `OBJ_BENDERS_CG == OBJ_FULL_EXPLICIT_INTEGRATED`。Aircraft/Crew full-LP 值只形成下界，generated-pool binary 解只形成上界；若二者不能闭合，求解器返回 `INTEGRALITY_REQUIRED`。Phase 12 随后实现了 branching 下的动态定价与整数恢复。
+
+---
+
+# 23. Reproduction Integrity Rule
+
+任何阶段都不允许用：
+
+```text
+solver_status = OPTIMAL
+```
+
+单独证明实现正确。
+
+必须回答：
+
+```text
+数据是否正确？
+列是否可行？
+约束是否正确？
+是否与人工/整体 Oracle 一致？
+是否存在等价解？
+Objective 是否使用同一成本定义？
+```
+
+只有上述问题可以清楚回答，才能把复杂算法作为可信论文复现。
+
+---
+
+# 24. Costs + Constraints Workbench
+
+当前前端在既有 Data 与 Visualization 之外增加 Costs 和 Constraints 两个一级视图。
+
+Costs 的 canonical 单一真源仍为：
+
+```text
+data/costs/phase2_test_costs_v1.json
+```
+
+浏览器 cost override 只修改实验状态中的 coefficient value。后端拒绝未知 key、负数、NaN 与 Infinity；owner、unit、canonical source 和 source reference 不可通过 override 修改，canonical 文件也不会被自动写回。
+
+Constraints 由后端统一 registry 提供 20 个实际代码约束 ID，包含 model、kind、provenance、implementation status、公式摘要、输入依赖和 assumption refs。Gate Inventory 与 Market-seat 明确标记为 proxy；PRM 容量明确标记为 `TEST / RESIDUAL CAPACITY` 和 `NOT AIRCRAFT PHYSICAL CAPACITY`。
+
+Constraint precheck 仅检查当前输入和 fixed columns 的确定性结构条件：
+
+```text
+PRECHECK != MIP FEASIBILITY
+```
+
+它不运行 SRM / ARM / CRM / PRM solver，不产生 Feasible 或 Optimal 结论。该工作台只是人工审计与实验配置工具，不承担 Phase 3 Integrated Oracle 的求解或验收。
+
+---
+
+# 25. Phase 2 Final Review 与 Phase 3 v1 冻结
+
+Phase 2 最终审查继续保持四个独立 fixed-column 子模型，不将其伪装为 Integrated Oracle。同一 Phase 1 Manual Reference schedule 已分别作为 ARM、CRM、PRM 的独立 Gurobi smoke；三个模型各自 feasible 且 independent audit 通过，但没有把三个 objective 相加称为 integrated objective。
+
+SRM 独立最优在当前有限 Aircraft Strings 下可能使 ARM infeasible。这是被保留的正确边界，不通过修改 SRM cost、SRM solution 或偷偷补列掩盖；Phase 3 需要联合优化 Schedule 与资源恢复来处理该耦合。
+
+Phase 3 v1 冻结为：
+
+```text
+Full Integrated Fixed-Column Oracle
+```
+
+它继续复用 `phase2_test_costs_v1`、当前人工列、不可拆分 PassengerCommodity group、test/residual passenger capacity 和 provisional SRM Market-seat Proxy。Integrated Objective 只按 canonical owner 汇总 SRM + ARM + CRM + PRM，不增加模型级权重、隐藏 epsilon 或 tie-breaking penalty，允许等价最优解。
+
+Phase 3 v1 不加入南航特定业务规则，不动态生成 Columns，不进入 Benders / Column Generation，也不宣称使用生产级真实参数。完整冻结说明见 `assumptions.md` A-056。
+
+---
+
+# 26. Phase 12 Integrality / Branch-and-Price 冻结
+
+Phase 12 在固定 Schedule 下对 Aircraft String 与 Crew Pairing 的隐式列空间运行 exact Branch-and-Price。每个分支节点在自身限制下重新完成 Column Generation；parent columns 仅为合法 warm start。只有根节点 LP 与可行整数值相等，或 Branch-and-Price 完整证明整数最优时，Schedule Benders 才使用 exact integer recourse cut。Phase 11 的 pricing-certified LP cuts 继续保留。
+
+`toy_case_015` 的 Crew root LP 为 195，整数最优为 200，9 个节点闭合；`toy_case_016` 上 Phase 11 返回 `INTEGRALITY_REQUIRED`（LB=95195，UB=95200），Phase 12 与完整显式 Integrated Oracle 均为 95200。主 benchmark 保持 18080。
+
+正式求解只支持 `scope=None`，使用预备 Flight Options 与固定显式 Passenger Itineraries；它不调用 Phase 5/6 full enumerators，不代表生产级航空公司规则或规模性能。Aircraft 当前测试宇宙未产生自然整数缺口，不为此改变数学模型。
+
+---
+
+# 27. Phase 13 Solver Integration / Recovered Result 冻结
+
+Phase 13 将版本化 `SolveRequest` 经输入就绪检查交给 Phase 12 exact solver。API 的 422 用于缺失或无效输入；合法但不可行、未收敛的求解均以 HTTP 200 和稳定 `RecoveredResult.status` 返回。`result_builder` 独立复核 selected owner、Aircraft/Crew coverage、Passenger references、目标分量和业务指标，并要求 Integrated final audit PASS 才输出 optimal 决策。
+
+主 benchmark API objective `18080`；`toy_case_016` API objective `95200`。另有 Scenario-only、非法成本覆盖、合法但 infeasible、节点上限导致 not_converged 的回归。浏览器实测 Solve、Recovered、Disrupted、Difference 与结果导出可用。完整研究工作台 v1 已闭合，但真实数据接入、业务约束、规模性能和 production readiness 仍在后续范围。
+
+---
+
+# 28. AIR Recovery Research Workbench v1 最终边界
+
+Phase 13 完成 AIR 复现/研究工作台 v1。求解链依次包含 Integrated Oracle → Benders → Aircraft/Crew Column Generation → Benders + CG → Branch-and-Price → 稳定 Solve API → Recovered Result → Recovery UI。该里程碑可审计、属于研究级工作台，不是生产航空公司恢复系统。
+
+核心算法路线图至 Phase 13 冻结。后续开发独立转入航司特定 Business Migration：真实数据映射、Flight Option 生成与筛选、成本标定、业务规则、大规模运行时与稳定性、运行验证。

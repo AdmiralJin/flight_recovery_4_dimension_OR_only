@@ -1,0 +1,102 @@
+import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
+import { mkdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
+
+const currentDirectory = fileURLToPath(new URL(".", import.meta.url));
+const shots = resolve(currentDirectory, "../../docs/codex_reports/assets");
+
+test.beforeAll(async ({ request }) => {
+  const drafts = await request.get("/api/v2/drafts");
+  const body = await drafts.json();
+  if (!body.items?.length) {
+    const created = await request.post("/api/v2/drafts", { data: { source_case_id: "benchmark-disruption-recovery" } });
+    expect(created.ok()).toBeTruthy();
+  }
+  await mkdir(shots, { recursive: true });
+});
+
+test("root URL redirects into the v2 router instead of rendering a blank shell", async ({ page }) => {
+  const messages: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" || message.type() === "warning") messages.push(message.text());
+  });
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/workbench-v2\/data$/);
+  await expect(page.getByRole("heading", { name: "数据设计" })).toBeVisible({ timeout: 15_000 });
+  expect(messages.filter((message) => message.includes("basename"))).toEqual([]);
+});
+
+test("desktop task flow is compact, navigable and accessible", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/workbench-v2/data");
+  await expect(page.getByRole("heading", { name: "数据设计" })).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.getByRole("navigation", { name: "工作流导航" })).toBeVisible();
+  await expect(page.locator(".data-grid")).toBeVisible();
+  await page.getByRole("link", { name: "扰动影响" }).click();
+  await expect(page.getByRole("heading", { name: "扰动影响" })).toBeVisible();
+  await page.getByRole("button", { name: "编译并预览" }).click();
+  await expect(page.getByText("Ready", { exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: /impact 机场 UTC 时间航班箭头图/i })).toBeVisible();
+  const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(axe.violations).toEqual([]);
+  expect(errors).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  await page.screenshot({ path: resolve(shots, "browser_refactor_desktop.png"), fullPage: true });
+  await page.getByRole("button", { name: "切换到深色主题" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  expect(await page.evaluate(() => localStorage.getItem("air-workbench-v2-theme"))).toBe("dark");
+  const darkAxe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(darkAxe.violations).toEqual([]);
+  await page.screenshot({ path: resolve(shots, "workbench_v2_dark.png"), fullPage: true });
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+});
+
+test("390px mode stays within viewport and keeps monitoring navigation", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/workbench-v2/solve");
+  await expect(page.getByRole("heading", { name: "实时求解" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "方案对比" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "切换到深色主题" })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  await page.screenshot({ path: resolve(shots, "browser_refactor_mobile_390.png"), fullPage: true });
+  await page.getByRole("button", { name: "切换到深色主题" }).click();
+  const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(axe.violations).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  await page.screenshot({ path: resolve(shots, "browser_refactor_mobile_390_dark.png"), fullPage: true });
+});
+
+test("visualization page renders canonical impact and gantt views", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
+  const created = await page.request.post("/api/v2/drafts", { data: { source_case_id: "benchmark-disruption-recovery", name: "E2E visualization" } });
+  expect(created.ok()).toBeTruthy();
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/workbench-v2/visualization");
+  await expect(page.getByRole("heading", { name: "运营可视化" })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("tab", { name: "Impact" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("img", { name: /impact 机场 UTC 时间航班箭头图/i })).toBeVisible();
+  await page.getByLabel("选择联动实体").selectOption({ label: "F1" });
+  await expect(page.getByRole("complementary").getByText("F1", { exact: true })).toBeVisible();
+  await page.screenshot({ path: resolve(shots, "workbench_v2_flight_visualization.png"), fullPage: true });
+  await page.getByRole("button", { name: "收起证据栏" }).click();
+  await expect(page.getByRole("button", { name: "展开证据栏" })).toHaveAttribute("aria-expanded", "false");
+  await expect(page.locator(".evidence-panel")).toHaveCount(0);
+  await page.getByRole("button", { name: "展开证据栏" }).click();
+  await page.getByRole("tab", { name: "飞机甘特" }).click();
+  await expect(page.getByRole("img", { name: /aircraft impact UTC 甘特图/i })).toBeVisible();
+  await page.screenshot({ path: resolve(shots, "workbench_v2_aircraft_gantt.png"), fullPage: true });
+  await page.getByRole("tab", { name: "容量热力图" }).click();
+  await expect(page.getByRole("img", { name: /impact departure 机场容量热力图/i })).toBeVisible();
+  const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(axe.violations).toEqual([]);
+  expect(errors).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  await page.screenshot({ path: resolve(shots, "workbench_v2_visualization.png"), fullPage: true });
+});

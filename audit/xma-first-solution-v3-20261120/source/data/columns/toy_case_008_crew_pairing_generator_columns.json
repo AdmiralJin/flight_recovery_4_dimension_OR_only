@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "toy_case_008_crew_pairing_generator",
+  "time_unit": "minute",
+  "notes": ["Phase 6 tiny exhaustive-oracle fixture."],
+  "flight_options": [
+    {"option_id": "S8_FO_F1_ORIG", "base_flight_id": "S8_F1", "operation_type": "operate", "change_types": ["unchanged"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T09:00:00Z", "arr_time": "2026-01-15T10:00:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""},
+    {"option_id": "S8_FO_F2_ORIG", "base_flight_id": "S8_F2", "operation_type": "operate", "change_types": ["unchanged"], "origin": "B", "destination": "A", "dep_time": "2026-01-15T10:20:00Z", "arr_time": "2026-01-15T11:20:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""},
+    {"option_id": "S8_FO_F2_D10", "base_flight_id": "S8_F2", "operation_type": "operate", "change_types": ["delay"], "origin": "B", "destination": "A", "dep_time": "2026-01-15T10:10:00Z", "arr_time": "2026-01-15T11:10:00Z", "block_minutes": 60, "departure_delay_minutes": 10, "arrival_delay_minutes": 10, "notes": "Min-connection negative case."},
+    {"option_id": "S8_FO_F3_ORIG", "base_flight_id": "S8_F3", "operation_type": "operate", "change_types": ["unchanged"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T09:05:00Z", "arr_time": "2026-01-15T10:05:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": "E2 qualification negative case for S8_C1."},
+    {"option_id": "S8_FO_F1_CANCEL", "base_flight_id": "S8_F1", "operation_type": "cancel", "change_types": ["cancel"], "origin": null, "destination": null, "dep_time": null, "arr_time": null, "block_minutes": null, "departure_delay_minutes": null, "arrival_delay_minutes": null, "notes": ""},
+    {"option_id": "S8_FO_FERRY_AB", "base_flight_id": null, "operation_type": "ferry", "change_types": ["positioning"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T08:30:00Z", "arr_time": "2026-01-15T08:50:00Z", "block_minutes": 20, "departure_delay_minutes": null, "arrival_delay_minutes": null, "notes": "Crew pairing transport must use a revenue operate option."}
+  ],
+  "aircraft_strings": [],
+  "crew_pairings": [],
+  "passenger_itineraries": []
+}

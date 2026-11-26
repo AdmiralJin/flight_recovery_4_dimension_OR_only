@@ -1,0 +1,41 @@
+{
+  "scenario_id": "toy_case_001",
+  "recovery_window": {
+    "start_time": "2026-01-15T08:00:00Z",
+    "end_time": "2026-01-15T16:00:00Z"
+  },
+  "airports": [
+    {"airport_id": "A", "name": "Alpha Airport"},
+    {"airport_id": "B", "name": "Bravo Hub"},
+    {"airport_id": "C", "name": "Charlie Airport"}
+  ],
+  "flights": [
+    {"flight_id": "F1", "origin": "A", "destination": "B", "sched_dep": "2026-01-15T08:00:00Z", "sched_arr": "2026-01-15T09:00:00Z", "duration": 60, "original_aircraft": "AC1", "original_equipment": "E1", "original_crew": "C1", "strategic_flag": false, "market_flag": true, "min_seats": 40, "max_delay": 60},
+    {"flight_id": "F2", "origin": "B", "destination": "C", "sched_dep": "2026-01-15T09:40:00Z", "sched_arr": "2026-01-15T10:40:00Z", "duration": 60, "original_aircraft": "AC1", "original_equipment": "E1", "original_crew": "C1", "strategic_flag": false, "market_flag": true, "min_seats": 40, "max_delay": 60},
+    {"flight_id": "F3", "origin": "C", "destination": "A", "sched_dep": "2026-01-15T11:20:00Z", "sched_arr": "2026-01-15T12:20:00Z", "duration": 60, "original_aircraft": "AC1", "original_equipment": "E1", "original_crew": "C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 60},
+    {"flight_id": "F4", "origin": "C", "destination": "B", "sched_dep": "2026-01-15T08:10:00Z", "sched_arr": "2026-01-15T09:10:00Z", "duration": 60, "original_aircraft": "AC2", "original_equipment": "E1", "original_crew": "C2", "strategic_flag": true, "market_flag": false, "min_seats": 0, "max_delay": 60},
+    {"flight_id": "F5", "origin": "B", "destination": "A", "sched_dep": "2026-01-15T09:50:00Z", "sched_arr": "2026-01-15T10:50:00Z", "duration": 60, "original_aircraft": "AC2", "original_equipment": "E1", "original_crew": "C2", "strategic_flag": false, "market_flag": true, "min_seats": 35, "max_delay": 60},
+    {"flight_id": "F6", "origin": "A", "destination": "C", "sched_dep": "2026-01-15T11:30:00Z", "sched_arr": "2026-01-15T12:30:00Z", "duration": 60, "original_aircraft": "AC2", "original_equipment": "E1", "original_crew": "C2", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 60}
+  ],
+  "aircraft": [
+    {"tail_id": "AC1", "equipment_type": "E1", "initial_station_at_t": "A", "required_station_at_T_end": "A", "maintenance_required": false, "maintenance_stations": ["A"], "original_rotation": ["F1", "F2", "F3"]},
+    {"tail_id": "AC2", "equipment_type": "E1", "initial_station_at_t": "C", "required_station_at_T_end": "C", "maintenance_required": false, "maintenance_stations": ["C"], "original_rotation": ["F4", "F5", "F6"]}
+  ],
+  "crew": [
+    {"crew_id": "C1", "rating": "E1", "start_station_at_t": "A", "required_station_at_T_end": "A", "original_duties": [["F1", "F2", "F3"]], "original_pairing": ["F1", "F2", "F3"]},
+    {"crew_id": "C2", "rating": "E1", "start_station_at_t": "C", "required_station_at_T_end": "C", "original_duties": [["F4", "F5", "F6"]], "original_pairing": ["F4", "F5", "F6"]}
+  ],
+  "passengers": [
+    {"pax_group_id": "P1", "count": 28, "origin": "A", "destination": "C", "original_departure": "2026-01-15T08:00:00Z", "scheduled_arrival": "2026-01-15T10:40:00Z", "original_itinerary": ["F1", "F2"]},
+    {"pax_group_id": "P2", "count": 22, "origin": "C", "destination": "A", "original_departure": "2026-01-15T08:10:00Z", "scheduled_arrival": "2026-01-15T10:50:00Z", "original_itinerary": ["F4", "F5"]},
+    {"pax_group_id": "P3", "count": 16, "origin": "C", "destination": "A", "original_departure": "2026-01-15T11:20:00Z", "scheduled_arrival": "2026-01-15T12:20:00Z", "original_itinerary": ["F3"]},
+    {"pax_group_id": "P4", "count": 18, "origin": "A", "destination": "C", "original_departure": "2026-01-15T11:30:00Z", "scheduled_arrival": "2026-01-15T12:30:00Z", "original_itinerary": ["F6"]}
+  ],
+  "airport_intervals": [
+    {"airport": "B", "start_time": "2026-01-15T09:00:00Z", "end_time": "2026-01-15T11:00:00Z", "arr_capacity": 2, "dep_capacity": 1, "gate_capacity": 3, "curfew_flag": false, "weather_restrictions": ["reduced_departure_rate"]}
+  ],
+  "disruptions": [
+    {"airport": "B", "start_time": "2026-01-15T09:00:00Z", "end_time": "2026-01-15T11:00:00Z", "capacity_change": -1, "restriction_type": "departure_capacity_reduction"}
+  ]
+}
+

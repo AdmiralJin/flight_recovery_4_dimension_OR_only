@@ -1,0 +1,59 @@
+{
+  "id": "legacy-50",
+  "passed": true,
+  "result": {
+    "status": "optimal",
+    "reason": "2",
+    "audit_pass": true,
+    "objective": 48412.0,
+    "lower_bound": 48412.0,
+    "upper_bound": 48412.0,
+    "relative_gap": 0.0,
+    "model_statistics": {
+      "variables": 2573,
+      "constraints": 3427,
+      "nodes": 1,
+      "aircraft_columns": 0,
+      "representation": "arc",
+      "solver": "HiGHS",
+      "bound_scope": "global",
+      "tail_pool_size": null,
+      "timings": {
+        "matrix_extraction_seconds": 0.0032933000002230983,
+        "solver_model_update_seconds": 0.0015226999967126176,
+        "native_optimization_seconds": 0.06956050000007963
+      }
+    },
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "study_signature": "ad3455ea4de5d5faf8338d7e8cd9d0fe05c4780c855882d3e6fd8963405f1537",
+    "flights": 65,
+    "complete_decisions": true,
+    "certified_optimal": true,
+    "external_evaluator": "not_run",
+    "first_solver_incumbent_seconds": 0.3430000000007567,
+    "first_audited_solution_seconds": 0.3430000000007567,
+    "first_checkpoint_seconds": 0.3430000000007567,
+    "first_solver_scope": "global",
+    "solution_evidence_directory": "G:\\jzm\\project\\flight_recovery\\.public_benchmarks\\xma-pilot-20261123_192501\\jobs\\legacy-50",
+    "retained_incumbent": true,
+    "job_id": "legacy-50",
+    "worker_seconds": 0.5620000000017171,
+    "finished_at": "2026-11-23T11:25:09.721481+00:00"
+  },
+  "scale": {
+    "flight_options": 238,
+    "assignment_options": 264,
+    "station_events": 526,
+    "shortcut_variables": 182,
+    "rebooking_variables": 4,
+    "estimated_variables": 3317,
+    "estimated_constraints": 4212,
+    "estimated_peak_bytes": 279460456,
+    "calibration_factor": 1.0,
+    "estimator_version": "xma-compact-structural-v1",
+    "tail_pool_size": null
+  },
+  "peak_rss_bytes": 138555392,
+  "peak_commit_bytes": 130240512,
+  "elapsed_seconds": 1.4060000000026776
+}

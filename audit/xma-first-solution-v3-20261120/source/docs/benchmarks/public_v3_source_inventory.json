@@ -1,0 +1,2225 @@
+{
+  "schema_version": "public-source-summary-1.0",
+  "baseline": "fa293d3",
+  "datasets": {
+    "ROADEF_2009": {
+      "answer_kind": "historical_upper_bounds_and_native_checkers",
+      "files": [
+        {
+          "file": "documentation/challenge_en.pdf",
+          "sha256": "64704c2a475a77dc163144e97f309f23c6b87d1dd327615bf3dcbe159f52fb79",
+          "bytes": 390631
+        },
+        {
+          "file": "documentation/faq.php.html",
+          "sha256": "5f0e956673f398222a352e38015ec8044f17159e1f7416464857fdcf527b367c",
+          "bytes": 18610
+        },
+        {
+          "file": "documentation/finalist_methods/AcunaMichelonFeilletGueye.pdf",
+          "sha256": "4e206e6eee4b8120814dc843dd07632e726cd91384f979091cfe1e52fe34404a",
+          "bytes": 50138
+        },
+        {
+          "file": "documentation/finalist_methods/BisaillonCordeauLaportePasin.pdf",
+          "sha256": "6a704635610688e6c11b4e348996608f8c975da6c78ac01f58abd9c9be527dc5",
+          "bytes": 63087
+        },
+        {
+          "file": "documentation/finalist_methods/DarlayKronekSchrenkZaourar.pdf",
+          "sha256": "13207f3256d2640c2a9b431fcea1f7a9647b3d158d359658e413e189b1d73571",
+          "bytes": 79500
+        },
+        {
+          "file": "documentation/finalist_methods/DicksonSmithLi.pdf",
+          "sha256": "3f34b32f2cb70f66b2520b4a2ae594ae1d2ed729307d091d3600df48a4eef6b5",
+          "bytes": 83370
+        },
+        {
+          "file": "documentation/finalist_methods/EggenbergSalani.pdf",
+          "sha256": "bd65d40bcd2a0cc7fc659596d090f76a1a80bde947206fdadcf97455715489d7",
+          "bytes": 86180
+        },
+        {
+          "file": "documentation/finalist_methods/EggermontFiratHurkensModelski.pdf",
+          "sha256": "07a35ab4266d8e7246d224501bddf158c8fe5e9900610b81832a0a9994fd01db",
+          "bytes": 81458
+        },
+        {
+          "file": "documentation/finalist_methods/HanafiWilbautMansiClautiaux.pdf",
+          "sha256": "f2f8d96aa58d88b5cad4b03c347537fcaf2fd94505a790f065f7082955a94cc5",
+          "bytes": 78174
+        },
+        {
+          "file": "documentation/finalist_methods/JozefowiezMancelMora.pdf",
+          "sha256": "9e9e6162f21eeffd9a1e7c4090e82f116909a60132c1a8e393ca7c2ae89bd909",
+          "bytes": 79636
+        },
+        {
+          "file": "documentation/finalist_methods/PeekstokKuipers.pdf",
+          "sha256": "cef99e2fe24916af088458c8687b1cfc0b44e7d81952d6180c527fb9d7361c88",
+          "bytes": 65686
+        },
+        {
+          "file": "documentation/instances.php.html",
+          "sha256": "1f98566be36e100aa795944ab1a8d6bf4a849436ab63a05d2cd00f8cf825815c",
+          "bytes": 5772
+        },
+        {
+          "file": "documentation/maj_instances.php.html",
+          "sha256": "329d6a31699aa30f50d7c53d024f341c6c4a8ff4323aaf1fea211e6250c194b4",
+          "bytes": 6717
+        },
+        {
+          "file": "documentation/maj_subject.php.html",
+          "sha256": "3da1e0072a56131687674b5734260431de3cdce88e76064df4efa6ef343b276e",
+          "bytes": 5063
+        },
+        {
+          "file": "documentation/methodes.php.html",
+          "sha256": "5d00ffc019e1155f3245a725c2820065891153be8940affcf1d14b8e8c61ae67",
+          "bytes": 7007
+        },
+        {
+          "file": "documentation/resultat_qualif.php.html",
+          "sha256": "e5977ee6aa439b9573d9ec6dfc2aeb3eb621bfbb6608b0000302d1e53d5a06d0",
+          "bytes": 11420
+        },
+        {
+          "file": "documentation/resultats.php.html",
+          "sha256": "3b55fd7bb2cb4fcef6d2577608b29299402325031601556a434d86a06d5509bd",
+          "bytes": 14318
+        },
+        {
+          "file": "documentation/sujet.php.html",
+          "sha256": "176ab214144541db64c13a6081f223b25ac2e7193a190c382a5dbf14899a4649",
+          "bytes": 6293
+        },
+        {
+          "file": "documentation/verif.php.html",
+          "sha256": "b364cc2285d06d90c6026041ea459235cf9c668f6a942ee171a78d6a0bfafccf",
+          "bytes": 6912
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/alt_aircraft.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/alt_flights.csv",
+          "sha256": "0f8a2062f12b0b79b8ba47c77bd2718e124a19197f94fd28dca73b0994420016",
+          "bytes": 1128
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/config.csv",
+          "sha256": "cc1f2c28a41d35f5955a8830603aa2f2222c54e4e1a31391ca00a0254de4a254",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/flights.csv",
+          "sha256": "fc29681b42910265bb0b55417af809a60e27c8b2f4e65a00eca093fd99c99622",
+          "bytes": 16783
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/itineraries.csv",
+          "sha256": "cfc8040a11b4159ef60336ae3ad51deff4c6a4cb9adba2e2843f450d67e70ac1",
+          "bytes": 81301
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/A1_6088570/A01_6088570/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/alt_aircraft.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/alt_flights.csv",
+          "sha256": "3a9e6c4b1dd1f2698209e696afbad5766f91202691b4aeeb552d5c08d5cefef3",
+          "bytes": 1933
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/config.csv",
+          "sha256": "53f5628368d38fb929683216e665dd5fece9c4e910030d3d470d697b5cb966de",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/itineraries.csv",
+          "sha256": "cfc8040a11b4159ef60336ae3ad51deff4c6a4cb9adba2e2843f450d67e70ac1",
+          "bytes": 81301
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/A1_6088570/A02_6088570/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/alt_aircraft.csv",
+          "sha256": "ff38d15402b8bc0e133694c7c4c53179de786797410ca14747ad84b63417b2e1",
+          "bytes": 39
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/alt_flights.csv",
+          "sha256": "a32c4af001ea31eabc57d2be258eb8b71b0de01132d001733fe355a3ea9fab4e",
+          "bytes": 1506
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/config.csv",
+          "sha256": "4c3e58d763da68ea56578cb21af5e0ccda0389cb661407651b3c0cdf2be778bb",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/itineraries.csv",
+          "sha256": "cfc8040a11b4159ef60336ae3ad51deff4c6a4cb9adba2e2843f450d67e70ac1",
+          "bytes": 81301
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/A1_6088570/A03_6088570/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/alt_aircraft.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/alt_airports.csv",
+          "sha256": "2ea2c4693436a5e97b46be660bacc9646cffc0204ba46d7909bcc68069670800",
+          "bytes": 161
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/alt_flights.csv",
+          "sha256": "bc9ebb1f103cfd4c99c3dbac53262713ea7942a08e0f8357a1a03634d3a51ed6",
+          "bytes": 736
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/config.csv",
+          "sha256": "9933c00beec56c77e52d534b544e0a73ec71a3bd2d24b38279583da9615d3779",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/itineraries.csv",
+          "sha256": "cfc8040a11b4159ef60336ae3ad51deff4c6a4cb9adba2e2843f450d67e70ac1",
+          "bytes": 81301
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/A1_6088570/A04_6088570/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/aircraft.csv",
+          "sha256": "631a55a8f37bd0663a9c6a8065e640b459ada7eb6a7a723f993447c3c1104ad3",
+          "bytes": 4747
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/alt_aircraft.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/alt_airports.csv",
+          "sha256": "543be6c3b855ad3e68b564a7e04a40fc0605aefb430bf96494ea421d14d5b806",
+          "bytes": 15843
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/config.csv",
+          "sha256": "26ee5a80d5296c41e58adb044eb1f0f7c92b2c7770d3ee2def450c8c8e0db350",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/itineraries.csv",
+          "sha256": "b4546c2b586778fe7bad377cb7708d9fd8f1bd33e77c05396726f6e2fdddceda",
+          "bytes": 167450
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/position.csv",
+          "sha256": "cfd29b0ed4673dd0d888f17ff006227c62fa08d0f7708873d7ca7cceeedfe6b4",
+          "bytes": 1178
+        },
+        {
+          "file": "extracted/A1_6088570/A05_6088570/rotations.csv",
+          "sha256": "6f9f7af97daf290952e200b30a819c28c9b5f243a56fec05198084d9aa8a6ec2",
+          "bytes": 28640
+        },
+        {
+          "file": "extracted/Checker-B-2/solutionChecker-static.i686-64",
+          "sha256": "0bd145c164dbec092565946e648da27549c3c1163537e9226473f743e047758a",
+          "bytes": 7145749
+        },
+        {
+          "file": "extracted/Checker-B-2/solutionChecker-win32.exe",
+          "sha256": "57b913046e3e6335b72fce4d9b730ce7a2070b9d7f89514b606462babd7b78eb",
+          "bytes": 448512
+        },
+        {
+          "file": "extracted/Checker-B-2/SolutionValidationChecker_en_temp.pdf",
+          "sha256": "daf18729968145d096a8e5e31c5764c85d824443b7d6f0697d622be8febbd581",
+          "bytes": 55759
+        },
+        {
+          "file": "extracted/CostChecker-B-1/costChecker-static.i686-64",
+          "sha256": "775462e87046e832f2069981028241434f688d241ad62e61e84741988b88dfac",
+          "bytes": 1769316
+        },
+        {
+          "file": "extracted/CostChecker-B-1/costChecker-win32.exe",
+          "sha256": "7518e2bdb8330f90efb3f9761a7d163db313c15722ec20d8ae7c6bcf16b28fc3",
+          "bytes": 316416
+        },
+        {
+          "file": "extracted/CostChecker-B-1/CostChecker_EN4.doc",
+          "sha256": "0fd4034b109b50259187ae23e14e808af6d42976883dac5f460f2b4986a5e90e",
+          "bytes": 143872
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/aircraft.csv",
+          "sha256": "11f4797cb923f561233ab0325aa3537c71d12b3e0d3ab7e7eea61a571764a01d",
+          "bytes": 41098
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/airports.csv",
+          "sha256": "64b817756c930fbbaca8802d97ee3d1f4c0e5f8b6a0291989f20c36966b7b2ac",
+          "bytes": 29604
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/alt_aircraft.csv",
+          "sha256": "e658a552c74b8446329a8ac37affdbd90888ea07cc219ef6c2e4419e14f9aa80",
+          "bytes": 40
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/alt_airports.csv",
+          "sha256": "4656b0f8a2bd03586f79a94b57ef2e0c35b25a68849bcffea611de4b016a8aa6",
+          "bytes": 40
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/config.csv",
+          "sha256": "0015427adc6e40838f2a6e1f3a12b9807fba4654e19de21bcae40d1510b5af5c",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/dist.csv",
+          "sha256": "041c5795825080c55c5cfe75ff724468b4dedc9b54c8bb4f04bae111d4a2df92",
+          "bytes": 391392
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/flights.csv",
+          "sha256": "d25cdd9e0921028a400c72e6d2ecdccfeb8a85bfacbb0b27da2935a0092c8bcc",
+          "bytes": 59617
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/itineraries.csv",
+          "sha256": "0c022668e4c35f529031c946e5c3bfc49936878162db8a0ecb124150e12164af",
+          "bytes": 1099740
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/position.csv",
+          "sha256": "2341addfea93a7d3a0628c20d2a6e6a6ef6e325ed10631b664d20dfa2805f5e2",
+          "bytes": 7495
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X01_DATA/rotations.csv",
+          "sha256": "b1bf495b53ff57f45e74e6f6c31b371ae4edf550171ab5df6d07e38534715788",
+          "bytes": 161238
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/aircraft.csv",
+          "sha256": "11f4797cb923f561233ab0325aa3537c71d12b3e0d3ab7e7eea61a571764a01d",
+          "bytes": 41098
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/airports.csv",
+          "sha256": "64b817756c930fbbaca8802d97ee3d1f4c0e5f8b6a0291989f20c36966b7b2ac",
+          "bytes": 29604
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/alt_aircraft.csv",
+          "sha256": "e658a552c74b8446329a8ac37affdbd90888ea07cc219ef6c2e4419e14f9aa80",
+          "bytes": 40
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/config.csv",
+          "sha256": "0015427adc6e40838f2a6e1f3a12b9807fba4654e19de21bcae40d1510b5af5c",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/dist.csv",
+          "sha256": "041c5795825080c55c5cfe75ff724468b4dedc9b54c8bb4f04bae111d4a2df92",
+          "bytes": 391392
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/flights.csv",
+          "sha256": "d25cdd9e0921028a400c72e6d2ecdccfeb8a85bfacbb0b27da2935a0092c8bcc",
+          "bytes": 59617
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/itineraries.csv",
+          "sha256": "0c022668e4c35f529031c946e5c3bfc49936878162db8a0ecb124150e12164af",
+          "bytes": 1099740
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/position.csv",
+          "sha256": "2341addfea93a7d3a0628c20d2a6e6a6ef6e325ed10631b664d20dfa2805f5e2",
+          "bytes": 7495
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X02_DATA/rotations.csv",
+          "sha256": "b1bf495b53ff57f45e74e6f6c31b371ae4edf550171ab5df6d07e38534715788",
+          "bytes": 161238
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/aircraft.csv",
+          "sha256": "11f4797cb923f561233ab0325aa3537c71d12b3e0d3ab7e7eea61a571764a01d",
+          "bytes": 41098
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/airports.csv",
+          "sha256": "64b817756c930fbbaca8802d97ee3d1f4c0e5f8b6a0291989f20c36966b7b2ac",
+          "bytes": 29604
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/alt_aircraft.csv",
+          "sha256": "19254fe1cbaedf3d009f3c6100a187ef5e221c464509f87c8b70295a49bef920",
+          "bytes": 40
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/alt_airports.csv",
+          "sha256": "6e4dda964c05a03b36c39a8a5523fda254850608dbacc026b2918fbf7411b524",
+          "bytes": 40
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/config.csv",
+          "sha256": "0015427adc6e40838f2a6e1f3a12b9807fba4654e19de21bcae40d1510b5af5c",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/dist.csv",
+          "sha256": "041c5795825080c55c5cfe75ff724468b4dedc9b54c8bb4f04bae111d4a2df92",
+          "bytes": 391392
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/flights.csv",
+          "sha256": "d25cdd9e0921028a400c72e6d2ecdccfeb8a85bfacbb0b27da2935a0092c8bcc",
+          "bytes": 59617
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/itineraries.csv",
+          "sha256": "ad79ceef2f2cc44406b47fae827ded1c1128a0ddbaf97b93fc8d0bb7f7f8b3b6",
+          "bytes": 1107360
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/position.csv",
+          "sha256": "2341addfea93a7d3a0628c20d2a6e6a6ef6e325ed10631b664d20dfa2805f5e2",
+          "bytes": 7495
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X03_DATA/rotations.csv",
+          "sha256": "b1bf495b53ff57f45e74e6f6c31b371ae4edf550171ab5df6d07e38534715788",
+          "bytes": 161238
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/aircraft.csv",
+          "sha256": "11f4797cb923f561233ab0325aa3537c71d12b3e0d3ab7e7eea61a571764a01d",
+          "bytes": 41098
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/airports.csv",
+          "sha256": "64b817756c930fbbaca8802d97ee3d1f4c0e5f8b6a0291989f20c36966b7b2ac",
+          "bytes": 29604
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/alt_aircraft.csv",
+          "sha256": "02465e1b34a9fa8aefccd05f3f61140f0104aad7f52e1b3e81b40677521020e6",
+          "bytes": 40
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/config.csv",
+          "sha256": "0015427adc6e40838f2a6e1f3a12b9807fba4654e19de21bcae40d1510b5af5c",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/dist.csv",
+          "sha256": "041c5795825080c55c5cfe75ff724468b4dedc9b54c8bb4f04bae111d4a2df92",
+          "bytes": 391392
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/flights.csv",
+          "sha256": "d25cdd9e0921028a400c72e6d2ecdccfeb8a85bfacbb0b27da2935a0092c8bcc",
+          "bytes": 59617
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/itineraries.csv",
+          "sha256": "ad79ceef2f2cc44406b47fae827ded1c1128a0ddbaf97b93fc8d0bb7f7f8b3b6",
+          "bytes": 1107360
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/position.csv",
+          "sha256": "2341addfea93a7d3a0628c20d2a6e6a6ef6e325ed10631b664d20dfa2805f5e2",
+          "bytes": 7495
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/X04_DATA/rotations.csv",
+          "sha256": "b1bf495b53ff57f45e74e6f6c31b371ae4edf550171ab5df6d07e38534715788",
+          "bytes": 161238
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/alt_aircraft.csv",
+          "sha256": "45c5743006af62ed5af66a2e9e76ae0952fd940a9a907d48892fd8591049b590",
+          "bytes": 116
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/alt_flights.csv",
+          "sha256": "cd72d92e25f4acd3b3d1744b8414ad36e439bc25107a9cefcce27eafc0219801",
+          "bytes": 1490
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/config.csv",
+          "sha256": "4c3e58d763da68ea56578cb21af5e0ccda0389cb661407651b3c0cdf2be778bb",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/itineraries.csv",
+          "sha256": "cfc8040a11b4159ef60336ae3ad51deff4c6a4cb9adba2e2843f450d67e70ac1",
+          "bytes": 81301
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA01_DATA/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/aircraft.csv",
+          "sha256": "631a55a8f37bd0663a9c6a8065e640b459ada7eb6a7a723f993447c3c1104ad3",
+          "bytes": 4747
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/alt_aircraft.csv",
+          "sha256": "aaf8244843b08dfe5f18fbb5b63dc4a537cf534d23d004e5ae6e34bcad72cd67",
+          "bytes": 118
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/alt_airports.csv",
+          "sha256": "543be6c3b855ad3e68b564a7e04a40fc0605aefb430bf96494ea421d14d5b806",
+          "bytes": 15843
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/config.csv",
+          "sha256": "26ee5a80d5296c41e58adb044eb1f0f7c92b2c7770d3ee2def450c8c8e0db350",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/itineraries.csv",
+          "sha256": "b4546c2b586778fe7bad377cb7708d9fd8f1bd33e77c05396726f6e2fdddceda",
+          "bytes": 167450
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/position.csv",
+          "sha256": "cfd29b0ed4673dd0d888f17ff006227c62fa08d0f7708873d7ca7cceeedfe6b4",
+          "bytes": 1178
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA02_DATA/rotations.csv",
+          "sha256": "6f9f7af97daf290952e200b30a819c28c9b5f243a56fec05198084d9aa8a6ec2",
+          "bytes": 28640
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/alt_aircraft.csv",
+          "sha256": "45c5743006af62ed5af66a2e9e76ae0952fd940a9a907d48892fd8591049b590",
+          "bytes": 116
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/alt_flights.csv",
+          "sha256": "cd72d92e25f4acd3b3d1744b8414ad36e439bc25107a9cefcce27eafc0219801",
+          "bytes": 1490
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/config.csv",
+          "sha256": "4c3e58d763da68ea56578cb21af5e0ccda0389cb661407651b3c0cdf2be778bb",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/itineraries.csv",
+          "sha256": "9ab8d654f68acba6d25b8e321ae66a6c2ca58ffc878096157e3fb4fe84c21b80",
+          "bytes": 79500
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA03_DATA/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/aircraft.csv",
+          "sha256": "631a55a8f37bd0663a9c6a8065e640b459ada7eb6a7a723f993447c3c1104ad3",
+          "bytes": 4747
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/alt_aircraft.csv",
+          "sha256": "aaf8244843b08dfe5f18fbb5b63dc4a537cf534d23d004e5ae6e34bcad72cd67",
+          "bytes": 118
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/alt_airports.csv",
+          "sha256": "543be6c3b855ad3e68b564a7e04a40fc0605aefb430bf96494ea421d14d5b806",
+          "bytes": 15843
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/config.csv",
+          "sha256": "26ee5a80d5296c41e58adb044eb1f0f7c92b2c7770d3ee2def450c8c8e0db350",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/itineraries.csv",
+          "sha256": "7503fc0fcffba0c0d1ea2629e94d0c9efa5993f53cea1c9dd0b59439e5a8bce0",
+          "bytes": 157730
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/position.csv",
+          "sha256": "cfd29b0ed4673dd0d888f17ff006227c62fa08d0f7708873d7ca7cceeedfe6b4",
+          "bytes": 1178
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XA04_DATA/rotations.csv",
+          "sha256": "6f9f7af97daf290952e200b30a819c28c9b5f243a56fec05198084d9aa8a6ec2",
+          "bytes": 28640
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/airports.csv",
+          "sha256": "19757fb6ffd014c80e01fc87e63ce96efa203e7b6ffe7fdd20a726602c4696e0",
+          "bytes": 11806
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/alt_aircraft.csv",
+          "sha256": "88f271967baea9a73db3d7725842f2171ab2eeeedaa97d1842750813e4fc5ed0",
+          "bytes": 123
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/alt_airports.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/alt_flights.csv",
+          "sha256": "d03ce170261da2794e510be4b3fec4f062bdf8c031af3c1a2dfc512423ae145a",
+          "bytes": 4102
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/itineraries.csv",
+          "sha256": "b574e30396115199859553318e80afe9b9e5a40c5c66a04e2e689551d13ab8ec",
+          "bytes": 452641
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB01_DATA/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/airports.csv",
+          "sha256": "7549e15f50b506b5d7f540392666246ecd07ed5f78ec6aea0b021f6060d8d52b",
+          "bytes": 11876
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/alt_aircraft.csv",
+          "sha256": "b2ca6bcb08d16434631b728aac9e3d43cc059a33febc9c5e0b0718cfa52372b0",
+          "bytes": 40
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/alt_airports.csv",
+          "sha256": "d6faeea9e50a8b5cfa8379d239beea7a8a6774b0db5b00dfd18036c0bde970c3",
+          "bytes": 1296
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/config.csv",
+          "sha256": "8a8731f7090c2640e1dfb97cc091e6f50b13f6ded9473afca6f4d7d546c822c9",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/itineraries.csv",
+          "sha256": "b574e30396115199859553318e80afe9b9e5a40c5c66a04e2e689551d13ab8ec",
+          "bytes": 452641
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB02_DATA/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/airports.csv",
+          "sha256": "19757fb6ffd014c80e01fc87e63ce96efa203e7b6ffe7fdd20a726602c4696e0",
+          "bytes": 11806
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/alt_aircraft.csv",
+          "sha256": "dd1505b7a3dc52132a621a846ef6036b9a6756384f4d6165d900953904b1542a",
+          "bytes": 166
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/alt_airports.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/alt_flights.csv",
+          "sha256": "8f35c96a8395ca8b07b5515957e55be1e1af72592a388c84adf802f374e14935",
+          "bytes": 4084
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/itineraries.csv",
+          "sha256": "e2d1448a72421a489b4d0540b2ece2ea62d8f8a15271a7fe99952ff58e0c8248",
+          "bytes": 469617
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB03_DATA/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/aircraft.csv",
+          "sha256": "a90ffd729bb7d7b3a3d86a6bc1e9fe4f80001cdeeb704191317467fb5d2b1a21",
+          "bytes": 16202
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/airports.csv",
+          "sha256": "0cb36ada9d561f3dbf96de64e246fdd7fc258fe48d6da74e20604e2a1913fbb7",
+          "bytes": 11832
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/alt_aircraft.csv",
+          "sha256": "5ffc7f34e2a80e19ea3342db7304c0499f6233002b619168d6dbf944eb1af5a6",
+          "bytes": 124
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/alt_airports.csv",
+          "sha256": "d6faeea9e50a8b5cfa8379d239beea7a8a6774b0db5b00dfd18036c0bde970c3",
+          "bytes": 1296
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/config.csv",
+          "sha256": "2ddb40481038c3cfa93643490e8f26fe7503b1ee03280a841b7d5e00232b056f",
+          "bytes": 456
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/dist.csv",
+          "sha256": "684fdeaac8b2721e10cff88e55d684d2b760a77b680e98dd51790a2b9f5f37f3",
+          "bytes": 25533
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/flights.csv",
+          "sha256": "50ace650d0017708faa86f98b720d93b5b8258489a1b86ef562eb2c6b5451019",
+          "bytes": 38106
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/itineraries.csv",
+          "sha256": "3ba166b32ed5dcb852c25a194b3701e87feb294ea21f61a41e3f708b116ea3dc",
+          "bytes": 458052
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/position.csv",
+          "sha256": "4bafa84460f3ca684b4b3db7c3b3fb2f11fa42a5fd30857f1e73513871cdfc63",
+          "bytes": 3629
+        },
+        {
+          "file": "extracted/Instances_X/Copy of Instance_X/XB04_DATA/rotations.csv",
+          "sha256": "1ff5bcbc9e43adfa41e8d6a47279d863bc0ff8aa8e6d2ac788fc54df6e29c89f",
+          "bytes": 68893
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/alt_aircraft.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/alt_flights.csv",
+          "sha256": "0f8a2062f12b0b79b8ba47c77bd2718e124a19197f94fd28dca73b0994420016",
+          "bytes": 1128
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/config.csv",
+          "sha256": "cc1f2c28a41d35f5955a8830603aa2f2222c54e4e1a31391ca00a0254de4a254",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/flights.csv",
+          "sha256": "fc29681b42910265bb0b55417af809a60e27c8b2f4e65a00eca093fd99c99622",
+          "bytes": 16783
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/itineraries.csv",
+          "sha256": "9ab8d654f68acba6d25b8e321ae66a6c2ca58ffc878096157e3fb4fe84c21b80",
+          "bytes": 79500
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/SA2_6088590/A06_6088590/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/alt_aircraft.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/alt_flights.csv",
+          "sha256": "3a9e6c4b1dd1f2698209e696afbad5766f91202691b4aeeb552d5c08d5cefef3",
+          "bytes": 1933
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/config.csv",
+          "sha256": "53f5628368d38fb929683216e665dd5fece9c4e910030d3d470d697b5cb966de",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/itineraries.csv",
+          "sha256": "9ab8d654f68acba6d25b8e321ae66a6c2ca58ffc878096157e3fb4fe84c21b80",
+          "bytes": 79500
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/SA2_6088590/A07_6088590/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/alt_aircraft.csv",
+          "sha256": "ff38d15402b8bc0e133694c7c4c53179de786797410ca14747ad84b63417b2e1",
+          "bytes": 39
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/alt_airports.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/alt_flights.csv",
+          "sha256": "a32c4af001ea31eabc57d2be258eb8b71b0de01132d001733fe355a3ea9fab4e",
+          "bytes": 1506
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/config.csv",
+          "sha256": "4c3e58d763da68ea56578cb21af5e0ccda0389cb661407651b3c0cdf2be778bb",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/itineraries.csv",
+          "sha256": "9ab8d654f68acba6d25b8e321ae66a6c2ca58ffc878096157e3fb4fe84c21b80",
+          "bytes": 79500
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/SA2_6088590/A08_6088590/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/aircraft.csv",
+          "sha256": "d79250645f5741c2faffdb85371979f544854b014040b493f65a0b46ca6668d4",
+          "bytes": 4846
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/alt_aircraft.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/alt_airports.csv",
+          "sha256": "2ea2c4693436a5e97b46be660bacc9646cffc0204ba46d7909bcc68069670800",
+          "bytes": 161
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/alt_flights.csv",
+          "sha256": "bc9ebb1f103cfd4c99c3dbac53262713ea7942a08e0f8357a1a03634d3a51ed6",
+          "bytes": 736
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/config.csv",
+          "sha256": "9933c00beec56c77e52d534b544e0a73ec71a3bd2d24b38279583da9615d3779",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/itineraries.csv",
+          "sha256": "9ab8d654f68acba6d25b8e321ae66a6c2ca58ffc878096157e3fb4fe84c21b80",
+          "bytes": 79500
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/position.csv",
+          "sha256": "c3c1042fbdef8e929055ff30ddcfd350803725a680467ef5258c0ea7a15e92fd",
+          "bytes": 1253
+        },
+        {
+          "file": "extracted/SA2_6088590/A09_6088590/rotations.csv",
+          "sha256": "5b3ee09d7f9cc3d8d928ea5ac48d57f64d66de4d0869ca3b4f7b5ec0252ec84f",
+          "bytes": 14777
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/aircraft.csv",
+          "sha256": "631a55a8f37bd0663a9c6a8065e640b459ada7eb6a7a723f993447c3c1104ad3",
+          "bytes": 4747
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/airports.csv",
+          "sha256": "641434c72b9008b460448e0df834211b869aaaf4aa47c045fa96a1ae2575b1a4",
+          "bytes": 2962
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/alt_aircraft.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/alt_airports.csv",
+          "sha256": "543be6c3b855ad3e68b564a7e04a40fc0605aefb430bf96494ea421d14d5b806",
+          "bytes": 15843
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/config.csv",
+          "sha256": "26ee5a80d5296c41e58adb044eb1f0f7c92b2c7770d3ee2def450c8c8e0db350",
+          "bytes": 462
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/dist.csv",
+          "sha256": "a48d01f3a4b5f47b54d7a2a4eec1d074d5a8fda8bb577c95d83550b7573c6349",
+          "bytes": 18029
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/flights.csv",
+          "sha256": "2aadbefa6cea89c8492b8335e5060bbebea1762bfe2f6f15a64564fed2e53dfc",
+          "bytes": 16781
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/itineraries.csv",
+          "sha256": "7503fc0fcffba0c0d1ea2629e94d0c9efa5993f53cea1c9dd0b59439e5a8bce0",
+          "bytes": 157730
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/position.csv",
+          "sha256": "cfd29b0ed4673dd0d888f17ff006227c62fa08d0f7708873d7ca7cceeedfe6b4",
+          "bytes": 1178
+        },
+        {
+          "file": "extracted/SA2_6088590/A10_6088590/rotations.csv",
+          "sha256": "6f9f7af97daf290952e200b30a819c28c9b5f243a56fec05198084d9aa8a6ec2",
+          "bytes": 28640
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/aircraft.csv",
+          "sha256": "316a8fe02f864f715802f420f7eedf82c3bca48082532cd50148db069849f3de",
+          "bytes": 16456
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/airports.csv",
+          "sha256": "19757fb6ffd014c80e01fc87e63ce96efa203e7b6ffe7fdd20a726602c4696e0",
+          "bytes": 11806
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/alt_aircraft.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/alt_airports.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/alt_flights.csv",
+          "sha256": "357f7979d1030d09b677c534ac439bd7b70485e3e1cdc565d1e310d70f160420",
+          "bytes": 4120
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/itineraries.csv",
+          "sha256": "b574e30396115199859553318e80afe9b9e5a40c5c66a04e2e689551d13ab8ec",
+          "bytes": 452641
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_01/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/airports.csv",
+          "sha256": "edbb1440ec45204ec5efbc4e4c1f8690920a6077ee7a89895c70ee9ea3a80d32",
+          "bytes": 11805
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/alt_aircraft.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/alt_airports.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/alt_flights.csv",
+          "sha256": "b4497983cb06c33bda684aa34fc759ea4435bf4c7e613d04b87cf311859919ef",
+          "bytes": 4569
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/itineraries.csv",
+          "sha256": "b574e30396115199859553318e80afe9b9e5a40c5c66a04e2e689551d13ab8ec",
+          "bytes": 452641
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_02/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/airports.csv",
+          "sha256": "19757fb6ffd014c80e01fc87e63ce96efa203e7b6ffe7fdd20a726602c4696e0",
+          "bytes": 11806
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/alt_aircraft.csv",
+          "sha256": "f2710e84225fafb7d40c78f77bb33b62696957b480d06457cec26714ebd7b99c",
+          "bytes": 45
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/alt_airports.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/alt_flights.csv",
+          "sha256": "d03ce170261da2794e510be4b3fec4f062bdf8c031af3c1a2dfc512423ae145a",
+          "bytes": 4102
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/itineraries.csv",
+          "sha256": "b574e30396115199859553318e80afe9b9e5a40c5c66a04e2e689551d13ab8ec",
+          "bytes": 452641
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_03/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/airports.csv",
+          "sha256": "19757fb6ffd014c80e01fc87e63ce96efa203e7b6ffe7fdd20a726602c4696e0",
+          "bytes": 11806
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/alt_aircraft.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/alt_airports.csv",
+          "sha256": "4e6858d7258c0789814395735ca0159d104a056fd622965d285168fe3b713832",
+          "bytes": 42
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/alt_flights.csv",
+          "sha256": "357f7979d1030d09b677c534ac439bd7b70485e3e1cdc565d1e310d70f160420",
+          "bytes": 4120
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/itineraries.csv",
+          "sha256": "b574e30396115199859553318e80afe9b9e5a40c5c66a04e2e689551d13ab8ec",
+          "bytes": 452641
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_04/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/airports.csv",
+          "sha256": "7549e15f50b506b5d7f540392666246ecd07ed5f78ec6aea0b021f6060d8d52b",
+          "bytes": 11876
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/alt_aircraft.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/alt_airports.csv",
+          "sha256": "d6faeea9e50a8b5cfa8379d239beea7a8a6774b0db5b00dfd18036c0bde970c3",
+          "bytes": 1296
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/alt_flights.csv",
+          "sha256": "334359b90efed75da5f0ada1d5e6b256f4a6bd0aee7eb39c0f90182a021ffc8b",
+          "bytes": 1
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/config.csv",
+          "sha256": "8a8731f7090c2640e1dfb97cc091e6f50b13f6ded9473afca6f4d7d546c822c9",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/itineraries.csv",
+          "sha256": "b574e30396115199859553318e80afe9b9e5a40c5c66a04e2e689551d13ab8ec",
+          "bytes": 452641
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB1_5/SetB1/B_05/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/airports.csv",
+          "sha256": "19757fb6ffd014c80e01fc87e63ce96efa203e7b6ffe7fdd20a726602c4696e0",
+          "bytes": 11806
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/alt_aircraft.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/alt_airports.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/alt_flights.csv",
+          "sha256": "357f7979d1030d09b677c534ac439bd7b70485e3e1cdc565d1e310d70f160420",
+          "bytes": 4120
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/itineraries.csv",
+          "sha256": "e2d1448a72421a489b4d0540b2ece2ea62d8f8a15271a7fe99952ff58e0c8248",
+          "bytes": 469617
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_06/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/airports.csv",
+          "sha256": "edbb1440ec45204ec5efbc4e4c1f8690920a6077ee7a89895c70ee9ea3a80d32",
+          "bytes": 11805
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/alt_aircraft.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/alt_airports.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/alt_flights.csv",
+          "sha256": "b4497983cb06c33bda684aa34fc759ea4435bf4c7e613d04b87cf311859919ef",
+          "bytes": 4569
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/itineraries.csv",
+          "sha256": "e2d1448a72421a489b4d0540b2ece2ea62d8f8a15271a7fe99952ff58e0c8248",
+          "bytes": 469617
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_07/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/airports.csv",
+          "sha256": "19757fb6ffd014c80e01fc87e63ce96efa203e7b6ffe7fdd20a726602c4696e0",
+          "bytes": 11806
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/alt_aircraft.csv",
+          "sha256": "f2710e84225fafb7d40c78f77bb33b62696957b480d06457cec26714ebd7b99c",
+          "bytes": 45
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/alt_airports.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/alt_flights.csv",
+          "sha256": "d03ce170261da2794e510be4b3fec4f062bdf8c031af3c1a2dfc512423ae145a",
+          "bytes": 4102
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/itineraries.csv",
+          "sha256": "e2d1448a72421a489b4d0540b2ece2ea62d8f8a15271a7fe99952ff58e0c8248",
+          "bytes": 469617
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_08/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/airports.csv",
+          "sha256": "19757fb6ffd014c80e01fc87e63ce96efa203e7b6ffe7fdd20a726602c4696e0",
+          "bytes": 11806
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/alt_aircraft.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/alt_airports.csv",
+          "sha256": "4e6858d7258c0789814395735ca0159d104a056fd622965d285168fe3b713832",
+          "bytes": 42
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/alt_flights.csv",
+          "sha256": "357f7979d1030d09b677c534ac439bd7b70485e3e1cdc565d1e310d70f160420",
+          "bytes": 4120
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/config.csv",
+          "sha256": "9cca96b83207301b733232b42c386eba14c1785a301b179ffb730694a04a2fc5",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/itineraries.csv",
+          "sha256": "e2d1448a72421a489b4d0540b2ece2ea62d8f8a15271a7fe99952ff58e0c8248",
+          "bytes": 469617
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_09/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/aircraft.csv",
+          "sha256": "0ec9b668a932f7e4e31a423fcdeab30878d29bac7e3549186d3c1743ccd469a6",
+          "bytes": 16458
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/airports.csv",
+          "sha256": "7549e15f50b506b5d7f540392666246ecd07ed5f78ec6aea0b021f6060d8d52b",
+          "bytes": 11876
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/alt_aircraft.csv",
+          "sha256": "ffa625f9e301bded2619003e6a2160e2abd0ec6502579786bc872845fe2610fc",
+          "bytes": 3
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/alt_airports.csv",
+          "sha256": "d6faeea9e50a8b5cfa8379d239beea7a8a6774b0db5b00dfd18036c0bde970c3",
+          "bytes": 1296
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/alt_flights.csv",
+          "sha256": "91b3634c9df874414adc355b8f723f648d619dd3222c546d37291fc33fba2952",
+          "bytes": 607
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/config.csv",
+          "sha256": "8a8731f7090c2640e1dfb97cc091e6f50b13f6ded9473afca6f4d7d546c822c9",
+          "bytes": 464
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/dist.csv",
+          "sha256": "52810d187b9def9cbce1d13e7105080b45e0a94f41fa2acf05f1b28e99569305",
+          "bytes": 27426
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/flights.csv",
+          "sha256": "f2630ca1c3ac8a0db3e6ea5edcd00974e85f301301eb6edf8a6cc0dbdc45062c",
+          "bytes": 39529
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/itineraries.csv",
+          "sha256": "e2d1448a72421a489b4d0540b2ece2ea62d8f8a15271a7fe99952ff58e0c8248",
+          "bytes": 469617
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/position.csv",
+          "sha256": "a643a74df4a0146bc6654e5b35caf4a3b20ea91f162af87bcb20658af77f44f8",
+          "bytes": 3673
+        },
+        {
+          "file": "extracted/SetB2_5/SetB2/B_10/rotations.csv",
+          "sha256": "05f2fb97dcff3d23187a45bbbf23b671d910ac34a565836d52c6c3b78210cda3",
+          "bytes": 71738
+        },
+        {
+          "file": "original/A1_6088570.zip",
+          "sha256": "4eedefb03ef60dbaeda730f1c0e3be97fe21aae32affc52b1c8a205a0b2bec7f",
+          "bytes": 163269
+        },
+        {
+          "file": "original/Checker-B-2.zip",
+          "sha256": "d2fdbf9ac529e8f0e04c09910a00d774d3e7795a9406bcc340da5cf651c88f53",
+          "bytes": 2483566
+        },
+        {
+          "file": "original/CostChecker-B-1.zip",
+          "sha256": "8d80e341b7d5d5f490faa942578f520ff9ae1a323fe8b57395233e05222395fa",
+          "bytes": 792733
+        },
+        {
+          "file": "original/Instances_X.zip",
+          "sha256": "250b20e7007fb5ae4390d918ca85740984a703926c06e464edf489f5edb3cb40",
+          "bytes": 2303989
+        },
+        {
+          "file": "original/SA2_6088590.zip",
+          "sha256": "5c6a9db7d6224223a799bb4f4850c66ca9db07221fc92c3a6a15a2d449fec9d6",
+          "bytes": 160650
+        },
+        {
+          "file": "original/SetB1_5.zip",
+          "sha256": "ac4a6482ebd4a72d2e5bb4248ae6fedbcbaef108ab683c24f037bd202cfa7cde",
+          "bytes": 632998
+        },
+        {
+          "file": "original/SetB2_5.zip",
+          "sha256": "3c32bb862eb68d9dd7f4ec6cdf42dea7ed3ccf6df88f2a75282ebdbde245d557",
+          "bytes": 650020
+        },
+        {
+          "file": "verification/archive_checks.json",
+          "sha256": "d6fe719cb913a7293fcaa22c2b0a896d4b0234f9bc4ed1b38de04cfbfbb0d294",
+          "bytes": 8080
+        },
+        {
+          "file": "verification/challenge_en.extracted.txt",
+          "sha256": "d0755bf192a45f3a7534754bce73ebfd4f179ed7771a13e6c3277ddf9175ab43",
+          "bytes": 65298
+        },
+        {
+          "file": "verification/CostChecker_EN4.printable_strings.txt",
+          "sha256": "6f4825ff0d4af40d68acef38b312c3a74c362a8134bc9dc02820c2eda803e183",
+          "bytes": 11912
+        },
+        {
+          "file": "verification/file_inventory.csv",
+          "sha256": "d31fc65b01645da3e22640e9fa9794245203beb3ec0295ad6df35e5cfe8fef49",
+          "bytes": 65575
+        },
+        {
+          "file": "verification/instance_inspection.json",
+          "sha256": "08ef662cf8dcd1749c55a22a5ac031ee92ff37887adfbdf19a8dac37dfef8810",
+          "bytes": 90440
+        },
+        {
+          "file": "verification/instance_summary.csv",
+          "sha256": "3ddcc861d6e2cdda75d521a3d2ef78958f016d3d241e60a4665705790dcda30f",
+          "bytes": 2524
+        },
+        {
+          "file": "verification/official_results_table_1.csv",
+          "sha256": "df3fb4228eb5df5de6eb5fc47b69072ae0bf518f5f0a65f22e1877ef35e60ee1",
+          "bytes": 534
+        },
+        {
+          "file": "verification/official_results_table_2.csv",
+          "sha256": "4f8936a1f60a7cea4f1bbe7fa0a2287a8e32a84b8bc9aa85532fd9dccf6fb838",
+          "bytes": 1397
+        },
+        {
+          "file": "verification/official_results_table_3.csv",
+          "sha256": "2b0142f78f44d8c0b31bd6e7e3d6ad8897eb8add5a144cb7b6dd4f3b51637dac",
+          "bytes": 1259
+        },
+        {
+          "file": "verification/pdf_checks.json",
+          "sha256": "57547e3c185e8aecdbd52082efcca49a0773f0f15923fef29870b9e374dbcca8",
+          "bytes": 1527
+        },
+        {
+          "file": "verification/SolutionValidationChecker_en_temp.extracted.txt",
+          "sha256": "6a5eff640ffb9bd06448c43ec7ae8b6532ea36866fb53d6aff2820733de30f93",
+          "bytes": 9284
+        }
+      ],
+      "instances": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "X01",
+        "X02",
+        "X03",
+        "X04",
+        "XA01",
+        "XA02",
+        "XA03",
+        "XA04",
+        "XB01",
+        "XB02",
+        "XB03",
+        "XB04",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "B10"
+      ]
+    },
+    "TU_Delft_2019_Results": {
+      "answer_kind": "publisher_results_without_paired_inputs",
+      "files": [
+        {
+          "file": "documentation/dataset_page.html",
+          "sha256": "aca0345fe0ee48c882369839c373b9566c644a3ab155cd2456aca37d72a2d641",
+          "bytes": 21962
+        },
+        {
+          "file": "documentation/LICENSE.txt",
+          "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+          "bytes": 7048
+        },
+        {
+          "file": "documentation/ro-crate-metadata.json",
+          "sha256": "6e7db153ac28f2175a80d27e63fdf62660853731d6ec169c03d9d286fbaf121c",
+          "bytes": 1778
+        },
+        {
+          "file": "extracted/data/Case study - Delay Outbound Connecting Flights.xlsx",
+          "sha256": "5beaec994ca71fcc469a1ddc5d15e6cbb614500d3a566e0697214a627273aec6",
+          "bytes": 41310
+        },
+        {
+          "file": "extracted/data/Case study - January data.xlsx",
+          "sha256": "b862f21a77eaa109e8a7116679c7194526583af9f380eff3c6e9e009a76719f2",
+          "bytes": 240223
+        },
+        {
+          "file": "extracted/data/Case study - Sensitivity - March data.xlsx",
+          "sha256": "1220de4d59cc1aaf1a82c72e374505a3e597075913b12b93eb5048858dfa261d",
+          "bytes": 107464
+        },
+        {
+          "file": "extracted/data/Case study - Sensitivity - Random Forest Hyperparameters.xlsx",
+          "sha256": "4de83c3654619a0d062d9e56cc9cc98108147837cfa2f1db7ccf766f82f31ce3",
+          "bytes": 26291
+        },
+        {
+          "file": "extracted/data/Case study - Sensitivity - Subnetwork algorithm.xlsx",
+          "sha256": "f5c3b4ead27d41c1d97a782774b50cec80b1b1db2b011899788944679e1ad60d",
+          "bytes": 524876
+        },
+        {
+          "file": "extracted/data/README - Delay Outbound Connecting Flights.txt",
+          "sha256": "1f68b969133b066a74527c85f7d76a4db50ac822e4946eaea66711df1b301519",
+          "bytes": 2537
+        },
+        {
+          "file": "extracted/data/README - January data.txt",
+          "sha256": "c49f41dd93ac2a165d8ff1cd659282df5b9a875e8bcd272b98344ad3e5f94c9f",
+          "bytes": 3105
+        },
+        {
+          "file": "extracted/data/README - Sensitivity - March data.txt",
+          "sha256": "31220437cc0e7330477982d180ae4106e2a69ac0e330803a3bc602e99e0b3cb8",
+          "bytes": 3265
+        },
+        {
+          "file": "extracted/data/README - Sensitivity - Random Forest Hyperparameters.txt",
+          "sha256": "5f3f81a9df3ac36a1e2f6a498da153fd0eb1f35f8aa0817430095b84c61a76fc",
+          "bytes": 1991
+        },
+        {
+          "file": "extracted/data/README - Sensitivity - Subnetwork algorithm.txt",
+          "sha256": "82256d23b7850ad95f95cc813815e01426011f325df777ae10cffa7ef479a662",
+          "bytes": 3123
+        },
+        {
+          "file": "extracted/data/README - Verification Full DSS.txt",
+          "sha256": "9987442a1df0e30307e2aa9024b0282b50c8270a8e811b8e4d4fa907fa536281",
+          "bytes": 3059
+        },
+        {
+          "file": "extracted/data/Verification - Full DSS.xlsx",
+          "sha256": "9ffb5bcffe45d0eccaa1d03f27cb1fdc3900878937175c501bff8b4b98243998",
+          "bytes": 38424
+        },
+        {
+          "file": "original/data.zip",
+          "sha256": "61ed9c97b08d83993b7979c0c7a99e592d8f7a8032a5e731fa2a6d95ad3401ed",
+          "bytes": 968934
+        },
+        {
+          "file": "verification/archive_checks.json",
+          "sha256": "20be602836b2abff86baf74f3be5aaa6fc137d647f37f6520c604b5c42e50e00",
+          "bytes": 1645
+        },
+        {
+          "file": "verification/file_inventory.csv",
+          "sha256": "6449698d602f93b73706a323c04cb38881a4972a77fc1dfe6e5ad8fd20d39bce",
+          "bytes": 2445
+        },
+        {
+          "file": "verification/workbook_inspection.json",
+          "sha256": "4d91b55b92a8762cfa5b8d13753649a155afd5a07e1c7857aae24bcc5717e768",
+          "bytes": 120612
+        }
+      ]
+    },
+    "TU_Delft_370_Disruptions": {
+      "answer_kind": "raw_inputs_without_verified_370_partition_or_paired_answers",
+      "files": [
+        {
+          "file": "documentation/dataset_page.html",
+          "sha256": "0ed63cecd0bf219c1cedb12b11089261d5fee541cce8a4c3abd7693e35588a91",
+          "bytes": 21850
+        },
+        {
+          "file": "documentation/LICENSE.txt",
+          "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+          "bytes": 18657
+        },
+        {
+          "file": "documentation/ro-crate-metadata.json",
+          "sha256": "794a2a4d37dc125ad3ae38d6a40bf1857dc68a23b34afb410901327cf48b1103",
+          "bytes": 1744
+        },
+        {
+          "file": "extracted/data/ACType.csv",
+          "sha256": "aad44453b9f62d67979092fa5c33fd2d24cde11f990470704c9d137550879b8a",
+          "bytes": 22339
+        },
+        {
+          "file": "extracted/data/Airports.csv",
+          "sha256": "89418e3db7b87d0e5f87a956d6dd2c1242a26a37c12dca6c68f0e5f33d6e1745",
+          "bytes": 1302
+        },
+        {
+          "file": "extracted/data/Connections_Q1_2015_def.h5",
+          "sha256": "de683a800d7b8ab45f5935a48f5278dbd377ae76655debe3b8a5d2a71d8ad960",
+          "bytes": 196160977
+        },
+        {
+          "file": "extracted/data/Delay_cost_10min_split.csv",
+          "sha256": "b411ba58eeaf86f54edab896fe797db54e548786d6b20609b87e32f267f9b320",
+          "bytes": 1229
+        },
+        {
+          "file": "extracted/data/Disruptions_Q1_2015_def.h5",
+          "sha256": "58638c00f11d212f3a66ac9d102fc79a8e497e79614049f39d58ad5648a4a85a",
+          "bytes": 2804415
+        },
+        {
+          "file": "extracted/data/DistancesNM.csv",
+          "sha256": "42d5b4c1d0d4bfba76436e92cb2dc653edd8989cdd45f8803051471d21110bd6",
+          "bytes": 12333
+        },
+        {
+          "file": "extracted/data/OperatingCost.csv",
+          "sha256": "edd9a2d29fc9976b9d64099d6ba7dce389617796fd4284e72d8f36f36b5b64c2",
+          "bytes": 483
+        },
+        {
+          "file": "extracted/data/RangesNM.csv",
+          "sha256": "253e439a697e9406298ac956d20747ccf562df63bcd0665dce1aa531ddd854ab",
+          "bytes": 410
+        },
+        {
+          "file": "extracted/data/README.txt",
+          "sha256": "df2256a29bb2c6b27d744d79916ab6b3147b130cbfe439cec2ef3950785d26e1",
+          "bytes": 4645
+        },
+        {
+          "file": "extracted/data/Schedule_Q1_2015_def.h5",
+          "sha256": "c1d3ccf3bcbb73ad6fd07d5938cca58129c49e125e8c8e9b54f0b7fac82cc4d4",
+          "bytes": 11185902
+        },
+        {
+          "file": "extracted/data/TAT.csv",
+          "sha256": "5bfc7f5fdfe480529b610a0b587424cc138299106fc4e34d6aa5e83a5b580ed3",
+          "bytes": 353
+        },
+        {
+          "file": "original/data.zip",
+          "sha256": "1f6062268174b6508a139030372bbce72e2adbbd5f36532eb69f13c31355e973",
+          "bytes": 40333458
+        },
+        {
+          "file": "verification/archive_checks.json",
+          "sha256": "aae5fe509ccece406ee4d512f8086271eaf9faa7267a02e3e2ce863aadd92575",
+          "bytes": 992
+        },
+        {
+          "file": "verification/csv_inspection.json",
+          "sha256": "e8d9e5f382a390666b9fc889177e24ac59d217e34835b3aad30a61a08f0de06d",
+          "bytes": 2831
+        },
+        {
+          "file": "verification/file_inventory.csv",
+          "sha256": "56124567e0498d5bb485f16f2d7d6de2e864844c6185880e485bb517ee187409",
+          "bytes": 1682
+        },
+        {
+          "file": "verification/hdf5_inspection.json",
+          "sha256": "1e337f0a4479eb0c4f0703764d8484447bed6e6811ab48f85b7c486ae9724d14",
+          "bytes": 142895
+        }
+      ],
+      "table_rows": {
+        "Connections_Q1_2015_def.h5": 2428789,
+        "Disruptions_Q1_2015_def.h5": 29375,
+        "Schedule_Q1_2015_def.h5": 196958
+      }
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{"stage": "preparing", "type": "study_context", "message": "厦航研究问题已绑定", "metrics": {"algorithm": "joint_arc_flow", "study_signature": "ad3455ea4de5d5faf8338d7e8cd9d0fe05c4780c855882d3e6fd8963405f1537", "dataset_id": "xma_2017_5f7017649664_tails_4", "objective_profile": "tianchi_2017", "objective_units": "tianchi_score", "requested_flights": 50, "actual_flights": 65, "selection_mode": "fixed", "selection_seed": null}, "worker_elapsed_seconds": 0.125}
+{"stage": "candidate_generation", "type": "candidate_generation", "message": "厦航航班候选生成完成", "metrics": {"flight_options": 238, "generation_seconds": 0.0074826999989454634}, "worker_elapsed_seconds": 0.13999999999941792}
+{"stage": "optimization", "type": "solver_selected", "message": "HiGHS selected as the solver.", "metrics": {"solver": "HiGHS", "live_bounds_available": true}, "worker_elapsed_seconds": 0.13999999999941792}
+Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+MIP has 68 rows; 238 cols; 241 nonzeros; 238 integer variables (238 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+00]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 1e+00]
+  RHS     [1e+00, 2e+00]
+Presolving model
+35 rows, 208 cols, 208 nonzeros 0s
+0 rows, 0 cols, 0 nonzeros 0s
+0 rows, 0 cols, 0 nonzeros 0s
+Presolve reductions: rows 0(-68); columns 0(-238); nonzeros 0(-241) - Reduced to empty
+Presolve: Optimal
+{"stage": "optimization", "type": "mip_progress", "message": "HiGHS mixed-integer optimization progress.", "metrics": {"solver": "HiGHS", "backend": "highspy", "live_bounds_available": true, "node_count": 0, "solver_runtime_seconds": 0.0007622000011906493, "has_incumbent": true, "bound_scope": "necessary_conditions"}, "lower_bound": 0.0, "upper_bound": 0.0, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 0.15599999999903957}
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               0                  0.00%        0      0      0         0     0.0s
+
+Solving report
+  Status            Optimal
+  Primal bound      0
+  Dual bound        0
+  Gap               0%
+  P-D integral      0
+  Solution status   feasible
+                    0 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            0.00
+                    0.00 (Presolve)
+                    0.00 (Solve)
+                    0.00 (Postsolve)
+  Max sub-MIP depth 0
+  Nodes             0
+  Repair LPs        0
+  LP iterations     0
+{"stage": "optimization", "type": "mip_progress", "message": "HiGHS mixed-integer optimization progress.", "metrics": {"solver": "HiGHS", "backend": "highspy", "live_bounds_available": true, "node_count": 0, "solver_runtime_seconds": 0.003399000001081731, "has_incumbent": true, "bound_scope": "necessary_conditions"}, "lower_bound": 0.0, "upper_bound": 0.0, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 0.15599999999903957}
+{"stage": "model", "type": "building_model", "message": "建立飞机网络流联合模型", "worker_elapsed_seconds": 0.15599999999903957}
+{"stage": "model", "type": "model_built", "message": "联合约束已建立", "metrics": {"variables": 2573, "constraints": 3427, "build_seconds": 0.1320674999988114}, "worker_elapsed_seconds": 0.2809999999990396}
+{"stage": "optimization", "type": "solver_selected", "message": "HiGHS selected as the solver.", "metrics": {"solver": "HiGHS", "live_bounds_available": true}, "worker_elapsed_seconds": 0.2809999999990396}
+Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+MIP has 3427 rows; 2573 cols; 9530 nonzeros; 2573 integer variables (2165 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 6e+03]
+  Cost    [1e+00, 2e+03]
+  Bound   [1e+00, 5e+02]
+  RHS     [1e+00, 9e+03]
+Presolving model
+1623 rows, 1487 cols, 5502 nonzeros 0s
+692 rows, 602 cols, 2962 nonzeros 0s
+540 rows, 517 cols, 2182 nonzeros 0s
+373 rows, 413 cols, 1733 nonzeros 0s
+342 rows, 386 cols, 1601 nonzeros 0s
+Presolve reductions: rows 342(-3085); columns 386(-2187); nonzeros 1601(-7929) 
+Objective function is integral with scale 1728
+
+Solving MIP model with:
+   342 rows
+   386 cols (292 binary, 94 integer, 0 implied int., 0 continuous, 0 domain fixed)
+   1601 nonzeros
+   Thread count 1 (of 24 threads). Using 1 max workers. Parallel search off
+{"stage": "optimization", "type": "mip_progress", "message": "HiGHS mixed-integer optimization progress.", "metrics": {"solver": "HiGHS", "backend": "highspy", "live_bounds_available": true, "node_count": 0, "solver_runtime_seconds": 0.0541774000012083, "has_incumbent": true, "bound_scope": "global"}, "lower_bound": null, "upper_bound": 71786.0, "worker_elapsed_seconds": 0.3430000000007567}
+{"stage": "audit", "type": "incumbent_audited", "message": "完整方案已通过独立审计", "upper_bound": 71786.0, "lower_bound": null, "metrics": {"bound_scope": "global", "audited": true}, "worker_elapsed_seconds": 0.3430000000007567}
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+ J       0       0         0   0.00%   -inf            71786              Large        0      0      0         0     0.1s
+ R       0       0         0 100.00%   48412           48412              0.00%        0      0      0       134     0.1s
+         1       0         1 100.00%   48412           48412              0.00%        0      0      0       134     0.1s
+
+Solving report
+  Status            Optimal
+  Primal bound      48412
+  Dual bound        48412
+  Gap               0%
+  P-D integral      0.00137037682818
+  Solution status   feasible
+                    48412 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            0.07
+                    0.05 (Presolve)
+                    0.02 (Solve)
+                    0.00 (Postsolve)
+  Max sub-MIP depth 0
+  Nodes             1
+  Repair LPs        0
+  LP iterations     134
+                    0 (strong br.)
+                    0 (separation)
+                    0 (heuristics)
+{"stage": "optimization", "type": "mip_progress", "message": "HiGHS mixed-integer optimization progress.", "metrics": {"solver": "HiGHS", "backend": "highspy", "live_bounds_available": true, "node_count": 1, "solver_runtime_seconds": 0.06984080000256654, "has_incumbent": true, "bound_scope": "global"}, "lower_bound": 48412.0, "upper_bound": 48412.0, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 0.35900000000037835}
+{"stage": "audit", "type": "incumbent_audited", "message": "完整方案已通过独立审计", "upper_bound": 48412.0, "lower_bound": 48412.0, "metrics": {"bound_scope": "global", "audited": true}, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 0.35900000000037835}
+{"stage": "audit", "type": "audit_completed", "message": "独立评分与业务约束复算完成", "metrics": {"integrated_audit": {"valid": true, "violations": [], "score": 48412.0, "raw_score": 48412.0, "penalty": 0, "breakdown": {"empty_flight": 0.0, "cancel_flight": 38400.0, "type_change": 0.0, "swap_flight": 0.0, "straighten": 0.0, "flight_delay": 0.0, "flight_ahead": 0.0, "passenger_cancel": 10012.0, "passenger_delay": 0.0, "sign_change_delay": 0.0}, "air_breakdown": {"schedule": 700000.0, "aircraft": 0.0, "passenger": 6257500.0}, "objective": 48412.0, "passenger_ledger": [{"flight_id": "27", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 92, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "39", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 122, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "87", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 123, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "101", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 132, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "139", "cancelled_in": 0, "failed_in": 0, "resident": 66, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 66}, {"flight_id": "338", "cancelled_in": 0, "failed_in": 0, "resident": 161, "sign_out": 0, "sign_in": 0, "unserved": 1, "physical_seats": 161, "occupied_seats": 161}, {"flight_id": "365", "cancelled_in": 0, "failed_in": 0, "resident": 132, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 132}, {"flight_id": "371", "cancelled_in": 0, "failed_in": 0, "resident": 161, "sign_out": 0, "sign_in": 0, "unserved": 6, "physical_seats": 161, "occupied_seats": 161}, {"flight_id": "391", "cancelled_in": 0, "failed_in": 0, "resident": 113, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 113}, {"flight_id": "460", "cancelled_in": 0, "failed_in": 0, "resident": 148, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 148}, {"flight_id": "472", "cancelled_in": 0, "failed_in": 0, "resident": 119, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 119}, {"flight_id": "499", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 22, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "508", "cancelled_in": 0, "failed_in": 0, "resident": 31, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 31}, {"flight_id": "511", "cancelled_in": 0, "failed_in": 0, "resident": 33, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 33}, {"flight_id": "536", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 82, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "549", "cancelled_in": 0, "failed_in": 0, "resident": 108, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 108}, {"flight_id": "584", "cancelled_in": 0, "failed_in": 0, "resident": 87, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 87}, {"flight_id": "937", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 104, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "940", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 77, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "956", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 100, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "968", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 71, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "986", "cancelled_in": 0, "failed_in": 0, "resident": 121, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 121}, {"flight_id": "1027", "cancelled_in": 0, "failed_in": 0, "resident": 140, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 140}, {"flight_id": "1042", "cancelled_in": 0, "failed_in": 0, "resident": 28, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 28}, {"flight_id": "1105", "cancelled_in": 0, "failed_in": 0, "resident": 31, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 31}, {"flight_id": "1121", "cancelled_in": 0, "failed_in": 0, "resident": 45, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 45}, {"flight_id": "1137", "cancelled_in": 0, "failed_in": 0, "resident": 53, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 53}, {"flight_id": "1140", "cancelled_in": 0, "failed_in": 0, "resident": 75, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 75}, {"flight_id": "1213", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 43, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1225", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 98, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1234", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 80, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1240", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 94, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1257", "cancelled_in": 0, "failed_in": 0, "resident": 143, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 143}, {"flight_id": "1270", "cancelled_in": 0, "failed_in": 0, "resident": 144, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 144}, {"flight_id": "1294", "cancelled_in": 0, "failed_in": 0, "resident": 154, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 154}, {"flight_id": "1398", "cancelled_in": 0, "failed_in": 0, "resident": 160, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 160}, {"flight_id": "1416", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 89, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1423", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 156, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1425", "cancelled_in": 0, "failed_in": 0, "resident": 132, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 132}, {"flight_id": "1427", "cancelled_in": 0, "failed_in": 0, "resident": 150, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 150}, {"flight_id": "1431", "cancelled_in": 0, "failed_in": 0, "resident": 150, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 150}, {"flight_id": "1465", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 51, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1469", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 61, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1645", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 97, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1677", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 104, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1811", "cancelled_in": 0, "failed_in": 0, "resident": 151, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 151}, {"flight_id": "1819", "cancelled_in": 0, "failed_in": 0, "resident": 138, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 138}, {"flight_id": "1897", "cancelled_in": 0, "failed_in": 0, "resident": 135, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 135}, {"flight_id": "1908", "cancelled_in": 0, "failed_in": 0, "resident": 177, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 177}, {"flight_id": "1909", "cancelled_in": 0, "failed_in": 0, "resident": 125, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 125}, {"flight_id": "1911", "cancelled_in": 0, "failed_in": 0, "resident": 161, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 161}, {"flight_id": "1912", "cancelled_in": 0, "failed_in": 0, "resident": 151, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 151}, {"flight_id": "1934", "cancelled_in": 0, "failed_in": 0, "resident": 144, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 144}, {"flight_id": "1935", "cancelled_in": 0, "failed_in": 0, "resident": 144, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 144}, {"flight_id": "1945", "cancelled_in": 0, "failed_in": 0, "resident": 103, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 103}, {"flight_id": "1946", "cancelled_in": 0, "failed_in": 0, "resident": 102, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 102}, {"flight_id": "2070", "cancelled_in": 0, "failed_in": 0, "resident": 130, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 130}, {"flight_id": "2084", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 61, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "2088", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 94, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "2092", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 138, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "2096", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 59, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "2274", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 101, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "2278", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 111, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "2280", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 63, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "2281", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 71, "physical_seats": 0, "occupied_seats": 0}], "penalty_semantics": "Source constants; violation granularity is independently diagnosed, JAR is authoritative for invalid results."}}, "worker_elapsed_seconds": 0.4059999999990396}
+{"stage": "complete", "type": "solve_bounds", "message": "求解结束", "lower_bound": 48412.0, "upper_bound": 48412.0, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 0.4059999999990396}
+{"status": "optimal", "reason": "2", "audit_pass": true, "objective": 48412.0, "lower_bound": 48412.0, "upper_bound": 48412.0, "relative_gap": 0.0, "model_statistics": {"variables": 2573, "constraints": 3427, "nodes": 1, "aircraft_columns": 0, "representation": "arc", "solver": "HiGHS", "bound_scope": "global", "tail_pool_size": null, "timings": {"matrix_extraction_seconds": 0.0032933000002230983, "solver_model_update_seconds": 0.0015226999967126176, "native_optimization_seconds": 0.06956050000007963}}, "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f", "study_signature": "ad3455ea4de5d5faf8338d7e8cd9d0fe05c4780c855882d3e6fd8963405f1537", "flights": 65, "complete_decisions": true, "certified_optimal": true, "external_evaluator": "not_run", "first_solver_incumbent_seconds": 0.3430000000007567, "first_audited_solution_seconds": 0.3430000000007567, "first_checkpoint_seconds": 0.3430000000007567, "first_solver_scope": "global", "solution_evidence_directory": "G:\\jzm\\project\\flight_recovery\\.public_benchmarks\\xma-pilot-20261123_192501\\jobs\\legacy-50", "retained_incumbent": true, "job_id": "legacy-50", "worker_seconds": 0.5620000000017171, "finished_at": "2026-11-23T11:25:09.721481+00:00"}

@@ -1,0 +1,582 @@
+{
+  "schema_version": "1.0.0",
+  "scenario": {
+    "scenario_id": "toy_case_009_passenger_itinerary_generator",
+    "recovery_window": {
+      "start_time": "2026-01-15T08:00:00Z",
+      "end_time": "2026-01-15T12:00:00Z"
+    },
+    "airports": [
+      {
+        "airport_id": "A",
+        "name": "Alpha"
+      },
+      {
+        "airport_id": "B",
+        "name": "Bravo"
+      },
+      {
+        "airport_id": "C",
+        "name": "Charlie"
+      },
+      {
+        "airport_id": "D",
+        "name": "Delta"
+      },
+      {
+        "airport_id": "E",
+        "name": "Echo"
+      }
+    ],
+    "flights": [
+      {
+        "flight_id": "S9_F1",
+        "origin": "A",
+        "destination": "D",
+        "sched_dep": "2026-01-15T09:00:00Z",
+        "sched_arr": "2026-01-15T10:00:00Z",
+        "duration": 60,
+        "original_aircraft": "S9_AC2",
+        "original_equipment": "E1",
+        "original_crew": "S9_C2",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      },
+      {
+        "flight_id": "S9_F2",
+        "origin": "A",
+        "destination": "B",
+        "sched_dep": "2026-01-15T08:30:00Z",
+        "sched_arr": "2026-01-15T09:00:00Z",
+        "duration": 30,
+        "original_aircraft": "S9_AC1",
+        "original_equipment": "E1",
+        "original_crew": "S9_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 120
+      },
+      {
+        "flight_id": "S9_F3",
+        "origin": "B",
+        "destination": "D",
+        "sched_dep": "2026-01-15T09:30:00Z",
+        "sched_arr": "2026-01-15T10:30:00Z",
+        "duration": 60,
+        "original_aircraft": "S9_AC1",
+        "original_equipment": "E1",
+        "original_crew": "S9_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      },
+      {
+        "flight_id": "S9_F4",
+        "origin": "B",
+        "destination": "D",
+        "sched_dep": "2026-01-15T09:29:00Z",
+        "sched_arr": "2026-01-15T10:29:00Z",
+        "duration": 60,
+        "original_aircraft": "S9_AC4",
+        "original_equipment": "E1",
+        "original_crew": "S9_C4",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      },
+      {
+        "flight_id": "S9_F5",
+        "origin": "A",
+        "destination": "C",
+        "sched_dep": "2026-01-15T08:40:00Z",
+        "sched_arr": "2026-01-15T09:10:00Z",
+        "duration": 30,
+        "original_aircraft": "S9_AC3",
+        "original_equipment": "E1",
+        "original_crew": "S9_C3",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      },
+      {
+        "flight_id": "S9_F6",
+        "origin": "C",
+        "destination": "D",
+        "sched_dep": "2026-01-15T09:50:00Z",
+        "sched_arr": "2026-01-15T10:50:00Z",
+        "duration": 60,
+        "original_aircraft": "S9_AC3",
+        "original_equipment": "E1",
+        "original_crew": "S9_C3",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      }
+    ],
+    "aircraft": [
+      {
+        "tail_id": "S9_AC1",
+        "equipment_type": "E1",
+        "initial_station_at_t": "A",
+        "required_station_at_T_end": "D",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "S9_F2",
+          "S9_F3"
+        ]
+      },
+      {
+        "tail_id": "S9_AC2",
+        "equipment_type": "E1",
+        "initial_station_at_t": "A",
+        "required_station_at_T_end": "D",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "S9_F1"
+        ]
+      },
+      {
+        "tail_id": "S9_AC3",
+        "equipment_type": "E1",
+        "initial_station_at_t": "A",
+        "required_station_at_T_end": "D",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "S9_F5",
+          "S9_F6"
+        ]
+      },
+      {
+        "tail_id": "S9_AC4",
+        "equipment_type": "E1",
+        "initial_station_at_t": "B",
+        "required_station_at_T_end": "D",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "S9_F4"
+        ]
+      }
+    ],
+    "crew": [
+      {
+        "crew_id": "S9_C1",
+        "rating": "E1",
+        "start_station_at_t": "A",
+        "required_station_at_T_end": "D",
+        "original_duties": [
+          [
+            "S9_F2",
+            "S9_F3"
+          ]
+        ],
+        "original_pairing": [
+          "S9_F2",
+          "S9_F3"
+        ]
+      },
+      {
+        "crew_id": "S9_C2",
+        "rating": "E1",
+        "start_station_at_t": "A",
+        "required_station_at_T_end": "D",
+        "original_duties": [
+          [
+            "S9_F1"
+          ]
+        ],
+        "original_pairing": [
+          "S9_F1"
+        ]
+      },
+      {
+        "crew_id": "S9_C3",
+        "rating": "E1",
+        "start_station_at_t": "A",
+        "required_station_at_T_end": "D",
+        "original_duties": [
+          [
+            "S9_F5",
+            "S9_F6"
+          ]
+        ],
+        "original_pairing": [
+          "S9_F5",
+          "S9_F6"
+        ]
+      },
+      {
+        "crew_id": "S9_C4",
+        "rating": "E1",
+        "start_station_at_t": "B",
+        "required_station_at_T_end": "D",
+        "original_duties": [
+          [
+            "S9_F4"
+          ]
+        ],
+        "original_pairing": [
+          "S9_F4"
+        ]
+      }
+    ],
+    "passengers": [
+      {
+        "pax_group_id": "S9_P1",
+        "count": 50,
+        "origin": "A",
+        "destination": "D",
+        "original_departure": "2026-01-15T08:30:00Z",
+        "scheduled_arrival": "2026-01-15T10:30:00Z",
+        "original_itinerary": [
+          "S9_F2",
+          "S9_F3"
+        ]
+      },
+      {
+        "pax_group_id": "S9_P2",
+        "count": 25,
+        "origin": "A",
+        "destination": "D",
+        "original_departure": "2026-01-15T08:40:00Z",
+        "scheduled_arrival": "2026-01-15T10:50:00Z",
+        "original_itinerary": [
+          "S9_F5",
+          "S9_F6"
+        ]
+      }
+    ],
+    "airport_intervals": [
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T08:00:00Z",
+        "end_time": "2026-01-15T12:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T08:00:00Z",
+        "end_time": "2026-01-15T12:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "C",
+        "start_time": "2026-01-15T08:00:00Z",
+        "end_time": "2026-01-15T12:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "D",
+        "start_time": "2026-01-15T08:00:00Z",
+        "end_time": "2026-01-15T12:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "E",
+        "start_time": "2026-01-15T08:00:00Z",
+        "end_time": "2026-01-15T12:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      }
+    ],
+    "disruptions": []
+  },
+  "recovery_columns": {
+    "schema_version": "1.0.0",
+    "scenario_id": "toy_case_009_passenger_itinerary_generator",
+    "time_unit": "minute",
+    "notes": [
+      "Phase 7 tiny exhaustive-oracle fixture."
+    ],
+    "flight_options": [
+      {
+        "option_id": "S9_FO_F1_ORIG",
+        "base_flight_id": "S9_F1",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "A",
+        "destination": "D",
+        "dep_time": "2026-01-15T09:00:00Z",
+        "arr_time": "2026-01-15T10:00:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Legal direct and early-arrival path."
+      },
+      {
+        "option_id": "S9_FO_F2_ORIG",
+        "base_flight_id": "S9_F2",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "A",
+        "destination": "B",
+        "dep_time": "2026-01-15T08:30:00Z",
+        "arr_time": "2026-01-15T09:00:00Z",
+        "block_minutes": 30,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": ""
+      },
+      {
+        "option_id": "S9_FO_F3_ORIG",
+        "base_flight_id": "S9_F3",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "D",
+        "dep_time": "2026-01-15T09:30:00Z",
+        "arr_time": "2026-01-15T10:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Exact 30-minute MCT."
+      },
+      {
+        "option_id": "S9_FO_F4_ORIG",
+        "base_flight_id": "S9_F4",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "B",
+        "destination": "D",
+        "dep_time": "2026-01-15T09:29:00Z",
+        "arr_time": "2026-01-15T10:29:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "MCT minus one minute."
+      },
+      {
+        "option_id": "S9_FO_F5_ORIG",
+        "base_flight_id": "S9_F5",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "A",
+        "destination": "C",
+        "dep_time": "2026-01-15T08:40:00Z",
+        "arr_time": "2026-01-15T09:10:00Z",
+        "block_minutes": 30,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": ""
+      },
+      {
+        "option_id": "S9_FO_F6_ORIG",
+        "base_flight_id": "S9_F6",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "C",
+        "destination": "D",
+        "dep_time": "2026-01-15T09:50:00Z",
+        "arr_time": "2026-01-15T10:50:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": "Twenty-minute arrival delay."
+      },
+      {
+        "option_id": "S9_FO_F2_REROUTE",
+        "base_flight_id": "S9_F2",
+        "operation_type": "operate",
+        "change_types": [
+          "delay",
+          "origin_change",
+          "destination_change",
+          "block_time_change"
+        ],
+        "origin": "B",
+        "destination": "D",
+        "dep_time": "2026-01-15T09:30:00Z",
+        "arr_time": "2026-01-15T10:30:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 60,
+        "arrival_delay_minutes": 90,
+        "notes": "Same-base-flight edge negative case."
+      },
+      {
+        "option_id": "S9_FO_F1_CANCEL",
+        "base_flight_id": "S9_F1",
+        "operation_type": "cancel",
+        "change_types": [
+          "cancel"
+        ],
+        "origin": null,
+        "destination": null,
+        "dep_time": null,
+        "arr_time": null,
+        "block_minutes": null,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": ""
+      },
+      {
+        "option_id": "S9_FO_FERRY_AD",
+        "base_flight_id": null,
+        "operation_type": "ferry",
+        "change_types": [
+          "positioning"
+        ],
+        "origin": "A",
+        "destination": "D",
+        "dep_time": "2026-01-15T08:10:00Z",
+        "arr_time": "2026-01-15T08:50:00Z",
+        "block_minutes": 40,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Passenger generator must exclude ferry."
+      }
+    ],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": [
+      {
+        "itinerary_id": "S9_PI_P1_ORIGINAL",
+        "pax_group_id": "S9_P1",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "S9_FO_F2_ORIG",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "S9_FO_F3_ORIG",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "D",
+        "arrival_time": "2026-01-15T10:30:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": ""
+      },
+      {
+        "itinerary_id": "S9_PI_P1_UNSERVED",
+        "pax_group_id": "S9_P1",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": ""
+      },
+      {
+        "itinerary_id": "S9_PI_P2_ORIGINAL",
+        "pax_group_id": "S9_P2",
+        "status": "transported",
+        "segments": [
+          {
+            "segment_type": "flight",
+            "flight_option_id": "S9_FO_F5_ORIG",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          },
+          {
+            "segment_type": "flight",
+            "flight_option_id": "S9_FO_F6_ORIG",
+            "origin": null,
+            "destination": null,
+            "dep_time": null,
+            "arr_time": null
+          }
+        ],
+        "final_destination": "D",
+        "arrival_time": "2026-01-15T10:50:00Z",
+        "arrival_delay_minutes": 0,
+        "cost_components": {},
+        "notes": ""
+      },
+      {
+        "itinerary_id": "S9_PI_P2_UNSERVED",
+        "pax_group_id": "S9_P2",
+        "status": "unserved",
+        "segments": [],
+        "final_destination": null,
+        "arrival_time": null,
+        "arrival_delay_minutes": null,
+        "cost_components": {},
+        "notes": ""
+      }
+    ]
+  },
+  "capacity_profile": {
+    "schema_version": "1.0.0",
+    "capacity_profile_id": "toy_case_009_passenger_itinerary_generator_validation_capacity",
+    "scenario_id": "toy_case_009_passenger_itinerary_generator",
+    "source": "test_fixture",
+    "units": "seats",
+    "seat_capacity_by_option_id": {
+      "S9_FO_F1_ORIG": 999999,
+      "S9_FO_F2_ORIG": 999999,
+      "S9_FO_F3_ORIG": 999999,
+      "S9_FO_F4_ORIG": 999999,
+      "S9_FO_F5_ORIG": 999999,
+      "S9_FO_F6_ORIG": 999999,
+      "S9_FO_F2_REROUTE": 999999
+    },
+    "notes": [
+      "Synthetic non-binding capacity for validation-suite packaging."
+    ]
+  },
+  "cost_profile_id": "phase2_test_v1",
+  "cost_overrides": {},
+  "algorithm": "benders_branch_and_price_v1",
+  "profile_ids": {
+    "flight_string_generation": "phase5_test_string_generation_v1",
+    "crew_pairing_generation": "phase6_test_crew_pairing_generation_v1",
+    "aircraft_string_cg": "phase9-test-aircraft-string-cg-v1",
+    "crew_pairing_cg": "phase10-test-crew-pairing-cg-v1",
+    "benders_cg": "phase11-test-benders-cg-v1",
+    "branch_and_price": "phase12-test-branch-and-price-v1"
+  }
+}

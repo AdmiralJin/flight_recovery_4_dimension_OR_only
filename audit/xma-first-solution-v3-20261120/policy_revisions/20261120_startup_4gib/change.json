@@ -1,0 +1,9 @@
+{
+  "at": "2026-11-19T17:16:00.941557+00:00",
+  "reason": "user explicitly changed startup memory gate to 4 GiB; all other settings unchanged",
+  "old_manifest_sha256": "d3707baf9aaae95a06ae381619f799e76e8b2574a4332a6ba19f4cbf094122b1",
+  "new_manifest_sha256": "dd19abbc4c54ca36b1239d2b9ab521c62bd78bec24ff5cb86dba23dee9accf6f",
+  "old_startup_available_gib": 7.5,
+  "new_startup_available_gib": 4,
+  "solver_attempts_started": 0
+}

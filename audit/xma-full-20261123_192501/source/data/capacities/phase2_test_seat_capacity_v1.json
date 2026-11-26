@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "phase2_test_seat_capacity_v1",
+  "scenario_id": "phase1_benchmark_001",
+  "source": "implementation_assumption",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "FO_F1_ORIG": 30,
+    "FO_F2_ORIG": 45,
+    "FO_F3_ORIG": 33,
+    "FO_F4_ORIG": 24,
+    "FO_F5_ORIG": 54,
+    "FO_F6_ORIG": 30,
+    "FO_F7_ORIG": 20,
+    "FO_F8_ORIG": 35,
+    "FO_F9_ORIG": 25,
+    "FO_F10_ORIG": 12,
+    "FO_F11_ORIG": 30,
+    "FO_F12_ORIG": 16,
+    "FO_F2_D50": 45,
+    "FO_F3_D30": 33,
+    "FO_F10_D20": 12,
+    "FO_F11_D10": 30,
+    "FO_F11_DEST_C": 30
+  },
+  "notes": [
+    "Phase 2.5 implementation-only capacity available to modeled passenger groups.",
+    "Values are not Flight.min_seats, aircraft capacities, airline inventory, or paper data.",
+    "The profile represents the residual-capacity right-hand side mapped from paper equation (3.17)."
+  ]
+}

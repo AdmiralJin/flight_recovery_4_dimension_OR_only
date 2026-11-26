@@ -32,7 +32,11 @@ def test_balanced_whole_tail_partition_and_boundary_ledger(workbook):
     assert all(a in ids and b in ids for a,b in q.connected_pairs)
 
 
-def test_prepare_freezes_three_nested_jobs_and_detects_tampering(tmp_path,monkeypatch,workbook):
+@pytest.mark.parametrize('settings,seconds,aircraft,hard_limit', [
+    ({}, [21600,43200,86400], [36,71,142], 6),
+    ({'only':'FULL','memory_gib':40}, [86400], [142], 40),
+])
+def test_prepare_freezes_selected_jobs_and_detects_tampering(tmp_path,monkeypatch,workbook,settings,seconds,aircraft,hard_limit):
     from backend.benchmarks import campaign as existing
     def snapshot(folder):
         p=folder/'source'/'frozen.py';p.parent.mkdir();p.write_text('# frozen')
@@ -42,18 +46,20 @@ def test_prepare_freezes_three_nested_jobs_and_detects_tampering(tmp_path,monkey
     calibration=tmp_path/'calibration.json'
     write_json(calibration,dict(passed=True,calibration_factor=1,sources={}))
     folder=tmp_path/'batch'
-    result=campaign.prepare(folder,calibration)
+    result=campaign.prepare(folder,calibration,**settings)
     m=campaign.verify(folder)
     assert result['status']=='prepared_not_started'
-    assert [j['seconds'] for j in m['jobs']]==[21600,43200,86400]
-    assert [j['scale']['aircraft'] for j in m['jobs']]==[36,71,142]
+    assert [j['seconds'] for j in m['jobs']]==seconds
+    assert [j['scale']['aircraft'] for j in m['jobs']]==aircraft
+    assert all(job['memory_gib']==hard_limit for job in m['jobs'])
+    assert m['policy']['admission_bytes']==int(hard_limit*1024**3*0.70)
     assert m['recovery_end']=='2017-05-10T21:40:00+08:00'
     assert ' run ' in (folder/'start_xma.cmd').read_text(encoding='utf-8')
     assert not (folder/'jobs').exists()
     request=read_json(folder/'inputs/FULL.json')
     assert request['maximum_delay_minutes'] is None and request['max_assignment_options'] is None
     assert request['first_solution_search'] and request['solver_backend']=='highs'
-    (folder/'boundaries/Q1.json').write_text('{}')
+    (folder/'boundaries/FULL.json').write_text('{}')
     with pytest.raises(ValueError,match='boundary changed'):campaign.verify(folder)
 
 

@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "phase13-limited-branch-and-price-v1",
+  "integrality_tolerance": 1e-6,
+  "bound_tolerance": 1e-6,
+  "max_nodes": 1,
+  "max_depth": 100,
+  "node_selection": "best_bound",
+  "source": "test_fixture",
+  "notes": ["API terminal-status regression: deliberately stops at one solved branch node."]
+}

@@ -1,0 +1,1317 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "phase1_benchmark_001",
+  "time_unit": "minute",
+  "notes": [
+    "Never mutate flight_id to represent recovery; every recovery copy has option_id and stable base_flight_id.",
+    "Cancellation is a flight-level option and is not an aircraft-string leg.",
+    "Aircraft/crew reassignment is represented by strings/pairings covering an option whose base flight originally belonged to another resource.",
+    "Origin/destination changes live in flight_options; passenger reaccommodation lives in passenger_itineraries.",
+    "Costs remain empty until Phase 2 coefficients are fixed."
+  ],
+  "flight_options": [
+    {
+      "option_id": "FO_F1_ORIG",
+      "base_flight_id": "F1",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "A",
+      "destination": "B",
+      "dep_time": "2026-01-15T08:00:00Z",
+      "arr_time": "2026-01-15T09:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F2_ORIG",
+      "base_flight_id": "F2",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "B",
+      "destination": "C",
+      "dep_time": "2026-01-15T09:40:00Z",
+      "arr_time": "2026-01-15T10:40:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F3_ORIG",
+      "base_flight_id": "F3",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "C",
+      "destination": "A",
+      "dep_time": "2026-01-15T11:00:00Z",
+      "arr_time": "2026-01-15T12:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F4_ORIG",
+      "base_flight_id": "F4",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "C",
+      "destination": "B",
+      "dep_time": "2026-01-15T08:10:00Z",
+      "arr_time": "2026-01-15T09:10:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F5_ORIG",
+      "base_flight_id": "F5",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "B",
+      "destination": "D",
+      "dep_time": "2026-01-15T09:50:00Z",
+      "arr_time": "2026-01-15T10:50:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F6_ORIG",
+      "base_flight_id": "F6",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "D",
+      "destination": "C",
+      "dep_time": "2026-01-15T11:20:00Z",
+      "arr_time": "2026-01-15T12:20:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F7_ORIG",
+      "base_flight_id": "F7",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "D",
+      "destination": "B",
+      "dep_time": "2026-01-15T08:20:00Z",
+      "arr_time": "2026-01-15T09:20:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F8_ORIG",
+      "base_flight_id": "F8",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "B",
+      "destination": "A",
+      "dep_time": "2026-01-15T10:00:00Z",
+      "arr_time": "2026-01-15T11:00:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F9_ORIG",
+      "base_flight_id": "F9",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "A",
+      "destination": "D",
+      "dep_time": "2026-01-15T11:30:00Z",
+      "arr_time": "2026-01-15T12:30:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F10_ORIG",
+      "base_flight_id": "F10",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "C",
+      "destination": "A",
+      "dep_time": "2026-01-15T11:10:00Z",
+      "arr_time": "2026-01-15T12:10:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F11_ORIG",
+      "base_flight_id": "F11",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "A",
+      "destination": "D",
+      "dep_time": "2026-01-15T12:20:00Z",
+      "arr_time": "2026-01-15T13:20:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F12_ORIG",
+      "base_flight_id": "F12",
+      "operation_type": "operate",
+      "change_types": [
+        "unchanged"
+      ],
+      "origin": "D",
+      "destination": "C",
+      "dep_time": "2026-01-15T13:40:00Z",
+      "arr_time": "2026-01-15T14:40:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F2_D50",
+      "base_flight_id": "F2",
+      "operation_type": "operate",
+      "change_types": [
+        "delay"
+      ],
+      "origin": "B",
+      "destination": "C",
+      "dep_time": "2026-01-15T10:30:00Z",
+      "arr_time": "2026-01-15T11:30:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 50,
+      "arrival_delay_minutes": 50,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F3_D30",
+      "base_flight_id": "F3",
+      "operation_type": "operate",
+      "change_types": [
+        "delay"
+      ],
+      "origin": "C",
+      "destination": "A",
+      "dep_time": "2026-01-15T11:30:00Z",
+      "arr_time": "2026-01-15T12:30:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 30,
+      "arrival_delay_minutes": 30,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F10_D20",
+      "base_flight_id": "F10",
+      "operation_type": "operate",
+      "change_types": [
+        "delay"
+      ],
+      "origin": "C",
+      "destination": "A",
+      "dep_time": "2026-01-15T11:30:00Z",
+      "arr_time": "2026-01-15T12:30:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 20,
+      "arrival_delay_minutes": 20,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F11_D10",
+      "base_flight_id": "F11",
+      "operation_type": "operate",
+      "change_types": [
+        "delay"
+      ],
+      "origin": "A",
+      "destination": "D",
+      "dep_time": "2026-01-15T12:30:00Z",
+      "arr_time": "2026-01-15T13:30:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 10,
+      "arrival_delay_minutes": 10,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F3_CANCEL",
+      "base_flight_id": "F3",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Cancellation candidate; never appears as an aircraft-string leg."
+    },
+    {
+      "option_id": "FO_F10_CANCEL",
+      "base_flight_id": "F10",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F11_CANCEL",
+      "base_flight_id": "F11",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F12_CANCEL",
+      "base_flight_id": "F12",
+      "operation_type": "cancel",
+      "change_types": [
+        "cancel"
+      ],
+      "origin": null,
+      "destination": null,
+      "dep_time": null,
+      "arr_time": null,
+      "block_minutes": null,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": ""
+    },
+    {
+      "option_id": "FO_F11_DEST_C",
+      "base_flight_id": "F11",
+      "operation_type": "operate",
+      "change_types": [
+        "destination_change"
+      ],
+      "origin": "A",
+      "destination": "C",
+      "dep_time": "2026-01-15T12:20:00Z",
+      "arr_time": "2026-01-15T13:20:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": 0,
+      "arrival_delay_minutes": 0,
+      "notes": "Unused Phase-1 alternative that exercises destination-change representation."
+    },
+    {
+      "option_id": "FO_FERRY_CA_1140",
+      "base_flight_id": null,
+      "operation_type": "ferry",
+      "change_types": [
+        "positioning"
+      ],
+      "origin": "C",
+      "destination": "A",
+      "dep_time": "2026-01-15T11:40:00Z",
+      "arr_time": "2026-01-15T12:40:00Z",
+      "block_minutes": 60,
+      "departure_delay_minutes": null,
+      "arrival_delay_minutes": null,
+      "notes": "Synthetic positioning leg for schema/cancellation-path validation."
+    }
+  ],
+  "aircraft_strings": [
+    {
+      "string_id": "AS_AC1_ORIGINAL",
+      "aircraft_id": "AC1",
+      "leg_option_ids": [
+        "FO_F1_ORIG",
+        "FO_F2_ORIG",
+        "FO_F3_ORIG"
+      ],
+      "start_station": "A",
+      "end_station": "A",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "string_id": "AS_AC1_RECOVERY",
+      "aircraft_id": "AC1",
+      "leg_option_ids": [
+        "FO_F1_ORIG",
+        "FO_F2_D50",
+        "FO_F3_D30"
+      ],
+      "start_station": "A",
+      "end_station": "A",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": "Reference delayed string."
+    },
+    {
+      "string_id": "AS_AC1_SWAP_F10",
+      "aircraft_id": "AC1",
+      "leg_option_ids": [
+        "FO_F1_ORIG",
+        "FO_F2_D50",
+        "FO_F10_D20"
+      ],
+      "start_station": "A",
+      "end_station": "A",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": "Aircraft reassignment alternative: AC1 operates F10."
+    },
+    {
+      "string_id": "AS_AC1_CANCEL_F3_FERRY",
+      "aircraft_id": "AC1",
+      "leg_option_ids": [
+        "FO_F1_ORIG",
+        "FO_F2_D50",
+        "FO_FERRY_CA_1140"
+      ],
+      "start_station": "A",
+      "end_station": "A",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": "Compatible with selecting FO_F3_CANCEL; ferry returns AC1 to A."
+    },
+    {
+      "string_id": "AS_AC2_ORIGINAL",
+      "aircraft_id": "AC2",
+      "leg_option_ids": [
+        "FO_F4_ORIG",
+        "FO_F5_ORIG",
+        "FO_F6_ORIG"
+      ],
+      "start_station": "C",
+      "end_station": "C",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "string_id": "AS_AC3_ORIGINAL",
+      "aircraft_id": "AC3",
+      "leg_option_ids": [
+        "FO_F7_ORIG",
+        "FO_F8_ORIG",
+        "FO_F9_ORIG"
+      ],
+      "start_station": "D",
+      "end_station": "D",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "string_id": "AS_AC4_ORIGINAL",
+      "aircraft_id": "AC4",
+      "leg_option_ids": [
+        "FO_F10_ORIG",
+        "FO_F11_ORIG",
+        "FO_F12_ORIG"
+      ],
+      "start_station": "C",
+      "end_station": "C",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": "Original rotation; AC4 returns to maintenance station C."
+    },
+    {
+      "string_id": "AS_AC4_RECOVERY",
+      "aircraft_id": "AC4",
+      "leg_option_ids": [
+        "FO_F10_D20",
+        "FO_F11_D10",
+        "FO_F12_ORIG"
+      ],
+      "start_station": "C",
+      "end_station": "C",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": "Reference delayed string."
+    },
+    {
+      "string_id": "AS_AC4_SWAP_F3",
+      "aircraft_id": "AC4",
+      "leg_option_ids": [
+        "FO_F3_D30",
+        "FO_F11_D10",
+        "FO_F12_ORIG"
+      ],
+      "start_station": "C",
+      "end_station": "C",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": "Aircraft reassignment alternative: AC4 operates F3."
+    },
+    {
+      "string_id": "AS_AC4_DESTCHANGE_F11",
+      "aircraft_id": "AC4",
+      "leg_option_ids": [
+        "FO_F10_ORIG",
+        "FO_F11_DEST_C"
+      ],
+      "start_station": "C",
+      "end_station": "C",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": "Destination-change alternative; F12 then needs cancellation or other aircraft coverage."
+    },
+    {
+      "string_id": "AS_AC4_SWAP_F3_ORIG",
+      "aircraft_id": "AC4",
+      "leg_option_ids": [
+        "FO_F3_ORIG",
+        "FO_F11_D10",
+        "FO_F12_ORIG"
+      ],
+      "start_station": "C",
+      "end_station": "C",
+      "maintenance_satisfied": true,
+      "cost_components": {},
+      "notes": "Reference Phase-1 alternative: AC4 takes F3 at its original time; F11 is delayed 10 min for passenger connection."
+    }
+  ],
+  "crew_pairings": [
+    {
+      "pairing_id": "CP_C1_ORIGINAL",
+      "crew_id": "C1",
+      "duties": [
+        {
+          "duty_id": "CP_C1_ORIGINAL_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F1_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F2_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F10_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "A",
+      "end_station": "A",
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "pairing_id": "CP_C1_RECOVERY",
+      "crew_id": "C1",
+      "duties": [
+        {
+          "duty_id": "CP_C1_RECOVERY_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F1_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F2_D50",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F10_D20",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "A",
+      "end_station": "A",
+      "cost_components": {},
+      "notes": "Reference pairing."
+    },
+    {
+      "pairing_id": "CP_C1_SWAP_F3",
+      "crew_id": "C1",
+      "duties": [
+        {
+          "duty_id": "CP_C1_SWAP_F3_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F1_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F2_D50",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F3_D30",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "A",
+      "end_station": "A",
+      "cost_components": {},
+      "notes": "Crew reassignment alternative."
+    },
+    {
+      "pairing_id": "CP_C2_ORIGINAL",
+      "crew_id": "C2",
+      "duties": [
+        {
+          "duty_id": "CP_C2_ORIGINAL_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F4_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F5_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F6_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "C",
+      "end_station": "C",
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "pairing_id": "CP_C3_ORIGINAL",
+      "crew_id": "C3",
+      "duties": [
+        {
+          "duty_id": "CP_C3_ORIGINAL_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F7_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F8_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F9_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "D",
+      "end_station": "D",
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "pairing_id": "CP_C4_ORIGINAL",
+      "crew_id": "C4",
+      "duties": [
+        {
+          "duty_id": "CP_C4_ORIGINAL_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F3_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F11_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "C",
+      "end_station": "D",
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "pairing_id": "CP_C4_RECOVERY",
+      "crew_id": "C4",
+      "duties": [
+        {
+          "duty_id": "CP_C4_RECOVERY_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F3_D30",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F11_D10",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "C",
+      "end_station": "D",
+      "cost_components": {},
+      "notes": "Reference pairing."
+    },
+    {
+      "pairing_id": "CP_C4_SWAP_F10_F11",
+      "crew_id": "C4",
+      "duties": [
+        {
+          "duty_id": "CP_C4_SWAP_F10_F11_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F10_D20",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F11_D10",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "C",
+      "end_station": "D",
+      "cost_components": {},
+      "notes": "Crew reassignment alternative."
+    },
+    {
+      "pairing_id": "CP_C5_ORIGINAL",
+      "crew_id": "C5",
+      "duties": [
+        {
+          "duty_id": "CP_C5_ORIGINAL_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F12_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "D",
+      "end_station": "C",
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "pairing_id": "CP_C4_F3_ORIG_F11_D10",
+      "crew_id": "C4",
+      "duties": [
+        {
+          "duty_id": "CP_C4_F3_ORIG_F11_D10_D1",
+          "segments": [
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F3_ORIG",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            },
+            {
+              "segment_type": "operate",
+              "flight_option_id": "FO_F11_D10",
+              "origin": null,
+              "destination": null,
+              "start_time": null,
+              "end_time": null,
+              "notes": ""
+            }
+          ]
+        }
+      ],
+      "start_station": "C",
+      "end_station": "D",
+      "cost_components": {},
+      "notes": "Reference pairing: C4 keeps F3 and operates F11 after its 10-minute passenger-protection delay."
+    }
+  ],
+  "passenger_itineraries": [
+    {
+      "itinerary_id": "PI_P1_ORIGINAL",
+      "pax_group_id": "P1",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F1_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F2_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "C",
+      "arrival_time": "2026-01-15T10:40:00Z",
+      "arrival_delay_minutes": 0,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P1_RECOVERY",
+      "pax_group_id": "P1",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F1_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F2_D50",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "C",
+      "arrival_time": "2026-01-15T11:30:00Z",
+      "arrival_delay_minutes": 50,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P1_REACCOM_F5_F6",
+      "pax_group_id": "P1",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F1_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F5_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F6_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "C",
+      "arrival_time": "2026-01-15T12:20:00Z",
+      "arrival_delay_minutes": 100,
+      "cost_components": {},
+      "notes": "Reaccommodation example if F2 is unavailable; final seat feasibility belongs to PRM."
+    },
+    {
+      "itinerary_id": "PI_P2_ORIGINAL",
+      "pax_group_id": "P2",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F4_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F5_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "D",
+      "arrival_time": "2026-01-15T10:50:00Z",
+      "arrival_delay_minutes": 0,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P3_ORIGINAL",
+      "pax_group_id": "P3",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F7_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F8_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "A",
+      "arrival_time": "2026-01-15T11:00:00Z",
+      "arrival_delay_minutes": 0,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P4_ORIGINAL",
+      "pax_group_id": "P4",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F2_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F3_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "A",
+      "arrival_time": "2026-01-15T12:00:00Z",
+      "arrival_delay_minutes": 0,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P4_RECOVERY",
+      "pax_group_id": "P4",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F2_D50",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F3_D30",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "A",
+      "arrival_time": "2026-01-15T12:30:00Z",
+      "arrival_delay_minutes": 30,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P4_REACCOM_F8",
+      "pax_group_id": "P4",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F8_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "A",
+      "arrival_time": "2026-01-15T11:00:00Z",
+      "arrival_delay_minutes": 0,
+      "cost_components": {},
+      "notes": "Passenger reaccommodation candidate; seat feasibility belongs to PRM."
+    },
+    {
+      "itinerary_id": "PI_P5_ORIGINAL",
+      "pax_group_id": "P5",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F3_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F11_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "D",
+      "arrival_time": "2026-01-15T13:20:00Z",
+      "arrival_delay_minutes": 0,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P5_RECOVERY",
+      "pax_group_id": "P5",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F3_D30",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F11_D10",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "D",
+      "arrival_time": "2026-01-15T13:30:00Z",
+      "arrival_delay_minutes": 10,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P6_ORIGINAL",
+      "pax_group_id": "P6",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F10_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F11_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "D",
+      "arrival_time": "2026-01-15T13:20:00Z",
+      "arrival_delay_minutes": 0,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P6_RECOVERY",
+      "pax_group_id": "P6",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F10_D20",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F11_D10",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "D",
+      "arrival_time": "2026-01-15T13:30:00Z",
+      "arrival_delay_minutes": 10,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P7_ORIGINAL",
+      "pax_group_id": "P7",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F9_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "D",
+      "arrival_time": "2026-01-15T12:30:00Z",
+      "arrival_delay_minutes": 0,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P8_ORIGINAL",
+      "pax_group_id": "P8",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F12_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "C",
+      "arrival_time": "2026-01-15T14:40:00Z",
+      "arrival_delay_minutes": 0,
+      "cost_components": {},
+      "notes": ""
+    },
+    {
+      "itinerary_id": "PI_P5_UNSERVED",
+      "pax_group_id": "P5",
+      "status": "unserved",
+      "segments": [],
+      "final_destination": null,
+      "arrival_time": null,
+      "arrival_delay_minutes": null,
+      "cost_components": {},
+      "notes": "Explicit spill/unserved option."
+    },
+    {
+      "itinerary_id": "PI_P6_UNSERVED",
+      "pax_group_id": "P6",
+      "status": "unserved",
+      "segments": [],
+      "final_destination": null,
+      "arrival_time": null,
+      "arrival_delay_minutes": null,
+      "cost_components": {},
+      "notes": "Explicit spill/unserved option."
+    },
+    {
+      "itinerary_id": "PI_P5_F3_ORIG_F11_D10",
+      "pax_group_id": "P5",
+      "status": "transported",
+      "segments": [
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F3_ORIG",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        },
+        {
+          "segment_type": "flight",
+          "flight_option_id": "FO_F11_D10",
+          "origin": null,
+          "destination": null,
+          "dep_time": null,
+          "arr_time": null
+        }
+      ],
+      "final_destination": "D",
+      "arrival_time": "2026-01-15T13:30:00Z",
+      "arrival_delay_minutes": 10,
+      "cost_components": {},
+      "notes": "Reference itinerary after F3 remains on time and F11 is delayed 10 min."
+    }
+  ]
+}

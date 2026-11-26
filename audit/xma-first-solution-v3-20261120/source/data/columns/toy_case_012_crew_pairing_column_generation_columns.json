@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "toy_case_012_crew_pairing_column_generation",
+  "time_unit": "minute",
+  "notes": ["Phase 10 nontrivial OPERATE/DEADHEAD pricing oracle."],
+  "flight_options": [
+    {"option_id": "S12_A_LONG", "base_flight_id": "S12_F_LONG", "operation_type": "operate", "change_types": ["unchanged"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T08:00:00Z", "arr_time": "2026-01-15T09:00:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": "Long option sorts before the short option for the Phase I tie."},
+    {"option_id": "S12_Z_SHORT", "base_flight_id": "S12_F_SHORT", "operation_type": "operate", "change_types": ["unchanged"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T08:00:00Z", "arr_time": "2026-01-15T08:30:00Z", "block_minutes": 30, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": "Cheaper deadhead option omitted from the initial Phase I pool."}
+  ],
+  "aircraft_strings": [],
+  "crew_pairings": [],
+  "passenger_itineraries": []
+}

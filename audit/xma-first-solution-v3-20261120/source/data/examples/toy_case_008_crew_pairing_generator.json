@@ -1,0 +1,30 @@
+{
+  "scenario_id": "toy_case_008_crew_pairing_generator",
+  "recovery_window": {
+    "start_time": "2026-01-15T08:00:00Z",
+    "end_time": "2026-01-15T12:00:00Z"
+  },
+  "airports": [
+    {"airport_id": "A", "name": "Alpha"},
+    {"airport_id": "B", "name": "Bravo"}
+  ],
+  "flights": [
+    {"flight_id": "S8_F1", "origin": "A", "destination": "B", "sched_dep": "2026-01-15T09:00:00Z", "sched_arr": "2026-01-15T10:00:00Z", "duration": 60, "original_aircraft": "S8_AC1", "original_equipment": "E1", "original_crew": "S8_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "S8_F2", "origin": "B", "destination": "A", "sched_dep": "2026-01-15T10:20:00Z", "sched_arr": "2026-01-15T11:20:00Z", "duration": 60, "original_aircraft": "S8_AC1", "original_equipment": "E1", "original_crew": "S8_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 20},
+    {"flight_id": "S8_F3", "origin": "A", "destination": "B", "sched_dep": "2026-01-15T09:05:00Z", "sched_arr": "2026-01-15T10:05:00Z", "duration": 60, "original_aircraft": "S8_AC2", "original_equipment": "E2", "original_crew": "S8_C2", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0}
+  ],
+  "aircraft": [
+    {"tail_id": "S8_AC1", "equipment_type": "E1", "initial_station_at_t": "A", "required_station_at_T_end": "A", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["S8_F1", "S8_F2"]},
+    {"tail_id": "S8_AC2", "equipment_type": "E2", "initial_station_at_t": "A", "required_station_at_T_end": "B", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["S8_F3"]}
+  ],
+  "crew": [
+    {"crew_id": "S8_C1", "rating": "E1", "start_station_at_t": "A", "required_station_at_T_end": "A", "original_duties": [["S8_F1", "S8_F2"]], "original_pairing": ["S8_F1", "S8_F2"]},
+    {"crew_id": "S8_C2", "rating": "E2", "start_station_at_t": "A", "required_station_at_T_end": "B", "original_duties": [["S8_F3"]], "original_pairing": ["S8_F3"]}
+  ],
+  "passengers": [],
+  "airport_intervals": [
+    {"airport": "A", "start_time": "2026-01-15T08:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "B", "start_time": "2026-01-15T08:00:00Z", "end_time": "2026-01-15T12:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []}
+  ],
+  "disruptions": []
+}

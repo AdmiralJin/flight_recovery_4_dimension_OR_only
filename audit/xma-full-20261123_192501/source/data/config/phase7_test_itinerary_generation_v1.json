@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "phase7_test_itinerary_generation_v1",
+  "default_mct_minutes": 0,
+  "max_flight_legs": 3,
+  "allow_unserved": true,
+  "allow_surface": false,
+  "source": "test_fixture",
+  "notes": [
+    "IMPLEMENTATION ASSUMPTION: zero-minute MCT preserves frozen benchmark itineraries with back-to-back options.",
+    "IMPLEMENTATION ASSUMPTION: at most three flight legs bounds explicit enumeration.",
+    "No airline-calibrated MCT, surface network, cabin class, or passenger splitting is modeled."
+  ]
+}

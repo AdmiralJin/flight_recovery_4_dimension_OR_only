@@ -1,0 +1,45 @@
+{
+  "reference_environment": {
+    "date": "2026-09-21",
+    "os": "Windows",
+    "cpu": "12th Gen Intel Core i7-12700H (14 cores / 20 logical processors)",
+    "memory_gib": 15.7,
+    "solver": "Gurobi 13.0.3",
+    "license": "restricted size-limited non-production license"
+  },
+  "results": {
+    "P1-seconds": {
+      "status": "optimal",
+      "wall_seconds": 1.308,
+      "objective": 18080.0,
+      "lower_bound": 18080.0,
+      "upper_bound": 18080.0,
+      "gap": 0.0,
+      "integrated_audit_pass": true,
+      "note": "Single representative local run; prior probes were approximately 1.5-1.7 seconds."
+    },
+    "P2-tens-seconds": {
+      "status": "aborted",
+      "wall_seconds": 70.074,
+      "objective": null,
+      "lower_bound": 120.0,
+      "upper_bound": 600.0,
+      "gap": 480.0,
+      "integrated_audit_pass": null,
+      "terminal_reason": "phase11_aborted",
+      "note": "70-second budget probe; verifies bounded progress and controlled termination, not optimal completion."
+    },
+    "P3-minutes": {
+      "status": "not_run",
+      "note": "Requires scheduled calibration."
+    },
+    "P4-tens-minutes": {
+      "status": "not_run",
+      "note": "Requires scheduled calibration and a full license."
+    },
+    "P5-hours": {
+      "status": "not_run",
+      "note": "Requires scheduled calibration and a full license."
+    }
+  }
+}

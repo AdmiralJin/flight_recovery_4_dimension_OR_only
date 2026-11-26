@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "toy_case_006_scope",
+  "time_unit": "minute",
+  "notes": ["Phase 4 scope toy case with one disconnected unaffected component."],
+  "flight_options": [
+    {"option_id": "S6_O1", "base_flight_id": "S6_F1", "operation_type": "operate", "change_types": ["unchanged"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T08:00:00Z", "arr_time": "2026-01-15T09:00:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""},
+    {"option_id": "S6_D1", "base_flight_id": "S6_F1", "operation_type": "operate", "change_types": ["delay"], "origin": "A", "destination": "B", "dep_time": "2026-01-15T08:20:00Z", "arr_time": "2026-01-15T09:20:00Z", "block_minutes": 60, "departure_delay_minutes": 20, "arrival_delay_minutes": 20, "notes": ""},
+    {"option_id": "S6_O2", "base_flight_id": "S6_F2", "operation_type": "operate", "change_types": ["unchanged"], "origin": "B", "destination": "C", "dep_time": "2026-01-15T09:30:00Z", "arr_time": "2026-01-15T10:30:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""},
+    {"option_id": "S6_D2", "base_flight_id": "S6_F2", "operation_type": "operate", "change_types": ["delay"], "origin": "B", "destination": "C", "dep_time": "2026-01-15T09:50:00Z", "arr_time": "2026-01-15T10:50:00Z", "block_minutes": 60, "departure_delay_minutes": 20, "arrival_delay_minutes": 20, "notes": ""},
+    {"option_id": "S6_UO1", "base_flight_id": "S6_U1", "operation_type": "operate", "change_types": ["unchanged"], "origin": "D", "destination": "E", "dep_time": "2026-01-15T08:30:00Z", "arr_time": "2026-01-15T09:30:00Z", "block_minutes": 60, "departure_delay_minutes": 0, "arrival_delay_minutes": 0, "notes": ""}
+  ],
+  "aircraft_strings": [
+    {"string_id": "S6_AS1O", "aircraft_id": "S6_AC1", "leg_option_ids": ["S6_O1", "S6_O2"], "start_station": "A", "end_station": "C", "maintenance_satisfied": true, "cost_components": {}, "notes": ""},
+    {"string_id": "S6_AS1D", "aircraft_id": "S6_AC1", "leg_option_ids": ["S6_D1", "S6_D2"], "start_station": "A", "end_station": "C", "maintenance_satisfied": true, "cost_components": {}, "notes": ""},
+    {"string_id": "S6_AS2O", "aircraft_id": "S6_AC2", "leg_option_ids": ["S6_UO1"], "start_station": "D", "end_station": "E", "maintenance_satisfied": true, "cost_components": {}, "notes": ""}
+  ],
+  "crew_pairings": [
+    {"pairing_id": "S6_CP1O", "crew_id": "S6_C1", "duties": [{"duty_id": "S6_CP1O_D1", "segments": [{"segment_type": "operate", "flight_option_id": "S6_O1", "origin": null, "destination": null, "start_time": null, "end_time": null, "notes": ""}, {"segment_type": "operate", "flight_option_id": "S6_O2", "origin": null, "destination": null, "start_time": null, "end_time": null, "notes": ""}]}], "start_station": "A", "end_station": "C", "cost_components": {}, "notes": ""},
+    {"pairing_id": "S6_CP1D", "crew_id": "S6_C1", "duties": [{"duty_id": "S6_CP1D_D1", "segments": [{"segment_type": "operate", "flight_option_id": "S6_D1", "origin": null, "destination": null, "start_time": null, "end_time": null, "notes": ""}, {"segment_type": "operate", "flight_option_id": "S6_D2", "origin": null, "destination": null, "start_time": null, "end_time": null, "notes": ""}]}], "start_station": "A", "end_station": "C", "cost_components": {}, "notes": ""},
+    {"pairing_id": "S6_CP2O", "crew_id": "S6_C2", "duties": [{"duty_id": "S6_CP2O_D1", "segments": [{"segment_type": "operate", "flight_option_id": "S6_UO1", "origin": null, "destination": null, "start_time": null, "end_time": null, "notes": ""}]}], "start_station": "D", "end_station": "E", "cost_components": {}, "notes": ""}
+  ],
+  "passenger_itineraries": [
+    {"itinerary_id": "S6_PI1O", "pax_group_id": "S6_P1", "status": "transported", "segments": [{"segment_type": "flight", "flight_option_id": "S6_O1", "origin": null, "destination": null, "dep_time": null, "arr_time": null}, {"segment_type": "flight", "flight_option_id": "S6_O2", "origin": null, "destination": null, "dep_time": null, "arr_time": null}], "final_destination": "C", "arrival_time": "2026-01-15T10:30:00Z", "arrival_delay_minutes": 0, "cost_components": {}, "notes": ""},
+    {"itinerary_id": "S6_PI1D", "pax_group_id": "S6_P1", "status": "transported", "segments": [{"segment_type": "flight", "flight_option_id": "S6_D1", "origin": null, "destination": null, "dep_time": null, "arr_time": null}, {"segment_type": "flight", "flight_option_id": "S6_D2", "origin": null, "destination": null, "dep_time": null, "arr_time": null}], "final_destination": "C", "arrival_time": "2026-01-15T10:50:00Z", "arrival_delay_minutes": 20, "cost_components": {}, "notes": ""},
+    {"itinerary_id": "S6_PI2O", "pax_group_id": "S6_P2", "status": "transported", "segments": [{"segment_type": "flight", "flight_option_id": "S6_UO1", "origin": null, "destination": null, "dep_time": null, "arr_time": null}], "final_destination": "E", "arrival_time": "2026-01-15T09:30:00Z", "arrival_delay_minutes": 0, "cost_components": {}, "notes": ""}
+  ]
+}

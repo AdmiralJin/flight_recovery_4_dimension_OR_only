@@ -1,0 +1,79 @@
+{
+  "micro-integrated-benchmark": {
+    "status": "optimal",
+    "objective_total": 18080.0
+  },
+  "micro-crew-integrality": {
+    "status": "optimal",
+    "objective_total": 95200.0
+  },
+  "micro-passenger-capacity-binding": {
+    "status": "optimal",
+    "objective_total": 1010.0
+  },
+  "micro-passenger-capacity-relaxed": {
+    "status": "optimal",
+    "objective_total": 0.0
+  },
+  "micro-delay-unserved-tradeoff": {
+    "status": "optimal",
+    "objective_total": 25000.0
+  },
+  "micro-solve-ready-infeasible": {
+    "status": "infeasible",
+    "objective_total": null
+  },
+  "micro-scenario-only-minimal": {
+    "scenario_valid": true,
+    "solve_ready": false
+  },
+  "micro-invalid-missing-airport": {
+    "scenario_valid": false,
+    "error_code": "unknown_airport"
+  },
+  "micro-scenario-validation-rich": {
+    "scenario_valid": true,
+    "solve_ready": false
+  },
+  "micro-basic-editor": {
+    "scenario_valid": true,
+    "solve_ready": false
+  },
+  "micro-aircraft-coupling": {
+    "status": "optimal"
+  },
+  "micro-scope-closure": {
+    "status": "optimal",
+    "objective_total": 2040.0
+  },
+  "micro-aircraft-string-generation": {
+    "status": "optimal",
+    "objective_total": 0.0
+  },
+  "micro-passenger-itinerary-generation": {
+    "status": "optimal",
+    "objective_total": 0.0
+  },
+  "micro-fixed-column-benders": {
+    "status": "optimal"
+  },
+  "micro-aircraft-column-generation": {
+    "status": "optimal",
+    "objective_total": 0.0
+  },
+  "micro-crew-column-generation": {
+    "status": "optimal",
+    "objective_total": 150.0
+  },
+  "micro-benders-column-generation": {
+    "status": "optimal",
+    "objective_total": 220.0
+  },
+  "micro-crew-root-integrality": {
+    "status": "optimal"
+  },
+  "micro-branch-and-price": {
+    "status": "optimal",
+    "objective_total": 95200.0
+  }
+}

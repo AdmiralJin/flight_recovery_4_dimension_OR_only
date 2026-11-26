@@ -1,0 +1,2935 @@
+{
+  "schema_version": "xma-result-1.0",
+  "checkpoint": true,
+  "status": "not_converged",
+  "input_hash": "703cd3ea7094e0a269fc9a8a4c104c27e83e5b60091d5546f83ca4b65c87002b",
+  "objective": 56897.62037037037,
+  "lower_bound": 56897.62037037037,
+  "upper_bound": 56897.62037037037,
+  "study_signature": "5909d4dc9954bdce5d8d36285a73f5a590864db8693b86ba065febb9b0630b97",
+  "search_scope": "full",
+  "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+  "created_at": "2026-11-23T11:25:12.319984+00:00",
+  "flight_options": [
+    {
+      "option_id": "XMA_13_D0",
+      "flight_id": "13",
+      "cancelled": false,
+      "dep": "2017-05-05T08:05:00+08:00",
+      "arr": "2017-05-05T10:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_27_C",
+      "flight_id": "27",
+      "cancelled": true,
+      "dep": "2017-05-06T16:25:00+08:00",
+      "arr": "2017-05-06T19:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_39_C",
+      "flight_id": "39",
+      "cancelled": true,
+      "dep": "2017-05-06T20:25:00+08:00",
+      "arr": "2017-05-06T23:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_87_C",
+      "flight_id": "87",
+      "cancelled": true,
+      "dep": "2017-05-06T08:50:00+08:00",
+      "arr": "2017-05-06T11:05:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_101_C",
+      "flight_id": "101",
+      "cancelled": true,
+      "dep": "2017-05-06T11:55:00+08:00",
+      "arr": "2017-05-06T14:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_139_C",
+      "flight_id": "139",
+      "cancelled": true,
+      "dep": "2017-05-06T09:20:00+08:00",
+      "arr": "2017-05-06T11:15:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_188_D0",
+      "flight_id": "188",
+      "cancelled": false,
+      "dep": "2017-05-07T17:20:00+08:00",
+      "arr": "2017-05-07T19:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_200_C",
+      "flight_id": "200",
+      "cancelled": true,
+      "dep": "2017-05-07T14:30:00+08:00",
+      "arr": "2017-05-07T16:15:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_244_D0",
+      "flight_id": "244",
+      "cancelled": false,
+      "dep": "2017-05-08T15:00:00+08:00",
+      "arr": "2017-05-08T16:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_288_D0",
+      "flight_id": "288",
+      "cancelled": false,
+      "dep": "2017-05-08T12:20:00+08:00",
+      "arr": "2017-05-08T13:40:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_328_D0",
+      "flight_id": "328",
+      "cancelled": false,
+      "dep": "2017-05-08T10:00:00+08:00",
+      "arr": "2017-05-08T11:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_338_D0",
+      "flight_id": "338",
+      "cancelled": false,
+      "dep": "2017-05-05T11:05:00+08:00",
+      "arr": "2017-05-05T12:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_348_D0",
+      "flight_id": "348",
+      "cancelled": false,
+      "dep": "2017-05-07T18:35:00+08:00",
+      "arr": "2017-05-07T21:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_358_D0",
+      "flight_id": "358",
+      "cancelled": false,
+      "dep": "2017-05-07T21:55:00+08:00",
+      "arr": "2017-05-07T22:50:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_365_D0",
+      "flight_id": "365",
+      "cancelled": false,
+      "dep": "2017-05-05T13:10:00+08:00",
+      "arr": "2017-05-05T14:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_371_D0",
+      "flight_id": "371",
+      "cancelled": false,
+      "dep": "2017-05-05T15:05:00+08:00",
+      "arr": "2017-05-05T17:15:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_384_D0",
+      "flight_id": "384",
+      "cancelled": false,
+      "dep": "2017-05-08T08:45:00+08:00",
+      "arr": "2017-05-08T09:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_390_D0",
+      "flight_id": "390",
+      "cancelled": false,
+      "dep": "2017-05-08T10:50:00+08:00",
+      "arr": "2017-05-08T13:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_391_D0",
+      "flight_id": "391",
+      "cancelled": false,
+      "dep": "2017-05-05T08:05:00+08:00",
+      "arr": "2017-05-05T10:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_460_D0",
+      "flight_id": "460",
+      "cancelled": false,
+      "dep": "2017-05-08T09:05:00+08:00",
+      "arr": "2017-05-08T11:50:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_472_D0",
+      "flight_id": "472",
+      "cancelled": false,
+      "dep": "2017-05-08T13:00:00+08:00",
+      "arr": "2017-05-08T15:00:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_499_C",
+      "flight_id": "499",
+      "cancelled": true,
+      "dep": "2017-05-06T18:55:00+08:00",
+      "arr": "2017-05-06T22:00:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_508_D0",
+      "flight_id": "508",
+      "cancelled": false,
+      "dep": "2017-05-08T15:40:00+08:00",
+      "arr": "2017-05-08T17:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_511_D0",
+      "flight_id": "511",
+      "cancelled": false,
+      "dep": "2017-05-08T18:30:00+08:00",
+      "arr": "2017-05-08T20:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_536_C",
+      "flight_id": "536",
+      "cancelled": true,
+      "dep": "2017-05-06T15:00:00+08:00",
+      "arr": "2017-05-06T17:50:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_549_D0",
+      "flight_id": "549",
+      "cancelled": false,
+      "dep": "2017-05-08T13:00:00+08:00",
+      "arr": "2017-05-08T14:40:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_584_D0",
+      "flight_id": "584",
+      "cancelled": false,
+      "dep": "2017-05-08T21:10:00+08:00",
+      "arr": "2017-05-08T22:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_662_D0",
+      "flight_id": "662",
+      "cancelled": false,
+      "dep": "2017-05-07T16:05:00+08:00",
+      "arr": "2017-05-07T17:35:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_670_C",
+      "flight_id": "670",
+      "cancelled": true,
+      "dep": "2017-05-07T07:30:00+08:00",
+      "arr": "2017-05-07T08:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_686_C",
+      "flight_id": "686",
+      "cancelled": true,
+      "dep": "2017-05-07T09:55:00+08:00",
+      "arr": "2017-05-07T12:05:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_704_D0",
+      "flight_id": "704",
+      "cancelled": false,
+      "dep": "2017-05-07T13:05:00+08:00",
+      "arr": "2017-05-07T15:05:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_763_C",
+      "flight_id": "763",
+      "cancelled": true,
+      "dep": "2017-05-06T21:20:00+08:00",
+      "arr": "2017-05-06T23:35:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_805_C",
+      "flight_id": "805",
+      "cancelled": true,
+      "dep": "2017-05-06T17:50:00+08:00",
+      "arr": "2017-05-06T20:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_871_C",
+      "flight_id": "871",
+      "cancelled": true,
+      "dep": "2017-05-06T08:35:00+08:00",
+      "arr": "2017-05-06T11:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_875_C",
+      "flight_id": "875",
+      "cancelled": true,
+      "dep": "2017-05-06T12:30:00+08:00",
+      "arr": "2017-05-06T15:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_937_C",
+      "flight_id": "937",
+      "cancelled": true,
+      "dep": "2017-05-07T16:10:00+08:00",
+      "arr": "2017-05-07T18:30:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_940_C",
+      "flight_id": "940",
+      "cancelled": true,
+      "dep": "2017-05-07T19:30:00+08:00",
+      "arr": "2017-05-07T20:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_956_C",
+      "flight_id": "956",
+      "cancelled": true,
+      "dep": "2017-05-07T10:30:00+08:00",
+      "arr": "2017-05-07T11:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_968_C",
+      "flight_id": "968",
+      "cancelled": true,
+      "dep": "2017-05-07T12:55:00+08:00",
+      "arr": "2017-05-07T15:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_986_D0",
+      "flight_id": "986",
+      "cancelled": false,
+      "dep": "2017-05-05T20:35:00+08:00",
+      "arr": "2017-05-05T22:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_998_D0",
+      "flight_id": "998",
+      "cancelled": false,
+      "dep": "2017-05-08T22:00:00+08:00",
+      "arr": "2017-05-08T23:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1027_D0",
+      "flight_id": "1027",
+      "cancelled": false,
+      "dep": "2017-05-05T16:55:00+08:00",
+      "arr": "2017-05-05T19:35:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1037_D0",
+      "flight_id": "1037",
+      "cancelled": false,
+      "dep": "2017-05-08T19:05:00+08:00",
+      "arr": "2017-05-08T20:30:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1042_D0",
+      "flight_id": "1042",
+      "cancelled": false,
+      "dep": "2017-05-08T16:35:00+08:00",
+      "arr": "2017-05-08T18:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1105_D0",
+      "flight_id": "1105",
+      "cancelled": false,
+      "dep": "2017-05-08T17:25:00+08:00",
+      "arr": "2017-05-08T19:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1121_D0",
+      "flight_id": "1121",
+      "cancelled": false,
+      "dep": "2017-05-08T08:10:00+08:00",
+      "arr": "2017-05-08T10:30:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1137_D0",
+      "flight_id": "1137",
+      "cancelled": false,
+      "dep": "2017-05-08T14:55:00+08:00",
+      "arr": "2017-05-08T16:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1140_D0",
+      "flight_id": "1140",
+      "cancelled": false,
+      "dep": "2017-05-08T11:40:00+08:00",
+      "arr": "2017-05-08T14:00:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1213_D0",
+      "flight_id": "1213",
+      "cancelled": false,
+      "dep": "2017-05-08T15:10:00+08:00",
+      "arr": "2017-05-08T17:30:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1225_C",
+      "flight_id": "1225",
+      "cancelled": true,
+      "dep": "2017-05-07T14:10:00+08:00",
+      "arr": "2017-05-07T16:35:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1234_C",
+      "flight_id": "1234",
+      "cancelled": true,
+      "dep": "2017-05-07T18:00:00+08:00",
+      "arr": "2017-05-07T23:00:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1240_C",
+      "flight_id": "1240",
+      "cancelled": true,
+      "dep": "2017-05-08T09:20:00+08:00",
+      "arr": "2017-05-08T14:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1257_D0",
+      "flight_id": "1257",
+      "cancelled": false,
+      "dep": "2017-05-08T09:20:00+08:00",
+      "arr": "2017-05-08T10:50:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1270_D0",
+      "flight_id": "1270",
+      "cancelled": false,
+      "dep": "2017-05-05T14:25:00+08:00",
+      "arr": "2017-05-05T15:50:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1285_D0",
+      "flight_id": "1285",
+      "cancelled": false,
+      "dep": "2017-05-08T17:45:00+08:00",
+      "arr": "2017-05-08T19:35:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1290_C",
+      "flight_id": "1290",
+      "cancelled": true,
+      "dep": "2017-05-07T11:15:00+08:00",
+      "arr": "2017-05-07T13:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1294_D0",
+      "flight_id": "1294",
+      "cancelled": false,
+      "dep": "2017-05-08T06:50:00+08:00",
+      "arr": "2017-05-08T08:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1398_D0",
+      "flight_id": "1398",
+      "cancelled": false,
+      "dep": "2017-05-05T20:45:00+08:00",
+      "arr": "2017-05-05T22:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1416_C",
+      "flight_id": "1416",
+      "cancelled": true,
+      "dep": "2017-05-07T08:45:00+08:00",
+      "arr": "2017-05-07T10:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1423_C",
+      "flight_id": "1423",
+      "cancelled": true,
+      "dep": "2017-05-07T11:25:00+08:00",
+      "arr": "2017-05-07T12:50:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1425_D0",
+      "flight_id": "1425",
+      "cancelled": false,
+      "dep": "2017-05-05T09:00:00+08:00",
+      "arr": "2017-05-05T10:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1427_D0",
+      "flight_id": "1427",
+      "cancelled": false,
+      "dep": "2017-05-05T18:25:00+08:00",
+      "arr": "2017-05-05T19:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1431_D0",
+      "flight_id": "1431",
+      "cancelled": false,
+      "dep": "2017-05-05T11:25:00+08:00",
+      "arr": "2017-05-05T13:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1465_C",
+      "flight_id": "1465",
+      "cancelled": true,
+      "dep": "2017-05-07T18:15:00+08:00",
+      "arr": "2017-05-07T21:15:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1469_C",
+      "flight_id": "1469",
+      "cancelled": true,
+      "dep": "2017-05-07T13:55:00+08:00",
+      "arr": "2017-05-07T17:15:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1577_D0",
+      "flight_id": "1577",
+      "cancelled": false,
+      "dep": "2017-05-06T22:05:00+08:00",
+      "arr": "2017-05-07T00:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1645_C",
+      "flight_id": "1645",
+      "cancelled": true,
+      "dep": "2017-05-06T17:20:00+08:00",
+      "arr": "2017-05-06T20:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1677_C",
+      "flight_id": "1677",
+      "cancelled": true,
+      "dep": "2017-05-06T21:10:00+08:00",
+      "arr": "2017-05-06T23:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1693_C",
+      "flight_id": "1693",
+      "cancelled": true,
+      "dep": "2017-05-07T07:45:00+08:00",
+      "arr": "2017-05-07T10:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1811_D0",
+      "flight_id": "1811",
+      "cancelled": false,
+      "dep": "2017-05-05T12:30:00+08:00",
+      "arr": "2017-05-05T14:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1819_D0",
+      "flight_id": "1819",
+      "cancelled": false,
+      "dep": "2017-05-05T15:15:00+08:00",
+      "arr": "2017-05-05T16:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1860_D0",
+      "flight_id": "1860",
+      "cancelled": false,
+      "dep": "2017-05-05T21:05:00+08:00",
+      "arr": "2017-05-05T23:00:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1863_D0",
+      "flight_id": "1863",
+      "cancelled": false,
+      "dep": "2017-05-06T17:45:00+08:00",
+      "arr": "2017-05-06T21:05:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1897_D0",
+      "flight_id": "1897",
+      "cancelled": false,
+      "dep": "2017-05-08T20:25:00+08:00",
+      "arr": "2017-05-09T00:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1908_D0",
+      "flight_id": "1908",
+      "cancelled": false,
+      "dep": "2017-05-05T20:00:00+08:00",
+      "arr": "2017-05-05T23:15:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1909_D0",
+      "flight_id": "1909",
+      "cancelled": false,
+      "dep": "2017-05-07T20:00:00+08:00",
+      "arr": "2017-05-07T23:15:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1911_D0",
+      "flight_id": "1911",
+      "cancelled": false,
+      "dep": "2017-05-05T16:25:00+08:00",
+      "arr": "2017-05-05T18:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1912_D0",
+      "flight_id": "1912",
+      "cancelled": false,
+      "dep": "2017-05-07T16:25:00+08:00",
+      "arr": "2017-05-07T18:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1934_D0",
+      "flight_id": "1934",
+      "cancelled": false,
+      "dep": "2017-05-05T07:20:00+08:00",
+      "arr": "2017-05-05T10:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1935_D0",
+      "flight_id": "1935",
+      "cancelled": false,
+      "dep": "2017-05-07T07:20:00+08:00",
+      "arr": "2017-05-07T10:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1945_D0",
+      "flight_id": "1945",
+      "cancelled": false,
+      "dep": "2017-05-05T12:35:00+08:00",
+      "arr": "2017-05-05T15:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_1946_D0",
+      "flight_id": "1946",
+      "cancelled": false,
+      "dep": "2017-05-07T12:35:00+08:00",
+      "arr": "2017-05-07T15:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2070_D0",
+      "flight_id": "2070",
+      "cancelled": false,
+      "dep": "2017-05-05T06:25:00+08:00",
+      "arr": "2017-05-05T09:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2084_D0",
+      "flight_id": "2084",
+      "cancelled": false,
+      "dep": "2017-05-06T07:10:00+08:00",
+      "arr": "2017-05-06T08:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2088_D0",
+      "flight_id": "2088",
+      "cancelled": false,
+      "dep": "2017-05-06T09:45:00+08:00",
+      "arr": "2017-05-06T11:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2092_C",
+      "flight_id": "2092",
+      "cancelled": true,
+      "dep": "2017-05-06T12:15:00+08:00",
+      "arr": "2017-05-06T13:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2096_C",
+      "flight_id": "2096",
+      "cancelled": true,
+      "dep": "2017-05-06T14:45:00+08:00",
+      "arr": "2017-05-06T16:15:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2157_D0",
+      "flight_id": "2157",
+      "cancelled": false,
+      "dep": "2017-05-05T16:10:00+08:00",
+      "arr": "2017-05-05T17:20:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2160_D0",
+      "flight_id": "2160",
+      "cancelled": false,
+      "dep": "2017-05-05T20:30:00+08:00",
+      "arr": "2017-05-05T22:35:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2169_D0",
+      "flight_id": "2169",
+      "cancelled": false,
+      "dep": "2017-05-05T18:35:00+08:00",
+      "arr": "2017-05-05T19:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2171_D0",
+      "flight_id": "2171",
+      "cancelled": false,
+      "dep": "2017-05-05T17:40:00+08:00",
+      "arr": "2017-05-05T19:40:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2185_D0",
+      "flight_id": "2185",
+      "cancelled": false,
+      "dep": "2017-05-05T12:50:00+08:00",
+      "arr": "2017-05-05T15:10:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2200_D0",
+      "flight_id": "2200",
+      "cancelled": false,
+      "dep": "2017-05-08T16:40:00+08:00",
+      "arr": "2017-05-08T18:00:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2216_D0",
+      "flight_id": "2216",
+      "cancelled": false,
+      "dep": "2017-05-08T14:20:00+08:00",
+      "arr": "2017-05-08T15:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2226_D0",
+      "flight_id": "2226",
+      "cancelled": false,
+      "dep": "2017-05-05T07:15:00+08:00",
+      "arr": "2017-05-05T10:35:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2230_D0",
+      "flight_id": "2230",
+      "cancelled": false,
+      "dep": "2017-05-05T11:40:00+08:00",
+      "arr": "2017-05-05T14:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2274_C",
+      "flight_id": "2274",
+      "cancelled": true,
+      "dep": "2017-05-07T10:45:00+08:00",
+      "arr": "2017-05-07T12:40:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2278_C",
+      "flight_id": "2278",
+      "cancelled": true,
+      "dep": "2017-05-07T08:10:00+08:00",
+      "arr": "2017-05-07T09:45:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2280_D0",
+      "flight_id": "2280",
+      "cancelled": false,
+      "dep": "2017-05-08T19:35:00+08:00",
+      "arr": "2017-05-08T21:25:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2281_D0",
+      "flight_id": "2281",
+      "cancelled": false,
+      "dep": "2017-05-08T22:25:00+08:00",
+      "arr": "2017-05-08T23:55:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2340_D0",
+      "flight_id": "2340",
+      "cancelled": false,
+      "dep": "2017-05-07T21:00:00+08:00",
+      "arr": "2017-05-07T23:30:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2341_D0",
+      "flight_id": "2341",
+      "cancelled": false,
+      "dep": "2017-05-08T21:00:00+08:00",
+      "arr": "2017-05-08T23:30:00+08:00",
+      "delay": 0
+    },
+    {
+      "option_id": "XMA_2345_D0",
+      "flight_id": "2345",
+      "cancelled": false,
+      "dep": "2017-05-08T06:30:00+08:00",
+      "arr": "2017-05-08T08:55:00+08:00",
+      "delay": 0
+    }
+  ],
+  "business_decisions": [
+    {
+      "flight_id": "13",
+      "option_id": "XMA_13_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-05T08:05:00+08:00",
+      "arr": "2017-05-05T10:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "27",
+      "option_id": "XMA_27_C",
+      "aircraft_id": "101",
+      "cancelled": true,
+      "dep": "2017-05-06T16:25:00+08:00",
+      "arr": "2017-05-06T19:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "39",
+      "option_id": "XMA_39_C",
+      "aircraft_id": "101",
+      "cancelled": true,
+      "dep": "2017-05-06T20:25:00+08:00",
+      "arr": "2017-05-06T23:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "87",
+      "option_id": "XMA_87_C",
+      "aircraft_id": "101",
+      "cancelled": true,
+      "dep": "2017-05-06T08:50:00+08:00",
+      "arr": "2017-05-06T11:05:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "101",
+      "option_id": "XMA_101_C",
+      "aircraft_id": "101",
+      "cancelled": true,
+      "dep": "2017-05-06T11:55:00+08:00",
+      "arr": "2017-05-06T14:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "139",
+      "option_id": "XMA_139_C",
+      "aircraft_id": "10",
+      "cancelled": true,
+      "dep": "2017-05-06T09:20:00+08:00",
+      "arr": "2017-05-06T11:15:00+08:00",
+      "rebook": {
+        "188": 66
+      }
+    },
+    {
+      "flight_id": "188",
+      "option_id": "XMA_188_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-07T17:20:00+08:00",
+      "arr": "2017-05-07T19:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "200",
+      "option_id": "XMA_200_C",
+      "aircraft_id": "102",
+      "cancelled": true,
+      "dep": "2017-05-07T14:30:00+08:00",
+      "arr": "2017-05-07T16:15:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "244",
+      "option_id": "XMA_244_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-08T15:00:00+08:00",
+      "arr": "2017-05-08T16:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "288",
+      "option_id": "XMA_288_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-08T12:20:00+08:00",
+      "arr": "2017-05-08T13:40:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "328",
+      "option_id": "XMA_328_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-08T10:00:00+08:00",
+      "arr": "2017-05-08T11:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "338",
+      "option_id": "XMA_338_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-05T11:05:00+08:00",
+      "arr": "2017-05-05T12:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "348",
+      "option_id": "XMA_348_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-07T18:35:00+08:00",
+      "arr": "2017-05-07T21:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "358",
+      "option_id": "XMA_358_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-07T21:55:00+08:00",
+      "arr": "2017-05-07T22:50:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "365",
+      "option_id": "XMA_365_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-05T13:10:00+08:00",
+      "arr": "2017-05-05T14:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "371",
+      "option_id": "XMA_371_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-05T15:05:00+08:00",
+      "arr": "2017-05-05T17:15:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "384",
+      "option_id": "XMA_384_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-08T08:45:00+08:00",
+      "arr": "2017-05-08T09:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "390",
+      "option_id": "XMA_390_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-08T10:50:00+08:00",
+      "arr": "2017-05-08T13:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "391",
+      "option_id": "XMA_391_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-05T08:05:00+08:00",
+      "arr": "2017-05-05T10:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "460",
+      "option_id": "XMA_460_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-08T09:05:00+08:00",
+      "arr": "2017-05-08T11:50:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "472",
+      "option_id": "XMA_472_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-08T13:00:00+08:00",
+      "arr": "2017-05-08T15:00:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "499",
+      "option_id": "XMA_499_C",
+      "aircraft_id": "10",
+      "cancelled": true,
+      "dep": "2017-05-06T18:55:00+08:00",
+      "arr": "2017-05-06T22:00:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "508",
+      "option_id": "XMA_508_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-08T15:40:00+08:00",
+      "arr": "2017-05-08T17:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "511",
+      "option_id": "XMA_511_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-08T18:30:00+08:00",
+      "arr": "2017-05-08T20:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "536",
+      "option_id": "XMA_536_C",
+      "aircraft_id": "10",
+      "cancelled": true,
+      "dep": "2017-05-06T15:00:00+08:00",
+      "arr": "2017-05-06T17:50:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "549",
+      "option_id": "XMA_549_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-08T13:00:00+08:00",
+      "arr": "2017-05-08T14:40:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "584",
+      "option_id": "XMA_584_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-08T21:10:00+08:00",
+      "arr": "2017-05-08T22:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "662",
+      "option_id": "XMA_662_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-07T16:05:00+08:00",
+      "arr": "2017-05-07T17:35:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "670",
+      "option_id": "XMA_670_C",
+      "aircraft_id": "103",
+      "cancelled": true,
+      "dep": "2017-05-07T07:30:00+08:00",
+      "arr": "2017-05-07T08:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "686",
+      "option_id": "XMA_686_C",
+      "aircraft_id": "103",
+      "cancelled": true,
+      "dep": "2017-05-07T09:55:00+08:00",
+      "arr": "2017-05-07T12:05:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "704",
+      "option_id": "XMA_704_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-07T13:05:00+08:00",
+      "arr": "2017-05-07T15:05:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "763",
+      "option_id": "XMA_763_C",
+      "aircraft_id": "103",
+      "cancelled": true,
+      "dep": "2017-05-06T21:20:00+08:00",
+      "arr": "2017-05-06T23:35:00+08:00",
+      "rebook": {
+        "2345": 53
+      }
+    },
+    {
+      "flight_id": "805",
+      "option_id": "XMA_805_C",
+      "aircraft_id": "103",
+      "cancelled": true,
+      "dep": "2017-05-06T17:50:00+08:00",
+      "arr": "2017-05-06T20:20:00+08:00",
+      "rebook": {
+        "2340": 68
+      }
+    },
+    {
+      "flight_id": "871",
+      "option_id": "XMA_871_C",
+      "aircraft_id": "103",
+      "cancelled": true,
+      "dep": "2017-05-06T08:35:00+08:00",
+      "arr": "2017-05-06T11:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "875",
+      "option_id": "XMA_875_C",
+      "aircraft_id": "103",
+      "cancelled": true,
+      "dep": "2017-05-06T12:30:00+08:00",
+      "arr": "2017-05-06T15:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "937",
+      "option_id": "XMA_937_C",
+      "aircraft_id": "101",
+      "cancelled": true,
+      "dep": "2017-05-07T16:10:00+08:00",
+      "arr": "2017-05-07T18:30:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "940",
+      "option_id": "XMA_940_C",
+      "aircraft_id": "101",
+      "cancelled": true,
+      "dep": "2017-05-07T19:30:00+08:00",
+      "arr": "2017-05-07T20:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "956",
+      "option_id": "XMA_956_C",
+      "aircraft_id": "101",
+      "cancelled": true,
+      "dep": "2017-05-07T10:30:00+08:00",
+      "arr": "2017-05-07T11:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "968",
+      "option_id": "XMA_968_C",
+      "aircraft_id": "101",
+      "cancelled": true,
+      "dep": "2017-05-07T12:55:00+08:00",
+      "arr": "2017-05-07T15:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "986",
+      "option_id": "XMA_986_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-05T20:35:00+08:00",
+      "arr": "2017-05-05T22:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "998",
+      "option_id": "XMA_998_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-08T22:00:00+08:00",
+      "arr": "2017-05-08T23:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1027",
+      "option_id": "XMA_1027_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-05T16:55:00+08:00",
+      "arr": "2017-05-05T19:35:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1037",
+      "option_id": "XMA_1037_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-08T19:05:00+08:00",
+      "arr": "2017-05-08T20:30:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1042",
+      "option_id": "XMA_1042_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-08T16:35:00+08:00",
+      "arr": "2017-05-08T18:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1105",
+      "option_id": "XMA_1105_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-08T17:25:00+08:00",
+      "arr": "2017-05-08T19:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1121",
+      "option_id": "XMA_1121_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-08T08:10:00+08:00",
+      "arr": "2017-05-08T10:30:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1137",
+      "option_id": "XMA_1137_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-08T14:55:00+08:00",
+      "arr": "2017-05-08T16:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1140",
+      "option_id": "XMA_1140_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-08T11:40:00+08:00",
+      "arr": "2017-05-08T14:00:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1213",
+      "option_id": "XMA_1213_D0",
+      "aircraft_id": "102",
+      "cancelled": false,
+      "dep": "2017-05-08T15:10:00+08:00",
+      "arr": "2017-05-08T17:30:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1225",
+      "option_id": "XMA_1225_C",
+      "aircraft_id": "100",
+      "cancelled": true,
+      "dep": "2017-05-07T14:10:00+08:00",
+      "arr": "2017-05-07T16:35:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1234",
+      "option_id": "XMA_1234_C",
+      "aircraft_id": "100",
+      "cancelled": true,
+      "dep": "2017-05-07T18:00:00+08:00",
+      "arr": "2017-05-07T23:00:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1240",
+      "option_id": "XMA_1240_C",
+      "aircraft_id": "100",
+      "cancelled": true,
+      "dep": "2017-05-08T09:20:00+08:00",
+      "arr": "2017-05-08T14:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1257",
+      "option_id": "XMA_1257_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-08T09:20:00+08:00",
+      "arr": "2017-05-08T10:50:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1270",
+      "option_id": "XMA_1270_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-05T14:25:00+08:00",
+      "arr": "2017-05-05T15:50:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1285",
+      "option_id": "XMA_1285_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-08T17:45:00+08:00",
+      "arr": "2017-05-08T19:35:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1290",
+      "option_id": "XMA_1290_C",
+      "aircraft_id": "102",
+      "cancelled": true,
+      "dep": "2017-05-07T11:15:00+08:00",
+      "arr": "2017-05-07T13:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1294",
+      "option_id": "XMA_1294_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-08T06:50:00+08:00",
+      "arr": "2017-05-08T08:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1398",
+      "option_id": "XMA_1398_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-05T20:45:00+08:00",
+      "arr": "2017-05-05T22:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1416",
+      "option_id": "XMA_1416_C",
+      "aircraft_id": "10",
+      "cancelled": true,
+      "dep": "2017-05-07T08:45:00+08:00",
+      "arr": "2017-05-07T10:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1423",
+      "option_id": "XMA_1423_C",
+      "aircraft_id": "10",
+      "cancelled": true,
+      "dep": "2017-05-07T11:25:00+08:00",
+      "arr": "2017-05-07T12:50:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1425",
+      "option_id": "XMA_1425_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-05T09:00:00+08:00",
+      "arr": "2017-05-05T10:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1427",
+      "option_id": "XMA_1427_D0",
+      "aircraft_id": "101",
+      "cancelled": false,
+      "dep": "2017-05-05T18:25:00+08:00",
+      "arr": "2017-05-05T19:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1431",
+      "option_id": "XMA_1431_D0",
+      "aircraft_id": "10",
+      "cancelled": false,
+      "dep": "2017-05-05T11:25:00+08:00",
+      "arr": "2017-05-05T13:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1465",
+      "option_id": "XMA_1465_C",
+      "aircraft_id": "10",
+      "cancelled": true,
+      "dep": "2017-05-07T18:15:00+08:00",
+      "arr": "2017-05-07T21:15:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1469",
+      "option_id": "XMA_1469_C",
+      "aircraft_id": "10",
+      "cancelled": true,
+      "dep": "2017-05-07T13:55:00+08:00",
+      "arr": "2017-05-07T17:15:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1577",
+      "option_id": "XMA_1577_D0",
+      "aircraft_id": "102",
+      "cancelled": false,
+      "dep": "2017-05-06T22:05:00+08:00",
+      "arr": "2017-05-07T00:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1645",
+      "option_id": "XMA_1645_C",
+      "aircraft_id": "100",
+      "cancelled": true,
+      "dep": "2017-05-06T17:20:00+08:00",
+      "arr": "2017-05-06T20:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1677",
+      "option_id": "XMA_1677_C",
+      "aircraft_id": "100",
+      "cancelled": true,
+      "dep": "2017-05-06T21:10:00+08:00",
+      "arr": "2017-05-06T23:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1693",
+      "option_id": "XMA_1693_C",
+      "aircraft_id": "102",
+      "cancelled": true,
+      "dep": "2017-05-07T07:45:00+08:00",
+      "arr": "2017-05-07T10:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1811",
+      "option_id": "XMA_1811_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-05T12:30:00+08:00",
+      "arr": "2017-05-05T14:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1819",
+      "option_id": "XMA_1819_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-05T15:15:00+08:00",
+      "arr": "2017-05-05T16:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1860",
+      "option_id": "XMA_1860_D0",
+      "aircraft_id": "102",
+      "cancelled": false,
+      "dep": "2017-05-05T21:05:00+08:00",
+      "arr": "2017-05-05T23:00:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1863",
+      "option_id": "XMA_1863_D0",
+      "aircraft_id": "102",
+      "cancelled": false,
+      "dep": "2017-05-06T17:45:00+08:00",
+      "arr": "2017-05-06T21:05:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1897",
+      "option_id": "XMA_1897_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-08T20:25:00+08:00",
+      "arr": "2017-05-09T00:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1908",
+      "option_id": "XMA_1908_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-05T20:00:00+08:00",
+      "arr": "2017-05-05T23:15:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1909",
+      "option_id": "XMA_1909_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-07T20:00:00+08:00",
+      "arr": "2017-05-07T23:15:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1911",
+      "option_id": "XMA_1911_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-05T16:25:00+08:00",
+      "arr": "2017-05-05T18:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1912",
+      "option_id": "XMA_1912_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-07T16:25:00+08:00",
+      "arr": "2017-05-07T18:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1934",
+      "option_id": "XMA_1934_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-05T07:20:00+08:00",
+      "arr": "2017-05-05T10:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1935",
+      "option_id": "XMA_1935_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-07T07:20:00+08:00",
+      "arr": "2017-05-07T10:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1945",
+      "option_id": "XMA_1945_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-05T12:35:00+08:00",
+      "arr": "2017-05-05T15:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "1946",
+      "option_id": "XMA_1946_D0",
+      "aircraft_id": "1",
+      "cancelled": false,
+      "dep": "2017-05-07T12:35:00+08:00",
+      "arr": "2017-05-07T15:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2070",
+      "option_id": "XMA_2070_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-05T06:25:00+08:00",
+      "arr": "2017-05-05T09:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2084",
+      "option_id": "XMA_2084_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-06T07:10:00+08:00",
+      "arr": "2017-05-06T08:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2088",
+      "option_id": "XMA_2088_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-06T09:45:00+08:00",
+      "arr": "2017-05-06T11:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2092",
+      "option_id": "XMA_2092_C",
+      "aircraft_id": "100",
+      "cancelled": true,
+      "dep": "2017-05-06T12:15:00+08:00",
+      "arr": "2017-05-06T13:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2096",
+      "option_id": "XMA_2096_C",
+      "aircraft_id": "100",
+      "cancelled": true,
+      "dep": "2017-05-06T14:45:00+08:00",
+      "arr": "2017-05-06T16:15:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2157",
+      "option_id": "XMA_2157_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-05T16:10:00+08:00",
+      "arr": "2017-05-05T17:20:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2160",
+      "option_id": "XMA_2160_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-05T20:30:00+08:00",
+      "arr": "2017-05-05T22:35:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2169",
+      "option_id": "XMA_2169_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-05T18:35:00+08:00",
+      "arr": "2017-05-05T19:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2171",
+      "option_id": "XMA_2171_D0",
+      "aircraft_id": "102",
+      "cancelled": false,
+      "dep": "2017-05-05T17:40:00+08:00",
+      "arr": "2017-05-05T19:40:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2185",
+      "option_id": "XMA_2185_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-05T12:50:00+08:00",
+      "arr": "2017-05-05T15:10:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2200",
+      "option_id": "XMA_2200_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-08T16:40:00+08:00",
+      "arr": "2017-05-08T18:00:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2216",
+      "option_id": "XMA_2216_D0",
+      "aircraft_id": "103",
+      "cancelled": false,
+      "dep": "2017-05-08T14:20:00+08:00",
+      "arr": "2017-05-08T15:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2226",
+      "option_id": "XMA_2226_D0",
+      "aircraft_id": "102",
+      "cancelled": false,
+      "dep": "2017-05-05T07:15:00+08:00",
+      "arr": "2017-05-05T10:35:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2230",
+      "option_id": "XMA_2230_D0",
+      "aircraft_id": "102",
+      "cancelled": false,
+      "dep": "2017-05-05T11:40:00+08:00",
+      "arr": "2017-05-05T14:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2274",
+      "option_id": "XMA_2274_C",
+      "aircraft_id": "100",
+      "cancelled": true,
+      "dep": "2017-05-07T10:45:00+08:00",
+      "arr": "2017-05-07T12:40:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2278",
+      "option_id": "XMA_2278_C",
+      "aircraft_id": "100",
+      "cancelled": true,
+      "dep": "2017-05-07T08:10:00+08:00",
+      "arr": "2017-05-07T09:45:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2280",
+      "option_id": "XMA_2280_D0",
+      "aircraft_id": "102",
+      "cancelled": false,
+      "dep": "2017-05-08T19:35:00+08:00",
+      "arr": "2017-05-08T21:25:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2281",
+      "option_id": "XMA_2281_D0",
+      "aircraft_id": "102",
+      "cancelled": false,
+      "dep": "2017-05-08T22:25:00+08:00",
+      "arr": "2017-05-08T23:55:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2340",
+      "option_id": "XMA_2340_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-07T21:00:00+08:00",
+      "arr": "2017-05-07T23:30:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2341",
+      "option_id": "XMA_2341_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-08T21:00:00+08:00",
+      "arr": "2017-05-08T23:30:00+08:00",
+      "rebook": {}
+    },
+    {
+      "flight_id": "2345",
+      "option_id": "XMA_2345_D0",
+      "aircraft_id": "100",
+      "cancelled": false,
+      "dep": "2017-05-08T06:30:00+08:00",
+      "arr": "2017-05-08T08:55:00+08:00",
+      "rebook": {}
+    }
+  ],
+  "independent_audit": {
+    "valid": true,
+    "violations": [],
+    "score": 56897.62037037037,
+    "raw_score": 56897.62037037037,
+    "penalty": 0,
+    "breakdown": {
+      "empty_flight": 0.0,
+      "cancel_flight": 45000.0,
+      "type_change": 0.0,
+      "swap_flight": 80.0,
+      "straighten": 0.0,
+      "flight_delay": 0.0,
+      "flight_ahead": 0.0,
+      "passenger_cancel": 11500.0,
+      "passenger_delay": 0.0,
+      "sign_change_delay": 317.6203703703704
+    },
+    "air_breakdown": {
+      "schedule": 825000.0,
+      "aircraft": 0.0,
+      "passenger": 10617800.0
+    },
+    "objective": 56897.62037037037,
+    "passenger_ledger": [
+      {
+        "flight_id": "13",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 147,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 147
+      },
+      {
+        "flight_id": "27",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 92,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "39",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 122,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "87",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 123,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "101",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 132,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "139",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 66,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "188",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 49,
+        "sign_out": 0,
+        "sign_in": 66,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 115
+      },
+      {
+        "flight_id": "200",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 45,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "244",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 74,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 74
+      },
+      {
+        "flight_id": "288",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 66,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 66
+      },
+      {
+        "flight_id": "328",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 114,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 114
+      },
+      {
+        "flight_id": "338",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 161,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 1,
+        "physical_seats": 161,
+        "occupied_seats": 161
+      },
+      {
+        "flight_id": "348",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 118,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 118
+      },
+      {
+        "flight_id": "358",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 108,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 108
+      },
+      {
+        "flight_id": "365",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 132,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 132
+      },
+      {
+        "flight_id": "371",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 161,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 6,
+        "physical_seats": 161,
+        "occupied_seats": 161
+      },
+      {
+        "flight_id": "384",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 132,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 132
+      },
+      {
+        "flight_id": "390",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 130,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 130
+      },
+      {
+        "flight_id": "391",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 113,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 113
+      },
+      {
+        "flight_id": "460",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 148,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 148
+      },
+      {
+        "flight_id": "472",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 119,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 119
+      },
+      {
+        "flight_id": "499",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 22,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "508",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 31,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 31
+      },
+      {
+        "flight_id": "511",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 33,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 33
+      },
+      {
+        "flight_id": "536",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 82,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "549",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 108,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 108
+      },
+      {
+        "flight_id": "584",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 87,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 87
+      },
+      {
+        "flight_id": "662",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 161,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 2,
+        "physical_seats": 161,
+        "occupied_seats": 161
+      },
+      {
+        "flight_id": "670",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 86,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "686",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 59,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "704",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 150,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 150
+      },
+      {
+        "flight_id": "763",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 53,
+        "sign_in": 0,
+        "unserved": 80,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "805",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 68,
+        "sign_in": 0,
+        "unserved": 34,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "871",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 115,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "875",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 115,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "937",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 104,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "940",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 77,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "956",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 100,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "968",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 71,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "986",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 121,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 121
+      },
+      {
+        "flight_id": "998",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 35,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 35
+      },
+      {
+        "flight_id": "1027",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 140,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 140
+      },
+      {
+        "flight_id": "1037",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 78,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 78
+      },
+      {
+        "flight_id": "1042",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 28,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 28
+      },
+      {
+        "flight_id": "1105",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 31,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 31
+      },
+      {
+        "flight_id": "1121",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 45,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 45
+      },
+      {
+        "flight_id": "1137",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 53,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 53
+      },
+      {
+        "flight_id": "1140",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 75,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 75
+      },
+      {
+        "flight_id": "1213",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 43,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 43
+      },
+      {
+        "flight_id": "1225",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 98,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1234",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 80,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1240",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 94,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1257",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 143,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 143
+      },
+      {
+        "flight_id": "1270",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 144,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 144
+      },
+      {
+        "flight_id": "1285",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 82,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 82
+      },
+      {
+        "flight_id": "1290",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 87,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1294",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 154,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 154
+      },
+      {
+        "flight_id": "1398",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 160,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 160
+      },
+      {
+        "flight_id": "1416",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 89,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1423",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 156,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1425",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 132,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 132
+      },
+      {
+        "flight_id": "1427",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 150,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 150
+      },
+      {
+        "flight_id": "1431",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 150,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 150
+      },
+      {
+        "flight_id": "1465",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 51,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1469",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 61,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1577",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 97,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 97
+      },
+      {
+        "flight_id": "1645",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 97,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1677",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 104,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1693",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 81,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "1811",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 151,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 151
+      },
+      {
+        "flight_id": "1819",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 138,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 138
+      },
+      {
+        "flight_id": "1860",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 154,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 154
+      },
+      {
+        "flight_id": "1863",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 89,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 89
+      },
+      {
+        "flight_id": "1897",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 135,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 135
+      },
+      {
+        "flight_id": "1908",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 177,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 177
+      },
+      {
+        "flight_id": "1909",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 125,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 125
+      },
+      {
+        "flight_id": "1911",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 161,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 161
+      },
+      {
+        "flight_id": "1912",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 151,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 151
+      },
+      {
+        "flight_id": "1934",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 144,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 144
+      },
+      {
+        "flight_id": "1935",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 144,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 144
+      },
+      {
+        "flight_id": "1945",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 103,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 103
+      },
+      {
+        "flight_id": "1946",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 102,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 183,
+        "occupied_seats": 102
+      },
+      {
+        "flight_id": "2070",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 130,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 130
+      },
+      {
+        "flight_id": "2084",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 61,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 61
+      },
+      {
+        "flight_id": "2088",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 118,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 118
+      },
+      {
+        "flight_id": "2092",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 138,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "2096",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 59,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "2157",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 97,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 97
+      },
+      {
+        "flight_id": "2160",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 120,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 120
+      },
+      {
+        "flight_id": "2169",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 106,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 106
+      },
+      {
+        "flight_id": "2171",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 152,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 152
+      },
+      {
+        "flight_id": "2185",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 88,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 88
+      },
+      {
+        "flight_id": "2200",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 75,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 75
+      },
+      {
+        "flight_id": "2216",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 42,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 42
+      },
+      {
+        "flight_id": "2226",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 154,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 154
+      },
+      {
+        "flight_id": "2230",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 125,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 125
+      },
+      {
+        "flight_id": "2274",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 101,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "2278",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 0,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 111,
+        "physical_seats": 0,
+        "occupied_seats": 0
+      },
+      {
+        "flight_id": "2280",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 63,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 63
+      },
+      {
+        "flight_id": "2281",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 89,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 89
+      },
+      {
+        "flight_id": "2340",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 66,
+        "sign_out": 0,
+        "sign_in": 68,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 134
+      },
+      {
+        "flight_id": "2341",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 39,
+        "sign_out": 0,
+        "sign_in": 0,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 39
+      },
+      {
+        "flight_id": "2345",
+        "cancelled_in": 0,
+        "failed_in": 0,
+        "resident": 108,
+        "sign_out": 0,
+        "sign_in": 53,
+        "unserved": 0,
+        "physical_seats": 161,
+        "occupied_seats": 161
+      }
+    ],
+    "penalty_semantics": "Source constants; violation granularity is independently diagnosed, JAR is authoritative for invalid results."
+  }
+}

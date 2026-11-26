@@ -1,0 +1,38 @@
+{
+  "scenario_id": "toy_case_016_benders_branch_and_price",
+  "recovery_window": {"start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T14:00:00Z"},
+  "airports": [
+    {"airport_id": "A", "name": "Alpha"},
+    {"airport_id": "B", "name": "Bravo"},
+    {"airport_id": "C", "name": "Charlie"}
+  ],
+  "flights": [
+    {"flight_id": "T16_F1", "origin": "A", "destination": "B", "sched_dep": "2026-01-15T08:00:00Z", "sched_arr": "2026-01-15T08:30:00Z", "duration": 30, "original_aircraft": "T16_AC1", "original_equipment": "E1", "original_crew": "T16_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "T16_F2", "origin": "A", "destination": "B", "sched_dep": "2026-01-15T09:00:00Z", "sched_arr": "2026-01-15T09:30:00Z", "duration": 30, "original_aircraft": "T16_AC2", "original_equipment": "E1", "original_crew": "T16_C2", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "T16_F3", "origin": "A", "destination": "B", "sched_dep": "2026-01-15T10:00:00Z", "sched_arr": "2026-01-15T10:30:00Z", "duration": 30, "original_aircraft": "T16_AC3", "original_equipment": "E1", "original_crew": "T16_C3", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "T16_D1", "origin": "B", "destination": "A", "sched_dep": "2026-01-15T11:00:00Z", "sched_arr": "2026-01-15T11:30:00Z", "duration": 30, "original_aircraft": "T16_AC1", "original_equipment": "E1", "original_crew": "T16_C1", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "T16_D2", "origin": "B", "destination": "A", "sched_dep": "2026-01-15T11:40:00Z", "sched_arr": "2026-01-15T12:10:00Z", "duration": 30, "original_aircraft": "T16_AC2", "original_equipment": "E1", "original_crew": "T16_C2", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0},
+    {"flight_id": "T16_D3", "origin": "B", "destination": "A", "sched_dep": "2026-01-15T12:20:00Z", "sched_arr": "2026-01-15T12:50:00Z", "duration": 30, "original_aircraft": "T16_AC3", "original_equipment": "E1", "original_crew": "T16_C3", "strategic_flag": false, "market_flag": false, "min_seats": 0, "max_delay": 0}
+  ],
+  "aircraft": [
+    {"tail_id": "T16_AC1", "equipment_type": "E1", "initial_station_at_t": "A", "required_station_at_T_end": "A", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["T16_F1", "T16_D1"]},
+    {"tail_id": "T16_AC2", "equipment_type": "E1", "initial_station_at_t": "A", "required_station_at_T_end": "A", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["T16_F2", "T16_D2"]},
+    {"tail_id": "T16_AC3", "equipment_type": "E1", "initial_station_at_t": "A", "required_station_at_T_end": "A", "maintenance_required": false, "maintenance_stations": [], "original_rotation": ["T16_F3", "T16_D3"]}
+  ],
+  "crew": [
+    {"crew_id": "T16_C1", "rating": "E1", "start_station_at_t": "A", "required_station_at_T_end": "A", "original_duties": [["T16_F1", "T16_D1"]], "original_pairing": ["T16_F1", "T16_D1"]},
+    {"crew_id": "T16_C2", "rating": "E1", "start_station_at_t": "A", "required_station_at_T_end": "A", "original_duties": [["T16_F2", "T16_D2"]], "original_pairing": ["T16_F2", "T16_D2"]},
+    {"crew_id": "T16_C3", "rating": "E1", "start_station_at_t": "A", "required_station_at_T_end": "A", "original_duties": [["T16_F3", "T16_D3"]], "original_pairing": ["T16_F3", "T16_D3"]}
+  ],
+  "passengers": [],
+  "airport_intervals": [
+    {"airport": "A", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T08:45:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "A", "start_time": "2026-01-15T08:45:00Z", "end_time": "2026-01-15T10:15:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": true, "weather_restrictions": []},
+    {"airport": "A", "start_time": "2026-01-15T10:15:00Z", "end_time": "2026-01-15T14:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "B", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T10:45:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "B", "start_time": "2026-01-15T10:45:00Z", "end_time": "2026-01-15T13:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": true, "weather_restrictions": []},
+    {"airport": "B", "start_time": "2026-01-15T13:00:00Z", "end_time": "2026-01-15T14:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []},
+    {"airport": "C", "start_time": "2026-01-15T07:00:00Z", "end_time": "2026-01-15T14:00:00Z", "arr_capacity": 20, "dep_capacity": 20, "gate_capacity": 20, "curfew_flag": false, "weather_restrictions": []}
+  ],
+  "disruptions": []
+}

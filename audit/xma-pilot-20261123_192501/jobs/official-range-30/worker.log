@@ -1,0 +1,116 @@
+{"stage": "preparing", "type": "study_context", "message": "厦航研究问题已绑定", "metrics": {"algorithm": "joint_arc_flow", "study_signature": "ced082cbe9a1e68094e2a1af0ac2018c2926f0178bf483bf434cdead51f0aa4d", "dataset_id": "xma_2017_5f7017649664_tails_2", "objective_profile": "tianchi_2017", "objective_units": "tianchi_score", "requested_flights": 20, "actual_flights": 30, "selection_mode": "fixed", "selection_seed": null}, "worker_elapsed_seconds": 0.14100000000325963}
+{"stage": "candidate_generation", "type": "candidate_generation", "message": "厦航航班候选生成完成", "metrics": {"flight_options": 885, "generation_seconds": 0.013488100001268322}, "worker_elapsed_seconds": 0.15700000000288128}
+{"stage": "optimization", "type": "solver_selected", "message": "HiGHS selected as the solver.", "metrics": {"solver": "HiGHS", "live_bounds_available": true}, "worker_elapsed_seconds": 0.1720000000022992}
+Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+MIP has 50 rows; 885 cols; 908 nonzeros; 885 integer variables (885 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+00]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 1e+00]
+  RHS     [1e+00, 2e+00]
+Presolving model
+22 rows, 876 cols, 880 nonzeros 0s
+1 rows, 4 cols, 4 nonzeros 0s
+0 rows, 0 cols, 0 nonzeros 0s
+Presolve reductions: rows 0(-50); columns 0(-885); nonzeros 0(-908) - Reduced to empty
+Presolve: Optimal
+{"stage": "optimization", "type": "mip_progress", "message": "HiGHS mixed-integer optimization progress.", "metrics": {"solver": "HiGHS", "backend": "highspy", "live_bounds_available": true, "node_count": 0, "solver_runtime_seconds": 0.002301900000020396, "has_incumbent": true, "bound_scope": "necessary_conditions"}, "lower_bound": 0.0, "upper_bound": 0.0, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 0.1720000000022992}
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               0                  0.00%        0      0      0         0     0.0s
+
+Solving report
+  Status            Optimal
+  Primal bound      0
+  Dual bound        0
+  Gap               0%
+  P-D integral      0
+  Solution status   feasible
+                    0 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            0.00
+                    0.00 (Presolve)
+                    0.00 (Solve)
+                    0.00 (Postsolve)
+  Max sub-MIP depth 0
+  Nodes             0
+  Repair LPs        0
+  LP iterations     0
+{"stage": "optimization", "type": "mip_progress", "message": "HiGHS mixed-integer optimization progress.", "metrics": {"solver": "HiGHS", "backend": "highspy", "live_bounds_available": true, "node_count": 0, "solver_runtime_seconds": 0.004867499999818392, "has_incumbent": true, "bound_scope": "necessary_conditions"}, "lower_bound": 0.0, "upper_bound": 0.0, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 0.1720000000022992}
+{"stage": "model", "type": "building_model", "message": "建立飞机网络流联合模型", "worker_elapsed_seconds": 0.1720000000022992}
+{"stage": "model", "type": "model_built", "message": "联合约束已建立", "metrics": {"variables": 10296, "constraints": 9008, "build_seconds": 0.4118229000014253}, "worker_elapsed_seconds": 0.5940000000009604}
+{"stage": "optimization", "type": "solver_selected", "message": "HiGHS selected as the solver.", "metrics": {"solver": "HiGHS", "live_bounds_available": true}, "worker_elapsed_seconds": 0.5940000000009604}
+Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+MIP has 9008 rows; 10296 cols; 33007 nonzeros; 10296 integer variables (9272 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 7e+03]
+  Cost    [1e+00, 5e+03]
+  Bound   [1e+00, 5e+02]
+  RHS     [1e+00, 1e+04]
+Presolving model
+6595 rows, 7871 cols, 25951 nonzeros 0s
+4896 rows, 6128 cols, 23857 nonzeros 0s
+3805 rows, 5538 cols, 20319 nonzeros 0s
+3719 rows, 5491 cols, 20128 nonzeros 0s
+Presolve reductions: rows 3719(-5289); columns 5491(-4805); nonzeros 20128(-12879) 
+Objective function is integral with scale 8640
+
+Solving MIP model with:
+   3719 rows
+   5491 cols (4543 binary, 948 integer, 0 implied int., 0 continuous, 0 domain fixed)
+   20128 nonzeros
+   Thread count 1 (of 24 threads). Using 1 max workers. Parallel search off
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   -54600.972454   inf                  inf        0      0      0         0     0.7s
+{"stage": "optimization", "type": "mip_progress", "message": "HiGHS mixed-integer optimization progress.", "metrics": {"solver": "HiGHS", "backend": "highspy", "live_bounds_available": true, "node_count": 0, "solver_runtime_seconds": 0.6692756999982521, "has_incumbent": false, "bound_scope": "global"}, "lower_bound": -54600.972453703704, "upper_bound": null, "worker_elapsed_seconds": 1.2820000000028813}
+         0       0         0   0.00%   8041.582472     inf                  inf        0      0      4       951     0.7s
+{"stage": "optimization", "type": "mip_progress", "message": "HiGHS mixed-integer optimization progress.", "metrics": {"solver": "HiGHS", "backend": "highspy", "live_bounds_available": true, "node_count": 0, "solver_runtime_seconds": 1.1515232999990985, "has_incumbent": true, "bound_scope": "global"}, "lower_bound": 8464.0, "upper_bound": 8464.0, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 1.75}
+{"stage": "audit", "type": "incumbent_audited", "message": "完整方案已通过独立审计", "upper_bound": 8464.0, "lower_bound": 8464.0, "metrics": {"bound_scope": "global", "audited": true}, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 1.7660000000032596}
+ R       0       0         0 100.00%   8464            8464               0.00%      188     22     13       997     1.2s
+         1       0         1 100.00%   8464            8464               0.00%      188     22     13       997     1.2s
+
+Solving report
+  Status            Optimal
+  Primal bound      8464
+  Dual bound        8464
+  Gap               0%
+  P-D integral      0
+  Solution status   feasible
+                    8464 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            1.16
+                    0.46 (Presolve)
+                    0.70 (Solve)
+                    0.00 (Postsolve)
+  Max sub-MIP depth 0
+  Nodes             1
+  Repair LPs        0
+  LP iterations     997
+                    0 (strong br.)
+                    46 (separation)
+                    0 (heuristics)
+{"stage": "optimization", "type": "mip_progress", "message": "HiGHS mixed-integer optimization progress.", "metrics": {"solver": "HiGHS", "backend": "highspy", "live_bounds_available": true, "node_count": 1, "solver_runtime_seconds": 1.1819246000013663, "has_incumbent": true, "bound_scope": "global"}, "lower_bound": 8464.0, "upper_bound": 8464.0, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 1.7820000000028813}
+{"stage": "audit", "type": "audit_completed", "message": "独立评分与业务约束复算完成", "metrics": {"integrated_audit": {"valid": true, "violations": [], "score": 8464.0, "raw_score": 8464.0, "penalty": 0, "breakdown": {"empty_flight": 0.0, "cancel_flight": 6000.0, "type_change": 0.0, "swap_flight": 0.0, "straighten": 0.0, "flight_delay": 900.0, "flight_ahead": 0.0, "passenger_cancel": 1396.0, "passenger_delay": 168.0, "sign_change_delay": 0.0}, "air_breakdown": {"schedule": 100360.0, "aircraft": 0.0, "passenger": 1074600.0}, "objective": 8464.0, "passenger_ledger": [{"flight_id": "139", "cancelled_in": 0, "failed_in": 0, "resident": 66, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 66}, {"flight_id": "460", "cancelled_in": 0, "failed_in": 0, "resident": 148, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 148}, {"flight_id": "472", "cancelled_in": 0, "failed_in": 0, "resident": 119, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 119}, {"flight_id": "499", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 22, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "508", "cancelled_in": 0, "failed_in": 0, "resident": 31, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 31}, {"flight_id": "511", "cancelled_in": 0, "failed_in": 0, "resident": 33, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 33}, {"flight_id": "536", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 82, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "549", "cancelled_in": 0, "failed_in": 0, "resident": 108, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 108}, {"flight_id": "584", "cancelled_in": 0, "failed_in": 0, "resident": 87, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 87}, {"flight_id": "986", "cancelled_in": 0, "failed_in": 0, "resident": 121, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 121}, {"flight_id": "1027", "cancelled_in": 0, "failed_in": 0, "resident": 140, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 140}, {"flight_id": "1042", "cancelled_in": 0, "failed_in": 0, "resident": 28, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 28}, {"flight_id": "1257", "cancelled_in": 0, "failed_in": 0, "resident": 143, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 143}, {"flight_id": "1270", "cancelled_in": 0, "failed_in": 0, "resident": 144, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 144}, {"flight_id": "1294", "cancelled_in": 0, "failed_in": 0, "resident": 154, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 154}, {"flight_id": "1416", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 89, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1423", "cancelled_in": 0, "failed_in": 0, "resident": 0, "sign_out": 0, "sign_in": 0, "unserved": 156, "physical_seats": 0, "occupied_seats": 0}, {"flight_id": "1425", "cancelled_in": 0, "failed_in": 0, "resident": 132, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 132}, {"flight_id": "1431", "cancelled_in": 0, "failed_in": 0, "resident": 150, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 150}, {"flight_id": "1465", "cancelled_in": 0, "failed_in": 0, "resident": 51, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 51}, {"flight_id": "1469", "cancelled_in": 0, "failed_in": 0, "resident": 61, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 161, "occupied_seats": 61}, {"flight_id": "1897", "cancelled_in": 0, "failed_in": 0, "resident": 135, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 135}, {"flight_id": "1908", "cancelled_in": 0, "failed_in": 0, "resident": 177, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 177}, {"flight_id": "1909", "cancelled_in": 0, "failed_in": 0, "resident": 125, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 125}, {"flight_id": "1911", "cancelled_in": 0, "failed_in": 0, "resident": 161, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 161}, {"flight_id": "1912", "cancelled_in": 0, "failed_in": 0, "resident": 151, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 151}, {"flight_id": "1934", "cancelled_in": 0, "failed_in": 0, "resident": 144, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 144}, {"flight_id": "1935", "cancelled_in": 0, "failed_in": 0, "resident": 144, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 144}, {"flight_id": "1945", "cancelled_in": 0, "failed_in": 0, "resident": 103, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 103}, {"flight_id": "1946", "cancelled_in": 0, "failed_in": 0, "resident": 102, "sign_out": 0, "sign_in": 0, "unserved": 0, "physical_seats": 183, "occupied_seats": 102}], "penalty_semantics": "Source constants; violation granularity is independently diagnosed, JAR is authoritative for invalid results."}}, "worker_elapsed_seconds": 1.8440000000009604}
+{"stage": "complete", "type": "solve_bounds", "message": "求解结束", "lower_bound": 8464.0, "upper_bound": 8464.0, "absolute_gap": 0, "relative_gap": 0.0, "worker_elapsed_seconds": 1.8440000000009604}
+{"status": "optimal", "reason": "2", "audit_pass": true, "objective": 8464.0, "lower_bound": 8464.0, "upper_bound": 8464.0, "relative_gap": 0.0, "model_statistics": {"variables": 10296, "constraints": 9008, "nodes": 1, "aircraft_columns": 0, "representation": "arc", "solver": "HiGHS", "bound_scope": "global", "tail_pool_size": null, "timings": {"matrix_extraction_seconds": 0.010963900000206195, "solver_model_update_seconds": 0.003908599999704165, "native_optimization_seconds": 1.1809811999992235}}, "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f", "study_signature": "ced082cbe9a1e68094e2a1af0ac2018c2926f0178bf483bf434cdead51f0aa4d", "flights": 30, "complete_decisions": true, "certified_optimal": true, "external_evaluator": "not_run", "first_solver_incumbent_seconds": 1.75, "first_audited_solution_seconds": 1.7660000000032596, "first_checkpoint_seconds": 1.7660000000032596, "first_solver_scope": "global", "solution_evidence_directory": "G:\\jzm\\project\\flight_recovery\\.public_benchmarks\\xma-pilot-20261123_192501\\jobs\\official-range-30", "retained_incumbent": true, "job_id": "official-range-30", "worker_seconds": 1.985000000000582, "finished_at": "2026-11-23T11:25:15.314113+00:00"}

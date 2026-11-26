@@ -6,12 +6,15 @@ import sys
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from backend.benchmarks.xma_first_solution import prepare, verify, pilot, launch, run, worker, report
+from backend.business.xma.memory import DEFAULT_MEMORY_GIB
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     commands=parser.add_subparsers(dest='command',required=True)
     p=commands.add_parser('prepare');p.add_argument('--output',type=Path,required=True);p.add_argument('--calibration',type=Path,required=True)
+    p.add_argument('--memory-gib',type=int,default=DEFAULT_MEMORY_GIB,help='Process-tree hard limit in GiB')
+    p.add_argument('--only',choices=['FULL'],help='Prepare the full dataset job alone')
     p=commands.add_parser('pilot');p.add_argument('--output',type=Path,required=True)
     for name in ('verify','launch','run','report'):
         p=commands.add_parser(name);p.add_argument('folder',type=Path)
@@ -19,7 +22,7 @@ def main():
             p.add_argument('--start-now',action='store_true',help='Start immediately under explicit user authorization')
     p=commands.add_parser('_job');p.add_argument('folder',type=Path);p.add_argument('job_id');p.add_argument('target',type=Path);p.add_argument('--seconds',type=float)
     args=parser.parse_args()
-    if args.command=='prepare':result=prepare(args.output,args.calibration)
+    if args.command=='prepare':result=prepare(args.output,args.calibration,memory_gib=args.memory_gib,only=args.only)
     elif args.command=='pilot':result=pilot(args.output)
     elif args.command=='launch':result=launch(args.folder,start_now=args.start_now)
     elif args.command=='verify':

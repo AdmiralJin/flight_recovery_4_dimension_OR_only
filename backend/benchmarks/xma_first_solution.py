@@ -18,8 +18,8 @@ import traceback
 
 from .common import ROOT, clean, digest, file_hash, read_json, write_json, utc_now
 from .direct_campaign import file_lock
+from backend.business.xma.memory import ADMISSION_FRACTION, DEFAULT_MEMORY_GIB, GIB, admission_bytes
 
-GIB=1024**3
 KIND='xma-highs-first-solution-v1'
 
 
@@ -58,7 +58,7 @@ def balanced_groups(data):
     return {f'Q{i+1}':group for i,group in enumerate(groups)}
 
 
-def prepare(folder,calibration=None):
+def prepare(folder,calibration=None, *, memory_gib=DEFAULT_MEMORY_GIB, only=None):
     from .campaign import snapshot_sources, environment
     from backend.business.xma.importer import load_workbook, select_tail_subset, preview
     from backend.business.xma.schema import XmaSolveRequest
@@ -66,6 +66,9 @@ def prepare(folder,calibration=None):
     folder=Path(folder).resolve()
     if folder.exists():
         raise ValueError('output exists; use verify/launch, do not overwrite a frozen campaign')
+    limit = admission_bytes(memory_gib)
+    if only not in (None, 'FULL'):
+        raise ValueError('only FULL may be selected individually')
     factor=1.0
     calibration_record=None
     if calibration:
@@ -83,6 +86,8 @@ def prepare(folder,calibration=None):
             for f in data.flights if data.adjustment_start<=f.sched_dep<=data.adjustment_end)
     selections=[('Q1',groups['Q1'],21600),('H1',groups['Q1']+groups['Q2'],43200),
                 ('FULL',[a.tail_id for a in data.aircraft],86400)]
+    if only:
+        selections = [entry for entry in selections if entry[0] == only]
     folder.mkdir(parents=True)
     jobs=[]
     for name,tail_ids,seconds in selections:
@@ -100,7 +105,7 @@ def prepare(folder,calibration=None):
             external_airport_occupancy='not deducted; conditional subset; do not stitch')
         write_json(folder/'boundaries'/f'{name}.json',boundary)
         jobs.append(dict(id=name,input=path.relative_to(folder).as_posix(),input_sha256=file_hash(path),
-            study_signature=study_signature(request),seconds=seconds,memory_gib=6,threads=1,
+            study_signature=study_signature(request),seconds=seconds,memory_gib=memory_gib,threads=1,
             scale=preview(selected)['counts'],tail_ids=tail_ids))
     write_json(folder/'groups.json',groups)
     write_json(folder/'calibration.json',calibration_record)
@@ -112,13 +117,15 @@ def prepare(folder,calibration=None):
         boundary_sha256={f'{j["id"]}.json':file_hash(folder/'boundaries'/f'{j["id"]}.json') for j in jobs},
         memory_calibration=factor,recovery_end=end.isoformat(),policy=dict(user_enter_required_by_default=True,
         explicit_start_now_supported=True,global_concurrency=1,
-        startup_available_gib=4,emergency_available_gib=1.5,emergency_seconds=10,watchdog_grace_seconds=120,
+        admission_fraction=ADMISSION_FRACTION,admission_bytes=limit,
+        startup_available_gib=4 if memory_gib<=DEFAULT_MEMORY_GIB else memory_gib+1.5,
+        emergency_available_gib=1.5,emergency_seconds=10,watchdog_grace_seconds=120,
         restricted_bounds_are_local=True,optimization_backend='highs',fallback=False,subset_is_full_solution=False))
     manifest['manifest_sha256']=digest(manifest)
     write_json(folder/'manifest.json',manifest)
     write_json(folder/'state.json',dict(status='prepared_not_started',jobs={},active=None))
     launcher=('@echo off\r\nchcp 65001 >nul\r\n'
-        'title XMA HiGHS first solution - Q1 H1 FULL\r\n'
+        f'title XMA HiGHS first solution - {" ".join(j["id"] for j in jobs)}\r\n'
         f'cd /d "{folder / "source"}"\r\n'
         f'"{sys.executable}" -u "{folder / "source/scripts/xma_first_solution.py"}" run "{folder}"\r\n')
     (folder/'start_xma.cmd').write_bytes(launcher.encode('utf-8'))
@@ -273,7 +280,10 @@ def run(folder, *, start_now=False):
     state_path=folder/'state.json'
     state=read_json(state_path)
     if state['status']=='completed':return report(folder)
-    print('XMA / HiGHS / Q1 6h -> H1 12h -> FULL 24h / serial / 6 GiB hard memory limit',flush=True)
+    for job in manifest['jobs']:
+        print(f'{job["id"]}: HiGHS, {job["seconds"]/3600:g}h, {job["memory_gib"]:g} GiB hard limit',flush=True)
+    if 'admission_bytes' in manifest.get('policy', {}):
+        print(f'Search admission: {manifest["policy"]["admission_bytes"]/GIB:g} GiB',flush=True)
     print('STOP file or Ctrl+C requests cancellation. Closing this window kills its worker.',flush=True)
     if not start_now:
         write_json(folder/'window.json',dict(status='waiting_for_enter',pid=os.getpid(),at=utc_now()))
@@ -319,23 +329,24 @@ def run(folder, *, start_now=False):
                 write_json(target/'attempt.json',dict(started_at=utc_now(),seconds=remaining))
                 state.update(status='running',active=job['id'],active_attempt=str(target));write_json(state_path,state)
                 env=dict(os.environ,PYTHONIOENCODING='utf-8',PYTHONUNBUFFERED='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',
-                    OPENBLAS_NUM_THREADS='1',NUMEXPR_NUM_THREADS='1',XMA_MEMORY_CALIBRATION=str(manifest['memory_calibration']))
+                    OPENBLAS_NUM_THREADS='1',NUMEXPR_NUM_THREADS='1',XMA_MEMORY_CALIBRATION=str(manifest['memory_calibration']),
+                    XMA_MEMORY_GIB=str(job['memory_gib']))
                 command=[manifest['python'],str(folder/'source/scripts/xma_first_solution.py'),'_job',str(folder),job['id'],str(target),'--seconds',str(remaining)]
                 began=time.monotonic();stop_since=low_since=None;reason=None;peak_rss=0
                 print(f'START {job["id"]}, budget {remaining/3600:.2f}h',flush=True)
                 with (target/'worker.log').open('ab') as log:
-                    child=GuardedChild(command,cwd=folder/'source',env=env,log=log,memory_gib=6)
+                    child=GuardedChild(command,cwd=folder/'source',env=env,log=log,memory_gib=job['memory_gib'])
                     try:
                         last_notice=0
                         while child.poll() is None:
                             now=time.monotonic();elapsed=now-began
                             peak_rss=max(peak_rss,process_memory(child))
-                            low=psutil.virtual_memory().available<1.5*GIB
+                            low=psutil.virtual_memory().available<manifest['policy']['emergency_available_gib']*GIB
                             low_since=(low_since or now) if low else None
                             if (folder/'STOP').exists():reason=reason or 'user_stop'
-                            if low_since and now-low_since>=10:reason=reason or 'system_memory_floor'
+                            if low_since and now-low_since>=manifest['policy']['emergency_seconds']:reason=reason or 'system_memory_floor'
                             if elapsed>=remaining:reason=reason or 'time_limit'
-                            if child.peak_commit()>=6*GIB*.99:reason=reason or 'process_tree_memory_limit'
+                            if child.peak_commit()>=job['memory_gib']*GIB*.99:reason=reason or 'process_tree_memory_limit'
                             if reason:
                                 (target/'CANCEL').touch(exist_ok=True);stop_since=stop_since or now
                                 if now-stop_since>=120:child.kill();break
@@ -353,7 +364,7 @@ def run(folder, *, start_now=False):
                 result=read_json(target/'result.json') if (target/'result.json').exists() else dict(status='error',reason='worker_exit_without_result',certified_optimal=False)
                 if reason:
                     result.update(status='cancelled' if reason=='user_stop' else 'timed_out' if reason=='time_limit' else 'resource_limited',reason=reason,certified_optimal=False)
-                elif returncode and peak_commit>=6*GIB*.8:
+                elif returncode and peak_commit>=job['memory_gib']*GIB*.8:
                     result.update(status='resource_limited',reason='worker_exit_near_memory_limit',certified_optimal=False)
                 result=restore_checkpoint(folder,job,target,result)
                 for old in attempts:result=restore_checkpoint(folder,job,old,result)

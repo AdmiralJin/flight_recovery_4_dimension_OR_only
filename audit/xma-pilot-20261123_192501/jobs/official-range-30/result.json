@@ -1,0 +1,39 @@
+{
+  "status": "optimal",
+  "reason": "2",
+  "audit_pass": true,
+  "objective": 8464.0,
+  "lower_bound": 8464.0,
+  "upper_bound": 8464.0,
+  "relative_gap": 0.0,
+  "model_statistics": {
+    "variables": 10296,
+    "constraints": 9008,
+    "nodes": 1,
+    "aircraft_columns": 0,
+    "representation": "arc",
+    "solver": "HiGHS",
+    "bound_scope": "global",
+    "tail_pool_size": null,
+    "timings": {
+      "matrix_extraction_seconds": 0.010963900000206195,
+      "solver_model_update_seconds": 0.003908599999704165,
+      "native_optimization_seconds": 1.1809811999992235
+    }
+  },
+  "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+  "study_signature": "ced082cbe9a1e68094e2a1af0ac2018c2926f0178bf483bf434cdead51f0aa4d",
+  "flights": 30,
+  "complete_decisions": true,
+  "certified_optimal": true,
+  "external_evaluator": "not_run",
+  "first_solver_incumbent_seconds": 1.75,
+  "first_audited_solution_seconds": 1.7660000000032596,
+  "first_checkpoint_seconds": 1.7660000000032596,
+  "first_solver_scope": "global",
+  "solution_evidence_directory": "G:\\jzm\\project\\flight_recovery\\.public_benchmarks\\xma-pilot-20261123_192501\\jobs\\official-range-30",
+  "retained_incumbent": true,
+  "job_id": "official-range-30",
+  "worker_seconds": 1.985000000000582,
+  "finished_at": "2026-11-23T11:25:15.314113+00:00"
+}

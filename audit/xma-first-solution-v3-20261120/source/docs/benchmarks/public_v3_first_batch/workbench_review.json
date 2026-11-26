@@ -1,0 +1,137 @@
+{
+  "verdict": "passed",
+  "draft_id": "da0d3630-0309-4435-ba4f-138f7e625eff",
+  "snapshot_id": "b95cc532-595e-410a-9a6e-afcd386a025d",
+  "run_id": "e04b9d90-d48f-4a7a-8042-0071fb014cb3",
+  "state_root": "D:\\python_project\\flight_recovery\\.public_benchmarks\\formal-v3-20261111-r4\\jobs\\J0126\\workbench-state",
+  "job_id": "J0126",
+  "elapsed_seconds": 2.763098200011882,
+  "finished_at": "2026-11-11T11:55:41.618484+00:00",
+  "job_status": "completed",
+  "optimization_status": "optimal",
+  "objective": {
+    "aircraft": 0.0,
+    "crew": 0.0,
+    "passenger": 0.0,
+    "schedule": 240.0,
+    "total": 240.0
+  },
+  "independent_audit_pass": true,
+  "problem_sha256": "0e52d758c24d2b7f932638cd2d5b0e502125d0b6d5937a6acaa4fa02b1182c3b",
+  "solution_artifact_sha256": "b96fd88c8c9e932e1fdb2cb7e35b6fb395c474100f0df2887d319a7a58111ed8",
+  "event_count": 24,
+  "visualization_http_status": 200,
+  "mode_availability": {
+    "original": {
+      "available": true,
+      "reason": null
+    },
+    "impact": {
+      "available": true,
+      "reason": null
+    },
+    "recovered": {
+      "available": true,
+      "reason": null
+    },
+    "delta": {
+      "available": true,
+      "reason": null
+    }
+  },
+  "delft_infeasible_review": {
+    "source_review_sha256": "f4c5b59634efe57f049ddcd4536d9af7ade1583c8a9914361006aacd4e128e44",
+    "exit_code": 0,
+    "draft_id": "b46d4a72-34e3-4f6a-a066-75db32723287",
+    "snapshot_id": "16e81105-0f64-45b7-a692-720b2d791be0",
+    "snapshot_environment": {
+      "git_commit": "8d2b1c7dc46aaab3606d42755a68a97e6ec7f5d8",
+      "dirty": true,
+      "diff_hash": "d8f2ff266fc723a8576c0a123aef92b517f6dee8203179d6f8868444ed336f24"
+    },
+    "run": {
+      "run_id": "0120cebf-2a17-4941-bb33-540c8541d011",
+      "job_status": "completed",
+      "optimization_status": "infeasible",
+      "result": {
+        "aircraft_outcomes": [],
+        "algorithm": "public_air_benders_cg_bp_v1",
+        "crew_outcomes": [],
+        "diagnostics": {
+          "aircraft_bp_nodes": 0,
+          "aircraft_cg_calls": 0,
+          "aircraft_generated_columns": 0,
+          "algorithm": "public_air_benders_cg_bp_v1",
+          "benders_master_iterations": 0,
+          "crew_bp_nodes": 0,
+          "crew_cg_calls": 0,
+          "crew_generated_pairings": 0,
+          "exact_integer_cuts": 0,
+          "feasibility_cuts": 0,
+          "formal_full_enumerators_used": false,
+          "gap": null,
+          "integrated_audit_pass": null,
+          "lower_bound": null,
+          "lp_cuts": 0,
+          "objective": null,
+          "passenger_itinerary_count": 0,
+          "runtime_seconds": 0.002568500000052154,
+          "terminal_reason": "certified_preprocessing_infeasibility",
+          "upper_bound": null,
+          "visited_schedules": 0
+        },
+        "metrics": null,
+        "objective": null,
+        "passenger_outcomes": [],
+        "recovery_actions": [],
+        "resolved_flights": [],
+        "run_id": "0120cebf-2a17-4941-bb33-540c8541d011",
+        "run_metadata": {
+          "algorithm": "public_air_benders_cg_bp_v1",
+          "algorithm_profile_ids": {
+            "aircraft_string_cg": "public_v3_aircraft_string_cg_v1",
+            "benders_cg": "public_v3_benders_cg_v1",
+            "branch_and_price": "public_v3_branch_and_price_v1",
+            "crew_pairing_cg": "public_v3_crew_pairing_cg_v1",
+            "crew_pairing_generation": "public_v3_crew_pairing_generation_v1",
+            "flight_string_generation": "public_v3_flight_string_generation_v1"
+          },
+          "application_version": "public-benchmark-1.0",
+          "capacity_profile_id": "delft2020-derived-2015-01-01T060000_0000-n2-s0-g30-aircraft:seats",
+          "cost_profile_id": "public_air_linear_v1",
+          "finished_at": "2026-11-11T11:53:52.501080Z",
+          "git_commit": "8d2b1c7dc46aaab3606d42755a68a97e6ec7f5d8",
+          "run_id": "0120cebf-2a17-4941-bb33-540c8541d011",
+          "runtime_seconds": 0.002568500000052154,
+          "scenario_id": "delft2020-derived-2015-01-01T060000_0000-n2-s0-g30-aircraft",
+          "solver": "highs",
+          "solver_version": "1.15.1",
+          "started_at": "2026-11-11T11:53:52.454490Z"
+        },
+        "scenario_id": "delft2020-derived-2015-01-01T060000_0000-n2-s0-g30-aircraft",
+        "schema_version": "1.0.0",
+        "selected": {
+          "aircraft_strings": [],
+          "crew_pairings": [],
+          "flight_options": [],
+          "passenger_itineraries": []
+        },
+        "status": "infeasible"
+      },
+      "error": null
+    }
+  },
+  "snapshot_record_sha256": "7d461b15c881af53052778b1186d8d4e6bb2e437ce5fe1dfb6f467b05b8ab643",
+  "snapshot": {
+    "schema_version": "2.0.0",
+    "snapshot_id": "b95cc532-595e-410a-9a6e-afcd386a025d",
+    "draft_id": "da0d3630-0309-4435-ba4f-138f7e625eff",
+    "created_at": "2026-11-11T11:55:39.860619Z",
+    "environment": {
+      "diff_hash": "050c923d82e9c3a2a05c4f886a945c751ebb1ab5dd420bd1d0703c8bc3500e01",
+      "dirty": null,
+      "git_commit": "8d2b1c7dc46aaab3606d42755a68a97e6ec7f5d8",
+      "source_manifest_sha256": "2ee178ad85b6f51fd9e463214fcca88c3354fba2e4a029bce6ffda13e4934fa6"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "jobs": [
+    {
+      "id": "legacy-20",
+      "input": "inputs/legacy-20.json",
+      "input_sha256": "aae910fe5a216410b61c76a8fb87e96f8685e72bf1136a177f34c04cd48e1c8f",
+      "study_signature": "840785a57f72bc8ce04d81ddeba06c0b288f5409537681a92a7f342146583e16",
+      "expected": 11444.0,
+      "scale": {
+        "flight_options": 112,
+        "assignment_options": 112,
+        "station_events": 223,
+        "shortcut_variables": 108,
+        "rebooking_variables": 4,
+        "estimated_variables": 1506,
+        "estimated_constraints": 1914,
+        "estimated_peak_bytes": 273443056,
+        "calibration_factor": 1.0,
+        "estimator_version": "xma-compact-structural-v1",
+        "tail_pool_size": null
+      }
+    },
+    {
+      "id": "legacy-50",
+      "input": "inputs/legacy-50.json",
+      "input_sha256": "2b571561bf9988a851fafb07763a662ba9eee4e2f8c3b95e0e3e2e91ab0f34ce",
+      "study_signature": "ad3455ea4de5d5faf8338d7e8cd9d0fe05c4780c855882d3e6fd8963405f1537",
+      "expected": 48412.0,
+      "scale": {
+        "flight_options": 238,
+        "assignment_options": 264,
+        "station_events": 526,
+        "shortcut_variables": 182,
+        "rebooking_variables": 4,
+        "estimated_variables": 3317,
+        "estimated_constraints": 4212,
+        "estimated_peak_bytes": 279460456,
+        "calibration_factor": 1.0,
+        "estimator_version": "xma-compact-structural-v1",
+        "tail_pool_size": null
+      }
+    },
+    {
+      "id": "legacy-100",
+      "input": "inputs/legacy-100.json",
+      "input_sha256": "e1904cd73eec15b3c57804af3160a110acc6656f746561f963a7127800003b9d",
+      "study_signature": "5909d4dc9954bdce5d8d36285a73f5a590864db8693b86ba065febb9b0630b97",
+      "expected": 56897.62037037037,
+      "scale": {
+        "flight_options": 389,
+        "assignment_options": 1057,
+        "station_events": 2049,
+        "shortcut_variables": 850,
+        "rebooking_variables": 44,
+        "estimated_variables": 9641,
+        "estimated_constraints": 10775,
+        "estimated_peak_bytes": 298719256,
+        "calibration_factor": 1.0,
+        "estimator_version": "xma-compact-structural-v1",
+        "tail_pool_size": null
+      }
+    },
+    {
+      "id": "official-range-30",
+      "input": "inputs/official-range-30.json",
+      "input_sha256": "76b7ab681129d677381539ff834358c2c2c337f3d1b4c24256659f2e38ed525c",
+      "study_signature": "ced082cbe9a1e68094e2a1af0ac2018c2926f0178bf483bf434cdead51f0aa4d",
+      "expected": null,
+      "scale": {
+        "flight_options": 885,
+        "assignment_options": 1257,
+        "station_events": 2082,
+        "shortcut_variables": 1202,
+        "rebooking_variables": 61,
+        "estimated_variables": 10642,
+        "estimated_constraints": 9705,
+        "estimated_peak_bytes": 299237056,
+        "calibration_factor": 1.0,
+        "estimator_version": "xma-compact-structural-v1",
+        "tail_pool_size": null
+      }
+    }
+  ],
+  "campaign_kind": "xma-first-solution-short-pilot"
+}

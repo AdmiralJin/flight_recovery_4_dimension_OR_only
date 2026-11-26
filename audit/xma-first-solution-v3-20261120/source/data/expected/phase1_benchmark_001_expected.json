@@ -1,0 +1,492 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "phase1_benchmark_001",
+  "reference_type": "manual_reference",
+  "solution_status": "feasible",
+  "assumptions": [
+    "Manual feasible reference under this benchmark policy, not yet a proven full AIR optimum.",
+    "Policy for the Phase-1 oracle: no cancellation, no origin/destination change, no ferry; aircraft/crew reassignment and passenger reaccommodation are allowed.",
+    "Within that policy, prefer lower total flight delay while keeping all passenger groups served.",
+    "Only non-negative flight delay is allowed.",
+    "No additional aircraft/crew minimum turn time or passenger MCT is assumed yet beyond temporal continuity.",
+    "SRM/ARM/CRM/PRM monetary cost coefficients are not fixed; objective_value therefore remains undefined."
+  ],
+  "reference_solution": {
+    "selected_flight_option_by_flight": {
+      "F1": "FO_F1_ORIG",
+      "F2": "FO_F2_D50",
+      "F3": "FO_F3_ORIG",
+      "F4": "FO_F4_ORIG",
+      "F5": "FO_F5_ORIG",
+      "F6": "FO_F6_ORIG",
+      "F7": "FO_F7_ORIG",
+      "F8": "FO_F8_ORIG",
+      "F9": "FO_F9_ORIG",
+      "F10": "FO_F10_D20",
+      "F11": "FO_F11_D10",
+      "F12": "FO_F12_ORIG"
+    },
+    "selected_aircraft_string_by_aircraft": {
+      "AC1": "AS_AC1_SWAP_F10",
+      "AC2": "AS_AC2_ORIGINAL",
+      "AC3": "AS_AC3_ORIGINAL",
+      "AC4": "AS_AC4_SWAP_F3_ORIG"
+    },
+    "selected_crew_pairing_by_crew": {
+      "C1": "CP_C1_RECOVERY",
+      "C2": "CP_C2_ORIGINAL",
+      "C3": "CP_C3_ORIGINAL",
+      "C4": "CP_C4_F3_ORIG_F11_D10",
+      "C5": "CP_C5_ORIGINAL"
+    },
+    "selected_passenger_itinerary_by_group": {
+      "P1": "PI_P1_RECOVERY",
+      "P2": "PI_P2_ORIGINAL",
+      "P3": "PI_P3_ORIGINAL",
+      "P4": "PI_P4_REACCOM_F8",
+      "P5": "PI_P5_F3_ORIG_F11_D10",
+      "P6": "PI_P6_RECOVERY",
+      "P7": "PI_P7_ORIGINAL",
+      "P8": "PI_P8_ORIGINAL"
+    },
+    "resolved_flights": [
+      {
+        "flight_id": "F1",
+        "selected_option_id": "FO_F1_ORIG",
+        "status": "operated",
+        "change_types": [
+          "unchanged"
+        ],
+        "recovered_origin": "A",
+        "recovered_destination": "B",
+        "recovered_dep": "2026-01-15T08:00:00Z",
+        "recovered_arr": "2026-01-15T09:00:00Z",
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "aircraft_id": "AC1",
+        "crew_id": "C1"
+      },
+      {
+        "flight_id": "F2",
+        "selected_option_id": "FO_F2_D50",
+        "status": "operated",
+        "change_types": [
+          "delay"
+        ],
+        "recovered_origin": "B",
+        "recovered_destination": "C",
+        "recovered_dep": "2026-01-15T10:30:00Z",
+        "recovered_arr": "2026-01-15T11:30:00Z",
+        "departure_delay_minutes": 50,
+        "arrival_delay_minutes": 50,
+        "aircraft_id": "AC1",
+        "crew_id": "C1"
+      },
+      {
+        "flight_id": "F3",
+        "selected_option_id": "FO_F3_ORIG",
+        "status": "operated",
+        "change_types": [
+          "unchanged"
+        ],
+        "recovered_origin": "C",
+        "recovered_destination": "A",
+        "recovered_dep": "2026-01-15T11:00:00Z",
+        "recovered_arr": "2026-01-15T12:00:00Z",
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "aircraft_id": "AC4",
+        "crew_id": "C4"
+      },
+      {
+        "flight_id": "F4",
+        "selected_option_id": "FO_F4_ORIG",
+        "status": "operated",
+        "change_types": [
+          "unchanged"
+        ],
+        "recovered_origin": "C",
+        "recovered_destination": "B",
+        "recovered_dep": "2026-01-15T08:10:00Z",
+        "recovered_arr": "2026-01-15T09:10:00Z",
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "aircraft_id": "AC2",
+        "crew_id": "C2"
+      },
+      {
+        "flight_id": "F5",
+        "selected_option_id": "FO_F5_ORIG",
+        "status": "operated",
+        "change_types": [
+          "unchanged"
+        ],
+        "recovered_origin": "B",
+        "recovered_destination": "D",
+        "recovered_dep": "2026-01-15T09:50:00Z",
+        "recovered_arr": "2026-01-15T10:50:00Z",
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "aircraft_id": "AC2",
+        "crew_id": "C2"
+      },
+      {
+        "flight_id": "F6",
+        "selected_option_id": "FO_F6_ORIG",
+        "status": "operated",
+        "change_types": [
+          "unchanged"
+        ],
+        "recovered_origin": "D",
+        "recovered_destination": "C",
+        "recovered_dep": "2026-01-15T11:20:00Z",
+        "recovered_arr": "2026-01-15T12:20:00Z",
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "aircraft_id": "AC2",
+        "crew_id": "C2"
+      },
+      {
+        "flight_id": "F7",
+        "selected_option_id": "FO_F7_ORIG",
+        "status": "operated",
+        "change_types": [
+          "unchanged"
+        ],
+        "recovered_origin": "D",
+        "recovered_destination": "B",
+        "recovered_dep": "2026-01-15T08:20:00Z",
+        "recovered_arr": "2026-01-15T09:20:00Z",
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "aircraft_id": "AC3",
+        "crew_id": "C3"
+      },
+      {
+        "flight_id": "F8",
+        "selected_option_id": "FO_F8_ORIG",
+        "status": "operated",
+        "change_types": [
+          "unchanged"
+        ],
+        "recovered_origin": "B",
+        "recovered_destination": "A",
+        "recovered_dep": "2026-01-15T10:00:00Z",
+        "recovered_arr": "2026-01-15T11:00:00Z",
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "aircraft_id": "AC3",
+        "crew_id": "C3"
+      },
+      {
+        "flight_id": "F9",
+        "selected_option_id": "FO_F9_ORIG",
+        "status": "operated",
+        "change_types": [
+          "unchanged"
+        ],
+        "recovered_origin": "A",
+        "recovered_destination": "D",
+        "recovered_dep": "2026-01-15T11:30:00Z",
+        "recovered_arr": "2026-01-15T12:30:00Z",
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "aircraft_id": "AC3",
+        "crew_id": "C3"
+      },
+      {
+        "flight_id": "F10",
+        "selected_option_id": "FO_F10_D20",
+        "status": "operated",
+        "change_types": [
+          "delay"
+        ],
+        "recovered_origin": "C",
+        "recovered_destination": "A",
+        "recovered_dep": "2026-01-15T11:30:00Z",
+        "recovered_arr": "2026-01-15T12:30:00Z",
+        "departure_delay_minutes": 20,
+        "arrival_delay_minutes": 20,
+        "aircraft_id": "AC1",
+        "crew_id": "C1"
+      },
+      {
+        "flight_id": "F11",
+        "selected_option_id": "FO_F11_D10",
+        "status": "operated",
+        "change_types": [
+          "delay"
+        ],
+        "recovered_origin": "A",
+        "recovered_destination": "D",
+        "recovered_dep": "2026-01-15T12:30:00Z",
+        "recovered_arr": "2026-01-15T13:30:00Z",
+        "departure_delay_minutes": 10,
+        "arrival_delay_minutes": 10,
+        "aircraft_id": "AC4",
+        "crew_id": "C4"
+      },
+      {
+        "flight_id": "F12",
+        "selected_option_id": "FO_F12_ORIG",
+        "status": "operated",
+        "change_types": [
+          "unchanged"
+        ],
+        "recovered_origin": "D",
+        "recovered_destination": "C",
+        "recovered_dep": "2026-01-15T13:40:00Z",
+        "recovered_arr": "2026-01-15T14:40:00Z",
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "aircraft_id": "AC4",
+        "crew_id": "C5"
+      }
+    ],
+    "recovery_actions": [
+      {
+        "action_type": "delay",
+        "entity_type": "flight",
+        "entity_id": "F2",
+        "from": {
+          "dep": "2026-01-15T09:40:00Z",
+          "arr": "2026-01-15T10:40:00Z"
+        },
+        "to": {
+          "dep": "2026-01-15T10:30:00Z",
+          "arr": "2026-01-15T11:30:00Z"
+        },
+        "reason": "Move one B departure outside the constrained [09:30,10:30) bucket."
+      },
+      {
+        "action_type": "aircraft_reassignment",
+        "entity_type": "flight",
+        "entity_id": "F3",
+        "from": {
+          "aircraft_id": "AC1"
+        },
+        "to": {
+          "aircraft_id": "AC4"
+        },
+        "reason": "Keep F3 at 11:00 while AC1 is delayed on F2."
+      },
+      {
+        "action_type": "delay",
+        "entity_type": "flight",
+        "entity_id": "F10",
+        "from": {
+          "dep": "2026-01-15T11:10:00Z",
+          "arr": "2026-01-15T12:10:00Z"
+        },
+        "to": {
+          "dep": "2026-01-15T11:30:00Z",
+          "arr": "2026-01-15T12:30:00Z"
+        },
+        "reason": "AC1 and C1 become available at C only when delayed F2 arrives at 11:30."
+      },
+      {
+        "action_type": "aircraft_reassignment",
+        "entity_type": "flight",
+        "entity_id": "F10",
+        "from": {
+          "aircraft_id": "AC4"
+        },
+        "to": {
+          "aircraft_id": "AC1"
+        },
+        "reason": "Complementary aircraft swap with F3."
+      },
+      {
+        "action_type": "passenger_reaccommodation",
+        "entity_type": "passenger_group",
+        "entity_id": "P4",
+        "from": {
+          "itinerary": [
+            "F2",
+            "F3"
+          ]
+        },
+        "to": {
+          "itinerary": [
+            "F8"
+          ]
+        },
+        "reason": "Delayed F2 would arrive C after on-time F3 has departed; P4 can instead use direct F8 B→A."
+      },
+      {
+        "action_type": "delay",
+        "entity_type": "flight",
+        "entity_id": "F11",
+        "from": {
+          "dep": "2026-01-15T12:20:00Z",
+          "arr": "2026-01-15T13:20:00Z"
+        },
+        "to": {
+          "dep": "2026-01-15T12:30:00Z",
+          "arr": "2026-01-15T13:30:00Z"
+        },
+        "reason": "Protect P6 connection from delayed F10; AC4/C4 are already available at A."
+      }
+    ],
+    "passenger_outcomes": [
+      {
+        "pax_group_id": "P1",
+        "selected_itinerary_id": "PI_P1_RECOVERY",
+        "status": "transported",
+        "arrival_time": "2026-01-15T11:30:00Z",
+        "arrival_delay_minutes": 50,
+        "unserved_count": 0
+      },
+      {
+        "pax_group_id": "P2",
+        "selected_itinerary_id": "PI_P2_ORIGINAL",
+        "status": "transported",
+        "arrival_time": "2026-01-15T10:50:00Z",
+        "arrival_delay_minutes": 0,
+        "unserved_count": 0
+      },
+      {
+        "pax_group_id": "P3",
+        "selected_itinerary_id": "PI_P3_ORIGINAL",
+        "status": "transported",
+        "arrival_time": "2026-01-15T11:00:00Z",
+        "arrival_delay_minutes": 0,
+        "unserved_count": 0
+      },
+      {
+        "pax_group_id": "P4",
+        "selected_itinerary_id": "PI_P4_REACCOM_F8",
+        "status": "transported",
+        "arrival_time": "2026-01-15T11:00:00Z",
+        "arrival_delay_minutes": 0,
+        "unserved_count": 0
+      },
+      {
+        "pax_group_id": "P5",
+        "selected_itinerary_id": "PI_P5_F3_ORIG_F11_D10",
+        "status": "transported",
+        "arrival_time": "2026-01-15T13:30:00Z",
+        "arrival_delay_minutes": 10,
+        "unserved_count": 0
+      },
+      {
+        "pax_group_id": "P6",
+        "selected_itinerary_id": "PI_P6_RECOVERY",
+        "status": "transported",
+        "arrival_time": "2026-01-15T13:30:00Z",
+        "arrival_delay_minutes": 10,
+        "unserved_count": 0
+      },
+      {
+        "pax_group_id": "P7",
+        "selected_itinerary_id": "PI_P7_ORIGINAL",
+        "status": "transported",
+        "arrival_time": "2026-01-15T12:30:00Z",
+        "arrival_delay_minutes": 0,
+        "unserved_count": 0
+      },
+      {
+        "pax_group_id": "P8",
+        "selected_itinerary_id": "PI_P8_ORIGINAL",
+        "status": "transported",
+        "arrival_time": "2026-01-15T14:40:00Z",
+        "arrival_delay_minutes": 0,
+        "unserved_count": 0
+      }
+    ],
+    "metrics": {
+      "operated_flights": 12,
+      "cancelled_flights": 0,
+      "delayed_flights": 3,
+      "origin_changed_flights": 0,
+      "destination_changed_flights": 0,
+      "aircraft_reassignments": 2,
+      "crew_reassignments": 0,
+      "passenger_reaccommodated_groups": 1,
+      "passenger_reaccommodated_count": 15,
+      "total_flight_departure_delay_minutes": 80,
+      "passenger_delay_minutes_weighted": 1800,
+      "unserved_passengers": 0
+    }
+  },
+  "oracle_invariants": {
+    "required_flight_option_by_flight": {
+      "F1": "FO_F1_ORIG",
+      "F2": "FO_F2_D50",
+      "F3": "FO_F3_ORIG",
+      "F4": "FO_F4_ORIG",
+      "F5": "FO_F5_ORIG",
+      "F6": "FO_F6_ORIG",
+      "F7": "FO_F7_ORIG",
+      "F8": "FO_F8_ORIG",
+      "F9": "FO_F9_ORIG",
+      "F10": "FO_F10_D20",
+      "F11": "FO_F11_D10",
+      "F12": "FO_F12_ORIG"
+    },
+    "expected_cancelled_flights": [],
+    "required_metrics": {
+      "operated_flights": 12,
+      "cancelled_flights": 0,
+      "delayed_flights": 3,
+      "origin_changed_flights": 0,
+      "destination_changed_flights": 0,
+      "aircraft_reassignments": 2,
+      "crew_reassignments": 0,
+      "passenger_reaccommodated_groups": 1,
+      "passenger_reaccommodated_count": 15,
+      "total_flight_departure_delay_minutes": 80,
+      "passenger_delay_minutes_weighted": 1800,
+      "unserved_passengers": 0
+    },
+    "resource_assignment_invariants": [
+      "All 12 scheduled flights operate.",
+      "F2 must leave the B [09:30,10:30) departure bucket; the manual reference uses FO_F2_D50.",
+      "Selected aircraft and crew paths must be station/time continuous.",
+      "AC4 must end at C and satisfy its maintenance requirement.",
+      "The reference uses the AC1/AC4 swap on F10/F3 to avoid delaying F3.",
+      "If future costs permit an equivalent assignment with the same flight/passenger outcomes, compare invariants/objective rather than raw IDs."
+    ],
+    "passenger_invariants": [
+      "All passenger groups are served.",
+      "P4 is reaccommodated from F2→F3 to direct F8 because F2 no longer connects to on-time F3.",
+      "P6 remains on F10→F11, requiring F11 to depart at 12:30.",
+      "Every transported itinerary terminates at the group's original destination.",
+      "Reference weighted passenger delay equals 1800 passenger-minutes."
+    ]
+  },
+  "comparison_policy": {
+    "require_exact_selected_columns": false,
+    "require_exact_aircraft_assignment": false,
+    "require_exact_crew_assignment": false,
+    "require_exact_passenger_itinerary": false,
+    "compare_objective_when_defined": true,
+    "notes": [
+      "Compare feasibility, flight recovery options, cancellation, delay vector, capacity, terminal/maintenance and passenger-service invariants first.",
+      "When objective coefficients are fixed, add objective comparison and tighten assignment checks only when justified."
+    ]
+  },
+  "objective": {
+    "status": "not_defined",
+    "value": null,
+    "components": {
+      "flight_delay_cost": null,
+      "cancellation_cost": null,
+      "aircraft_reassignment_cost": null,
+      "crew_reassignment_cost": null,
+      "passenger_disruption_cost": null,
+      "route_change_cost": null
+    },
+    "notes": "The 80-minute total is a behavioral benchmark metric, not a monetized AIR objective. Do not claim global optimality until Phase 2 costs/models are defined."
+  },
+  "known_equivalent_patterns": [
+    {
+      "name": "resource_assignment_equivalence",
+      "description": "Future objective coefficients may make other feasible resource assignments equivalent or preferable. Validate flight/passenger outcomes and objective before requiring exact IDs."
+    }
+  ],
+  "notes": [
+    "This v1 supersedes the earlier 110-minute delay-only manual reference.",
+    "The improved reference uses delay + aircraft reassignment + passenger reaccommodation; cancellation and destination-change remain available candidate types but are not selected."
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "toy_case_004_capacity",
+  "scenario_id": "toy_case_004",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "FO_T4_F1_ORIG": 10,
+    "FO_T4_F1_D10": 10
+  },
+  "notes": ["TEST / RESIDUAL CAPACITY; not aircraft physical capacity."]
+}

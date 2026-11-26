@@ -1,0 +1,821 @@
+{
+  "schema_version": "1.0.0",
+  "generator": "backend.data_generation.validation_suite",
+  "generator_version": "1.0.0",
+  "semantics": {
+    "runtime_targets_are_reference_machine_bands": true,
+    "artificial_waits_allowed": false,
+    "stress_profiles_require_calibration": true,
+    "large_profiles_may_require_a_full_solver_license": true
+  },
+  "entries": [
+    {
+      "case_id": "micro-integrated-benchmark",
+      "label": "综合恢复人工基准",
+      "category": "综合算法",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-integrated-benchmark.json",
+      "source_type": "catalog",
+      "source_id": "benchmark-disruption-recovery",
+      "constraints": [
+        "SRM-C01-FLIGHT-COVERAGE",
+        "SRM-C02-STRATEGIC-FLIGHT",
+        "SRM-C03-ARRIVAL-CAPACITY",
+        "SRM-C04-DEPARTURE-CAPACITY",
+        "SRM-C05-GATE-INVENTORY",
+        "SRM-C06-MARKET-SEAT",
+        "ARM-C01-AIRCRAFT-STRING-SELECTION",
+        "ARM-C02-FLIGHT-OPTION-COVERAGE",
+        "ARM-C03-TERMINAL-STATION",
+        "ARM-C04-MAINTENANCE",
+        "ARM-C05-STRING-FEASIBILITY",
+        "CRM-C01-CREW-PAIRING-SELECTION",
+        "CRM-C02-FLIGHT-OPTION-COVERAGE",
+        "CRM-C03-NONREQUIRED-REVENUE-PROHIBITION",
+        "CRM-C04-CREW-FEASIBILITY",
+        "CRM-C05-TERMINAL-OR-OWNERSHIP",
+        "PRM-C01-PASSENGER-GROUP-SELECTION",
+        "PRM-C02-SCHEDULE-CONSISTENCY",
+        "PRM-C03-SEAT-CAPACITY",
+        "PRM-C04-ITINERARY-FEASIBILITY"
+      ],
+      "algorithms": [
+        "integrated",
+        "benders",
+        "column_generation"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 18080.0
+      },
+      "human_check": "3 个航班延误共 80 分钟，旅客加权延误 1800，目标值 18080。",
+      "scenario_counts": {
+        "airports": 4,
+        "flights": 12,
+        "aircraft": 4,
+        "crew": 5,
+        "passengers": 8,
+        "airport_intervals": 4,
+        "disruptions": 1
+      },
+      "sha256": "75c32820b5507d4f1cbe60ee1e7d08611b6a5ffa32bfcfc67ed8d9eecb950d99"
+    },
+    {
+      "case_id": "micro-crew-integrality",
+      "label": "机组整数性与分支定价",
+      "category": "机组",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-crew-integrality.json",
+      "source_type": "catalog",
+      "source_id": "crew-recovery-integrality",
+      "constraints": [
+        "CRM-C01-CREW-PAIRING-SELECTION",
+        "CRM-C02-FLIGHT-OPTION-COVERAGE",
+        "CRM-C03-NONREQUIRED-REVENUE-PROHIBITION",
+        "CRM-C04-CREW-FEASIBILITY",
+        "CRM-C05-TERMINAL-OR-OWNERSHIP"
+      ],
+      "algorithms": [
+        "branch_and_price",
+        "crew_integrality"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 95200.0
+      },
+      "human_check": "根节点 LP 存在整数缺口，9 个机组分支节点闭合到 95200。",
+      "scenario_counts": {
+        "airports": 3,
+        "flights": 6,
+        "aircraft": 3,
+        "crew": 3,
+        "passengers": 0,
+        "airport_intervals": 7,
+        "disruptions": 0
+      },
+      "sha256": "0d43d50c4ac7cab502eec5384ef5d97c5b6f798931e50d236e2582a98f9ee008"
+    },
+    {
+      "case_id": "micro-passenger-capacity-binding",
+      "label": "旅客余座容量绑定",
+      "category": "旅客",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-passenger-capacity-binding.json",
+      "source_type": "catalog",
+      "source_id": "passenger-capacity-constrained",
+      "constraints": [
+        "PRM-C01-PASSENGER-GROUP-SELECTION",
+        "PRM-C02-SCHEDULE-CONSISTENCY",
+        "PRM-C03-SEAT-CAPACITY",
+        "PRM-C04-ITINERARY-FEASIBILITY"
+      ],
+      "algorithms": [
+        "passenger_recovery"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 1010.0
+      },
+      "human_check": "原始候选余座为 0，10 人旅客组迫使航班延误 10 分钟。",
+      "scenario_counts": {
+        "airports": 2,
+        "flights": 1,
+        "aircraft": 1,
+        "crew": 1,
+        "passengers": 1,
+        "airport_intervals": 2,
+        "disruptions": 0
+      },
+      "sha256": "bffc3c1018cc8065a7ca961c3fb09f15cc6b951fbce141f4f2650c33531038c9"
+    },
+    {
+      "case_id": "micro-passenger-capacity-relaxed",
+      "label": "旅客容量单变量放宽",
+      "category": "旅客",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-passenger-capacity-relaxed.json",
+      "source_type": "catalog",
+      "source_id": "passenger-capacity-relaxed",
+      "constraints": [
+        "PRM-C03-SEAT-CAPACITY"
+      ],
+      "algorithms": [
+        "sensitivity"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 0.0
+      },
+      "human_check": "仅把原始候选余座从 0 改为 10，最优目标从 1010 降为 0。",
+      "scenario_counts": {
+        "airports": 2,
+        "flights": 1,
+        "aircraft": 1,
+        "crew": 1,
+        "passengers": 1,
+        "airport_intervals": 2,
+        "disruptions": 0
+      },
+      "sha256": "3a9b84a7c796042588292aded1d0cdb701401fc5bd24f17aaeede7a7403cb576"
+    },
+    {
+      "case_id": "micro-delay-unserved-tradeoff",
+      "label": "延误与未承运成本权衡",
+      "category": "成本",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-delay-unserved-tradeoff.json",
+      "source_type": "catalog",
+      "source_id": "delay-cost-cancellation-tradeoff",
+      "constraints": [
+        "PRM-C01-PASSENGER-GROUP-SELECTION",
+        "PRM-C02-SCHEDULE-CONSISTENCY",
+        "PRM-C03-SEAT-CAPACITY"
+      ],
+      "algorithms": [
+        "cost_sensitivity"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 25000.0
+      },
+      "human_check": "提高航班延误单价后，保留原计划并承担 10 人未承运成本。",
+      "scenario_counts": {
+        "airports": 2,
+        "flights": 1,
+        "aircraft": 1,
+        "crew": 1,
+        "passengers": 1,
+        "airport_intervals": 2,
+        "disruptions": 0
+      },
+      "sha256": "90f676df57e7401dd2f4f5b89db91028b04ddbf8bb32c231d1596fff2cf81338"
+    },
+    {
+      "case_id": "micro-solve-ready-infeasible",
+      "label": "输入就绪但优化不可行",
+      "category": "边界",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-solve-ready-infeasible.json",
+      "source_type": "catalog",
+      "source_id": "solve-ready-infeasible",
+      "constraints": [
+        "SRM-C01-FLIGHT-COVERAGE",
+        "ARM-C02-FLIGHT-OPTION-COVERAGE",
+        "CRM-C02-FLIGHT-OPTION-COVERAGE"
+      ],
+      "algorithms": [
+        "feasibility"
+      ],
+      "expected": {
+        "status": "infeasible",
+        "objective_total": null
+      },
+      "human_check": "结构和配置完整，但候选集合无法形成联合可行恢复。",
+      "scenario_counts": {
+        "airports": 3,
+        "flights": 6,
+        "aircraft": 3,
+        "crew": 3,
+        "passengers": 0,
+        "airport_intervals": 7,
+        "disruptions": 0
+      },
+      "sha256": "7a02d0ee2c66b3dcf0b3b47d33724476dcc95fa893d9b9197749d5cd922ddba5"
+    },
+    {
+      "case_id": "micro-scenario-only-minimal",
+      "label": "最小有效 Scenario",
+      "category": "输入校验",
+      "import_kind": "scenario",
+      "relative_path": "frozen/micro/micro-scenario-only-minimal.json",
+      "source_type": "catalog",
+      "source_id": "scenario-only-minimal",
+      "constraints": [
+        "SRM-C03-ARRIVAL-CAPACITY",
+        "SRM-C04-DEPARTURE-CAPACITY"
+      ],
+      "algorithms": [
+        "validation"
+      ],
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": false
+      },
+      "human_check": "Scenario 有效，但没有候选、容量和算法配置，因此不能求解。",
+      "scenario_counts": {
+        "airports": 3,
+        "flights": 6,
+        "aircraft": 2,
+        "crew": 2,
+        "passengers": 4,
+        "airport_intervals": 1,
+        "disruptions": 1
+      },
+      "sha256": "14b35aefaa1adc89db81023a2f00ece5cf14fff20d5a563edfdc417ebcd6941e"
+    },
+    {
+      "case_id": "micro-invalid-missing-airport",
+      "label": "无效机场引用",
+      "category": "输入校验",
+      "import_kind": "scenario",
+      "relative_path": "frozen/micro/micro-invalid-missing-airport.json",
+      "source_type": "catalog",
+      "source_id": "invalid-missing-airport",
+      "constraints": [],
+      "algorithms": [
+        "negative_validation"
+      ],
+      "expected": {
+        "scenario_valid": false,
+        "error_code": "unknown_airport"
+      },
+      "human_check": "航班引用未声明机场，必须在求解前被拒绝。",
+      "scenario_counts": {
+        "airports": 1,
+        "flights": 1,
+        "aircraft": 1,
+        "crew": 1,
+        "passengers": 0,
+        "airport_intervals": 1,
+        "disruptions": 0
+      },
+      "sha256": "89d91bb563faaeb4c76e08f1d3b0f016368f11d9b58725bfa6c0caa8c970f166"
+    },
+    {
+      "case_id": "micro-scenario-validation-rich",
+      "label": "多实体 Scenario 校验",
+      "category": "输入校验",
+      "import_kind": "scenario",
+      "relative_path": "frozen/micro/micro-scenario-validation-rich.json",
+      "source_type": "scenario_file",
+      "source_id": "phase1_validation_001",
+      "constraints": [],
+      "algorithms": [
+        "validation",
+        "visualization"
+      ],
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": false
+      },
+      "human_check": "5 机场、12 航班、6 飞机、6 机组和 8 旅客组的结构校验样例。",
+      "scenario_counts": {
+        "airports": 5,
+        "flights": 12,
+        "aircraft": 6,
+        "crew": 6,
+        "passengers": 8,
+        "airport_intervals": 8,
+        "disruptions": 1
+      },
+      "sha256": "3f9bb3f6ffb32a6455daf49677b98a4fca01591904a7f42f50e6ebfa3dad9a4a"
+    },
+    {
+      "case_id": "micro-basic-editor",
+      "label": "编辑器与传播基础样例",
+      "category": "输入校验",
+      "import_kind": "scenario",
+      "relative_path": "frozen/micro/micro-basic-editor.json",
+      "source_type": "scenario_file",
+      "source_id": "toy_case_001",
+      "constraints": [],
+      "algorithms": [
+        "validation",
+        "visualization"
+      ],
+      "expected": {
+        "scenario_valid": true,
+        "solve_ready": false
+      },
+      "human_check": "用于导入、编辑、导出和扰动传播的最小综合 Scenario。",
+      "scenario_counts": {
+        "airports": 3,
+        "flights": 6,
+        "aircraft": 2,
+        "crew": 2,
+        "passengers": 4,
+        "airport_intervals": 1,
+        "disruptions": 1
+      },
+      "sha256": "14b35aefaa1adc89db81023a2f00ece5cf14fff20d5a563edfdc417ebcd6941e"
+    },
+    {
+      "case_id": "micro-aircraft-coupling",
+      "label": "飞机对计划选择的反向耦合",
+      "category": "飞机",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-aircraft-coupling.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_004",
+      "constraints": [
+        "ARM-C01-AIRCRAFT-STRING-SELECTION",
+        "ARM-C02-FLIGHT-OPTION-COVERAGE",
+        "ARM-C03-TERMINAL-STATION",
+        "ARM-C04-MAINTENANCE",
+        "ARM-C05-STRING-FEASIBILITY"
+      ],
+      "algorithms": [
+        "aircraft_recovery",
+        "integrated"
+      ],
+      "expected": {
+        "status": "optimal"
+      },
+      "human_check": "比较原计划与延误候选，观察动态飞机列如何限制计划选择。",
+      "scenario_counts": {
+        "airports": 2,
+        "flights": 1,
+        "aircraft": 1,
+        "crew": 1,
+        "passengers": 1,
+        "airport_intervals": 2,
+        "disruptions": 0
+      },
+      "sha256": "f9acd5c0e3f40aa35834b24e669c456eea2bfd48480a5361e28e81787e0473ef"
+    },
+    {
+      "case_id": "micro-scope-closure",
+      "label": "恢复范围闭包",
+      "category": "计划",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-scope-closure.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_006_scope",
+      "constraints": [
+        "SRM-C01-FLIGHT-COVERAGE",
+        "ARM-C02-FLIGHT-OPTION-COVERAGE",
+        "CRM-C02-FLIGHT-OPTION-COVERAGE",
+        "PRM-C02-SCHEDULE-CONSISTENCY"
+      ],
+      "algorithms": [
+        "scope",
+        "integrated"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 2040.0
+      },
+      "human_check": "受扰组件需要两班各延误 20 分钟，独立组件保持原计划。",
+      "scenario_counts": {
+        "airports": 5,
+        "flights": 3,
+        "aircraft": 2,
+        "crew": 2,
+        "passengers": 2,
+        "airport_intervals": 6,
+        "disruptions": 1
+      },
+      "sha256": "cb6b8b0ec8815b981df6a9f5991146a8de3a35c276909ed277f57e293f3e165b"
+    },
+    {
+      "case_id": "micro-aircraft-string-generation",
+      "label": "飞机路径生成",
+      "category": "飞机",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-aircraft-string-generation.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_007_string_generator",
+      "constraints": [
+        "ARM-C01-AIRCRAFT-STRING-SELECTION",
+        "ARM-C02-FLIGHT-OPTION-COVERAGE",
+        "ARM-C03-TERMINAL-STATION",
+        "ARM-C04-MAINTENANCE",
+        "ARM-C05-STRING-FEASIBILITY"
+      ],
+      "algorithms": [
+        "aircraft_string_generation"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 0.0
+      },
+      "human_check": "覆盖机型、衔接、终到站、维修和调机路径边界。",
+      "scenario_counts": {
+        "airports": 5,
+        "flights": 5,
+        "aircraft": 3,
+        "crew": 3,
+        "passengers": 0,
+        "airport_intervals": 5,
+        "disruptions": 0
+      },
+      "sha256": "4c89cee114f54626ac41988ff34b1f12e0c15a2240e978d70f4b935a34dd4a0b"
+    },
+    {
+      "case_id": "micro-passenger-itinerary-generation",
+      "label": "旅客行程生成",
+      "category": "旅客",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-passenger-itinerary-generation.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_009_passenger_itinerary_generator",
+      "constraints": [
+        "PRM-C01-PASSENGER-GROUP-SELECTION",
+        "PRM-C02-SCHEDULE-CONSISTENCY",
+        "PRM-C03-SEAT-CAPACITY",
+        "PRM-C04-ITINERARY-FEASIBILITY"
+      ],
+      "algorithms": [
+        "passenger_itinerary_generation"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 0.0
+      },
+      "human_check": "覆盖直达、中转、最小衔接、最大航段和未承运行程。",
+      "scenario_counts": {
+        "airports": 5,
+        "flights": 6,
+        "aircraft": 4,
+        "crew": 4,
+        "passengers": 2,
+        "airport_intervals": 5,
+        "disruptions": 0
+      },
+      "sha256": "20ce6032186ea1ee8b2670364f02ff0108ec8c66ae25303826a37becf3498e6e"
+    },
+    {
+      "case_id": "micro-fixed-column-benders",
+      "label": "固定列 Benders 行为",
+      "category": "算法",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-fixed-column-benders.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_010_fixed_column_benders",
+      "constraints": [
+        "SRM-C01-FLIGHT-COVERAGE",
+        "PRM-C03-SEAT-CAPACITY"
+      ],
+      "algorithms": [
+        "benders"
+      ],
+      "expected": {
+        "status": "optimal"
+      },
+      "human_check": "保留用于观察 Benders 可行割和最优割；最终动态列入口可能得到更低目标。",
+      "scenario_counts": {
+        "airports": 2,
+        "flights": 1,
+        "aircraft": 1,
+        "crew": 1,
+        "passengers": 1,
+        "airport_intervals": 2,
+        "disruptions": 0
+      },
+      "sha256": "4441b45e92a1ca67f0a58722d34f1ea6b8a2dc7856ab2712dc87aea9754932f7"
+    },
+    {
+      "case_id": "micro-aircraft-column-generation",
+      "label": "飞机列生成定价",
+      "category": "飞机",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-aircraft-column-generation.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_011_aircraft_string_column_generation",
+      "constraints": [
+        "ARM-C01-AIRCRAFT-STRING-SELECTION",
+        "ARM-C02-FLIGHT-OPTION-COVERAGE",
+        "ARM-C03-TERMINAL-STATION",
+        "ARM-C04-MAINTENANCE",
+        "ARM-C05-STRING-FEASIBILITY"
+      ],
+      "algorithms": [
+        "aircraft_column_generation"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 0.0
+      },
+      "human_check": "初始调机列成本为 300，负约化成本列把飞机子问题降为 0。",
+      "scenario_counts": {
+        "airports": 6,
+        "flights": 2,
+        "aircraft": 2,
+        "crew": 2,
+        "passengers": 0,
+        "airport_intervals": 6,
+        "disruptions": 0
+      },
+      "sha256": "e4ec23ecf363fa219069263fca3c1869753aad5db767a6368860c4fc0b75e6af"
+    },
+    {
+      "case_id": "micro-crew-column-generation",
+      "label": "机组列生成定价",
+      "category": "机组",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-crew-column-generation.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_012_crew_pairing_column_generation",
+      "constraints": [
+        "CRM-C01-CREW-PAIRING-SELECTION",
+        "CRM-C02-FLIGHT-OPTION-COVERAGE",
+        "CRM-C03-NONREQUIRED-REVENUE-PROHIBITION",
+        "CRM-C04-CREW-FEASIBILITY",
+        "CRM-C05-TERMINAL-OR-OWNERSHIP"
+      ],
+      "algorithms": [
+        "crew_column_generation"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 150.0
+      },
+      "human_check": "定价加入更便宜机组任务，正式综合入口的总目标为 150。",
+      "scenario_counts": {
+        "airports": 2,
+        "flights": 2,
+        "aircraft": 2,
+        "crew": 3,
+        "passengers": 0,
+        "airport_intervals": 2,
+        "disruptions": 0
+      },
+      "sha256": "517df33b72655a5dd8e10e96dc7e4f2d0ad2b1ac846d9ab8553c7920b91140ea"
+    },
+    {
+      "case_id": "micro-benders-column-generation",
+      "label": "Benders 与列生成组合",
+      "category": "算法",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-benders-column-generation.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_013_benders_column_generation",
+      "constraints": [
+        "SRM-C01-FLIGHT-COVERAGE",
+        "SRM-C02-STRATEGIC-FLIGHT",
+        "SRM-C03-ARRIVAL-CAPACITY",
+        "SRM-C04-DEPARTURE-CAPACITY",
+        "SRM-C05-GATE-INVENTORY",
+        "SRM-C06-MARKET-SEAT",
+        "ARM-C01-AIRCRAFT-STRING-SELECTION",
+        "ARM-C02-FLIGHT-OPTION-COVERAGE",
+        "ARM-C03-TERMINAL-STATION",
+        "ARM-C04-MAINTENANCE",
+        "ARM-C05-STRING-FEASIBILITY",
+        "CRM-C01-CREW-PAIRING-SELECTION",
+        "CRM-C02-FLIGHT-OPTION-COVERAGE",
+        "CRM-C03-NONREQUIRED-REVENUE-PROHIBITION",
+        "CRM-C04-CREW-FEASIBILITY",
+        "CRM-C05-TERMINAL-OR-OWNERSHIP",
+        "PRM-C01-PASSENGER-GROUP-SELECTION",
+        "PRM-C02-SCHEDULE-CONSISTENCY",
+        "PRM-C03-SEAT-CAPACITY",
+        "PRM-C04-ITINERARY-FEASIBILITY"
+      ],
+      "algorithms": [
+        "benders",
+        "column_generation"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 220.0
+      },
+      "human_check": "三个计划候选分别对应资源不可行、旅客高成本和综合最优，最优为 220。",
+      "scenario_counts": {
+        "airports": 2,
+        "flights": 1,
+        "aircraft": 1,
+        "crew": 1,
+        "passengers": 1,
+        "airport_intervals": 3,
+        "disruptions": 0
+      },
+      "sha256": "37db465e91e5758937d959cdfec8668a82bfbf1359a8cde4453f05a9dc0163cc"
+    },
+    {
+      "case_id": "micro-crew-root-integrality",
+      "label": "机组根节点整数缺口",
+      "category": "机组",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-crew-root-integrality.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_015_crew_integrality",
+      "constraints": [
+        "CRM-C01-CREW-PAIRING-SELECTION",
+        "CRM-C02-FLIGHT-OPTION-COVERAGE",
+        "CRM-C03-NONREQUIRED-REVENUE-PROHIBITION",
+        "CRM-C04-CREW-FEASIBILITY",
+        "CRM-C05-TERMINAL-OR-OWNERSHIP"
+      ],
+      "algorithms": [
+        "crew_integrality",
+        "branch_and_price"
+      ],
+      "expected": {
+        "status": "optimal"
+      },
+      "human_check": "专用机组子问题根 LP 为 195、整数最优为 200；综合入口用于结构导入检查。",
+      "scenario_counts": {
+        "airports": 3,
+        "flights": 6,
+        "aircraft": 3,
+        "crew": 3,
+        "passengers": 0,
+        "airport_intervals": 3,
+        "disruptions": 0
+      },
+      "sha256": "ecb42b231cb91a03943842dfb4b9fa21a484d8880fff64828219f090f8d418e4"
+    },
+    {
+      "case_id": "micro-branch-and-price",
+      "label": "完整 Branch-and-Price",
+      "category": "算法",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/micro/micro-branch-and-price.json",
+      "source_type": "artifact",
+      "source_id": "toy_case_016_benders_branch_and_price",
+      "constraints": [
+        "SRM-C01-FLIGHT-COVERAGE",
+        "SRM-C02-STRATEGIC-FLIGHT",
+        "SRM-C03-ARRIVAL-CAPACITY",
+        "SRM-C04-DEPARTURE-CAPACITY",
+        "SRM-C05-GATE-INVENTORY",
+        "SRM-C06-MARKET-SEAT",
+        "ARM-C01-AIRCRAFT-STRING-SELECTION",
+        "ARM-C02-FLIGHT-OPTION-COVERAGE",
+        "ARM-C03-TERMINAL-STATION",
+        "ARM-C04-MAINTENANCE",
+        "ARM-C05-STRING-FEASIBILITY",
+        "CRM-C01-CREW-PAIRING-SELECTION",
+        "CRM-C02-FLIGHT-OPTION-COVERAGE",
+        "CRM-C03-NONREQUIRED-REVENUE-PROHIBITION",
+        "CRM-C04-CREW-FEASIBILITY",
+        "CRM-C05-TERMINAL-OR-OWNERSHIP",
+        "PRM-C01-PASSENGER-GROUP-SELECTION",
+        "PRM-C02-SCHEDULE-CONSISTENCY",
+        "PRM-C03-SEAT-CAPACITY",
+        "PRM-C04-ITINERARY-FEASIBILITY"
+      ],
+      "algorithms": [
+        "benders",
+        "column_generation",
+        "branch_and_price"
+      ],
+      "expected": {
+        "status": "optimal",
+        "objective_total": 95200.0
+      },
+      "human_check": "必须通过机组分支闭合整数缺口，最终目标 95200。",
+      "scenario_counts": {
+        "airports": 3,
+        "flights": 6,
+        "aircraft": 3,
+        "crew": 3,
+        "passengers": 0,
+        "airport_intervals": 7,
+        "disruptions": 0
+      },
+      "sha256": "0d43d50c4ac7cab502eec5384ef5d97c5b6f798931e50d236e2582a98f9ee008"
+    },
+    {
+      "case_id": "P1-seconds",
+      "label": "几秒级 / 紧凑演示",
+      "category": "压力数据",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/stress/P1-seconds.json",
+      "target_runtime": "2-8 seconds",
+      "calibration_status": "calibrated_local_1.3_to_1.7_seconds",
+      "seed": 101,
+      "counts": {
+        "airports": 4,
+        "flights": 12,
+        "aircraft": 4,
+        "crew": 5,
+        "passenger_groups": 8,
+        "airport_intervals": 4,
+        "disruptions": 1,
+        "flight_options": 22,
+        "passenger_itineraries": 55
+      },
+      "sha256": "75c32820b5507d4f1cbe60ee1e7d08611b6a5ffa32bfcfc67ed8d9eecb950d99"
+    },
+    {
+      "case_id": "P2-tens-seconds",
+      "label": "几十秒级 / 标准演示",
+      "category": "压力数据",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/stress/P2-tens-seconds.json",
+      "target_runtime": "30-90 seconds",
+      "calibration_status": "calibrated_local_70s_budget_aborted",
+      "seed": 202,
+      "counts": {
+        "airports": 4,
+        "flights": 12,
+        "aircraft": 3,
+        "crew": 3,
+        "passenger_groups": 12,
+        "airport_intervals": 88,
+        "disruptions": 1,
+        "flight_options": 36,
+        "passenger_itineraries": 42
+      },
+      "sha256": "d700f2a4ed256e48656d6a702723e3aa484c7d6fddd12ef35a74cc0f650d91eb"
+    },
+    {
+      "case_id": "P3-minutes",
+      "label": "几分钟级 / 丰富演示",
+      "category": "压力数据",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/stress/P3-minutes.json",
+      "target_runtime": "2-8 minutes",
+      "calibration_status": "uncalibrated",
+      "seed": 303,
+      "counts": {
+        "airports": 6,
+        "flights": 20,
+        "aircraft": 6,
+        "crew": 6,
+        "passenger_groups": 30,
+        "airport_intervals": 132,
+        "disruptions": 1,
+        "flight_options": 60,
+        "passenger_itineraries": 102
+      },
+      "sha256": "f8c7c07d44ee5308f92f9b268b904fc99f62d4817171ff146271e4cc17460b21"
+    },
+    {
+      "case_id": "P4-tens-minutes",
+      "label": "几十分钟级压力",
+      "category": "压力数据",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/stress/P4-tens-minutes.json",
+      "target_runtime": "15-45 minutes",
+      "calibration_status": "uncalibrated",
+      "seed": 404,
+      "counts": {
+        "airports": 8,
+        "flights": 40,
+        "aircraft": 12,
+        "crew": 13,
+        "passenger_groups": 80,
+        "airport_intervals": 176,
+        "disruptions": 1,
+        "flight_options": 160,
+        "passenger_itineraries": 412
+      },
+      "sha256": "6708eefd4fd157a1fae89b067b23eedacb676b6543bc07b76467ac966ff87bff"
+    },
+    {
+      "case_id": "P5-hours",
+      "label": "小时级压力",
+      "category": "压力数据",
+      "import_kind": "solve_bundle",
+      "relative_path": "frozen/stress/P5-hours.json",
+      "target_runtime": "1-3 hours",
+      "calibration_status": "uncalibrated",
+      "seed": 505,
+      "counts": {
+        "airports": 12,
+        "flights": 72,
+        "aircraft": 21,
+        "crew": 24,
+        "passenger_groups": 250,
+        "airport_intervals": 264,
+        "disruptions": 1,
+        "flight_options": 360,
+        "passenger_itineraries": 1764
+      },
+      "sha256": "d0967107321ee6923dff4aafe4de64f94d5ed34de462aa88ef3eb23d6cf0e24a"
+    }
+  ]
+}

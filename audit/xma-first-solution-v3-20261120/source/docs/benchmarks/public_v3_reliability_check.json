@@ -1,0 +1,17 @@
+{
+  "check": "cancel_after_independently_audited_incumbent",
+  "source": "roadef2009",
+  "source_instance": "A01",
+  "problem_sha256": "0e52d758c24d2b7f932638cd2d5b0e502125d0b6d5937a6acaa4fa02b1182c3b",
+  "backend": "highs",
+  "algorithm": "air_bp",
+  "status": "aborted",
+  "objective": 240.0,
+  "audit_pass": true,
+  "certified_optimal": false,
+  "checkpoint_audit_pass": true,
+  "evidence_sha256": "8f128ccf34857877e32ac915cec16e3ecc2507baf9c8411d9547d6212da5f934",
+  "checkpoint_sha256": "c9c559049b393e5b91ad005c8a7906ac0245a9e3e37f4fab4ae51ed417704df1",
+  "scope": "development contract check on actual frozen public input; excluded from formal performance statistics",
+  "artifacts": ".public_benchmarks/dev/native-highs-stop-after-incumbent"
+}

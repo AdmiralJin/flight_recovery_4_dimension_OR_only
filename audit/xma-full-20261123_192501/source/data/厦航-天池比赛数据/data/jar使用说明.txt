@@ -1,0 +1,2 @@
+使用方式:  java -jar XMAEvaluation.jar 比赛数据文件路径 结果文件路径
+使用例子:  java -jar XMAEvaluation.jar data/厦航大赛数据20170814.xlsx data/baseline_result_2.csv

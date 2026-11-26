@@ -1,0 +1,320 @@
+{
+  "schema_version": "1.0.0",
+  "scenario": {
+    "scenario_id": "toy_case_011_aircraft_string_column_generation",
+    "recovery_window": {
+      "start_time": "2026-01-15T07:00:00Z",
+      "end_time": "2026-01-15T10:00:00Z"
+    },
+    "airports": [
+      {
+        "airport_id": "A",
+        "name": "Alpha"
+      },
+      {
+        "airport_id": "B",
+        "name": "Bravo"
+      },
+      {
+        "airport_id": "C",
+        "name": "Charlie"
+      },
+      {
+        "airport_id": "D",
+        "name": "Delta"
+      },
+      {
+        "airport_id": "E",
+        "name": "Echo"
+      },
+      {
+        "airport_id": "F",
+        "name": "Foxtrot"
+      }
+    ],
+    "flights": [
+      {
+        "flight_id": "S11_F1",
+        "origin": "A",
+        "destination": "C",
+        "sched_dep": "2026-01-15T08:05:00Z",
+        "sched_arr": "2026-01-15T09:05:00Z",
+        "duration": 60,
+        "original_aircraft": "S11_AC1",
+        "original_equipment": "E2",
+        "original_crew": "S11_C1",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      },
+      {
+        "flight_id": "S11_F2",
+        "origin": "D",
+        "destination": "F",
+        "sched_dep": "2026-01-15T08:05:00Z",
+        "sched_arr": "2026-01-15T09:05:00Z",
+        "duration": 60,
+        "original_aircraft": "S11_AC2",
+        "original_equipment": "E2",
+        "original_crew": "S11_C2",
+        "strategic_flag": false,
+        "market_flag": false,
+        "min_seats": 0,
+        "max_delay": 0
+      }
+    ],
+    "aircraft": [
+      {
+        "tail_id": "S11_AC1",
+        "equipment_type": "E2",
+        "initial_station_at_t": "A",
+        "required_station_at_T_end": "C",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "S11_F1"
+        ]
+      },
+      {
+        "tail_id": "S11_AC2",
+        "equipment_type": "E2",
+        "initial_station_at_t": "D",
+        "required_station_at_T_end": "F",
+        "maintenance_required": false,
+        "maintenance_stations": [],
+        "original_rotation": [
+          "S11_F2"
+        ]
+      }
+    ],
+    "crew": [
+      {
+        "crew_id": "S11_C1",
+        "rating": "E2",
+        "start_station_at_t": "A",
+        "required_station_at_T_end": "C",
+        "original_duties": [
+          [
+            "S11_F1"
+          ]
+        ],
+        "original_pairing": [
+          "S11_F1"
+        ]
+      },
+      {
+        "crew_id": "S11_C2",
+        "rating": "E2",
+        "start_station_at_t": "D",
+        "required_station_at_T_end": "F",
+        "original_duties": [
+          [
+            "S11_F2"
+          ]
+        ],
+        "original_pairing": [
+          "S11_F2"
+        ]
+      }
+    ],
+    "passengers": [],
+    "airport_intervals": [
+      {
+        "airport": "A",
+        "start_time": "2026-01-15T07:00:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "B",
+        "start_time": "2026-01-15T07:00:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "C",
+        "start_time": "2026-01-15T07:00:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "D",
+        "start_time": "2026-01-15T07:00:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "E",
+        "start_time": "2026-01-15T07:00:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      },
+      {
+        "airport": "F",
+        "start_time": "2026-01-15T07:00:00Z",
+        "end_time": "2026-01-15T10:00:00Z",
+        "arr_capacity": 20,
+        "dep_capacity": 20,
+        "gate_capacity": 20,
+        "curfew_flag": false,
+        "weather_restrictions": []
+      }
+    ],
+    "disruptions": []
+  },
+  "recovery_columns": {
+    "schema_version": "1.0.0",
+    "scenario_id": "toy_case_011_aircraft_string_column_generation",
+    "time_unit": "minute",
+    "notes": [
+      "Phase 9 nontrivial full-column and column-generation oracle."
+    ],
+    "flight_options": [
+      {
+        "option_id": "S11_REQ1",
+        "base_flight_id": "S11_F1",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "A",
+        "destination": "C",
+        "dep_time": "2026-01-15T08:05:00Z",
+        "arr_time": "2026-01-15T09:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": ""
+      },
+      {
+        "option_id": "S11_REQ2",
+        "base_flight_id": "S11_F2",
+        "operation_type": "operate",
+        "change_types": [
+          "unchanged"
+        ],
+        "origin": "D",
+        "destination": "F",
+        "dep_time": "2026-01-15T08:05:00Z",
+        "arr_time": "2026-01-15T09:05:00Z",
+        "block_minutes": 60,
+        "departure_delay_minutes": 0,
+        "arrival_delay_minutes": 0,
+        "notes": ""
+      },
+      {
+        "option_id": "S11_A1_FERRY_AB",
+        "base_flight_id": null,
+        "operation_type": "ferry",
+        "change_types": [
+          "positioning"
+        ],
+        "origin": "A",
+        "destination": "B",
+        "dep_time": "2026-01-15T07:05:00Z",
+        "arr_time": "2026-01-15T07:20:00Z",
+        "block_minutes": 15,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Expensive Phase I tie path."
+      },
+      {
+        "option_id": "S11_A2_FERRY_BA",
+        "base_flight_id": null,
+        "operation_type": "ferry",
+        "change_types": [
+          "positioning"
+        ],
+        "origin": "B",
+        "destination": "A",
+        "dep_time": "2026-01-15T07:35:00Z",
+        "arr_time": "2026-01-15T07:50:00Z",
+        "block_minutes": 15,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Expensive Phase I tie path."
+      },
+      {
+        "option_id": "S11_B1_FERRY_DE",
+        "base_flight_id": null,
+        "operation_type": "ferry",
+        "change_types": [
+          "positioning"
+        ],
+        "origin": "D",
+        "destination": "E",
+        "dep_time": "2026-01-15T07:05:00Z",
+        "arr_time": "2026-01-15T07:20:00Z",
+        "block_minutes": 15,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Expensive Phase I tie path."
+      },
+      {
+        "option_id": "S11_B2_FERRY_ED",
+        "base_flight_id": null,
+        "operation_type": "ferry",
+        "change_types": [
+          "positioning"
+        ],
+        "origin": "E",
+        "destination": "D",
+        "dep_time": "2026-01-15T07:35:00Z",
+        "arr_time": "2026-01-15T07:50:00Z",
+        "block_minutes": 15,
+        "departure_delay_minutes": null,
+        "arrival_delay_minutes": null,
+        "notes": "Expensive Phase I tie path."
+      }
+    ],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": []
+  },
+  "capacity_profile": {
+    "schema_version": "1.0.0",
+    "capacity_profile_id": "toy_case_011_aircraft_string_column_generation_validation_capacity",
+    "scenario_id": "toy_case_011_aircraft_string_column_generation",
+    "source": "test_fixture",
+    "units": "seats",
+    "seat_capacity_by_option_id": {
+      "S11_REQ1": 999999,
+      "S11_REQ2": 999999
+    },
+    "notes": [
+      "Synthetic non-binding capacity for validation-suite packaging."
+    ]
+  },
+  "cost_profile_id": "phase2_test_v1",
+  "cost_overrides": {},
+  "algorithm": "benders_branch_and_price_v1",
+  "profile_ids": {
+    "flight_string_generation": "phase5_test_string_generation_v1",
+    "crew_pairing_generation": "phase6_test_crew_pairing_generation_v1",
+    "aircraft_string_cg": "phase9-test-aircraft-string-cg-v1",
+    "crew_pairing_cg": "phase10-test-crew-pairing-cg-v1",
+    "benders_cg": "phase11-test-benders-cg-v1",
+    "branch_and_price": "phase12-test-branch-and-price-v1"
+  }
+}

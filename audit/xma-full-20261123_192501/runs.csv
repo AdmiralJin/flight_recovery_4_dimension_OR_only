@@ -1,0 +1,2 @@
+﻿job_id,status,reason,objective,lower_bound,upper_bound,relative_gap,audit_pass,certified_optimal,first_solver_incumbent_seconds,first_audited_solution_seconds,first_checkpoint_seconds,elapsed_seconds,peak_commit_bytes
+FULL,timed_out,time_limit,,,,,False,False,,,,86444.10999999999,31601655808

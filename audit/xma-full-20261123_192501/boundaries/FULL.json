@@ -1,0 +1,6 @@
+{
+  "inbound_flight_ids": [],
+  "outgoing_transfers": [],
+  "cross_connected_pairs": [],
+  "external_airport_occupancy": "not deducted; conditional subset; do not stitch"
+}

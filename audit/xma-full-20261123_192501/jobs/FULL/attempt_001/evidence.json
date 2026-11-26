@@ -1,0 +1,304 @@
+{
+  "schema_version": "xma-result-1.0",
+  "status": "aborted",
+  "scenario_id": "xma_2017_5f7017649664",
+  "objective": null,
+  "diagnostics": {
+    "algorithm": "joint_arc_flow",
+    "lower_bound": null,
+    "upper_bound": null,
+    "gap": null,
+    "relative_gap": null,
+    "runtime_seconds": 86442.87145480001,
+    "terminal_reason": "cancelled",
+    "integrated_audit_pass": null,
+    "statistics": {
+      "search_stages": [
+        {
+          "scope": "tail_pool_1",
+          "scale": {
+            "flight_options": 72984,
+            "assignment_options": 67542,
+            "station_events": 119448,
+            "shortcut_variables": 80306,
+            "rebooking_variables": 249502,
+            "estimated_variables": 904302,
+            "estimated_constraints": 833326,
+            "estimated_peak_bytes": 2896170256,
+            "calibration_factor": 1.0,
+            "estimator_version": "xma-compact-structural-v1",
+            "tail_pool_size": 1
+          },
+          "sizing_seconds": 0.5084266999983811,
+          "memory_limit_gib": 40,
+          "admission_bytes": 30064771072,
+          "status": "not_converged",
+          "reason": "11",
+          "statistics": {
+            "variables": 877803,
+            "constraints": 810244,
+            "nodes": 0,
+            "aircraft_columns": 0,
+            "representation": "arc",
+            "solver": "HiGHS",
+            "bound_scope": "restricted",
+            "tail_pool_size": 1,
+            "timings": {
+              "matrix_extraction_seconds": 1.2054985000031593,
+              "solver_model_update_seconds": 0.3935124999989057,
+              "native_optimization_seconds": 674.216142199999
+            }
+          },
+          "elapsed_seconds": 714.447192399999,
+          "objective": null
+        },
+        {
+          "scope": "tail_pool_2",
+          "scale": {
+            "flight_options": 72984,
+            "assignment_options": 119082,
+            "station_events": 203068,
+            "shortcut_variables": 135233,
+            "rebooking_variables": 249502,
+            "estimated_variables": 1249009,
+            "estimated_constraints": 1148210,
+            "estimated_peak_bytes": 3894503656,
+            "calibration_factor": 1.0,
+            "estimator_version": "xma-compact-structural-v1",
+            "tail_pool_size": 2
+          },
+          "sizing_seconds": 0.7857597999973223,
+          "memory_limit_gib": 40,
+          "admission_bytes": 30064771072,
+          "status": "not_converged",
+          "reason": "11",
+          "statistics": {
+            "variables": 1222029,
+            "constraints": 1073588,
+            "nodes": 0,
+            "aircraft_columns": 0,
+            "representation": "arc",
+            "solver": "HiGHS",
+            "bound_scope": "restricted",
+            "tail_pool_size": 2,
+            "timings": {
+              "matrix_extraction_seconds": 1.683016700000735,
+              "solver_model_update_seconds": 0.5382793999997375,
+              "native_optimization_seconds": 1746.5987968000009
+            }
+          },
+          "elapsed_seconds": 1801.8785863999983,
+          "objective": null
+        },
+        {
+          "scope": "tail_pool_4",
+          "scale": {
+            "flight_options": 72984,
+            "assignment_options": 227331,
+            "station_events": 365703,
+            "shortcut_variables": 251217,
+            "rebooking_variables": 249502,
+            "estimated_variables": 1960624,
+            "estimated_constraints": 1796520,
+            "estimated_peak_bytes": 5953382656,
+            "calibration_factor": 1.0,
+            "estimator_version": "xma-compact-structural-v1",
+            "tail_pool_size": 4
+          },
+          "sizing_seconds": 1.3875833000020066,
+          "memory_limit_gib": 40,
+          "admission_bytes": 30064771072,
+          "status": "not_converged",
+          "reason": "11",
+          "statistics": {
+            "variables": 1932845,
+            "constraints": 1613649,
+            "nodes": 0,
+            "aircraft_columns": 0,
+            "representation": "arc",
+            "solver": "HiGHS",
+            "bound_scope": "restricted",
+            "tail_pool_size": 4,
+            "timings": {
+              "matrix_extraction_seconds": 2.6456399999988207,
+              "solver_model_update_seconds": 0.7880557999997109,
+              "native_optimization_seconds": 1721.690338999997
+            }
+          },
+          "elapsed_seconds": 1805.6926275000005,
+          "objective": null
+        },
+        {
+          "scope": "tail_pool_8",
+          "scale": {
+            "flight_options": 72984,
+            "assignment_options": 451078,
+            "station_events": 665576,
+            "shortcut_variables": 492896,
+            "rebooking_variables": 249502,
+            "estimated_variables": 3397164,
+            "estimated_constraints": 3101378,
+            "estimated_peak_bytes": 10104984256,
+            "calibration_factor": 1.0,
+            "estimator_version": "xma-compact-structural-v1",
+            "tail_pool_size": 8
+          },
+          "sizing_seconds": 2.7713890000013635,
+          "memory_limit_gib": 40,
+          "admission_bytes": 30064771072,
+          "status": "not_converged",
+          "reason": "9",
+          "statistics": {
+            "variables": 3368156,
+            "constraints": 2694760,
+            "nodes": 0,
+            "aircraft_columns": 0,
+            "representation": "arc",
+            "solver": "HiGHS",
+            "bound_scope": "restricted",
+            "tail_pool_size": 8,
+            "timings": {
+              "matrix_extraction_seconds": 4.729000899998937,
+              "solver_model_update_seconds": 1.3192586000004667,
+              "native_optimization_seconds": 1713.8036001
+            }
+          },
+          "elapsed_seconds": 1859.7734180000007,
+          "objective": null
+        },
+        {
+          "scope": "tail_pool_16",
+          "scale": {
+            "flight_options": 72984,
+            "assignment_options": 887954,
+            "station_events": 1164934,
+            "shortcut_variables": 987039,
+            "rebooking_variables": 249502,
+            "estimated_variables": 6138169,
+            "estimated_constraints": 5573422,
+            "estimated_peak_bytes": 18005246056,
+            "calibration_factor": 1.0,
+            "estimator_version": "xma-compact-structural-v1",
+            "tail_pool_size": 16
+          },
+          "sizing_seconds": 5.7332779999997,
+          "memory_limit_gib": 40,
+          "admission_bytes": 30064771072,
+          "status": "not_converged",
+          "reason": "9",
+          "statistics": {
+            "variables": 6107925,
+            "constraints": 4729928,
+            "nodes": 0,
+            "aircraft_columns": 0,
+            "representation": "arc",
+            "solver": "HiGHS",
+            "bound_scope": "restricted",
+            "tail_pool_size": 16,
+            "timings": {
+              "matrix_extraction_seconds": 9.045378200000414,
+              "solver_model_update_seconds": 2.2827269000008528,
+              "native_optimization_seconds": 1686.172609600002
+            }
+          },
+          "elapsed_seconds": 1956.8433390000027,
+          "objective": null
+        },
+        {
+          "scope": "tail_pool_32",
+          "scale": {
+            "flight_options": 72984,
+            "assignment_options": 1674154,
+            "station_events": 1858179,
+            "shortcut_variables": 1891489,
+            "rebooking_variables": 249502,
+            "estimated_variables": 10880664,
+            "estimated_constraints": 9820500,
+            "estimated_peak_bytes": 31638230656,
+            "calibration_factor": 1.0,
+            "estimator_version": "xma-compact-structural-v1",
+            "tail_pool_size": 32
+          },
+          "sizing_seconds": 11.939169300003414,
+          "memory_limit_gib": 40,
+          "admission_bytes": 30064771072,
+          "status": "resource_limited",
+          "reason": "predicted_memory_exceeds_admission"
+        },
+        {
+          "scope": "tail_pool_16",
+          "continuation": true,
+          "status": "aborted",
+          "reason": "11",
+          "statistics": {
+            "variables": 6107925,
+            "constraints": 4729928,
+            "nodes": 0,
+            "aircraft_columns": 0,
+            "representation": "arc",
+            "solver": "HiGHS",
+            "bound_scope": "restricted",
+            "tail_pool_size": 16,
+            "timings": {
+              "matrix_extraction_seconds": 9.331104600001709,
+              "solver_model_update_seconds": 2.292211899999529,
+              "native_optimization_seconds": 78001.90451980001
+            }
+          },
+          "elapsed_seconds": 78275.2821266
+        }
+      ],
+      "full_model_built": false,
+      "bound_scope": "global",
+      "memory_limit_gib": 40,
+      "admission_bytes": 30064771072
+    },
+    "solver_backend": "highs",
+    "candidate_options": 72984,
+    "candidate_scope": "finite delay grid plus source boundary times",
+    "pricing_uses_enumeration": null,
+    "search_scope": "first_solution"
+  },
+  "metrics": {
+    "operated_flights": null,
+    "cancelled_flights": null,
+    "delayed_flights": null,
+    "total_flight_departure_delay_minutes": null,
+    "aircraft_reassignments": null,
+    "crew_reassignments": null,
+    "passenger_reaccommodated_count": null,
+    "unserved_passengers": null,
+    "passenger_count_semantics": "flight-leg scoring quantities, not unique traveler count"
+  },
+  "resolved_flights": [],
+  "aircraft_outcomes": [],
+  "crew_outcomes": [],
+  "passenger_outcomes": [],
+  "passenger_allocations": [],
+  "selected": {
+    "flight_options": [],
+    "aircraft_strings": [],
+    "crew_pairings": [],
+    "passenger_itineraries": []
+  },
+  "recovery_actions": [],
+  "business_decisions": [],
+  "independent_audit": null,
+  "run_metadata": {
+    "run_id": null,
+    "input_hash": "7022c1fef96b010465c893627528a51c399974bd850ac9e27fc565c45548974f",
+    "effective_input_hash": "7022c1fef96b010465c893627528a51c399974bd850ac9e27fc565c45548974f",
+    "runtime_controls": null,
+    "study_signature": "366f59f05796b5e3fed748e79d8b60bf7c561ce590a1c56a2de8db061c9d1130",
+    "source_sha256": "5f701764966453300af501d05d7f4d664523e97bcddbf5eed244ac1fdf43ed1f",
+    "objective_profile": "tianchi_2017",
+    "objective_version": "tianchi_2017_supported_actions_v1",
+    "source_evaluator_sha256": "cfa995da8ad29c861f5086f8f47df0c096471652633004662744334d65f10735",
+    "objective_parameters": "bundled Configuration.java / ResultEvaluator.java",
+    "algorithm": "joint_arc_flow",
+    "created_at": "2026-11-24T11:27:00.823091+00:00",
+    "crew_enabled": false,
+    "maintenance_enabled": false
+  },
+  "tianchi_csv": null
+}

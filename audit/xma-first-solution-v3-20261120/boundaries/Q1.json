@@ -1,0 +1,1403 @@
+{
+  "inbound_flight_ids": [
+    "1047",
+    "1062",
+    "112",
+    "1125",
+    "1190",
+    "1217",
+    "1232",
+    "1237",
+    "1258",
+    "1279",
+    "1299",
+    "1316",
+    "1324",
+    "1332",
+    "1346",
+    "1352",
+    "1357",
+    "1383",
+    "1395",
+    "14",
+    "1412",
+    "1417",
+    "1421",
+    "1422",
+    "1430",
+    "1431",
+    "1432",
+    "1478",
+    "1494",
+    "1560",
+    "1742",
+    "1816",
+    "184",
+    "187",
+    "189",
+    "2109",
+    "211",
+    "214",
+    "217",
+    "2342",
+    "25",
+    "262",
+    "267",
+    "269",
+    "270",
+    "275",
+    "290",
+    "354",
+    "373",
+    "382",
+    "386",
+    "389",
+    "427",
+    "428",
+    "467",
+    "469",
+    "47",
+    "550",
+    "56",
+    "568",
+    "586",
+    "591",
+    "647",
+    "648",
+    "661",
+    "688",
+    "725",
+    "731",
+    "757",
+    "8",
+    "837",
+    "904",
+    "92",
+    "931",
+    "982"
+  ],
+  "outgoing_transfers": [
+    {
+      "inbound": "856",
+      "outbound": "1700",
+      "minimum_minutes": 60,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 12
+      }
+    },
+    {
+      "inbound": "1409",
+      "outbound": "1727",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 14
+      }
+    },
+    {
+      "inbound": "1409",
+      "outbound": "607",
+      "minimum_minutes": 90,
+      "count": 6,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 18
+      }
+    },
+    {
+      "inbound": "582",
+      "outbound": "246",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 25
+      }
+    },
+    {
+      "inbound": "519",
+      "outbound": "246",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 34
+      }
+    },
+    {
+      "inbound": "520",
+      "outbound": "1065",
+      "minimum_minutes": 90,
+      "count": 4,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 36
+      }
+    },
+    {
+      "inbound": "878",
+      "outbound": "246",
+      "minimum_minutes": 90,
+      "count": 30,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 48
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "59",
+      "minimum_minutes": 90,
+      "count": 9,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 56
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "1361",
+      "minimum_minutes": 90,
+      "count": 5,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 59
+      }
+    },
+    {
+      "inbound": "73",
+      "outbound": "611",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 67
+      }
+    },
+    {
+      "inbound": "659",
+      "outbound": "1402",
+      "minimum_minutes": 90,
+      "count": 19,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 76
+      }
+    },
+    {
+      "inbound": "73",
+      "outbound": "556",
+      "minimum_minutes": 60,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 83
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "1568",
+      "minimum_minutes": 90,
+      "count": 5,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 98
+      }
+    },
+    {
+      "inbound": "1856",
+      "outbound": "1196",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 105
+      }
+    },
+    {
+      "inbound": "1178",
+      "outbound": "1196",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 108
+      }
+    },
+    {
+      "inbound": "73",
+      "outbound": "1463",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 115
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "1275",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 122
+      }
+    },
+    {
+      "inbound": "73",
+      "outbound": "567",
+      "minimum_minutes": 60,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 130
+      }
+    },
+    {
+      "inbound": "1178",
+      "outbound": "804",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 141
+      }
+    },
+    {
+      "inbound": "73",
+      "outbound": "2269",
+      "minimum_minutes": 60,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 149
+      }
+    },
+    {
+      "inbound": "289",
+      "outbound": "2234",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 197
+      }
+    },
+    {
+      "inbound": "106",
+      "outbound": "484",
+      "minimum_minutes": 90,
+      "count": 6,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 199
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "166",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 203
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "2103",
+      "minimum_minutes": 90,
+      "count": 10,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 205
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "2103",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 208
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "610",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 219
+      }
+    },
+    {
+      "inbound": "659",
+      "outbound": "611",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 223
+      }
+    },
+    {
+      "inbound": "1179",
+      "outbound": "611",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 226
+      }
+    },
+    {
+      "inbound": "1178",
+      "outbound": "610",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 227
+      }
+    },
+    {
+      "inbound": "273",
+      "outbound": "1061",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 235
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "559",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 239
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "526",
+      "minimum_minutes": 90,
+      "count": 13,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 245
+      }
+    },
+    {
+      "inbound": "289",
+      "outbound": "542",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 248
+      }
+    },
+    {
+      "inbound": "289",
+      "outbound": "282",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 254
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "445",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 259
+      }
+    },
+    {
+      "inbound": "519",
+      "outbound": "169",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 266
+      }
+    },
+    {
+      "inbound": "569",
+      "outbound": "1347",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 269
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "863",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 286
+      }
+    },
+    {
+      "inbound": "195",
+      "outbound": "863",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 288
+      }
+    },
+    {
+      "inbound": "106",
+      "outbound": "934",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 299
+      }
+    },
+    {
+      "inbound": "286",
+      "outbound": "934",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 301
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "159",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 312
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "848",
+      "minimum_minutes": 90,
+      "count": 6,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 315
+      }
+    },
+    {
+      "inbound": "289",
+      "outbound": "1359",
+      "minimum_minutes": 90,
+      "count": 5,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 319
+      }
+    },
+    {
+      "inbound": "660",
+      "outbound": "329",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 334
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "1809",
+      "minimum_minutes": 90,
+      "count": 10,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 343
+      }
+    },
+    {
+      "inbound": "195",
+      "outbound": "1809",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 347
+      }
+    },
+    {
+      "inbound": "98",
+      "outbound": "1405",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 351
+      }
+    },
+    {
+      "inbound": "1156",
+      "outbound": "1405",
+      "minimum_minutes": 90,
+      "count": 5,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 353
+      }
+    },
+    {
+      "inbound": "569",
+      "outbound": "1405",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 355
+      }
+    },
+    {
+      "inbound": "875",
+      "outbound": "1405",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 357
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "501",
+      "minimum_minutes": 90,
+      "count": 20,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 359
+      }
+    },
+    {
+      "inbound": "237",
+      "outbound": "501",
+      "minimum_minutes": 90,
+      "count": 19,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 360
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "501",
+      "minimum_minutes": 90,
+      "count": 6,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 361
+      }
+    },
+    {
+      "inbound": "113",
+      "outbound": "343",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 365
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "343",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 367
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "343",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 368
+      }
+    },
+    {
+      "inbound": "1283",
+      "outbound": "343",
+      "minimum_minutes": 90,
+      "count": 4,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 370
+      }
+    },
+    {
+      "inbound": "878",
+      "outbound": "343",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 372
+      }
+    },
+    {
+      "inbound": "286",
+      "outbound": "343",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 374
+      }
+    },
+    {
+      "inbound": "104",
+      "outbound": "343",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 377
+      }
+    },
+    {
+      "inbound": "53",
+      "outbound": "343",
+      "minimum_minutes": 90,
+      "count": 12,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 378
+      }
+    },
+    {
+      "inbound": "273",
+      "outbound": "1402",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 389
+      }
+    },
+    {
+      "inbound": "237",
+      "outbound": "538",
+      "minimum_minutes": 90,
+      "count": 12,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 391
+      }
+    },
+    {
+      "inbound": "795",
+      "outbound": "538",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 396
+      }
+    },
+    {
+      "inbound": "285",
+      "outbound": "538",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 398
+      }
+    },
+    {
+      "inbound": "1282",
+      "outbound": "538",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 400
+      }
+    },
+    {
+      "inbound": "289",
+      "outbound": "538",
+      "minimum_minutes": 90,
+      "count": 4,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 402
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "1044",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 408
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "476",
+      "minimum_minutes": 90,
+      "count": 8,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 410
+      }
+    },
+    {
+      "inbound": "289",
+      "outbound": "1481",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 419
+      }
+    },
+    {
+      "inbound": "106",
+      "outbound": "231",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 426
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "203",
+      "minimum_minutes": 90,
+      "count": 9,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 439
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "174",
+      "minimum_minutes": 90,
+      "count": 4,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 440
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "1296",
+      "minimum_minutes": 90,
+      "count": 4,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 441
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "174",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 447
+      }
+    },
+    {
+      "inbound": "104",
+      "outbound": "306",
+      "minimum_minutes": 90,
+      "count": 8,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 450
+      }
+    },
+    {
+      "inbound": "520",
+      "outbound": "306",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 461
+      }
+    },
+    {
+      "inbound": "1283",
+      "outbound": "306",
+      "minimum_minutes": 90,
+      "count": 7,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 464
+      }
+    },
+    {
+      "inbound": "464",
+      "outbound": "306",
+      "minimum_minutes": 90,
+      "count": 8,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 467
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "1314",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 471
+      }
+    },
+    {
+      "inbound": "237",
+      "outbound": "1306",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 475
+      }
+    },
+    {
+      "inbound": "106",
+      "outbound": "1307",
+      "minimum_minutes": 90,
+      "count": 5,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 481
+      }
+    },
+    {
+      "inbound": "286",
+      "outbound": "1307",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 482
+      }
+    },
+    {
+      "inbound": "289",
+      "outbound": "220",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 485
+      }
+    },
+    {
+      "inbound": "195",
+      "outbound": "538",
+      "minimum_minutes": 90,
+      "count": 12,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 494
+      }
+    },
+    {
+      "inbound": "13",
+      "outbound": "1336",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 496
+      }
+    },
+    {
+      "inbound": "875",
+      "outbound": "1340",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 506
+      }
+    },
+    {
+      "inbound": "98",
+      "outbound": "1340",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 507
+      }
+    },
+    {
+      "inbound": "1156",
+      "outbound": "1340",
+      "minimum_minutes": 90,
+      "count": 8,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 511
+      }
+    },
+    {
+      "inbound": "1179",
+      "outbound": "1340",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 519
+      }
+    },
+    {
+      "inbound": "450",
+      "outbound": "1340",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 521
+      }
+    },
+    {
+      "inbound": "104",
+      "outbound": "1340",
+      "minimum_minutes": 90,
+      "count": 6,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 526
+      }
+    },
+    {
+      "inbound": "289",
+      "outbound": "1649",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 537
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "677",
+      "minimum_minutes": 90,
+      "count": 11,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 546
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "2262",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 547
+      }
+    },
+    {
+      "inbound": "96",
+      "outbound": "1368",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 564
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "1368",
+      "minimum_minutes": 90,
+      "count": 11,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 566
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "1368",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 569
+      }
+    },
+    {
+      "inbound": "999",
+      "outbound": "1367",
+      "minimum_minutes": 90,
+      "count": 5,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 572
+      }
+    },
+    {
+      "inbound": "286",
+      "outbound": "1368",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 573
+      }
+    },
+    {
+      "inbound": "289",
+      "outbound": "1367",
+      "minimum_minutes": 90,
+      "count": 24,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 576
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "1205",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 581
+      }
+    },
+    {
+      "inbound": "286",
+      "outbound": "394",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 587
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "394",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 594
+      }
+    },
+    {
+      "inbound": "1418",
+      "outbound": "335",
+      "minimum_minutes": 90,
+      "count": 19,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 596
+      }
+    },
+    {
+      "inbound": "2343",
+      "outbound": "335",
+      "minimum_minutes": 90,
+      "count": 6,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 598
+      }
+    },
+    {
+      "inbound": "24",
+      "outbound": "1410",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 608
+      }
+    },
+    {
+      "inbound": "1178",
+      "outbound": "1410",
+      "minimum_minutes": 90,
+      "count": 3,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 609
+      }
+    },
+    {
+      "inbound": "1278",
+      "outbound": "1503",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 613
+      }
+    },
+    {
+      "inbound": "1303",
+      "outbound": "1435",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 625
+      }
+    },
+    {
+      "inbound": "49",
+      "outbound": "1427",
+      "minimum_minutes": 90,
+      "count": 4,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 626
+      }
+    },
+    {
+      "inbound": "751",
+      "outbound": "1427",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 627
+      }
+    },
+    {
+      "inbound": "50",
+      "outbound": "1435",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 630
+      }
+    },
+    {
+      "inbound": "977",
+      "outbound": "1159",
+      "minimum_minutes": 90,
+      "count": 32,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 638
+      }
+    },
+    {
+      "inbound": "1630",
+      "outbound": "1373",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 641
+      }
+    },
+    {
+      "inbound": "1278",
+      "outbound": "1372",
+      "minimum_minutes": 90,
+      "count": 7,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 642
+      }
+    },
+    {
+      "inbound": "1349",
+      "outbound": "26",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 649
+      }
+    },
+    {
+      "inbound": "1079",
+      "outbound": "1509",
+      "minimum_minutes": 90,
+      "count": 4,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 656
+      }
+    },
+    {
+      "inbound": "224",
+      "outbound": "1354",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 659
+      }
+    },
+    {
+      "inbound": "977",
+      "outbound": "1354",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 660
+      }
+    },
+    {
+      "inbound": "979",
+      "outbound": "1350",
+      "minimum_minutes": 90,
+      "count": 27,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 693
+      }
+    },
+    {
+      "inbound": "887",
+      "outbound": "1466",
+      "minimum_minutes": 90,
+      "count": 4,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 696
+      }
+    },
+    {
+      "inbound": "2022",
+      "outbound": "1452",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 698
+      }
+    },
+    {
+      "inbound": "903",
+      "outbound": "1452",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 700
+      }
+    },
+    {
+      "inbound": "977",
+      "outbound": "1452",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 708
+      }
+    },
+    {
+      "inbound": "140",
+      "outbound": "1438",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 719
+      }
+    },
+    {
+      "inbound": "1303",
+      "outbound": "578",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 735
+      }
+    },
+    {
+      "inbound": "1349",
+      "outbound": "1270",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 750
+      }
+    },
+    {
+      "inbound": "1630",
+      "outbound": "1135",
+      "minimum_minutes": 60,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 768
+      }
+    },
+    {
+      "inbound": "69",
+      "outbound": "1577",
+      "minimum_minutes": 90,
+      "count": 1,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 773
+      }
+    },
+    {
+      "inbound": "69",
+      "outbound": "1892",
+      "minimum_minutes": 90,
+      "count": 2,
+      "source": {
+        "sheet": "中转时间限制",
+        "row": 774
+      }
+    }
+  ],
+  "cross_connected_pairs": [],
+  "external_airport_occupancy": "not deducted; conditional subset; do not stitch"
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "capacity_profile_id": "toy_case_006_scope_capacity",
+  "scenario_id": "toy_case_006_scope",
+  "source": "test_fixture",
+  "units": "seats",
+  "seat_capacity_by_option_id": {
+    "S6_O1": 20,
+    "S6_D1": 20,
+    "S6_O2": 20,
+    "S6_D2": 20,
+    "S6_UO1": 20
+  },
+  "notes": ["TEST / RESIDUAL CAPACITY for Phase 4 scope equivalence."]
+}

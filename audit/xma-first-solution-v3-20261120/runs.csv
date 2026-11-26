@@ -1,0 +1,4 @@
+﻿job_id,status,reason,objective,lower_bound,upper_bound,relative_gap,audit_pass,certified_optimal,first_solver_incumbent_seconds,first_audited_solution_seconds,first_checkpoint_seconds,elapsed_seconds,peak_commit_bytes
+Q1,resource_limited,process_tree_memory_limit,263121.9146990741,,263121.9146990741,,True,False,169.51500000001397,170.10900000005495,170.15600000007544,2705.390999999945,6442782720
+H1,resource_limited,process_tree_memory_limit,517919.79027777776,,517919.79027777776,,True,False,556.9839999999385,558.9839999999385,559.0779999999795,4665.25,6545108992
+FULL,resource_limited,system_memory_floor,,,,,False,False,,,,617.6720000000205,6209978368

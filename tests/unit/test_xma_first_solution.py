@@ -192,10 +192,11 @@ def test_nested_search_submits_previous_audited_solution_as_highs_start():
 
 def test_memory_rejection_keeps_restricted_ub_and_no_global_lb(monkeypatch):
     from backend.business.xma import search
+    monkeypatch.setenv('XMA_MEMORY_GIB','12')
     original=search.estimate_size
     def size(req,options):
         result=original(req,options)
-        if req.tail_pool_size is None:result['estimated_peak_bytes']=10*1024**3
+        if req.tail_pool_size is None:result['estimated_peak_bytes']=9*1024**3
         return result
     monkeypatch.setattr(search,'estimate_size',size)
     result=solve(two_tail_sample())
@@ -203,5 +204,7 @@ def test_memory_rejection_keeps_restricted_ub_and_no_global_lb(monkeypatch):
     assert result['diagnostics']['lower_bound'] is None
     assert result['diagnostics']['relative_gap'] is None
     stats=result['diagnostics']['statistics']
+    assert stats['memory_limit_gib']==12
+    assert stats['admission_bytes']==int(12*1024**3*.70)
     assert not stats['full_model_built']
     assert stats['search_stages'][-1]['status']=='resource_limited'

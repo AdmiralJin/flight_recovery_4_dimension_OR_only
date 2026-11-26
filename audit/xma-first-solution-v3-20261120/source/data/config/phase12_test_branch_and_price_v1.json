@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "phase12-test-branch-and-price-v1",
+  "integrality_tolerance": 1e-6,
+  "bound_tolerance": 1e-6,
+  "max_nodes": 1000,
+  "max_depth": 100,
+  "node_selection": "best_bound",
+  "source": "test_fixture",
+  "notes": [
+    "Every solved node requires pricing convergence in its restricted implicit universe.",
+    "Parent columns are warm-start candidates only and are filtered for child legality."
+  ]
+}

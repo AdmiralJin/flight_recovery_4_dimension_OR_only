@@ -1,0 +1,16 @@
+{
+  "phase": 0,
+  "scenario_id": "toy_case_001",
+  "validation": {
+    "valid": true,
+    "error_count": 0,
+    "airport_count": 3,
+    "flight_count": 6,
+    "aircraft_count": 2,
+    "crew_count": 2,
+    "passenger_group_count": 4
+  },
+  "optimization_solution": null,
+  "note": "Phase 0 defines and validates data only. Expected optimization decisions are intentionally deferred to Phase 1."
+}
+

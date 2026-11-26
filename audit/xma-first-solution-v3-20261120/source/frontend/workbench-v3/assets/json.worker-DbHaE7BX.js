@@ -1,0 +1,1 @@
+(function(){"use strict";const r=globalThis;r.onmessage=({data:s})=>{try{const e=s.kind==="parse"?JSON.parse(s.value):JSON.stringify(s.value,null,s.space);r.postMessage({id:s.id,value:e})}catch(e){r.postMessage({id:s.id,error:e instanceof Error?e.message:"JSON 处理失败"})}}})();
